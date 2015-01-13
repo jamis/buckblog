@@ -1,0 +1,23 @@
+---
+layout: post
+title: Design Forces in Ekawada, Part 3
+post_id: 27
+categories:
+- Projects
+- Under the Hood
+date: 2010-11-01 08:41:00.000000000 -06:00
+author: Jamis
+permalink: 2010/11/01/design-forces-in-ekawada-part-3.html
+---
+
+<p>String figure books are great resources, but they can be incredibly frustrating, too. Even if you’ve never tried to use one, it’s not hard to imagine having a string looped around your fingers, trying to hold the book open with your knee, and then discovering that the next step wraps onto the next page. You somehow need to turn the page without dropping any strings, and without closing or dropping the book.</p>
+<p>It is no surprise, then, that this became one of the design forces that drove Ekawada’s construction.</p>
+<p><img src="http://jamisbuck.org/images/figure-detail-01.png" width="320" height="480" alt="Figure detail shows steps in scrollable table" title="Table view can be scrolled by swiping" align="right" style="border: 2px solid black; margin: 0 0 1em 1em;"></p>
+<p>Now, given the constraints on the size of an iPhone screen, it isn’t feasible (in general) to display all of the steps for a figure in one screen, so there still needs to be some kind of “next page” operation. However, the touchscreen makes this much easier to do than with a physical book.</p>
+<p>This screenshot shows the “figure detail” view. It gives you a nice big picture of what the final pattern will be, and then a sequential list of the steps to accomplish it. As you can see, the number of steps for “Osage Diamonds” (a.k.a. “Jacob’s Ladder”) exceeds the available screen real-estate, and so bleeds off the bottom. But that’s no problem on an iOS device, because you can simply swipe to scroll, and a swipe is much easier to do with strings on your fingers than trying to turn the page of a physical book.</p>
+<p><img src="http://jamisbuck.org/images/figure-detail-02.png" width="320" height="480" alt="Zoomed detail shows each step in full screen" title="Zoom mode allows you to move next/previous by tapping icon" align="right" style="border: 2px solid black; margin: 0 0 1em 1em;"></p>
+<p>Further, if you tap any row in the instructions, you’ll be taken to a “zoomed” view. Here, each instruction is displayed full-screen, including any illustration or clarification for that step. (Not all steps have illustrations or clarifications, but for those that do, you’ll find them in this view.) You’ll also get an indicator of how much further you have to go to the end of the figure, and icons for going to the next (or previous) step.</p>
+<p>Why icons? I considered doing a “swipe” gesture to go to the next page, but really, a tap is easier to do with strings on your hands than a swipe. (The less motion involved, the better.) I tried to strike a balance between size of the icons (a larger target is easier to hit) and maximizing the viewable area for the step (the less often you have to swipe to scroll a step instruction, the better). The size as it is now seemed best, empirically, but later versions may adjust the balance further.</p>
+<p>This zoomed view also answers another one of the design forces behind Ekawada: “I don’t understand what this step is telling me to do.” You don’t want to just add verbosity to the instructions, because more verbosity can actually hurt readabilty. (Just try reading <a href="http://www.stringfigures.info/cfj/apache-door.html">these instructions</a> for the “Apache Door” figure, if you want a concrete example of what I mean.)</p>
+<p>Thus, for steps where the instruction itself may be too terse, or ambiguous, I can use the zoomed view to add an illustration, or extra clarification, without bloating the instruction list. When you need more information, you can get at it easily, but for the common case, you can just scan the instruction list.</p>
+<p>Tune in next time, when I’ll address another design force behind Ekawada: “I remember learning this one figure as a kid, but can’t remember how to do it now.”</p>

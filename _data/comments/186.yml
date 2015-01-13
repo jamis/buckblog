@@ -1,0 +1,57 @@
+---
+- date: 2006-10-27
+  author: Mischa
+  content: "<p>Nice tip! Thanks.</p>"
+- date: 2006-10-27
+  author: Doug Bryant
+  content: "<p>In terms of this example, is the “returning” method really necessary?
+    Wouldn’t the Book.new call leave the last object on the stack and thus get returned
+    by the method?  Or does the @db.add(book) mess this up somehow? Did I miss something?</p>"
+- date: 2006-10-27
+  author: Jamis
+  content: "<p>Doug, note that <code>Object#returning</code> is never “necessary”.
+    It really more of an esthetic improvement, syntactic sugar.</p>\n\n\n\t<p>However,
+    if you know that @db.add(book) will return book, you  could just leave it as the
+    last statement in the method and you’d be fine. You won’t always have that luxury,
+    though, especially if you are dealing with code that you didn’t write, and which
+    you don’t particularly care to monkeypatch.</p>"
+- date: 2006-10-27
+  author: Garth
+  content: "<p>I’ve been looking for an explaination of this for some time now – I
+    never knew it was part of Rails until now.  Cheers!</p>"
+- date: 2006-10-27
+  author: Joe Van Dyk
+  content: "<p>I’m still not sure if I’ll use it much in my code.  It doesn’t save
+    any typing, and I don’t think it simplifies everything (in fact, it makes future
+    readers of your code be familiar with another function).</p>"
+- date: 2006-10-27
+  author: Brian Buckley
+  content: "<p>A slight twist on this k combinator concept is when the first argument
+    is “self”.  Surprisingly useful.</p>\n\n\n<code>\nclass Object\n  def tap\n    yield
+    self\n    self\n  end\nend\n</code>\n\n\t<p>from http://moonbase.rydia.net/mental/blog/programming/eavesdropping-on-expressions.html</p>"
+- date: 2006-10-28
+  author: Steve Shreeve
+  content: |-
+    <p>Thanks Jamis for this simple but wonderful tip! Seeing Brian’s last post, I made a handy “with” method, that combines both the “returning” and “tap” methods mentioned above into one. A nice little bit of syntactical sugar.</p>
+
+
+    <code>
+    class Object
+      def with(obj=self)
+        yield(obj)
+        obj
+      end
+    end
+    </code>
+- date: 2006-10-28
+  author: Gerry
+  content: "<p><span class=\"caps\">IMO</span> a simple ‘return book’ would make the
+    code clearer and simplier.  Maybe not more rubyish but I bet more people will
+    understand it right away then the fancy example.</p>\n\n\n\t<p>I never could understand
+    why it’s considered good ruby style to not use the ‘return’ keyword.  In some
+    places it makes the code ugly but in others it makes it more readable.</p>"
+- date: 2006-10-29
+  author: Jim
+  content: "<p>Wow, ask a question and get a whole post for a response.  Thank you
+    for taking the time to write this up Jamis, you do an excellent job of explaining
+    the inner workings of Rails.</p>"

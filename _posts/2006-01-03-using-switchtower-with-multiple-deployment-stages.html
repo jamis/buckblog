@@ -1,0 +1,65 @@
+---
+layout: post
+title: Using SwitchTower with multiple deployment stages
+post_id: 194
+categories:
+- Tips & Tricks
+date: 2006-01-03 14:54:00.000000000 -07:00
+author: Jamis
+permalink: 2006/01/03/using-switchtower-with-multiple-deployment-stages.html
+---
+
+<p>Back in August I blogged briefly about having a <a href="http://jamis.jamisbuck.org/articles/2005/08/27/conditional-switchtower-configuration">conditional SwitchTower configuration</a>, which would allow you to specify a different configuration for various stages of deployment. Recently, people have been asking for “deploy_stage” and “deploy_production” in SwitchTower itself, but I’m pushing back. It seems to me that it is easy enough to do in SwitchTower that there doesn’t really need to be a specific feature set in ST for it (but you tell me).</p>
+<p>Revisiting that entry, I wouldn’t do it much differently today. The <code>deploy.rb</code> would still look more or less like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">set <span class="sy">:application</span>, <span class="s"><span class="dl">"</span><span class="k">example</span><span class="dl">"</span></span><tt>
+</tt><span class="r">if</span> <span class="co">ENV</span>[<span class="s"><span class="dl">"</span><span class="k">STAGE</span><span class="dl">"</span></span>] == <span class="s"><span class="dl">"</span><span class="k">stage</span><span class="dl">"</span></span><tt>
+</tt>  set <span class="sy">:deploy_to</span>, <span class="s"><span class="dl">"</span><span class="k">/u/apps/stage/</span><span class="il"><span class="dl">#{</span>application<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt>  role <span class="sy">:app</span>, <span class="s"><span class="dl">"</span><span class="k">staging.example.com</span><span class="dl">"</span></span><tt>
+</tt>  role <span class="sy">:web</span>, <span class="s"><span class="dl">"</span><span class="k">staging.example.com</span><span class="dl">"</span></span><tt>
+</tt>  role <span class="sy">:db</span>,  <span class="s"><span class="dl">"</span><span class="k">staging.example.com</span><span class="dl">"</span></span>, <span class="sy">:primary</span> =&gt; <span class="pc">true</span><tt>
+</tt><span class="r">else</span><tt>
+</tt>  role <span class="sy">:app</span>, <span class="s"><span class="dl">"</span><span class="k">foo.example.com</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">bar.example.com</span><span class="dl">"</span></span><tt>
+</tt>  role <span class="sy">:web</span>, <span class="s"><span class="dl">"</span><span class="k">123.example.com</span><span class="dl">"</span></span>,<tt>
+</tt>  role <span class="sy">:db</span>,  <span class="s"><span class="dl">"</span><span class="k">tiger.example.com</span><span class="dl">"</span></span>, <span class="sy">:primary</span> =&gt; <span class="pc">true</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>It is as simple as an <code>if</code> statement, and it lets you configure multiple deployment stages (if you need them). If using environment variables is less than tasteful to you, you can also use ST variables:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">...<tt>
+</tt><span class="r">if</span> stage == <span class="s"><span class="dl">"</span><span class="k">stage</span><span class="dl">"</span></span><tt>
+</tt>  ...<tt>
+</tt><span class="r">else</span><tt>
+</tt>  ...<tt>
+</tt><span class="r">end</span><tt>
+</tt>...<tt>
+</tt></pre></td>
+</tr></table>
+<p>You would then invoke the task like:</p>
+<pre>
+  switchtower -vvvv -S stage=production -r config/deploy -a deploy
+</pre>
+<p>(Note the use of a capital <code>-S</code>—this causes the variable to be set <em>before</em> the recipe file is loaded, which is necessary since the variable is referenced as the file is being read.)</p>
+<p>Note that using a variable complicates things a <em>little</em> bit if you are using rake, because you can’t pass the variable to the ST task from the rake command-line. Instead, you’ll need to create a new rake task for each value you want to pass to the variable (i.e., <code>deploy_stage</code> and <code>deploy_production</code>). For this reason, I prefer to use environment variables, but your mileage may vary.</p>
+<p>So, from those of you who need multiple deployment stages, is this sufficient for you? If not, why?</p>

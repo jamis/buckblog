@@ -1,0 +1,51 @@
+---
+layout: post
+title: begin + else
+post_id: 101
+categories:
+- Tips & Tricks
+date: 2007-02-08 12:34:00.000000000 -07:00
+author: Jamis
+permalink: 2007/02/08/begin-else.html
+---
+
+<p>Even after 6+ years, Ruby still continues to surprise and delight me. My latest discovery (thanks to <a href="http://eigenclass.org/hiki.rb?happy2007-ruby-challenge">Mauricio’s Happy 2007 challenge</a>) is that begin/end blocks accept (in addition to rescue and ensure) an <em>else</em> clause:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">begin</span><tt>
+</tt>  <span class="c"># main code here</span><tt>
+</tt><span class="r">rescue</span> <span class="co">SomeException</span><tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">rescue</span> <span class="co">AnotherException</span><tt>
+</tt>  <span class="c"># ..</span><tt>
+</tt><span class="r">else</span><tt>
+</tt>  <span class="c"># stuff you want to happen AFTER the main code,</span><tt>
+</tt>  <span class="c"># but BEFORE the ensure block, but only if there</span><tt>
+</tt>  <span class="c"># were no exceptions raised. Note, too, that</span><tt>
+</tt>  <span class="c"># exceptions raised here won't be rescued by the</span><tt>
+</tt>  <span class="c"># rescue clauses above.</span><tt>
+</tt><span class="r">ensure</span><tt>
+</tt>  <span class="c"># stuff that should happen dead last, and</span><tt>
+</tt>  <span class="c"># regardless of whether any exceptions were</span><tt>
+</tt>  <span class="c"># raised or not.</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>If you don’t have an <code>ensure</code> clause, <code>else</code> is pretty much the same as just putting code immediately after the <code>end</code>, but if the order matters (something should happen before ensure, and only if the main code succeeded, and should not be subject to being rescued if something goes wrong), then <code>else</code> is your man.</p>

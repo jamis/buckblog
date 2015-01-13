@@ -1,0 +1,29 @@
+---
+layout: post
+title: Capistrano 2.4.3
+post_id: 51
+categories:
+- Announcements
+date: 2008-06-28 09:15:00.000000000 -06:00
+author: Jamis
+permalink: 2008/06/28/capistrano-2-4-3.html
+---
+
+<p>Capistrano 2.4.3 is now available!</p>
+<blockquote>
+		<p>gem install capistrano</p>
+	</blockquote>
+<p>This is a maintenance release. The changes since 2.4.0 include:</p>
+<ul>
+	<li>In 2.4.0 and earlier, port settings in ssh_config files were not honored by Capistrano. 2.4.3 will now honor those settings.</li>
+		<li>The capture() helper no longer raises an exception if stderr text is received, but instead emits a warning.</li>
+	</ul>
+<p>Please report bugs to the Capistrano bug tracker at <a href="http://www.lighthouseapp.com">Lighthouse</a>:</p>
+<blockquote>
+		<p><a href="http://capistrano.lighthouseapp.com/projects/8716/tickets">http://capistrano.lighthouseapp.com/projects/8716/tickets</a></p>
+	</blockquote>
+<p>Patches should be generated against the latest version of the code at <a href="http://github.com">GitHub</a>:</p>
+<blockquote>
+		<p><a href="http://github.com/jamis/capistrano">http://github.com/jamis/capistrano</a></p>
+	</blockquote>
+<p>You may submit patches via email, as submissions to the Capistrano bug tracker, or as GitHub pull-requests.</p>

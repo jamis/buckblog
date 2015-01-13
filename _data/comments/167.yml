@@ -1,0 +1,14 @@
+---
+- date: 2006-02-28
+  author: Ryan Platte
+  content: |-
+    Actually, I remember Nathaniel saying you could just redefine @default_test@ as an empty method:
+
+    http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/96186
+- date: 2006-02-28
+  author: Jamis
+  content: Ryan, you can definitely do that. The downside of that approach is that
+    it counts as a test in the stats that are generated at the end, so even if you
+    have no "real" tests, the output would show that 1 test was run. The benefit of
+    the approach I described above is that if a testcase has no tests, the emitted
+    statistics would show that 0 tests were run.

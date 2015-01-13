@@ -1,0 +1,194 @@
+---
+layout: post
+title: Net::SSH 2.0 (and friends)
+post_id: 55
+categories:
+- Announcements
+date: 2008-05-02 09:39:00.000000000 -06:00
+author: Jamis
+permalink: 2008/05/02/net-ssh-2-0-and-friends.html
+---
+
+<p>At last! Net::SSH 2.0 is available! Also available are Net::SFTP 2.0, Net::SCP 1.0, Net::SSH::Gateway 1.0, and Net::SSH::Multi 1.0.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">$ gem install net-ssh \<tt>
+</tt>  net-sftp \<tt>
+</tt>  net-scp \<tt>
+</tt>  net-ssh-gateway \<tt>
+</tt>  net-ssh-multi<tt>
+</tt></pre></td>
+</tr></table>
+<p>All of these Ruby libraries are for communicating with remote servers via the <span class="caps">SSH</span> protocol in different ways.</p>
+<p>Net::SSH and Net::SFTP are both significant upgrades from their previous incarnations; if you have used either library in the past, you’ll want to read the documentation (<a href="http://net-ssh.rubyforge.org/ssh/v2/api/">Net::SSH</a>, <a href="http://net-ssh.rubyforge.org/sftp/v2/api/">Net::SFTP</a>). The Net::SSH <span class="caps">API</span> is still fairly similar to the way it was before, but the Net::SFTP <span class="caps">API</span> is entirely different.</p>
+<p>All have pretty complete RDoc documentation, so you should be able to employ “ri” to good effect to find your way around the libraries. (Try “ri Net::SSH”, for example, to get started.)</p>
+<p>Per-library synopses follow.</p>
+<h2>Net::SSH 2.0</h2>
+<p>This is a significant upgrade from Net::SSH 1.x. Changes from 1.x include (but are not limited to):</p>
+<ul>
+	<li>Net::SSH 2.0 no longer requires the Needle dependency-injection library. This has made the library faster, lighter, and easier to understand.</li>
+		<li>The “sync” and “sync-shell” services have been removed and will not return. (If you need the functionality of those services, I strongly encourage you to port them to Net::SSH 2 and release them as separate extensions.)</li>
+		<li>Options in ~/.ssh/config files are (partially) supported, and are loaded by default now.</li>
+		<li>The Net::SSH::start method now requires both a host and a username as the first two parameters, rather than inferring the username.</li>
+		<li>There is now a Session#exec method that makes it easier than ever to just execute and interact with a command.</li>
+		<li>Channel now sports an #on_process method that you can send a block to, which will be executed on every pass of the event loop.</li>
+		<li>Channel#on_request now accepts a string to indicate <em>which</em> request you want to respond to.</li>
+		<li>Channel open failures may be captured via Channel#on_open_failure.</li>
+		<li>Lots, lots, <span class="caps">LOTS</span>, more—refer to the rdocs for all the gory details.</li>
+	</ul>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">require <span class="s"><span class="dl">'</span><span class="k">net/ssh</span><span class="dl">'</span></span><tt>
+</tt><tt>
+</tt><span class="co">Net</span>::<span class="co">SSH</span>.start(<span class="s"><span class="dl">'</span><span class="k">localhost</span><span class="dl">'</span></span>, <span class="s"><span class="dl">'</span><span class="k">jamis</span><span class="dl">'</span></span>) <span class="r">do</span> |ssh|<tt>
+</tt>  ssh.exec(<span class="s"><span class="dl">'</span><span class="k">hostname</span><span class="dl">'</span></span>) <span class="c"># prints the results to $stdout</span><tt>
+</tt>  ssh.loop<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<h2>Net::SFTP 2.0</h2>
+<p>This is a complete rewrite of the original Net::SFTP 1.x code, and shares very, very little in common with it. The new version has a much cleaner implementation and <span class="caps">API</span>, and provides some really handy methods for transferring files and directories.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">require <span class="s"><span class="dl">'</span><span class="k">net/sftp</span><span class="dl">'</span></span><tt>
+</tt><tt>
+</tt><span class="co">Net</span>::<span class="co">SFTP</span>.start(<span class="s"><span class="dl">'</span><span class="k">localhost</span><span class="dl">'</span></span>, <span class="s"><span class="dl">'</span><span class="k">jamis</span><span class="dl">'</span></span>) <span class="r">do</span> |sftp|<tt>
+</tt>  sftp.upload! <span class="s"><span class="dl">"</span><span class="k">/local/file</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">/remote/file</span><span class="dl">"</span></span><tt>
+</tt>  sftp.download! <span class="s"><span class="dl">"</span><span class="k">/remote/file</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">/local/file</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>  sftp.file.open(<span class="s"><span class="dl">"</span><span class="k">/remote/file</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">w</span><span class="dl">"</span></span>) <span class="r">do</span> |file|<tt>
+</tt>    file.puts <span class="s"><span class="dl">"</span><span class="k">here is some data</span><span class="dl">"</span></span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<h2>Net::SCP 1.0</h2>
+<p>This provides a way to transfer files and directories via the <span class="caps">SCP</span> protocol, over Net::SSH.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">require <span class="s"><span class="dl">'</span><span class="k">net/scp</span><span class="dl">'</span></span><tt>
+</tt><tt>
+</tt><span class="co">Net</span>::<span class="co">SCP</span>.start(<span class="s"><span class="dl">'</span><span class="k">localhost</span><span class="dl">'</span></span>, <span class="s"><span class="dl">'</span><span class="k">jamis</span><span class="dl">'</span></span>) <span class="r">do</span> |scp|<tt>
+</tt>  scp.upload! <span class="s"><span class="dl">"</span><span class="k">/local/file</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">/remote/file</span><span class="dl">"</span></span><tt>
+</tt>  scp.download! <span class="s"><span class="dl">"</span><span class="k">/remote/file</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">/local/file</span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<h2>Net::SSH::Gateway 1.0</h2>
+<p>This library makes it easy to tunnel connections though firewalls. You simply connect to the gateway machine, and then specify which ports you want forwarded.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">require <span class="s"><span class="dl">'</span><span class="k">net/ssh/gateway</span><span class="dl">'</span></span><tt>
+</tt><tt>
+</tt>gateway = <span class="co">Net</span>::<span class="co">SSH</span>::<span class="co">Gateway</span>.new(<span class="s"><span class="dl">'</span><span class="k">host</span><span class="dl">'</span></span>, <span class="s"><span class="dl">'</span><span class="k">user</span><span class="dl">'</span></span>)<tt>
+</tt><tt>
+</tt>gateway.ssh(<span class="s"><span class="dl">"</span><span class="k">host.private</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">user</span><span class="dl">"</span></span>) <span class="r">do</span> |ssh|<tt>
+</tt>  puts ssh.exec!(<span class="s"><span class="dl">"</span><span class="k">hostname</span><span class="dl">"</span></span>)<tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>gateway.open(<span class="s"><span class="dl">"</span><span class="k">host.private</span><span class="dl">"</span></span>, <span class="i">80</span>) <span class="r">do</span> |port|<tt>
+</tt>  require <span class="s"><span class="dl">'</span><span class="k">net/http</span><span class="dl">'</span></span><tt>
+</tt>  <span class="co">Net</span>::<span class="co">HTTP</span>.get_print(<span class="s"><span class="dl">"</span><span class="k">127.0.0.1</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">/path</span><span class="dl">"</span></span>, port)<tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>gateway.shutdown!<tt>
+</tt></pre></td>
+</tr></table>
+<h2>Net::SSH::Multi 1.0</h2>
+<p>This library makes it simple to open multiple Net::SSH connections and tie them all together, running commands in parallel (much like <a href="http://www.capify.org">Capistrano</a> does).</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt>23<tt>
+</tt>24<tt>
+</tt><strong>25</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">require <span class="s"><span class="dl">'</span><span class="k">net/ssh/multi</span><span class="dl">'</span></span><tt>
+</tt><tt>
+</tt><span class="co">Net</span>::<span class="co">SSH</span>::<span class="co">Multi</span>.start <span class="r">do</span> |session|<tt>
+</tt>  <span class="c"># access servers via a gateway</span><tt>
+</tt>  session.via <span class="s"><span class="dl">'</span><span class="k">gateway</span><span class="dl">'</span></span>, <span class="s"><span class="dl">'</span><span class="k">gateway-user</span><span class="dl">'</span></span><tt>
+</tt><tt>
+</tt>  <span class="c"># define the servers we want to use</span><tt>
+</tt>  session.use <span class="s"><span class="dl">'</span><span class="k">user1@host1</span><span class="dl">'</span></span><tt>
+</tt>  session.use <span class="s"><span class="dl">'</span><span class="k">user2@host2</span><span class="dl">'</span></span><tt>
+</tt><tt>
+</tt>  <span class="c"># define servers in groups for more granular access</span><tt>
+</tt>  session.group <span class="sy">:app</span> <span class="r">do</span><tt>
+</tt>    session.use <span class="s"><span class="dl">'</span><span class="k">user@app1</span><span class="dl">'</span></span><tt>
+</tt>    session.use <span class="s"><span class="dl">'</span><span class="k">user@app2</span><span class="dl">'</span></span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  <span class="c"># execute commands on all servers</span><tt>
+</tt>  session.exec <span class="s"><span class="dl">"</span><span class="k">uptime</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>  <span class="c"># execute commands on a subset of servers</span><tt>
+</tt>  session.with(<span class="sy">:app</span>).exec <span class="s"><span class="dl">"</span><span class="k">hostname</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>  <span class="c"># run the aggregated event loop</span><tt>
+</tt>  session.loop<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Enjoy!</p>

@@ -1,0 +1,73 @@
+---
+- date: 2007-02-28
+  author: alex
+  content: "<p>The problem most people have with pagination is due to the database
+    having to sort entire tables before being able to pull our the slice you need.
+    \ It’s very easy to fall into this trap in many situations and quickly get into
+    performance issues.</p>\n\n\n\t<p>Any thoughts on ways around that, especially
+    with regards to ActiveRecord?</p>"
+- date: 2007-02-28
+  author: Adam Sanderson
+  content: "<p>Well, you’re going to have to sort it one way or another if you want
+    to get out a reasonable set of data.  Just make sure the column you are sorting
+    on is indexed and it shouldn’t be a major issue.</p>\n\n\n\t<p>That rows+1 trick
+    is rather clever by the way!</p>"
+- date: 2007-02-28
+  author: Jamis
+  content: "<p>Alex, as Adam said, indexes are the key. Make sure you’ve got your
+    indexes set up right, and limit/offset queries should behave nicely. Of course,
+    using enormous offsets (like 100,000) will be bad for the database, since the
+    DB has to scan through the first 100,000 rows, but if you’re not expecting your
+    results to grow that large, or for people to page that far, you’ll be plenty fine.</p>"
+- date: 2007-02-28
+  author: Benoît
+  content: "<p>I agree with alex. These requests are dumb. Sorting is not the real
+    issue. The problem is about making N x times exactly the same request (joins,
+    group by, order, whatever). Truncating the output with limit/offset doesn’t make
+    the request lighter.</p>\n\n\n\t<p>I had experiences with paging, and my advise
+    is to pull pages by group/window. You display 20 items, but you actually pull
+    items 100 by 100 : it is a great win because it reduces a lot the database load
+    and make next/prev faster. This has a very small memory impact.</p>"
+- date: 2007-02-28
+  author: Jamis
+  content: "<p>Benoît, do you mean that you query 100 records at a time, but only
+    display 20 of them? Do you then rely on the database to cache the query and result?</p>\n\n\n\t<p>Is
+    that really more efficient? I suppose it depends on the usage patterns of the
+    app, but if 80% of the people only view the first page and leave the rest unseen,
+    it would be wasteful to pull more than the first page back.</p>\n\n\n\t<p>Do you
+    have any articles about this you could post links to? I’d like to read more about
+    this technique.</p>"
+- date: 2007-02-28
+  author: Adam Sanderson
+  content: "<p>There is of course a limitation on ActiveRecord’s :include option (unless
+    this was changed sometime recently?) where the included relations will not get
+    preloaded if there is a :limit set.  I guess it’s just a situation one should
+    be aware of.</p>"
+- date: 2007-03-01
+  author: Jamis
+  content: "<p>Adam, actually, :limit will work even with eager loading. When doing
+    a limit on an eager load with has_many associations, though, it will actually
+    perform two queries underneath: one with the limit, to pull back the requested
+    number of primary records, and then another query to pull back and combine the
+    included association.</p>"
+- date: 2007-03-05
+  author: Adam Sanderson
+  content: "<p>Oh, that’s great.  I could have sworn at one point it was ignoring
+    the :include options.  I’ll have to check that out later.</p>"
+- date: 2007-03-07
+  author: Eric
+  content: "<p>I think Benoît was suggesting that you pull down M pages worth of data
+    and cache it in session scope so you can avoid round-triping to the database on
+    a large fraction of the “next/back” page requests.</p>\n\n\n\t<p>I’ve seen this
+    work well in medium size tables, but if you start to allow “random access” (like
+    the 1,2,3, 10, 40, 90, last” anchors to jump around more within the paged set
+    for very large tables you tend to lose some of the benefit.  (Keeping M small
+    ~ about 4 pages worth seems to better match usage patterns versus 6-8 pages worth
+    in the non-”jump”-able sets.</p>"
+- date: 2007-03-07
+  author: Jamis
+  content: "<p>There are all kinds of problems with storing records directly in the
+    session. I’ll do a post on it sometime, but for now, let me strenuously recommend
+    that you do <em>not</em> store model objects in the session, ever. You can wind
+    up with (at the least) stale data, and (at the worst) really really really hard
+    to find bugs related to dependency loading.</p>"

@@ -1,0 +1,13 @@
+---
+- date: 2011-01-12
+  author: Lucas Prim
+  content: "<p>Really liked your javascript implementation! Any gist to that?</p>"
+- date: 2011-01-12
+  author: Jamis
+  content: '<p>Thanks, @Lucas! The sources are actually on github: <a href="http://github.com/jamis/csmazes">http://github.com/jamis/csmazes</a>.
+    You can get a sneak peek there of all the algorithms I intend to cover on my blog,
+    since I’ve got them all implemented there. :)</p>'
+- date: 2011-01-27
+  author: Paul
+  content: <p>This actually runs just fine on <span class="caps">IE8</span>. (Our
+    network blocks connections from other programs.)</p>

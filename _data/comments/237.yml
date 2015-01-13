@@ -1,0 +1,91 @@
+---
+- date: 2005-12-09
+  author: Hans
+  content: Ah, but what about RSS? When I got my iBook I decided to give Safari a
+    try and was in short order hooked on its built-in RSS capabilities. I've never
+    seen anything come close to giving me RSS the way I want it like Safari has.
+- date: 2005-12-09
+  author: Jamis
+  content: RSS never clicked for me until I started using "NetNewsWire Lite":http://ranchero.com/netnewswire/.
+    It works great for me, and nothing else ever did. I never touched the RSS stuff
+    in Safari.
+- date: 2005-12-09
+  author: low
+  content: You might reconsider when you discover this <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=141710">3
+    year old bug</a>.
+- date: 2005-12-09
+  author: Jamis
+  content: low, actually, it doesn't bother me at all. First of all, I never scroll
+    that way, and secondly, if I did, I don't think having the CPU go to 100% for
+    the second or two that I spend scrolling would bother me. At any rate, the features
+    I get with FF are well-worth tolerating that minor annoyance. Especially when
+    considered against the annoyances I've enumerated regarding Safari.
+- date: 2005-12-09
+  author: George Hotelling
+  content: You might want to check out the <a href="http://www.beatnikpad.com/archives/2005/12/01/firefox15">G4</a>
+    and <a href="http://www.beatnikpad.com/archives/2005/11/29/firefox15">G5</a> optimized
+    builds of Firefox 1.5 (with Firefoxy built in).
+- date: 2005-12-09
+  author: Jacob
+  content: I agree with your beefs against Safari in favor of Firefox (I've grumbled
+    about most myself) but when it comes to hoodwinking, you don't really need GreaseMonkey.
+    MouseHole it!
+- date: 2005-12-09
+  author: Alan
+  content: 'Couldn''t agree more with George - the optimized versions feel a lot zippier
+    and Firefoxy looks great.  I hope GrApple is up again soon, it''s lovely and I
+    want it for the office machine.  Love the <a href="https://addons.mozilla.org/extensions/moreinfo.php?id=1532&amp;application=firefox">
+    del.icio.us extension</a> too. '
+- date: 2005-12-10
+  author: Thomas Balthazar
+  content: The one big thing that is missing with Firefox is the lack of integration
+    with the Keychain.
+- date: 2005-12-10
+  author: Thomas Balthazar
+  content: |-
+    Concerning GrApple, you'll find it "here":https://addons.mozilla.org/themes/moreinfo.php?id=931&amp;application=firefox
+
+    There are some variations of the GrApple theme. To see them all, simply search on "GrApple" on the "Mozilla addons site":https://addons.mozilla.org/quicksearch.php?cof=&amp;domains=mozilla.org&amp;sitesearch=mozilla.org&amp;q=GrApple&amp;section=A
+
+    I think it's worth trying it!
+- date: 2005-12-10
+  author: William Voll
+  content: I love Safari but find the memory leak(if that is the problem) to be a
+    pain. With Fifrefox 1.5 and the G4/5 Deer Park browsers are a bit nicer till Apple
+    fixes Safari's memory problem.
+- date: 2005-12-10
+  author: Jamis
+  content: |-
+    I've never experienced any memory leaks with Safari--it's been generally very stable for me.
+
+    I'll have to try the Deer Park versions of FF.
+- date: 2005-12-10
+  author: court3nay
+  content: the latest version of safari now includes a javascript error line trace,
+    and it works 99% of the time.  debug menu - show javascript console will highlight
+    the line in the file for you. and if you double-click the error message (or view
+    source) it updates if you refresh the page.
+- date: 2005-12-10
+  author: Jamis
+  content: What's the latest version? I'm pretty sure I'm running the very latest
+    (build 416.12), and I've still been plenty frustrated with Safari's JS error reporting.
+- date: 2005-12-10
+  author: Shane Vitarana
+  content: |
+    Have you tried Camino?
+- date: 2005-12-11
+  author: Jamis
+  content: Shane, yes, I did, and while Camino is very pretty, it doesn't have all
+    the bells and whistles of firefox, which is one of the reasons I made the move.
+- date: 2005-12-11
+  author: tobys
+  content: i just did the same thing. the g4/g5 builds with the grapple themes are
+    great. you just can't beat all the extensions.
+- date: 2005-12-12
+  author: Thomas Balthazar
+  content: One feature I also miss is the integration with the dictionary. English
+    is not my mother tongue, and as I often read blogs and pages in English, I often
+    use ctrl+command+d to read the signification of words I don't understand.
+- date: 2005-12-14
+  author: 'null'
+  content: There is the LiveDictionary plugin for Safari (pimpmysafari.com)!

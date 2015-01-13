@@ -1,0 +1,214 @@
+---
+layout: post
+title: 'Maze Generation: Binary Tree algorithm'
+post_id: 11
+categories:
+- Under the Hood
+date: 2011-02-01 07:47:00.000000000 -07:00
+author: Jamis
+permalink: 2011/02/01/maze-generation-binary-tree-algorithm.html
+summary: >
+  A particularly simple and fast algorithm for generating random mazes is
+  presented, with a discussion of its weaknesses. Animation and sample code is
+  provided
+---
+
+<p>This next algorithm is crazy, crazy simple. It also is the only one of the algorithms I’ve covered with the ability to generate a perfect maze without keeping any state at all. It can build the entire maze by looking at only a single cell at a time.</p>
+<p>Here’s how it works: for every cell in the grid, randomly carve a passage either north, or west.</p>
+<p>That’s it. You can mix it up if you want, and choose between other diagonal sets: north/east, south/west, or south/east, but whichever diagonal set you select must be used consistently throughout the entire maze.</p>
+<p>There’s another nifty attribute of this algorithm: if you can guarantee that for any given cell, you will always carve a particular direction, then you never need to keep any of the maze in memory. When you need to display some portion of the maze, you just “rebuild” it, trivially. This means you could create infinitely large mazes in very little memory.</p>
+<p>It’s not all roses, though. A side-effect of this algorithm is that it has a strong diagonal <em>bias</em>. Also, two of the four sides of the maze will be spanned by a single corridor. But for some applications, that might be acceptable.</p>
+<p>It’s almost too simple to bother, but let’s take a quick look at the algorithm in practice.</p>
+<h2>An example</h2>
+<p>I’ll use a trivial 3×3 grid.</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>Because this algorithm doesn’t need to consider the state of any adjacent cells, we can start from and proceed to anywhere we want; let’s begin with the bottom-right corner:</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w"></td>
+</tr>
+</table>
+<p>Then, we randomly carve a passage either north, or west. Let’s choose…north!</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n e w out2"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="s e w"></td>
+</tr>
+</table>
+<p>Let’s work through the rest of that bottom row similarly, carving west from the middle cell, and north from the south-west corner:</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n e w out2"></td>
+<td class="n s e w out"></td>
+<td class="n e w out2"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n s e"></td>
+<td class="s e w"></td>
+</tr>
+</table>
+<p>Note that for the bottom-left (south-west) corner, “west” was not an option, since it would take us outside the bounds of the grid. Thus, our hand was forced and we had to choose north. But we’re okay with that, right?</p>
+<p>Let’s move on and process the second row:</p>
+<table class="maze">
+<tr>
+<td class="n e w out2"></td>
+<td class="n e w out2"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="e w"></td>
+<td class="s w"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n s e"></td>
+<td class="s e w"></td>
+</tr>
+</table>
+<p>Again, we were limited in our choices in the western-most cell: all we could choose was north, so we did.</p>
+<p>Now, look what happens for the final row:</p>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="e w"></td>
+<td class="s w"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n s e"></td>
+<td class="s e w"></td>
+</tr>
+</table>
+<p>Because we can’t go north in any of those, we have to choose west. And for the north-west corner, we can’t choose either north, or west! So we simply mark it visited and trust that the algorithm will connect it by other means.</p>
+<p>Notice the corridors spanning the north and west boundaries. This is one of the side-effects I mentioned. Also, while it’s not so visible in a maze this size, the maze has a strong north-west bias; there are no dead-ends (and never will be any dead-ends) facing either north or west. Thus, if you start at the south-east corner, getting to the north-west corner is trivial—you’ll never hit a dead-end. (Going the other direction is harder; it’s like carving wood with the grain, versus against the grain.)</p>
+<p>Play around a bit with the following demo to see what I mean. You can also select a different bias here, to see how that changes things.</p>
+<script type="text/javascript" src="/javascripts/maze-minified.js"></script>
+<p style="margin-left: 20px; font-size: 80%">
+  Bias: <select id="binary_tree_input" onchange="$('binarytree').mazeReset(); $('btree_bigger').mazeReset();">
+    <option value="nw">Northwest</option>
+    <option value="ne">Northeast</option>
+    <option value="sw">Southwest</option>
+    <option value="se">Southeast</option>
+  </select>
+</p>
+<script type="text/javascript">
+  function binaryTreeInput() {
+    var s = document.getElementById('binary_tree_input');
+    return s.options[s.selectedIndex].value;
+  }
+</script>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("BinaryTree", 5, 5, { "class": "small", input: binaryTreeInput });</script>
+<script type="text/javascript">Maze.createCanvasWidget("BinaryTree", 15, 15, { "class": "medium", input: binaryTreeInput, id: "btree_bigger", interval: 25 });</script>
+</div>
+<h2>Implementation</h2>
+<p>The implementation of this algorithm is as trivially simple as you might think. You only need to cover every cell of the grid. One way to do that is to simply iterate over every row and column, in order:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">height.times <span class="r">do</span> |y|<tt>
+</tt>  width.times <span class="r">do</span> |x|<tt>
+</tt>    <span class="c"># ...</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Within the loops, you determine which directions are valid:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">dirs = []<tt>
+</tt>dirs &lt;&lt; <span class="co">N</span> <span class="r">if</span> y &gt; <span class="i">0</span><tt>
+</tt>dirs &lt;&lt; <span class="co">W</span> <span class="r">if</span> x &gt; <span class="i">0</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>And then you randomly select one:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">if</span> (dir = dirs[rand(dirs.length)])<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Once you’ve selected your direction, you just carve a passage between the two cells:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">nx, ny = x + <span class="co">DX</span>[dir], y + <span class="co">DY</span>[dir]<tt>
+</tt>grid[y][x] |= dir<tt>
+</tt>grid[ny][nx] |= <span class="co">OPPOSITE</span>[dir]<tt>
+</tt></pre></td>
+</tr></table>
+<p>And you’re done!</p>
+<h2>Conclusion</h2>
+<p>The sharp-eyed among you might have noticed the connection between the name of the algorithm, and its output. Yes, the “Binary Tree” algorithm creates a random binary tree! Imagine that.</p>
+<p>Every cell has one connection toward the “root” (in the direction of the bias, e.g. north or west), and zero, one, or two connections in the other direction (south or east). The root is, in this case, the north-west corner. If you could reach in and pluck up the north-west corner, giving it a good tug, it would uproot its children, and their children, and their children, until you’re left with a binary tree dangling downward like the knobbly roots of some tenacious weed.</p>
+<p>Now, there are obviously other ways to build mazes based on binary trees. A particularly fun one is to make a variation of the <a href="http://weblog.jamisbuck.org/2011/1/27/maze-generation-growing-tree-algorithm">Growing Tree algorithm</a>: select a root node anywhere in the grid and add it to the list. Then, while the list is not empty, you remove a node from the list, add up to two passages leading away from it, and add those neighbors to the list. (I call this the “Growing Binary Tree algorithm”.) You’ll end up with another random binary tree, but without the obvious blemishes of the Binary Tree algorithm.</p>
+<p>Nevertheless, the Binary Tree algorithm is fun to implement, and can be perfectly suitable for some applications (for instance, if you’re inside the maze, the biases will be less obvious). And if you need stupendously enormous mazes that can’t exist entirely in memory, why, this is an excellent algorithm as well.</p>
+<p>My full implementation is below. Give it a try yourself, and share what you come up with!</p>
+<script src="https://gist.github.com/761534.js?file=binary-tree.rb"></script>
+<noscript>
+<a href="https://gist.github.com/761534">binary-tree.rb</a> on gist.github.com</noscript>
+<p>Enjoy!</p>

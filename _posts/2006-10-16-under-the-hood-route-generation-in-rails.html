@@ -1,0 +1,574 @@
+---
+layout: post
+title: 'Under the hood: route generation in Rails'
+post_id: 193
+categories:
+- Under the Hood
+date: 2006-10-16 07:29:00.000000000 -06:00
+author: Jamis
+permalink: 2006/10/16/under-the-hood-route-generation-in-rails.html
+---
+
+<p>I previously wrote about the <a href="/2006/10/2/under-the-hood-rails-routing-dsl">implementation of the routing <span class="caps">DSL</span> in Rails</a>, as well as the <a href="/2006/10/4/under-the-hood-route-recognition-in-rails">internals of route recognition</a>. If you haven’t yet read (and understood) <em>both</em> of those articles, I strongly encourage you to do so before delving into this one, since it builds on the material presented in those.</p>
+<p>Route generation is the last stop on this tour of the Rails routing code. It also happens to be the hairiest, most mysterious, and most difficult bit, so make sure you’ve got a recent version of the rails code handy to follow along with (this article outlines the implementation as of <a href="http://dev.rubyonrails.org/browser/trunk/actionpack/lib/action_controller/routing.rb?rev=5304">revision 5304</a>). Also, don’t be afraid to take this article a bit at a time, and to go over it repeatedly. It’s dense stuff, and unless you’re already familiar with the routing code, it might be hard to swallow in one (or even two) sittings.</p>
+<p>Before we dive headlong into this, let’s do a bit of warm-up, starting with some vocabulary.</p>
+<h2>Vocabulary</h2>
+<p>I’ll put these terms all up here, at the top of the article, to make it easier to refer back to them as you read. For the most part, these shouldn’t be difficult concepts to grasp, but by defining them here we can hopefully avoid ambiguity and confusion later.</p>
+<ul>
+	<li>
+<strong>default route</strong>. This is the traditional ”:controller/:action/:id” route that is defined by default in every new Rails application.</li>
+		<li>
+<strong>query parameters</strong>. This is the set of name/value pairs that were passed in via the <em>query string</em>, that part of the <span class="caps">URL</span> that follows the question mark. For example, in the <span class="caps">URL</span> ”/foo/bar/15?view=show”, the query string is “view=show”.</li>
+		<li>
+<strong>request parameters</strong>. This is the set of name/value pairs that were passed in via the body of a <span class="caps">POST</span> request.</li>
+		<li>
+<strong>path parameters</strong>. This is the set of name/value pairs that were extracted from the <span class="caps">URL</span> path itself for the current request. In other words, if the default route is used to recognize ”/foo/bar/15?view=show”, the path parameters will be <code>{ :controller =&gt; "foo", :action =&gt; "bar", :id =&gt; "15" }</code>.</li>
+		<li>
+<strong>parameters</strong>. This is the combination of the query, request, and path parameter hashes. The controller’s <code>params</code> object references this hash.</li>
+		<li>
+<strong>parameter shell</strong>. This is a subset of a route definition’s key/value pairs. It includes all keys that are not explicitly referenced in the route’s mapping, and which have non-regex values. For example, the default route’s parameter shell would <em>not</em> include the <code>:controller</code>, <code>:action</code> and <code>:id</code> keys, because they are explicitly referenced in the route’s mapping.</li>
+		<li>
+<strong>path</strong>. For this article, “path” refers is the output of route generation, which is a string containing the path portion of a <span class="caps">URL</span>. In this article, “URL” will be loosely interchangeable with “path”.</li>
+		<li>
+<strong>route</strong>. In this article, this refers to the object that encapsulates the logic of generating a path, or <span class="caps">URL</span>. It is tempting to use “route” to refer to the output of route generation, but that way leads to madness and despair. Trust me.</li>
+	</ul>
+<p>Alright, with that out of the way, we can now take another step towards delving into route generation.</p>
+<h2>Route Generation</h2>
+<p>Route generation is the magic that happens when you call the <code>link_to</code> helper, or invoke a named route (<code>foo_url</code> or <code>foo_path</code>). In the former case, it takes some hash of options that describe the desired route, and it <em>generates</em> the <span class="caps">URL</span> that best matches the options. In the latter case, it attempts to generate the <span class="caps">URL</span> for the specific route you request. Ultimately, both approaches share 99% of the implementation.</p>
+<p>It sounds like it should be simple: “take some options, and generate a path from them”. The devil, as ever, is in the details. Route generation attempts to be fairly smart about things, and in general it succeeds. Understanding the internals, though, will help you debug things when routing isn’t as smart as you’d like.</p>
+<p>Some of the requirements that route generation must meet are:</p>
+<ol>
+	<li>The generated path must consume the greatest possible number of keys from the hash you give. If you send in a hash with keys <code>:a</code>, <code>:b</code> and <code>:c</code>, ideally you’d like the routing code to select the route that uses all three of those keys. If that’s not possible, the generated path must consume as many of them as possible. Any left over keys get tacked on as query parameters, so another way of phrasing this is to say that the generated path must have the shortest possible list of query parameters.</li>
+		<li>Namespaced controllers must be accounted for. Controller paths must be generated relative to the current controller’s module (if any). This is actually a legacy requirement, and results in frequent surprises when dealing with controllers in modules.</li>
+		<li>Relevant parameters from the current request should be reused where possible. That is to say, if the current request is for ”/controller/action/15”, then generating a <span class="caps">URL</span> with only <code>:id =&gt; 17</code> should give me ”/controller/action/17”, where the <code>controller</code> and <code>action</code> keys were implied from the current request.</li>
+		<li>Route generation must be <em>fast</em>. The current implementation could certainly do better on this requirement. Every time you call <code>link_to</code> or invoke a named route, a <span class="caps">URL</span> gets generated, so a slow implementation can significantly impact the speed at which your page is rendered. Most of the complexity in the current implementation is due to the need to meet this requirement; it is surprisingly hard to get a fast route generator that also meets the above requirements!</li>
+	</ol>
+<p>Now, bear with me. As much as I’d love to plow onward through this stuff, we really need to pause one last time before we dig in. Item #3 above, though seemingly innocuous, is actually kind of a tricky point. To implement it, routing employs a concept known as “parameter expiration”, and before we go any further, we’d be wise to spend a minute or two explaining it.</p>
+<h2>Parameter Expiration</h2>
+<p>As you’ll see shortly, one of the first things the route generation process does is to build an <em>expiry hash</em>. This hash is used to determine which parameters can be reused from the current request. Each key in the expiry hash points to a boolean value, indicating whether or not that key is <em>expired</em>.</p>
+<p>The expiration rules work something like this:</p>
+<ul>
+	<li>If a path parameter exists in the current request, but was not specified explicitly in the options given to <code>generate</code>, the parameter remains unexpired (and may be reused to generate the <span class="caps">URL</span>).</li>
+		<li>If a path parameter exists in the current request, and it has the same value in the options passed to <code>generate</code>, the parameter remains unexpired.</li>
+		<li>If a path parameter exists in the current request, but it’s value differs from that which was passed to <code>generate</code>, the parameter is expired and will not be reused to generate the <span class="caps">URL</span>. Furthermore, by expiring this value, any other key used later in the same route is also implicitly expired.</li>
+	</ul>
+<p>It sounds really funky in writing, but it’s honestly not that bad. Looking at a few examples may help to demonstrate how this expiry stuff works in practice. Consider the default route:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">map.connect <span class="s"><span class="dl">"</span><span class="k">/:controller/:action/:id</span><span class="dl">"</span></span></pre></td>
+</tr></table>
+<p>Now, given that route, let’s assume we receive a request for ”/foo/bar/15”. This will create the path parameter hash such that the <code>:controller</code> key is set to “foo”, the <code>:action</code> key to “bar”, and the <code>:id</code> key to “15”.</p>
+<p>During the course of this request, we generate three <span class="caps">URL</span>’s.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="il"><span class="dl">&lt;%=</span> link_to <span class="s"><span class="dl">"</span><span class="k">A</span><span class="dl">"</span></span>, <span class="sy">:id</span> =&gt; <span class="i">17</span> <span class="dl">%&gt;</span></span><tt>
+</tt><span class="il"><span class="dl">&lt;%=</span> link_to <span class="s"><span class="dl">"</span><span class="k">B</span><span class="dl">"</span></span>, <span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">baz</span><span class="dl">"</span></span> <span class="dl">%&gt;</span></span><tt>
+</tt><span class="il"><span class="dl">&lt;%=</span> link_to <span class="s"><span class="dl">"</span><span class="k">C</span><span class="dl">"</span></span>, <span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">quux</span><span class="dl">"</span></span> <span class="dl">%&gt;</span></span></pre></td>
+</tr></table>
+<p>In the first case, the expiry hash will be set such that the <code>:controller</code> and <code>:action</code> keys are false, and the <code>:id</code> hash is true. This is because the options hash differs from the request’s recalled values only by the <code>:id</code>; the other two keys are absent altogether and thus are not expired. The generated <span class="caps">URL</span>, then, will have the same controller and action as the current request, differing only on the id: <code>"/foo/bar/17"</code>.</p>
+<p>For the second case, we now change the <code>:action</code>, leaving the others unchanged. This results in the expiry hash having the same keys as the previous example, but with <code>:action</code> set to true and the others set to false. When the <span class="caps">URL</span> is generated, this causes all keys following the action to be implicitly expired as well. In other words, because the <code>:action</code> key is expired, the <code>:id</code> also gets expired, so the generated route omits it, resulting in the path <code>"/foo/baz"</code>. (This is why, if you are changing actions but want to use the same <code>:id</code> as the current request, you have to explicitly include it when you generate the <span class="caps">URL</span>.)</p>
+<p>The third case changes the <code>:controller</code> and leaves the others. Using the same rule of implicit expiration as before, this expires all three keys, generating the path <code>"/quux"</code> (which is the same as <code>"/quux/index"</code>, since “index” is the default action name).</p>
+<p>If that’s not all perfectly clear right now, press on. Keep reading. It is not critical that you thoroughly understand parameter expiration at this point, and it may become clearer once you see how the route generation process uses the expiry hash.</p>
+<p>With all that behind now, we’re finally ready to leap into the code itself. Here goes!</p>
+<h2>RouteSet#generate</h2>
+<p>Whether you use the <code>link_to</code> helper, the <code>url_for</code> method, or a named route, it all eventually gets funneled to <code>RouteSet#generate</code>. Because this article is long enough already, I leave those code paths for you to explore on your own.</p>
+<p><code>RouteSet#generate</code> begins on line 1190 of <a href="http://dev.rubyonrails.org/browser/trunk/actionpack/lib/action_controller/routing.rb?rev=5304">action_controller/routing.rb</a>. It accepts three parameters:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">generate</span>(options, recall={}, method=<span class="sy">:generate</span>)</pre></td>
+</tr></table>
+<p>The <code>options</code> parameter is a hash that will be used to generate the path. These are the keys and values you explicitly pass in, like <code>:id =&gt; 17</code> in the parameter expiration example, above. The optional <code>recall</code> parameter, if given, is the hash of path parameters for the current request (which are being “recalled” to help generate the <span class="caps">URL</span>). Lastly, the <code>method</code> parameter specifies which method to call on each route. This is used primarily internally (see <code>RouteSet#generate_extras</code>). For now, we’ll just pretend it is always its default value, <code>:generate</code>.</p>
+<p>Let’s take the body of the <code>RouteSet#generate</code> method one piece at a time:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">named_route_name = options.delete(<span class="sy">:use_route</span>)<tt>
+</tt><span class="r">if</span> named_route_name<tt>
+</tt>  named_route = named_routes[named_route_name]<tt>
+</tt>  options = named_route.parameter_shell.merge(options)<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>When you invoke a named route, the options hash it passes to <code>#generate</code> includes a special key (<code>:use_route</code>) that specifies the name of the route. First, that option is extracted, and if it exists, we look up the corresponding <code>Route</code> object and merge the route’s parameter shell with the options that were passed in.</p>
+<p>Then:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">options = options_as_params(options)<tt>
+</tt>expire_on = build_expiry(options, recall)</pre></td>
+</tr></table>
+<p>The <code>options_as_params</code> method simply calls <code>to_param</code> on each value in <code>options</code>. This trick lets you do things like <code>:id =&gt; user</code> instead of <code>:id =&gt; user.id</code>, since <code>ActiveRecord::Base#to_param</code> just returns the id.</p>
+<p>After that, we build the <em>expiry hash</em>, as described in the “Parameter Expiration” section, above. We use both the <code>options</code> hash (which is the set of explicit options passed to <code>generate</code>) as well as the <code>recall</code> hash (the path parameters from the current request) to build the expiry hash, and assign the result to <code>expire_on</code>.</p>
+<p>Moving on:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">if</span> !named_route &amp;&amp; expire_on[<span class="sy">:controller</span>] &amp;&amp; options[<span class="sy">:controller</span>] &amp;&amp; options[<span class="sy">:controller</span>][<span class="i">0</span>] != <span class="i">?/</span><tt>
+</tt>  old_parts = recall[<span class="sy">:controller</span>].split(<span class="s"><span class="dl">'</span><span class="k">/</span><span class="dl">'</span></span>)<tt>
+</tt>  new_parts = options[<span class="sy">:controller</span>].split(<span class="s"><span class="dl">'</span><span class="k">/</span><span class="dl">'</span></span>)<tt>
+</tt>  parts = old_parts[<span class="i">0</span>..-(new_parts.length + <span class="i">1</span>)] + new_parts<tt>
+</tt>  options[<span class="sy">:controller</span>] = parts.join(<span class="s"><span class="dl">'</span><span class="k">/</span><span class="dl">'</span></span>)<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>This is legacy, here, and is only there because it’s how the original implementation of routes behaved. Oh, how we’d love to throw it out! Basically, all it does is ensure that if the controller has changed, it must change relative to any existing namespace for the recalled parameter. In other words, if you’re currently in the <code>admin/get</code> controller, and you ask for the <code>set</code> controller, you should get the <code>admin/set</code> controller. Unless, that is, the new controller is prefixed with a slash, e.g. <code>/set</code>. What a mess! I strongly suspect this behavior will go away with the advent of Rails 2.0.</p>
+<p>Once we’ve danced that tango of relative controller paths, we can safely strip any leading slash from the controller name, and then merge the <code>recall</code> and <code>options</code> hashes:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">options[<span class="sy">:controller</span>] = options[<span class="sy">:controller</span>][<span class="i">1</span>..<span class="i">-1</span>] <span class="r">if</span> options[<span class="sy">:controller</span>] &amp;&amp; options[<span class="sy">:controller</span>][<span class="i">0</span>] == <span class="i">?/</span><tt>
+</tt>merged = recall.merge(options)</pre></td>
+</tr></table>
+<p>This “merged” hash is what is used as the reference hash for route generation, until an expired parameter is encountered. At that point (as you’ll see) the original <code>options</code> hash becomes the reference, with the <code>merged</code> hash getting chucked out.</p>
+<p>Moving right along, we now encounter the primary difference between routes generated by name, versus by hash:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">if</span> named_route<tt>
+</tt>  path = named_route.generate(options, merged, expire_on)<tt>
+</tt>  raise <span class="co">RoutingError</span>, <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span>named_route_name<span class="dl">}</span></span><span class="k">_url failed to generate from </span><span class="il"><span class="dl">#{</span>options.inspect<span class="dl">}</span></span><span class="k">, expected: </span><span class="il"><span class="dl">#{</span>named_route.requirements.inspect<span class="dl">}</span></span><span class="k">, diff: </span><span class="il"><span class="dl">#{</span>named_route.requirements.diff(options).inspect<span class="dl">}</span></span><span class="dl">"</span></span> <span class="r">if</span> path.nil?<tt>
+</tt>  <span class="r">return</span> path</pre></td>
+</tr></table>
+<p>If we’ve been asked to generate a named route, things are easy. We just pass the parameters to the route’s <code>#generate</code> method, and return the result. However, if we aren’t generating a specific named route, things are a bit trickier:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">else</span><tt>
+</tt>  merged[<span class="sy">:action</span>] ||= <span class="s"><span class="dl">'</span><span class="k">index</span><span class="dl">'</span></span><tt>
+</tt>  options[<span class="sy">:action</span>] ||= <span class="s"><span class="dl">'</span><span class="k">index</span><span class="dl">'</span></span><tt>
+</tt><tt>
+</tt>  controller = merged[<span class="sy">:controller</span>]<tt>
+</tt>  action = merged[<span class="sy">:action</span>]<tt>
+</tt><tt>
+</tt>  raise <span class="co">RoutingError</span>, <span class="s"><span class="dl">"</span><span class="k">Need controller and action!</span><span class="dl">"</span></span> <span class="r">unless</span> controller &amp;&amp; action</pre></td>
+</tr></table>
+<p>First, we default the <code>:action</code> key to “index”. (You’ll notice this happens in multiple places in the code—a red flag that some refactoring is needed. Got a good idea for how to reduce the duplication? We’d love a patch!) After extracting both the controller and action values from the hash and making sure that both have been specified (either explicitly or implicitly, since we’re using the <code>merged</code> hash here), we find the set of routes that might possibly be able to generate the requested path:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">routes = routes_by_controller[controller][action][options.keys.sort_by { |x| x.object_id }]</pre></td>
+</tr></table>
+<p>Funky, funky stuff. The <code>routes_by_controller</code> method returns a multilevel hash of routes, keyed by controller, action, and the list of options passed in (sorted arbitrarily, but consistently). This is an optimization which causes only a subset of the routes to be considered by the process. (Otherwise, each request to generate the path would potentially have to try each defined route, which would be rather expensive.) Once the list of potential routes is identified, we iterate over them, trying to generate a path from each one until we succeed:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">  routes.each <span class="r">do</span> |route|<tt>
+</tt>    results = route.send(method, options, merged, expire_on)<tt>
+</tt>    <span class="r">return</span> results <span class="r">if</span> results<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>If, when all is said and done, a route was not generated, we guiltily raise a <code>RoutingError</code> exception and blame the caller.</p>
+<p>That’s the high-level view. From here on, things really start to get hairy.</p>
+<h2>Route#generate</h2>
+<p>For simplicity’s sake, let’s assume that the generation method used was <code>:generate</code>. That being the case, we now jump to line 411, to <code>Route#generate</code>.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">generate</span>(options, hash, expire_on = {})<tt>
+</tt>  write_generation<tt>
+</tt>  generate options, hash, expire_on<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Flashbacks to the recognition code! <code>Route#generate</code> calls <code>write_generation</code> to dynamically generate the new <code>#generate</code> method. As we did in the <a href="/2006/10/4/under-the-hood-route-recognition-in-rails">last article</a>, let’s take a look at the code that gets generated for a few common scenarios. We’ll use the same three routes that we used before, to keep things simple:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">ActionController</span>::<span class="co">Routing</span>::<span class="co">Routes</span>.draw <span class="r">do</span> |map|<tt>
+</tt>  map.connect <span class="s"><span class="dl">"</span><span class="k">/</span><span class="dl">"</span></span>, <span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">foo</span><span class="dl">"</span></span>, <span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">index</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>  map.connect <span class="s"><span class="dl">"</span><span class="k">/foo/:action</span><span class="dl">"</span></span>, <span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">foo</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>  map.connect <span class="s"><span class="dl">"</span><span class="k">/foo/:view/:permalink</span><span class="dl">"</span></span>, <span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">foo</span><span class="dl">"</span></span>,<tt>
+</tt>    <span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">show</span><span class="dl">"</span></span>, <span class="sy">:view</span> =&gt; <span class="rx"><span class="dl">/</span><span class="k">plain|fancy</span><span class="dl">/</span></span>,<tt>
+</tt>    <span class="sy">:permalink</span> =&gt; <span class="rx"><span class="dl">/</span><span class="k">[-a-z0-9]+</span><span class="dl">/</span></span>,<tt>
+</tt>    <span class="sy">:conditions</span> =&gt; { <span class="sy">:method</span> =&gt; <span class="sy">:get</span> }<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>For the first route, the following three methods get generated:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">generate</span>(options, hash, expire_on = {})<tt>
+</tt>  path, hash = generate_raw(options, hash, expire_on)<tt>
+</tt>  append_query_string(path, hash, extra_keys(hash, expire_on))<tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">def</span> <span class="fu">generate_extras</span>(options, hash, expire_on = {})<tt>
+</tt>  path, hash = generate_raw(options, hash, expire_on)<tt>
+</tt>  [path, extra_keys(hash, expire_on)]<tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">def</span> <span class="fu">generate_raw</span>(options, hash, expire_on = {})<tt>
+</tt>  path = <span class="r">begin</span><tt>
+</tt>    <span class="r">if</span> hash[<span class="sy">:controller</span>] == <span class="s"><span class="dl">"</span><span class="k">foo</span><span class="dl">"</span></span> &amp;&amp; hash[<span class="sy">:action</span>] == <span class="s"><span class="dl">"</span><span class="k">index</span><span class="dl">"</span></span><tt>
+</tt>      expired = <span class="pc">false</span><tt>
+</tt>      <span class="s"><span class="dl">"</span><span class="k">/</span><span class="dl">"</span></span><tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt>  [path, hash]<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p><em>Three</em> methods? The first two, as you can see, are defined in terms of <code>generate_raw</code>, which is where the real work is actually done. We’ll just focus on that one.</p>
+<p>For now, kindly ignore the fact that this is a lot more code than this specific case actually needs; it’s simply an artifact of the code generation process. As you can see, all this method really does is test to see that the controller and action match the values given in the route definition, and then sets the path to ”/”. It then returns the path, as well as the “hash” (which is the “merged” hash). This hash is returned so that the caller (<code>generate</code> or <code>generate_extras</code>) can determine what query parameters need to be built.</p>
+<p>That was pretty straight-forward. Let’s look at the next route, which is slightly more complex. (We’ll only show the <code>generate_raw</code> method, although all three methods are always generated for each route):</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># map.connect "/foo/:action", :controller =&gt; "foo"</span><tt>
+</tt><span class="r">def</span> <span class="fu">generate_raw</span>(options, hash, expire_on = {})<tt>
+</tt>  path = <span class="r">begin</span><tt>
+</tt>    <span class="r">if</span> hash[<span class="sy">:controller</span>] == <span class="s"><span class="dl">"</span><span class="k">foo</span><span class="dl">"</span></span><tt>
+</tt>      expired = <span class="pc">false</span><tt>
+</tt>      action_value = hash[<span class="sy">:action</span>] || <span class="s"><span class="dl">"</span><span class="k">index</span><span class="dl">"</span></span><tt>
+</tt>      expired, hash = <span class="pc">true</span>, options <span class="r">if</span> !expired &amp;&amp; expire_on[<span class="sy">:action</span>]<tt>
+</tt>      <span class="r">if</span> action_value == <span class="s"><span class="dl">"</span><span class="k">index</span><span class="dl">"</span></span><tt>
+</tt>        <span class="s"><span class="dl">"</span><span class="k">/foo</span><span class="dl">"</span></span><tt>
+</tt>      <span class="r">else</span><tt>
+</tt>        <span class="s"><span class="dl">"</span><span class="k">/foo/</span><span class="il"><span class="dl">#{</span><span class="co">CGI</span>.escape(action_value.to_s)<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt>      <span class="r">end</span><tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt>  [path, hash]<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>First, consider the route definition itself. What is it saying? It is saying that, if a <span class="caps">URL</span> is received in the form of <code>/foo/bar</code>, that the controller to use will be “foo” and the action to invoke will be “bar”. On the other hand, if a <span class="caps">URL</span> is received like <code>/foo</code>, then the action should default to “index”. (That just happens to be implicit in how routes behave: <code>:action</code> is generally optional, and defaults to “index” if it is not specified.)</p>
+<p>So, how does that translate into code? First, we check the <code>:controller</code> key in the provided hash. (The <code>hash</code> parameter, again, is the “merged” hash, whereas <code>options</code> is the hash that was originally passed to the <code>generate</code> method.)</p>
+<p>If the <code>:controller</code> key is “foo”, then we’ve satisified the explicit condition for the route. We then extract the <code>:action</code> value from the hash, defaulting to “index” if it isn’t given.</p>
+<p>The next line references the expiry hash, <code>expire_on</code>. It only has a minor effect on this route, basically setting the <code>hash</code> variable to the <code>options</code> variable if the <code>:action</code> key has expired. (Remember, a key is expired if it’s new value differs from what was passed into the request.) In effect, all recalled values are discarded if the action has expired. (You’ll see where this comes in when it comes time to generate any query parameters. It also makes a difference in more complicated routes, as you’ll see.)</p>
+<p>If the action is “index”, then we omit it and simply generate ”/foo” as the path. Otherwise, we include the action in the path. Either way, we return an array of the new path, and the <code>hash</code> variable (which will be either the “merged” hash, or the <code>options</code> hash, if any parameter expiration occurred).</p>
+<p>Whew! Make sure you understand that one before proceeding. (You can safely proceed even if the expiry stuff doesn’t make any sense. Hopefully you’ll understand more of what it is supposed to do before the end of the article.)</p>
+<p>Now, for the final route:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># map.connect "/foo/:view/:permalink", :controller =&gt; "foo",</span><tt>
+</tt><span class="c">#   :action =&gt; "show", :view =&gt; /plain|fancy/,</span><tt>
+</tt><span class="c">#   :permalink =&gt; /[-a-z0-9]+/,</span><tt>
+</tt><span class="c">#   :conditions =&gt; { :method =&gt; :get }</span><tt>
+</tt><span class="r">def</span> <span class="fu">generate_raw</span>(options, hash, expire_on = {})<tt>
+</tt>  path = <span class="r">begin</span><tt>
+</tt>    <span class="r">if</span> hash[<span class="sy">:controller</span>] == <span class="s"><span class="dl">"</span><span class="k">foo</span><span class="dl">"</span></span> &amp;&amp; hash[<span class="sy">:action</span>] == <span class="s"><span class="dl">"</span><span class="k">show</span><span class="dl">"</span></span><tt>
+</tt>      expired = <span class="pc">false</span><tt>
+</tt><tt>
+</tt>      view_value = hash[<span class="sy">:view</span>] <tt>
+</tt>      <span class="r">return</span> [<span class="pc">nil</span>,<span class="pc">nil</span>] <span class="r">unless</span> view_value &amp;&amp; <span class="rx"><span class="dl">/</span><span class="ch">\A</span><span class="k">plain|fancy</span><span class="ch">\Z</span><span class="dl">/</span></span> =~ view_value<tt>
+</tt>      expired, hash = <span class="pc">true</span>, options <span class="r">if</span> !expired &amp;&amp; expire_on[<span class="sy">:view</span>]<tt>
+</tt><tt>
+</tt>      permalink_value = hash[<span class="sy">:permalink</span>] <tt>
+</tt>      <span class="r">return</span> [<span class="pc">nil</span>,<span class="pc">nil</span>] <span class="r">unless</span> permalink_value &amp;&amp; <span class="rx"><span class="dl">/</span><span class="ch">\A</span><span class="k">[-a-z0-9]+</span><span class="ch">\Z</span><span class="dl">/</span></span> =~ permalink_value<tt>
+</tt>      expired, hash = <span class="pc">true</span>, options <span class="r">if</span> !expired &amp;&amp; expire_on[<span class="sy">:permalink</span>]<tt>
+</tt><tt>
+</tt>      <span class="s"><span class="dl">"</span><span class="k">/foo/</span><span class="il"><span class="dl">#{</span><span class="co">CGI</span>.escape(view_value.to_s)<span class="dl">}</span></span><span class="k">/</span><span class="il"><span class="dl">#{</span><span class="co">CGI</span>.escape(permalink_value.to_s)<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt>  [path, hash]<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>We begin by testing the parameter shell. If those do not match the values given in the “merged” hash, then this route does not generate the desired <span class="caps">URL</span>, and we just return <code>nil</code> for the path. Otherwise, we jump in and begin testing the constrained values.</p>
+<p>First, we extract the value of the <code>:view</code> parameter. If that value is nonexistent (or <code>nil</code>), or if it does not match the regular expression that was given, then we just return <code>nil</code> to indicate that the path could not be generated by this route.</p>
+<p>Next, we check whether or not the hash should be expired based on this key. If we haven’t yet expired the hash (which will be true at this point) and the <code>:view</code> key has been expired, then we expire the merged hash by replacing it with the <code>options</code> hash, and we set <code>expired</code> to true. (Note that by replacing the merged hash with the original <code>options</code> hash, we have effectively expired all subsequent keys in the route—in other words, when we check the next value in the hash, <code>:permalink</code>, it will be pulled from the <code>options</code> hash and not from the value used in the last request, if the <code>:view</code> value has changed.)</p>
+<p>Ok, the final stretch. We now grab the <code>:permalink</code> value from the hash, and do the same hokey-pokey with it. If it is present, and it matches the associated regular expression, we again check for whether or not to expire the hash.</p>
+<p>If everything checks out, we build the path for this route using the extracted values, and return!</p>
+<p>So, that’s what the generated code <em>looks</em> like. The task now is to decipher how that code gets generated.</p>
+<h2>Route#write_generation</h2>
+<p>We begin with the <code>Route@write_generation</code> method. The relevant part is the first few lines:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">body = <span class="s"><span class="dl">"</span><span class="k">expired = false</span><span class="ch">\n</span><span class="il"><span class="dl">#{</span>generation_extraction<span class="dl">}</span></span><span class="ch">\n</span><span class="il"><span class="dl">#{</span>generation_structure<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt>body = <span class="s"><span class="dl">"</span><span class="k">if </span><span class="il"><span class="dl">#{</span>generation_requirements<span class="dl">}</span></span><span class="ch">\n</span><span class="il"><span class="dl">#{</span>body<span class="dl">}</span></span><span class="ch">\n</span><span class="k">end</span><span class="dl">"</span></span> <span class="r">if</span> generation_requirements</pre></td>
+</tr></table>
+<p>Here, <code>body</code> is used to accumulate the text that will be evaluated to build the <code>generate_raw</code> method. The first line builds the collection of statements that actually generates the route’s path. The second line then wraps the first, if there are any prerequisites that must be met first.</p>
+<p>The <code>generation_extraction</code> method, which builds the sequence of statements that “extract” the path from the options, is blessedly short:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">generation_extraction</span><tt>
+</tt>  segments.collect <span class="r">do</span> |segment|<tt>
+</tt>    segment.extraction_code<tt>
+</tt>  <span class="r">end</span>.compact * <span class="s"><span class="dl">"</span><span class="ch">\n</span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>It just takes all of the segments for the route, asks them for their extraction code, removes the nils, and then joins the results with newlines. Elegant! (The “extraction code”, by the by, is the code that you saw in the third example above, where the value is pulled from the hash, assigned to a variable, validated, and then tested for parameter expiration.)</p>
+<p>The default <code>Segment#extraction_code</code> method returns <code>nil</code>, which means that, by default, routing segments do not encapsulate any data that needs extracting. The only exception to this rule is the <code>DynamicSegment</code> class, which overrides the default <code>extraction_code</code> method with the following:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">extraction_code</span><tt>
+</tt>  s = extract_value<tt>
+</tt>  vc = value_check<tt>
+</tt>  s &lt;&lt; <span class="s"><span class="dl">"</span><span class="ch">\n</span><span class="k">return [nil,nil] unless </span><span class="il"><span class="dl">#{</span>vc<span class="dl">}</span></span><span class="dl">"</span></span> <span class="r">if</span> vc<tt>
+</tt>  s &lt;&lt; <span class="s"><span class="dl">"</span><span class="ch">\n</span><span class="il"><span class="dl">#{</span>expiry_statement<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>The call to the <code>extract_value</code> method creates the default assignment line, which pulls the value from the hash and assigns it to a variable. The <code>value_check</code> method builds the condition that enforces the constraints for this segment, like comparing the extracted value against a regular expression. The two are then combined, and the <code>expiry_statement</code> is appended, which spits out the default one-line expiry test (as shown above). The result is then returned and collected with the other segments.</p>
+<p>The requirement generation proceeds similarly, but uses the route’s requirements, rather than its segments.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">generation_requirements</span><tt>
+</tt>  requirement_conditions = requirements.collect <span class="r">do</span> |key, req|<tt>
+</tt>    <span class="r">if</span> req.is_a? <span class="co">Regexp</span><tt>
+</tt>      value_regexp = <span class="co">Regexp</span>.new <span class="s"><span class="dl">"</span><span class="ch">\\</span><span class="k">A</span><span class="il"><span class="dl">#{</span>req.source<span class="dl">}</span></span><span class="ch">\\</span><span class="k">Z</span><span class="dl">"</span></span><tt>
+</tt>      <span class="s"><span class="dl">"</span><span class="k">hash[:</span><span class="il"><span class="dl">#{</span>key<span class="dl">}</span></span><span class="k">] &amp;&amp; </span><span class="il"><span class="dl">#{</span>value_regexp.inspect<span class="dl">}</span></span><span class="k"> =~ options[:</span><span class="il"><span class="dl">#{</span>key<span class="dl">}</span></span><span class="k">]</span><span class="dl">"</span></span><tt>
+</tt>    <span class="r">else</span><tt>
+</tt>      <span class="s"><span class="dl">"</span><span class="k">hash[:</span><span class="il"><span class="dl">#{</span>key<span class="dl">}</span></span><span class="k">] == </span><span class="il"><span class="dl">#{</span>req.inspect<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt>  requirement_conditions * <span class="s"><span class="dl">'</span><span class="k"> &amp;&amp; </span><span class="dl">'</span></span> <span class="r">unless</span> requirement_conditions.empty?<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Each of the route’s requirements (which are, essentially, any values in the options that were not referenced in the route’s segments) are tested, and a condition built from them. If the value for a requirement is a regular expression, a regular expression test will be generated, otherwise a simple equality is used. The resulting strings are joined with <code>' &amp;&amp; '</code>, and returned.</p>
+<p>Lastly, <code>generation_structure</code> is invoked to build the code that actually combines the different segments to construct the resulting path:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">generation_structure</span><tt>
+</tt>  segments.last.string_structure segments[<span class="i">0</span>..<span class="i">-2</span>]<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>For a single line of code, it hides a healthy amount of complexity. But we’re on the final stretch! Hang on just a bit longer as we walk through this last chunk of code.</p>
+<h2>Route#generation_structure</h2>
+<p>We can make this clearer if you use a real segment list as an example. Consider the third route in the example given earlier. The segment list would look something like this:</p>
+<ol>
+	<li><code>DividerSegment /</code></li>
+		<li><code>StaticSegment  foo</code></li>
+		<li><code>DividerSegment /</code></li>
+		<li><code>DynamicSegment :view</code></li>
+		<li><code>DividerSegment /</code></li>
+		<li><code>DynamicSegment :permalink</code></li>
+		<li><code>DividerSegment /</code></li>
+	</ol>
+<p>Using this list as a reference, we can tackle <code>generation_structure</code>. It grabs the last segment in the list, and then invokes the <code>string_structure</code> method of it, passing in the list of all previous segments. (This “string structure” it refers to is the code that constructs the actual path from the component segments.) Let’s look at the default <code>Segment#string_structure</code> method:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">string_structure</span>(prior_segments)<tt>
+</tt>  optional? ?<tt>
+</tt>    continue_string_structure(prior_segments) :<tt>
+</tt>    interpolation_statement(prior_segments)<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>In this case, the last <code>DividerSegment</code> (#7) is the target of the method, and divider segments are always optional. Thus, we take the first branch, and <code>continue_string_structure</code> get called.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"> <span class="r">def</span> <span class="fu">continue_string_structure</span>(prior_segments)<tt>
+</tt>  <span class="r">if</span> prior_segments.empty?<tt>
+</tt>    interpolation_statement(prior_segments)<tt>
+</tt>  <span class="r">else</span><tt>
+</tt>    new_priors = prior_segments[<span class="i">0</span>..<span class="i">-2</span>]<tt>
+</tt>    prior_segments.last.string_structure(new_priors)<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>The <code>prior_segments</code> list will contain, in this case, segments 1 through 6, so the list is definitely not empty. We slice the list to get the <code>new_priors</code> list (which will contain segments 1 through 5), and then invoke <code>string_structure</code> on segment #6, the <code>:permalink</code> segment.</p>
+<p>Now, <code>DynamicSegment</code> has it’s own version of <code>string_structure</code>:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">string_structure</span>(prior_segments)<tt>
+</tt>  <span class="r">if</span> optional? <span class="c"># We have a conditional to do...</span><tt>
+</tt>    <span class="c"># If we should not appear in the url, just write the code for the prior</span><tt>
+</tt>    <span class="c"># segments. This occurs if our value is the default value, or, if we are</span><tt>
+</tt>    <span class="c"># optional, if we have nil as our value.</span><tt>
+</tt>    <span class="s"><span class="dl">"</span><span class="k">if </span><span class="il"><span class="dl">#{</span>local_name<span class="dl">}</span></span><span class="k"> == </span><span class="il"><span class="dl">#{</span>default.inspect<span class="dl">}</span></span><span class="ch">\n</span><span class="dl">"</span></span> + <tt>
+</tt>      continue_string_structure(prior_segments) + <tt>
+</tt>    <span class="s"><span class="dl">"</span><span class="ch">\n</span><span class="k">else</span><span class="ch">\n</span><span class="dl">"</span></span> + <span class="c"># Otherwise, write the code up to here</span><tt>
+</tt>      <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span>interpolation_statement(prior_segments)<span class="dl">}</span></span><span class="ch">\n</span><span class="k">end</span><span class="dl">"</span></span><tt>
+</tt>  <span class="r">else</span><tt>
+</tt>    interpolation_statement(prior_segments)<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Well, our <code>:permalink</code> segment is not optional, since it has no default value. Thus, we take the second branch and build the <code>interpolation_statement</code> beginning with this segment.</p>
+<p>Let’s take a peek at the default <code>Segment#interpolation_statement</code> method. It accumulates all prior segments and collects the results of their <code>interpolation_chunk</code> methods:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">interpolation_statement</span>(prior_segments)<tt>
+</tt>  chunks = prior_segments.collect { |s| s.interpolation_chunk }<tt>
+</tt>  chunks &lt;&lt; interpolation_chunk<tt>
+</tt>  <span class="s"><span class="dl">"</span><span class="ch">\"</span><span class="il"><span class="dl">#{</span>chunks * <span class="s"><span class="dl">'</span><span class="dl">'</span></span><span class="dl">}</span></span><span class="ch">\"</span><span class="il"><span class="dl">#{</span>all_optionals_available_condition(prior_segments)<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Watch out for that last mouthful, the call to <code>all_optionals_available_condition</code>. It “simply” examines the list of segments given (segments 1 through 5, in this case) and determines which of them are optional. It then builds an <code>if</code> statement using the values from those segments, and tacks it onto the joined <code>chunks</code> array. This prevents the path from being built if any of the optional segments were omitted (but <em>only</em> considering the optional segments that precede the current segment).</p>
+<p>Confusing?</p>
+<p>Yes!</p>
+<p>Keep in mind that the interpolation is built starting with the last segment. If that segment is optional, the the segment preceding it is used as the starting point, and so forth, until a non-optional trailing segment is found. Thus, this <code>all_optionals_available_condition</code> method makes sure that all the so-called “optional” segments that precede that (non-optional) tail segment have values. In other words, even if a segment <em>thinks</em> it is optional, it <em>cannot</em> be missing if there are any mandatory segments that follow it. Follow that? Wild stuff, man!</p>
+<h2>Wrapping Up</h2>
+<p>Whew! If you’ve made it this far, stop and congratulate yourself. That was dense stuff!</p>
+<p>You should now have a better-than-general idea of how the <code>Route#generate_raw</code> method is built. That method gets called by the new <code>Route#generate</code> method:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">generate</span>(options, hash, expire_on = {})<tt>
+</tt>  path, hash = generate_raw(options, hash, expire_on)<tt>
+</tt>  append_query_string(path, hash, extra_keys(hash, expire_on))<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>It takes the path and hash that were generated, and simply passes them on to the <code>append_query_string</code> method. In the process, it calls the <code>extra_keys</code> method, which determines which of the keys in the hash were <em>not</em> used to generate the path. Those left-over keys, then, get tacked on as query parameters by the <code>append_query_string</code> method.</p>
+<p>To illustrate: assume we are generating a path using the default route, and we pass in a few additional options:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">link_to <span class="s"><span class="dl">"</span><span class="k">A</span><span class="dl">"</span></span>, <span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">foo</span><span class="dl">"</span></span>, <span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">bar</span><span class="dl">"</span></span>,<tt>
+</tt>  <span class="sy">:id</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">15</span><span class="dl">"</span></span>, <span class="sy">:view</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">show</span><span class="dl">"</span></span>, <span class="sy">:format</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">xml</span><span class="dl">"</span></span></pre></td>
+</tr></table>
+<p>The generated path would be:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">/foo/bar/15?view=show&amp;format=xml</pre></td>
+</tr></table>
+<p>In other words, controller, action, and id all wind up in the path itself (since the default route references those keys and consumes them when generating the <span class="caps">URL</span>). The remaining keys, <code>:view</code> and <code>:format</code>, were not consumed, and thus wind up as query parameters.</p>
+<h2>Finish!</h2>
+<p>And that’s that. As before, there is a <em>lot</em> that I haven’t covered, but you should at least have some idea of where to look for answers at this point. If, in your own hacking of the routing code, you come upon a way to make route generation faster, please do share! Also, the current implementation of route generation is not very extensible. It’s difficult to monkeypatch, and that means it is hard for people to write plugins that have custom route generation functionality. If you’ve got a solution to <em>that</em> conundrum, I’d love to hear from you.</p>

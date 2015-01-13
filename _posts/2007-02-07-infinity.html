@@ -1,0 +1,64 @@
+---
+layout: post
+title: Infinity
+post_id: 102
+categories:
+- Tips & Tricks
+date: 2007-02-07 09:36:00.000000000 -07:00
+author: Jamis
+permalink: 2007/02/07/infinity.html
+---
+
+<p>This is hardly an original trick (it’s been mentioned many times before, on countless other blogs) but it is useful enough that it deserves mention yet again.</p>
+<p>Ruby won’t let you divide an integer by zero—you’ll get an exception. However, thanks to the <span class="caps">IEEE 754</span> standard for floating point numbers, when you try to divide a float by zero you get a rather special value back:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">puts <span class="fl">1.0</span>/<span class="i">0</span><tt>
+</tt><span class="c">#-&gt; Infinity</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>It’s not a constant though, it’s just how that floating point result is represented as a string. However, you can easily <em>assign</em> that value to a constant:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">Infinity</span> = <span class="fl">1.0</span>/<span class="i">0</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Once you have that, you can use it for all kinds of nifty things; throw it in ranges, use it in comparisons, whatever suits your fancy:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># a rather useless range</span><tt>
+</tt>everything = -<span class="co">Infinity</span>..<span class="co">Infinity</span><tt>
+</tt>puts everything.include?(<span class="i">5</span>) <span class="c">#-&gt; true</span><tt>
+</tt><tt>
+</tt><span class="c"># use it for representing an unbounded value</span><tt>
+</tt>storage_limits =&gt; { <span class="sy">:demo</span> =&gt; <span class="i">0</span>,<tt>
+</tt>  <span class="sy">:standard</span> =&gt; <span class="i">250</span>.megabytes,<tt>
+</tt>  <span class="sy">:expert</span> =&gt; <span class="i">1</span>.gigabyte,<tt>
+</tt>  <span class="sy">:unlimited</span> =&gt; <span class="co">Infinity</span> }<tt>
+</tt><tt>
+</tt><span class="r">if</span> bytes_used &lt; storage_limits[account_level]<tt>
+</tt>  <span class="c"># add another file or something</span><tt>
+</tt><span class="r">else</span><tt>
+</tt>  <span class="c"># display "out of space" message</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Like I said earlier, it’s old news, but no less handy for that.</p>

@@ -1,0 +1,286 @@
+---
+layout: post
+title: 'Maze Generation: Kruskal''s Algorithm'
+post_id: 12
+categories:
+- Under the Hood
+date: 2011-01-03 05:59:00.000000000 -07:00
+author: Jamis
+permalink: 2011/01/03/maze-generation-kruskal-s-algorithm.html
+summary: >
+  Using Kruskal's algorithm to generate random spanning trees&mdash;or mazes
+---
+
+<p>For the third article in my series on maze algorithms, I’m going to take a look at Kruskal’s algorithm. (I’ve previously covered <a href="http://weblog.jamisbuck.org/2010/12/27/maze-generation-recursive-backtracking">recursive backtracking</a> and <a href="http://weblog.jamisbuck.org/2010/12/29/maze-generation-eller-s-algorithm">Eller’s algorithm</a>.)</p>
+<p><a href="http://en.wikipedia.org/wiki/Kruskal's_algorithm">Kruskal’s algorithm</a> is a method for producing a minimal spanning tree from a weighted graph. The algorithm I’ll cover here is actually a randomized version of Kruskal’s; the original works something like this:</p>
+<ol>
+	<li>Throw all of the edges in the graph into a big burlap sack. (Or, you know, a set or something.)</li>
+		<li>Pull out the edge with the lowest weight. If the edge connects two disjoint trees, join the trees. Otherwise, throw that edge away.</li>
+		<li>Repeat until there are no more edges left.</li>
+	</ol>
+<p>The randomized algorithm just changes the second step, so that instead of pulling out the edge with the lowest weight, you remove an edge from the bag at random. Making that change, the algorithm now produces a fairly convincing maze.</p>
+<p>Let’s walk through an example manually, to see how the process works in practice.</p>
+<h2>An example</h2>
+<p>For this example, I’ll use a simple 3×3 grid. I’ve assigned each cell a letter, indicating which set it belongs to.</p>
+<table class="maze">
+<tr>
+<td class="n s e w">A</td>
+<td class="n s e w">B</td>
+<td class="n s e w">C</td>
+</tr>
+<tr>
+<td class="n s e w">D</td>
+<td class="n s e w">E</td>
+<td class="n s e w">F</td>
+</tr>
+<tr>
+<td class="n s e w">G</td>
+<td class="n s e w">H</td>
+<td class="n s e w">I</td>
+</tr>
+</table>
+<p>The algorithm is straightforward: simply select an edge at random, and join the cells it connects if they are not already connected by a path. We can know if the cells are already connected if they are in the same set. So, let’s choose the edge between (2,2) and (2,3). The cells are in different sets, so we join the two into a single set and connect the cells:</p>
+<table class="maze">
+<tr>
+<td class="n s e w">A</td>
+<td class="n s e w">B</td>
+<td class="n s e w">C</td>
+</tr>
+<tr>
+<td class="n s e w">D</td>
+<td class="n e w h">E</td>
+<td class="n s e w">F</td>
+</tr>
+<tr>
+<td class="n s e w">G</td>
+<td class="s e w h">E</td>
+<td class="n s e w">I</td>
+</tr>
+</table>
+<p>Let’s do a few more passes of the algorithm, to get to the interesting part:</p>
+<table><tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n s w h">A</td>
+<td class="n s e h">A</td>
+<td class="n s e w">C</td>
+</tr>
+<tr>
+<td class="n s e w">D</td>
+<td class="n e w">E</td>
+<td class="n s e w">F</td>
+</tr>
+<tr>
+<td class="n s e w">G</td>
+<td class="s e w">E</td>
+<td class="n s e w">I</td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s w">A</td>
+<td class="n s e">A</td>
+<td class="n e w h">C</td>
+</tr>
+<tr>
+<td class="n s e w">D</td>
+<td class="n e w">E</td>
+<td class="s e w h">C</td>
+</tr>
+<tr>
+<td class="n s e w">G</td>
+<td class="s e w">E</td>
+<td class="n s e w">I</td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s w">A</td>
+<td class="n s e">A</td>
+<td class="n e w">C</td>
+</tr>
+<tr>
+<td class="n s e w">D</td>
+<td class="n e w">E</td>
+<td class="s e w">C</td>
+</tr>
+<tr>
+<td class="n s e w">G</td>
+<td class="s w h">E</td>
+<td class="n s e h">E</td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s w">A</td>
+<td class="n s e">A</td>
+<td class="n e w">C</td>
+</tr>
+<tr>
+<td class="n s e w">D</td>
+<td class="n e w">E</td>
+<td class="s e w">C</td>
+</tr>
+<tr>
+<td class="n s w h">E</td>
+<td class="s h">E</td>
+<td class="n s e">E</td>
+</tr>
+</table>
+</td>
+</tr></table>
+<p>Here’s where things start to move fast. Note what happens when the edge between (2,1) and (2,2) is pulled from the bag:</p>
+<table class="maze">
+<tr>
+<td class="n s w">A</td>
+<td class="n e h">A</td>
+<td class="n e w">C</td>
+</tr>
+<tr>
+<td class="n s e w">D</td>
+<td class="e w h">A</td>
+<td class="s e w">C</td>
+</tr>
+<tr>
+<td class="n s w">A</td>
+<td class="s">A</td>
+<td class="n s e">A</td>
+</tr>
+</table>
+<p>The two trees, A and E, were joined into one set, A, implying that any cell in A is reachable from any other cell in A. Let’s try joining (1,2) and (1,3) now:</p>
+<table class="maze">
+<tr>
+<td class="n s w">A</td>
+<td class="n e">A</td>
+<td class="n e w">C</td>
+</tr>
+<tr>
+<td class="n e w h">A</td>
+<td class="e w">A</td>
+<td class="s e w">C</td>
+</tr>
+<tr>
+<td class="s w h">A</td>
+<td class="s">A</td>
+<td class="n s e">A</td>
+</tr>
+</table>
+<p>Now, consider the edges (1,1)–(1,2) and (1,2)–(2,2). Neither of these has been drawn from the bag yet. What would happen if one of them were? Well, in both cases, the cells on either side of the edge belong to the same set. Connecting the cells in either case would result in a cycle, so we discard the edge and try again.</p>
+<p>After a one more pass, we’ll have:</p>
+<table class="maze">
+<tr>
+<td class="n s w">A</td>
+<td class="n e">A</td>
+<td class="n e w">A</td>
+</tr>
+<tr>
+<td class="n e w">A</td>
+<td class="w h">A</td>
+<td class="s e h">A</td>
+</tr>
+<tr>
+<td class="s w">A</td>
+<td class="s">A</td>
+<td class="n s e">A</td>
+</tr>
+</table>
+<p>The algorithm finishes when there are no more edges to consider (which, in this case, is when there is only a single set left). And the result is a perfect maze!</p>
+<h2>Implementation</h2>
+<p>Implementing Kruskal’s algorithm is straightforward, but for best results you need to find a very efficient way to join sets. If you do it like I illustrated above, assigning a set identifier to each cell, you’ll need to iterate on every merge, which will be expensive. Using trees to represent the sets is much faster, allowing you to merge sets efficiently simply by adding one tree as a subtree of the other. Testing whether two cells share a set is done by comparing the roots of their corresponding trees.</p>
+<p>Once you have the tree data structure, the algorithm is extremely straightforward. Begin by initializing the grid (which will represent the maze itself), and the sets (one per cell):</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">grid = <span class="co">Array</span>.new(height) { <span class="co">Array</span>.new(width, <span class="i">0</span>) }<tt>
+</tt>sets = <span class="co">Array</span>.new(height) { <span class="co">Array</span>.new(width) { <span class="co">Tree</span>.new } }<tt>
+</tt></pre></td>
+</tr></table>
+<p>Note that it would probably be more efficient to join the two representations, but I’ve split them apart for clarity.</p>
+<p>Then, build the list of edges. Here I’m representing each edge as one of its end-points, and a direction:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">edges = []<tt>
+</tt>height.times <span class="r">do</span> |y|<tt>
+</tt>  width.times <span class="r">do</span> |x|<tt>
+</tt>    edges &lt;&lt; [x, y, <span class="co">N</span>] <span class="r">if</span> y &gt; <span class="i">0</span><tt>
+</tt>    edges &lt;&lt; [x, y, <span class="co">W</span>] <span class="r">if</span> x &gt; <span class="i">0</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Once you have the list of edges, just sort them randomly:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">edges = edges.sort_by{rand}</pre></td>
+</tr></table>
+<p>The algorithm itself, then, is simply a process of looping until the set of egdes is empty:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">until</span> edges.empty?<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Within the loop, we remove the next edge from the list, compute the other end point, and test their two sets:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">x, y, direction = edges.pop<tt>
+</tt>nx, ny = x + <span class="co">DX</span>[direction], y + <span class="co">DY</span>[direction]<tt>
+</tt>set1, set2 = sets[y][x], sets[ny][nx]<tt>
+</tt><tt>
+</tt><span class="r">unless</span> set1.connected?(set2)<tt>
+</tt>  <span class="c"># join the sets and connect the cells</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The joining and connecting bit is pretty straightforward:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">set1.connect(set2)<tt>
+</tt><span class="iv">@grid</span>[y][x] |= direction<tt>
+</tt><span class="iv">@grid</span>[ny][nx] |= <span class="co">OPPOSITE</span>[direction]<tt>
+</tt></pre></td>
+</tr></table>
+<p>And you’re done! For those of you not using IE (which will make a total mess of this), here are two demos you can play with to see the algorithm in action:</p>
+<script type="text/javascript" src="/javascripts/maze-minified.js"></script>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("Kruskal", 5, 5, { "class": "small", "watch": false });</script>
+<script type="text/javascript">Maze.createCanvasWidget("Kruskal", 15, 15, { "class": "medium", id: "kruskal_medium", "watch": false, interval: 25 });</script>
+</div>
+<p>My complete implementation (in Ruby) is here:</p>
+<script src="https://gist.github.com/756896.js?file=kruskals.rb"></script>
+<noscript>
+<a href="https://gist.github.com/756896">kruskals.rb</a> at gist.github.com</noscript>
+<h2>Conclusion</h2>
+<p>Kruskal’s is a fun algorithm to implement and watch, but I’m not partial to the style of mazes it generates. It tends to create a lot of short dead-ends, which is (admittedly in my own opinion) not necessarily very esthetically attractive.</p>
+<p>One area where Kruskal’s works better than an algorithm like the recursive backtracker, is when you’re dealing with a maze with two or more disjoint areas, like if you were doing a maze that was constrained to the shape of two or more letters. Essentially, this is the same as multiple different mazes, but with Kruskal’s you could do them all at once, since you’re only dealing with edges and not with direct connectivity.</p>
+<p>Please give Kruskal’s a try and share your implementation! Look for ways to tweak the algorithm to produce different results. Have fun!</p>

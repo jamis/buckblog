@@ -1,0 +1,162 @@
+---
+layout: post
+title: 'Monkey-patching Rails: Extending Routes #2'
+post_id: 187
+categories:
+- Under the Hood
+date: 2006-10-26 08:03:00.000000000 -06:00
+author: Jamis
+permalink: 2006/10/26/monkey-patching-rails-extending-routes-2.html
+---
+
+<p>Last Friday, I introduced my <a href="http://svn.jamisbuck.org/rails-plugins/routing_tricks">routing tricks</a> plugin for Rails, by walking through <a href="http://weblog.jamisbuck.org/2006/10/20/monkey-patching-rails-extending-routes-1">the implementation of a routing extension</a> that let you specify <span class="caps">HTTP</span> redirections via routes. Today’s article extends that plugin with a new feature: recognition by host, domain, or subdomain.</p>
+<p>Suppose, for instance, that I wanted my blog’s admin feature to live at its own subdomain, admin.jamisbuck.org. Currently, that means I’d need the action that maps to ”/” to determine how to proceed based on the subdomain. Using this plugin, though, I could simply define my routes like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">ActionController</span>::<span class="co">Routing</span>::<span class="co">Routes</span>.draw <span class="r">do</span> |map|<tt>
+</tt>  map.connect <span class="s"><span class="dl">"</span><span class="k">/</span><span class="dl">"</span></span>, <span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">admin</span><span class="dl">"</span></span>,<tt>
+</tt>    <span class="sy">:conditions</span> =&gt; { <span class="sy">:subdomain</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">admin</span><span class="dl">"</span></span> }<tt>
+</tt>  map.connect <span class="s"><span class="dl">"</span><span class="k">/</span><span class="dl">"</span></span>, <span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">blog</span><span class="dl">"</span></span><tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Note that I’ve defined two routes that map to ”/”, but the first is constrained by the subdomain. Any request for ”/” that comes in with a subdomain of “admin” will be routed to the admin controller. If the subdomain is not “admin”, the “blog” controller will be used instead.</p>
+<p>You can do the same thing with <code>:host</code> and <code>:domain</code>, and any three of them may be regexes if you want that kind of flexibility.</p>
+<p>Nifty! However, let’s get to the point of this article: how does this extension work its magic? Though not as trivial as <a href="http://weblog.jamisbuck.org/2006/10/20/monkey-patching-rails-extending-routes-1">the last article</a>, it’s still remarkably simple.</p>
+<p>The first thing we need to do, is record what the host, domain, and subdomain are for every request we’re asked to recognize. As you may or may not recall from the <a href="http://weblog.jamisbuck.org/2006/10/4/under-the-hood-route-recognition-in-rails">lesson on route recognition</a>, one of the first things route recognition does is extract the request method from the request, via the <code>extract_request_environment</code> method. Our task, then, is to extend that method:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># jamisbuck/routing/routeset.rb</span><tt>
+</tt><span class="r">module</span> <span class="cl">JamisBuck</span><tt>
+</tt><span class="r">module</span> <span class="cl">Routing</span><tt>
+</tt><tt>
+</tt>  <span class="r">module</span> <span class="cl">RouteSetExtensions</span><tt>
+</tt>    <span class="r">def</span> <span class="pc">self</span>.included(base)<tt>
+</tt>      base.alias_method_chain <span class="sy">:extract_request_environment</span>, <span class="sy">:host</span><tt>
+</tt>    <span class="r">end</span><tt>
+</tt><tt>
+</tt>    <span class="r">def</span> <span class="fu">extract_request_environment_with_host</span>(request)<tt>
+</tt>      env = extract_request_environment_without_host(request)<tt>
+</tt>      env.merge <span class="sy">:host</span> =&gt; request.host,<tt>
+</tt>        <span class="sy">:domain</span> =&gt; request.domain, <span class="sy">:subdomain</span> =&gt; request.subdomains.first<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>As you’ll see shortly, we’ll extend the <code>RouteSet</code> class with the <code>RouteSetExtensions</code> module. (That <code>alias_method_chain</code> method is a handy trick, defined in ActiveSupport: it just aliases <code>extract_request_environment</code> to <code>extract_request_environment_without_host</code>, and then aliases <code>extract_request_method_with_host</code> to <code>extract_request_method</code>. It’s a <em>very</em> common idiom in Rails—you’ll see it everywhere.)</p>
+<p>Once we’ve extracted that data from the request, we need to alter the routines that generate the route recognition code, such that they now need to take into consideration the new data. This is easily done, as it happens. We just need to extend the <code>Route#recognition_conditions</code> method:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># jamis_buck/routing/route.rb</span><tt>
+</tt><span class="r">module</span> <span class="cl">JamisBuck</span><tt>
+</tt><span class="r">module</span> <span class="cl">Routing</span><tt>
+</tt><tt>
+</tt>  <span class="r">module</span> <span class="cl">RouteExtensions</span><tt>
+</tt>    <span class="r">def</span> <span class="pc">self</span>.included(base)<tt>
+</tt>      base.alias_method_chain <span class="sy">:recognition_conditions</span>, <span class="sy">:host</span><tt>
+</tt>    <span class="r">end</span><tt>
+</tt><tt>
+</tt>    <span class="r">def</span> <span class="fu">recognition_conditions_with_host</span><tt>
+</tt>      result = recognition_conditions_without_host<tt>
+</tt>      result &lt;&lt; <span class="s"><span class="dl">"</span><span class="k">conditions[:host] === env[:host]</span><span class="dl">"</span></span> <span class="r">if</span> conditions[<span class="sy">:host</span>]<tt>
+</tt>      result &lt;&lt; <span class="s"><span class="dl">"</span><span class="k">conditions[:domain] === env[:domain]</span><span class="dl">"</span></span> <span class="r">if</span> conditions[<span class="sy">:domain</span>]<tt>
+</tt>      result &lt;&lt; <span class="s"><span class="dl">"</span><span class="k">conditions[:subdomain] === env[:subdomain]</span><span class="dl">"</span></span> <span class="r">if</span> conditions[<span class="sy">:subdomain</span>]<tt>
+</tt>      result<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>This bit simply appends up to three new comparisons to the <code>results</code> array. That array (as you may or may not recall) gets joined together with “&amp;&amp;”, and set in an “if” statement at the top of the generated recognition method. We can see this by looking at the <code>Route#recognize</code> method that gets generated for the “admin” route:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">recognize</span>(path, env={})<tt>
+</tt>  <span class="r">if</span> (match = <span class="rx"><span class="dl">/</span><span class="ch">\A</span><span class="ch">\/</span><span class="k">?</span><span class="ch">\Z</span><span class="dl">/</span></span>.match(path)) &amp;&amp; conditions[<span class="sy">:subdomain</span>] === env[<span class="sy">:subdomain</span>]<tt>
+</tt>    params = parameter_shell.dup<tt>
+</tt>    params<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>It just checks the path, to see that it is ”/” or ””, and then compares the subdomain of the request (in the <code>env</code> variable) to the subdomain in the conditions for the route (in the <code>conditions</code> variable). If all matches, the parameter shell for the route is returned. Beautiful!</p>
+<p>Ok, one last thing: we can’t forget to tie the bits together and plug them into the routing code itself.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># init.rb</span><tt>
+</tt>require <span class="s"><span class="dl">'</span><span class="k">jamis_buck/routing/routeset</span><span class="dl">'</span></span><tt>
+</tt>require <span class="s"><span class="dl">'</span><span class="k">jamis_buck/routing/route</span><span class="dl">'</span></span><tt>
+</tt>require <span class="s"><span class="dl">'</span><span class="k">action_controller/routing</span><span class="dl">'</span></span><tt>
+</tt><tt>
+</tt><span class="co">ActionController</span>::<span class="co">Routing</span>::<span class="co">RouteSet</span>.send <span class="sy">:include</span>,<tt>
+</tt>  <span class="co">JamisBuck</span>::<span class="co">Routing</span>::<span class="co">RouteSetExtensions</span><tt>
+</tt><tt>
+</tt><span class="co">ActionController</span>::<span class="co">Routing</span>::<span class="co">Route</span>.send <span class="sy">:include</span>,<tt>
+</tt>  <span class="co">JamisBuck</span>::<span class="co">Routing</span>::<span class="co">RouteExtensions</span></pre></td>
+</tr></table>
+<p>And thus, gentle readers, does the proverbial “fat lady” sing. Note, though, that this is really only half of the solution, as it doesn’t handle route generation at all. However, it does demonstrate how simple it can be to extend route recognition to include aspects of the request and its environment.</p>
+<p>As before, you can check out the entire plugin from <a href="http://svn.jamisbuck.org/rails-plugins/routing_tricks">my subversion repository</a>.</p>
+<div class="tail">
+<strong>Lastly and leastly</strong>, did you find this article helpful? These take a fair bit of time and effort to compose, and while I do enjoy doing it, any encouragement at all is appreciated. You are (of course) never under any obligation to do so, but if you wish to, a few dollars <a href="http://www.paypal.com" onclick="$('paypal-form').submit(); return false">via PayPal</a> (to jamis@jamisbuck.org) would be wonderful. Thank-you!
+</div>

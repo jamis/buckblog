@@ -1,0 +1,237 @@
+---
+- date: 2007-07-29
+  author: Anko
+  content: "<p>Mind explaining in a couple of quick examples, why you don’t need DI
+    in ruby?</p>\n\n\n\t<p>Anko</p>"
+- date: 2007-07-29
+  author: Jamis
+  content: "<p>@Anko, primarily because the entire Ruby object space is one big DI
+    container, and you inject dependencies by taking advantage of it. One reason people
+    advocate using DI is to make testing each object in isolation easier. Well, you
+    can do the same thing in Ruby by using mocking libraries (like mocha).</p>\n\n\n\t<p>I
+    find it ironic, that where once I had people asking me to give “a couple of quick
+    examples” of why you need DI in Ruby, that now I’m being asked to justify <em>not</em>
+    needing it. :)</p>"
+- date: 2007-07-29
+  author: john
+  content: "<p>More, please . . . would be nice to have some concrete code examples
+    that show how di tripped you up and how you (un)refactored your code.</p>"
+- date: 2007-07-29
+  author: mla
+  content: "<p>I’d like some more details too. I’m new to Ruby and actually just learned
+    the DI pattern and thought it was a good idea ;-)</p>\n\n\n\t<p>The example I
+    was shown was when a class needs a “logger” object. That you’d use DI to “inject”
+    a logger object into the class from the larger environment, rather than having
+    the object know how the create/configure the logger.</p>\n\n\n\t<p>How would you
+    do it without DI?</p>\n\n\n\t<p>Thanks.</p>"
+- date: 2007-07-29
+  author: crayz
+  content: "<p>Take a look at the code in here:\nhttp://s3.amazonaws.com/harrisj-share/oscon2007.pdf</p>\n\n\n\t<p>One
+    thing it explains is how Rails Observers work, which should be architecturally
+    the same as Loggers. It’s actually amazingly simple and beautiful</p>"
+- date: 2007-07-29
+  author: Jamis
+  content: "<p>This probably deserves a post on its own, but I’ll try and give a watered
+    down justification here. If you’re interested, there’s a section “Beyond Java”
+    by Bruce Tate which talks about why DI is not needed in Ruby, including quotes
+    by yours truly, as well as Jim Weirich and <span class=\"caps\">DHH</span>.</p>\n\n\n\t<p>Ultimately,
+    the fact that Ruby lets you reopen classes and redefine methods means that you
+    can easily “inject” new references into your code at test-time. Consider the Logger
+    example (which I find incredibly contrived, but the complexity of DI makes it
+    hard to find a real-life bite-sized example that works). What’s wrong, really,
+    with just doing this?</p>\n\n\n<table class=\"CodeRay\"><tr>\n  <td title=\"click
+    to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt><strong>5</strong><tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre><span class=\"r\">class</span> <span class=\"cl\">Foo</span><tt>\n</tt>
+    \ <span class=\"r\">def</span> <span class=\"fu\">initialize</span><tt>\n</tt>
+    \   <span class=\"iv\">@logger</span> = <span class=\"co\">Logger</span>.new<tt>\n</tt>
+    \ <span class=\"r\">end</span><tt>\n</tt><span class=\"r\">end</span><tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>Is
+    it the explicit mention of “Logger” in the constructor that makes you nervous?
+    If you want to make that more easily injectible, just move that to a factory method:</p>\n\n\n<table
+    class=\"CodeRay\"><tr>\n  <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt><strong>5</strong><tt>\n</tt>6<tt>\n</tt>7<tt>\n</tt>8<tt>\n</tt>9<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre><span class=\"r\">class</span> <span class=\"cl\">Foo</span><tt>\n</tt>
+    \ <span class=\"r\">def</span> <span class=\"fu\">initialize</span><tt>\n</tt>
+    \   <span class=\"iv\">@logger</span> = new_logger<tt>\n</tt>  <span class=\"r\">end</span><tt>\n</tt><tt>\n</tt>
+    \ <span class=\"r\">def</span> <span class=\"fu\">new_logger</span><tt>\n</tt>
+    \   <span class=\"co\">Logger</span>.new<tt>\n</tt>  <span class=\"r\">end</span><tt>\n</tt><span
+    class=\"r\">end</span><tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>When testing,
+    then, you can reopen Foo and redefine new_logger. Or, even better, subclass Foo
+    for testing and redefine new_logger. Or, even <em>better</em>, use a library like
+    mocha that lets you override things like that on the fly!</p>\n\n\n\t<p>Note that
+    you can still use dependency injection techniques, in Ruby, too. When I say that
+    I’m opposed to DI in Ruby, what I think I’m really saying is that I eschew specialized
+    DI containers in Ruby. Factory methods, factory classes, blocks, metaprogramming—all
+    of these can make a plain ol’ Ruby program extremely rich and powerful, without
+    the need of something like Copland or Needle. And, when you DO need something
+    more powerful, you can code it yourself, very easily. A simple Hash instance can
+    be a powerful DI “container”.</p>\n\n\n\t<p>Just don’t automatically start shopping
+    for prepackaged DI solutions in Ruby. <em>You just don’t need them.</em> Show
+    me an example where you think you do, and I’ll show you a very, very overarchitected
+    piece of work.</p>"
+- date: 2007-07-29
+  author: Ryan Allen
+  content: "<p>Good ol’ metaprogramming. We need a book on the subject – or is there
+    already one? Metaprograming ‘techniques’ I’ve learnt over the last 12 odd months
+    is from tinkering with esoteric Ruby… I’ve tried to write a talk on it and found
+    that there is really no concise way of teaching it without it coming across as
+    a bunch weird ‘hacks’ that allow you to write really, really nice client code.
+    Cheers for the code examples and explanation.</p>"
+- date: 2007-07-30
+  author: malcontent
+  content: "<p>I would like to see Net::Rsync. There is a python version already.</p>"
+- date: 2007-07-30
+  author: mla
+  content: "<p>Thanks for the follow-up, Jamis. That makes a lot of sense.</p>\n\n\n\t<p>Does
+    anyone sort of freak out at the notion of redefining methods in arbitrary locations?
+    Doesn’t that hint of “action at a distance” and raise the specter of horrible-to-find
+    bugs?</p>\n\n\n\t<p>And as an old-time Perl programmer, is this any different
+    than how you redefine methods in Perl? Seems equivalent.</p>\n\n\n\t<p>Thanks.</p>"
+- date: 2007-07-30
+  author: Jamis
+  content: "<p>@malcontent: sounds like you’re uniquely positioned to contribute something
+    useful, then. :)</p>\n\n\n\t<p>@mla: in practice, no, it doesn’t result in bugs
+    that are hard to find. I’m not advocating redefining methods willy-nilly. In fact,
+    I really only suggested doing it in in tests, which is a pretty limited environment.
+    And I’m afraid I’ve only done the tiniest amount of Perl programming, so I can’t
+    really answer your last question.</p>"
+- date: 2007-07-30
+  author: sri
+  content: "<p>i see that you indent some of the modules differently, so that they
+    aren’t that deeply nested</p>\n\n\n<pre>\nmodule Net; module SSH; module Transport;
+    module HMAC\n</pre>\n\n\t<p>but have you thought about putting end’s at the end
+    of the terminating block.  here is an example from capistrano:</p>\n\n\n<pre>\n
+    \   def load(*args, &amp;amp;block)\n      options = args.last.is_a?(Hash) ? args.pop
+    : {}\n      args.each { |arg| load options.merge(:file =&amp;gt; arg) }\n      return
+    unless args.empty?\n\n      if block\n        raise \"loading a block requires
+    0 parameters\" unless args.empty?\n        load(options.merge(:proc =&amp;gt;
+    block))\n\n      elsif options[:file]\n        file = options[:file]\n        unless
+    file[0] == ?/\n          load_paths.each do |path|\n            if File.file?(File.join(path,
+    file))\n              file = File.join(path, file)\n              break\n            elsif
+    File.file?(File.join(path, file) + \".rb\")\n              file = File.join(path,
+    file + \".rb\")\n              break\n            end\n          end\n        end\n\n
+    \       load :string =&amp;gt; File.read(file), :name =&amp;gt; options[:name]
+    || file\n\n      elsif options[:string]\n        instance_eval(options[:string],
+    options[:name] || \"&amp;lt;eval&amp;gt;\")\n\n      elsif options[:proc]\n        instance_eval(&amp;amp;options[:proc])\n\n
+    \     else\n        raise ArgumentError, \"don't know how to load #{options.inspect}\"
+    \n      end\n    end\n\n</pre>\n\n<pre>\n    def load(*args, &amp;amp;block)\n
+    \     options = args.last.is_a?(Hash) ? args.pop : {}\n      args.each { |arg|
+    load options.merge(:file =&amp;gt; arg) }\n      return unless args.empty?\n\n
+    \     if block\n        raise \"loading a block requires 0 parameters\" unless
+    args.empty?\n        load(options.merge(:proc =&amp;gt; block))\n\n      elsif
+    options[:file]\n        file = options[:file]\n        unless file[0] == ?/\n
+    \         load_paths.each do |path|\n            if File.file?(File.join(path,
+    file))\n              file = File.join(path, file)\n              break\n            elsif
+    File.file?(File.join(path, file) + \".rb\")\n              file = File.join(path,
+    file + \".rb\")\n              break end end end\n\n        load :string =&amp;gt;
+    File.read(file), :name =&amp;gt; options[:name] || file\n\n      elsif options[:string]\n
+    \       instance_eval(options[:string], options[:name] || \"&amp;lt;eval&amp;gt;\")\n\n
+    \     elsif options[:proc]\n        instance_eval(&amp;amp;options[:proc])\n\n
+    \     else\n        raise ArgumentError, \"don't know how to load #{options.inspect}\"
+    end end\n\n</pre>\n\n\t<p>what do you think? i feel it much more readable.</p>"
+- date: 2007-07-30
+  author: Jamis
+  content: "<p>@sri, actually, I find that less readable, since you are now relying
+    solely on the indentation to tell you where the block ends, which is one of the
+    things I hate most about python. :)</p>"
+- date: 2007-07-30
+  author: James Hill
+  content: "<p>woohoo Net::SCP happy days, many thanks :)</p>"
+- date: 2007-07-31
+  author: pauliephonic
+  content: "<p>Nice article, mainly as it’s good to see that a programming wizard
+    such as your good self, needs to backtrack from time to time like the rest of
+    us mortals :) P</p>"
+- date: 2007-07-31
+  author: sri
+  content: |-
+    <p>@Jamis
+    thanks you for your comment.
+    just wanted a long-time Ruby user’s opinion.</p>
+- date: 2007-07-31
+  author: blackey
+  content: "<p>So i’m pretty new to ruby but i am in need of this scp script, how
+    would you ‘install’ it to make it usable? \nFor instance, i have scp.rb and download.rb
+    and upload.rb in the same folder as my main.rb. in my main.rb i have require ‘scp’
+    and in my scp.rb i have require ‘download’ and require ‘upload’ but i still get
+    an error.</p>\n\n\n\t<p>Any help? Thanks!</p>"
+- date: 2007-08-01
+  author: Neil Wilson
+  content: "<p>Excellent. I’m glad to see that the bloat caused by Java is finally
+    being stripped back.</p>\n\n\n\t<p>There is absolutely nothing wrong with being
+    specific when you are using a dynamic language.</p>\n\n\n\t<p>I thought in Ruby
+    that the ‘initialize’ method was the factory for the class – since you can decide
+    to call ‘new’ to create a new object, or ‘initialize’ directly to reinitialize
+    an existing one.</p>"
+- date: 2007-08-01
+  author: Jamis
+  content: "<p>@blackey, alas it is not as simple as that. To actually use Net::SCP,
+    you also need the new Net::SSH. You can grab all of the source code like so:</p>\n\n\n<pre>
+    \ svn export http://svn.jamisbuck.org/net-ssh/branches/v2 ssh\n  svn export http://svn.jamisbuck.org/projects/net-scp
+    scp\n</pre>\n\n\t<p>Do that in your project directory, so you now have “ssh” and
+    “scp” directories there. Then, in your main project file, add the appropriate
+    load paths:</p>\n\n\n<table class=\"CodeRay\"><tr>\n  <td title=\"click to toggle\"
+    class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt></pre></td>\n  <td class=\"code\"><pre><span
+    class=\"gv\">$LOAD_PATH</span>.unshift <span class=\"s\"><span class=\"dl\">\"</span><span
+    class=\"k\">path/to/ssh/lib</span><span class=\"dl\">\"</span></span>, <span class=\"s\"><span
+    class=\"dl\">\"</span><span class=\"k\">path/to/scp/lib</span><span class=\"dl\">\"</span></span><tt>\n</tt>require
+    <span class=\"s\"><span class=\"dl\">'</span><span class=\"k\">net/scp</span><span
+    class=\"dl\">'</span></span><tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>From
+    there, you’re on your own, though. I’ll focus on documentation once I’ve gotten
+    everything working to my satisfaction.</p>"
+- date: 2007-08-02
+  author: Nils Jonsson
+  content: "<p>I’ve been thinking similar thoughts about dependency injection frameworks
+    in Ruby. They look good on paper but are overkill with this language.</p>\n\n\n\t<p>Here’s
+    a Ruby code snippet (with unit tests!) for enhancing attr_reader and attr_accessor.
+    The upshot is a “just enough” solution for DI: http://snippets.dzone.com/posts/show/4382
+    .</p>"
+- date: 2007-08-02
+  author: Jamis
+  content: "<p>Nils, excellent stuff! I’ve wanted that functionality before. Really
+    handy. However, it doesn’t appear to be related to dependency injection, but rather
+    is just about specifying default values for attributes. Am I missing something?</p>"
+- date: 2007-08-07
+  author: Zach
+  content: "<p>If you have a global logger why would you want to have to reopen and
+    declare a method for  each class that needed access to a logger?</p>\n\n\n\t<p>To
+    simplify things you would most likely use modules as mixins which would achieve
+    the same effect as using a declarative style DI approach (much like http://injection.rubyforge.org
+    uses) where you say “inject :logger” or “constructor :logger”, but even then you
+    are still applying the same technique to your code just using a different mechanism.</p>\n\n\n\t<p>Going
+    the non-DI route do you see it making your tests harder to read or potentially
+    more unmanageable or error prone? going non-DI you would end up with either subclassing
+    in your tests, overriding methods on your actual object or partial mocking.</p>\n\n\n\t<p>If
+    I am testing an instance of MyClass it seems to be a cleaner approach to not have
+    to touch it’s implementation in my test. And partial mocking seems to be something
+    easy to abuse as you generally don’t want to mock out the object you’re testing.</p>\n\n\n\t<p>Thoughts?</p>"
+- date: 2007-08-07
+  author: Jamis
+  content: "<p>Zach, if you have a global logger, then pass it as a parameter to the
+    constructor. I find hash parameters are great for this kind of thing:</p>\n\n\n<table
+    class=\"CodeRay\"><tr>\n  <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre><span class=\"r\">def</span> <span class=\"fu\">initialize</span>(options={})<tt>\n</tt>
+    \ <span class=\"iv\">@logger</span> = options[<span class=\"sy\">:logger</span>]
+    || <span class=\"co\">Logger</span>.new<tt>\n</tt><span class=\"r\">end</span><tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>My
+    backlash against DI is really more of a backlash against DI frameworks. Tricks
+    like the above give you a lot of the power of DI, without all of the baggage that
+    something like Needle or Copland bring.</p>"
+- date: 2007-08-28
+  author: Calvin
+  content: "<p>Does anyone have any clue what could be causing this error?\n/var/lib/gems/1.8/gems/net-ssh-1.1.2/lib/net/ssh/transport/session.rb:274:in
+    `wait_for_message’: disconnected: Protocol error: expected packet type 30, got
+    34 (2) (Net::SSH::Transport::Disconnect)</p>\n\n\n\t<p>Im trying to log into a
+    Mikrotik router and without fail it gives me this error.  Ive looked everywhere
+    and cant find a thing about this error.\nAny ideas?\nPlease e-mail</p>\n\n\n\t<p>Calvin</p>"
+- date: 2007-08-29
+  author: Jamis
+  content: <p>Calvin, this post is probably the wrong place to be asking for support
+    on Net::SSH 1.1.2, but it looks like your router is doing something funky. Packet
+    type 30 is <span class="caps">KEXDH</span>_INIT, which the diffie-hellman-group1-sha1
+    kex algorithm uses to initiate a key exchange, and 34 is probably <span class="caps">KEXDH</span>_GEX_REQUEST,
+    which the diffie-hellman-group-exchange-sha1 algorithm uses to request the key
+    parameters…but 34 is one that the client sends to the server, not the other way
+    around. If you enable verbose output and email me the full dump, I’ll take a look
+    at it.</p>
+- date: 2007-08-29
+  author: Calvin
+  content: "<p>Hello Jamis,\nThat was the fix, \nNet::SSH.start(host, user, pass,
+    :kex =&gt; ‘diffie-hellman-group1-sha1’)\nLogged right in!\nThanks!</p>"

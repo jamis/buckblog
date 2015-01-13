@@ -1,0 +1,64 @@
+---
+layout: post
+title: 'Review: Beginning Ruby on Rails E-Commerce'
+post_id: 127
+categories:
+- Reviews
+date: 2007-01-25 10:19:00.000000000 -07:00
+author: Jamis
+permalink: 2007/01/25/review-beginning-ruby-on-rails-e-commerce.html
+summary: >
+  A review of "Beginning Ruby on Rails E-Commerce", with particular mention of
+  some of the things a reader might expect to find in it
+---
+
+<p>I was recently asked to review <a href="http://www.apress.com/book/bookDisplay.html?bID=10178">Beginning Ruby on Rails E-Commerce</a>, a book by Christian Hellsten and Jarkko Laine, published by Apress. It was <a href="http://weblog.rubyonrails.org/2006/11/13/beginning-ruby-on-rails-e-commerce">plugged</a> on the <a href="http://weblog.rubyonrails.org">Riding Rails</a> weblog back in November, so it’s not exactly “hot off the presses”, and unfortunately it was written against Rails 1.1 (not their fault—Rails is a moving target that makes any author go gray prematurely). That said, it is still a compelling book, packed with all kinds of good stuff.</p>
+<p>To start, I’ll say that I really liked the writing style. They tie the chapters together using a story about an online store owner named George, who has hired them as contractors to build a new bookstore, using Rails. George is very, very believable (is he a real person, Christian and Jarkko??), and he adds a nice dash of humor. It makes what is otherwise a very information-heavy book fun to read.</p>
+<p>Another plus: the book preaches <a href="http://en.wikipedia.org/wiki/Test-driven_development">test-driven development</a> (TDD), which is something I’ve not seen other Rails books try to do. It demonstrates it by example, showing how you would write your tests <em>first</em> and your code <em>after</em>. It’s a technique that I’m still learning to love, but which has all kinds of wonderful benefits. On the downside, their use of <span class="caps">TDD</span> in the book is a bit inconsistent, but at lease they are upfront about when they are going to go test-first, and when they aren’t.</p>
+<p>They also advocate using Rails <a href="http://rubyonrails.com/rails/classes/ActiveRecord/Migration.html">migrations</a> right off the bat, which is <em>definitely</em> a best practice. If you aren’t using migrations yet, you should be. And yes, that is <em>chastisement</em> you hear!</p>
+<p>Other techniques and technologies they present in the book:</p>
+<ul>
+	<li>
+<a href="http://ferret.davebalmain.com/trac/">Ferret</a> (a full-text search engine inspired by <a href="http://lucene.apache.org/">Lucene</a>, written in Ruby), though actually it is more a demonstration of the <a href="http://projects.jkraemer.net/acts_as_ferret/wiki">acts_as_ferret</a> Rails plugin. I was a little disappointed that they didn’t delve into things like maintaining a Ferret installation, since from what I’ve heard that’s the hard part.</li>
+		<li>Simple <span class="caps">HTML</span> sanitization by using the <code>h()</code> method. Did you know you can do <code>&lt;%=h person.name %&gt;</code> in your views to prevent script-kiddies from messing with your pages? Well, you can. And you should.</li>
+		<li>Foiling form and <span class="caps">URL</span> manipulating by using <code>attr_protected</code>. This is a feature that many people don’t know about—I often forget about it myself, and wind up doing things the hard way. They also talk about avoiding <span class="caps">SQL</span> injection vulnerabilities and cross-site scripting issues.</li>
+		<li>Integration with payment gateways, using a few different Rails plugins.</li>
+		<li>Internationalization (I18N) and localization (L10N). Not having ever done this myself, I found their discussion of these topics very enlightening.</li>
+		<li>
+<span class="caps">RJS</span> and <a href="http://weblog.jamisbuck.org/2007/1/10/inline-rjs" title=":update">render</a>.</li>
+		<li>Using Selenium with Rails applications to do automated acceptance testing. This is definitely something I’d like to explore more. Their discussion in this book was pretty compelling, and did a good job of showing off the strengths of this tool.</li>
+		<li>Capistrano! Any book that plugs something I wrote <em>has</em> to be good, right? ;) They did a good job of taking you from installing Capistrano to running your first deploy. In fact, they cover a lot more than just Capistrano—they take you through the whole process of installing an entire stack on your server, from lighttpd, to fcgi (or mongrel), to getting Ruby and all your assorted dependencies going.</li>
+		<li>Optimize your application with caching. They demonstrate all three caching techniques, too: action, page, and fragment caching.</li>
+	</ul>
+<p>That said, there were a few things I wasn’t so impressed with. For instance, they used <code>request.xhr?</code> to determine whether a request was Ajax or not, while the best practice since Rails 1.1 has been to use <code>respond_to</code> blocks:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># don't do this</span><tt>
+</tt><span class="r">if</span> request.xhr?<tt>
+</tt>  render(<span class="sy">:update</span>) { |page| ... }<tt>
+</tt><span class="r">else</span><tt>
+</tt>  redirect_to(...)<tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="c"># do this instead</span><tt>
+</tt>respond_to <span class="r">do</span> |format|<tt>
+</tt>  format.html { redirect_to(...) }<tt>
+</tt>  format.js   { render(<span class="sy">:update</span>) { |page| ... } }<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Also, they used scaffolding to build parts of the application in the book… I know scaffolding has it’s place, and can be valuable to newcomers as an aid in getting them to the “meat” of Rails without stumbling over too many details, but I have lots of issues with scaffolding. It puts the emphasis on the application’s model, instead of the user interface, and that’s all backwards. I won’t rant too much here—I’ll save that for a separate post. :) That said, I have to grudgingly admit that a book that teaches Rails probably does well in using scaffolding as a shortcut, but I still wish it wasn’t so prevalently used as a “best practice”.</p>
+<p>So, overall, I was quite impressed with the book. It covered a lot of ground, and covered it well for the most part. It’s a great “getting off the ground” book, and anyone wanting to write an e-commerce site in Rails could do much worse than reading this book. (Just keep in mind that some of what they demonstrate has been deprecated in Rails 1.2, like <code>end_form_tag</code> and <code>assert_tag</code>.)</p>
+<p>Well done, Christian and Jarkko!</p>

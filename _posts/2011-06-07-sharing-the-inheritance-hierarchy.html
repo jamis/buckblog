@@ -1,0 +1,103 @@
+---
+layout: post
+title: Sharing the Inheritance Hierarchy
+post_id: 2
+categories:
+- Essays and Rants
+date: 2011-06-07 15:32:00.000000000 -06:00
+author: Jamis
+permalink: 2011/06/07/sharing-the-inheritance-hierarchy.html
+summary: >
+  Part rant, part exhortation&mdash;the dangers of naively implementing Ruby's
+  inheritance hierarchy callbacks
+---
+
+<p>I’ve been working more closely with Ruby 1.9 and Rails 3 lately, and while in general it’s been smooth going, there was one particularly disappointing road bump today.</p>
+<p>Consider the following code, from a Rails functional test:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">SessionControllerTest</span> &lt; <span class="co">ActionController</span>::<span class="co">TestCase</span><tt>
+</tt>  tests <span class="co">SessionController</span><tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">class</span> <span class="cl">LoginTest</span> &lt; <span class="co">SessionControllerTest</span><tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">class</span> <span class="cl">LogoutTest</span> &lt; <span class="co">SessionControllerTest</span><tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>This works great with ruby 1.8.7. The <code>tests</code> call sets the SessionController as the controller under test, and the subclasses gain access to that via the “inheritable attributes” feature of ActiveSupport.</p>
+<p>Sadly, this does <em>not</em> work in ruby 1.9. Those tests have errors now, saying that the controller instance variable needs to be set in the setup method, because the inheritable attribute of the parent is no longer being inherited.</p>
+<p>Some digging and experimenting helped me pare this down to a simpler example:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">require <span class="s"><span class="dl">'</span><span class="k">minitest/unit</span><span class="dl">'</span></span><tt>
+</tt>require <span class="s"><span class="dl">'</span><span class="k">./config/application</span><span class="dl">'</span></span><tt>
+</tt><tt>
+</tt><span class="r">class</span> <span class="cl">A</span> &lt; <span class="co">MiniTest</span>::<span class="co">Unit</span>::<span class="co">TestCase</span><tt>
+</tt>  write_inheritable_attribute <span class="s"><span class="dl">"</span><span class="k">hi</span><span class="dl">"</span></span>, <span class="i">5</span><tt>
+</tt><span class="r">end</span><tt>
+</tt>p <span class="co">A</span>.read_inheritable_attribute(<span class="s"><span class="dl">"</span><span class="k">hi</span><span class="dl">"</span></span>)<tt>
+</tt><tt>
+</tt><span class="r">class</span> <span class="cl">B</span> &lt; <span class="co">A</span><tt>
+</tt><span class="r">end</span><tt>
+</tt>p <span class="co">B</span>.read_inheritable_attribute(<span class="s"><span class="dl">"</span><span class="k">hi</span><span class="dl">"</span></span>)<tt>
+</tt></pre></td>
+</tr></table>
+<p>If you run this example with ruby 1.9, it will print “5”, and then “nil”. And the most telling bit: if you comment out the superclass from A’s definition, the program will then print “5” and “5”. It was obviously something that MiniTest was doing.</p>
+<p>Another 30 minutes later, I had my answer. MiniTest::Unit::TestCase was defining an <code>inherited</code> callback method, to be invoked every time it was subclassed:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="pc">self</span>.inherited klass <span class="c"># :nodoc:</span><tt>
+</tt>  <span class="cv">@@test_suites</span>[klass] = <span class="pc">true</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>ActiveSupport, too, is <a href="https://github.com/rails/rails/blob/3-0-stable/activesupport/lib/active_support/core_ext/class/inheritable_attributes.rb#L155-170">defining a version of the inherited method</a>, monkeypatching the Class object directly so that subclasses can get a copy of their parent’s inheritable attribute collection. And because MiniTest is descended from Class, MiniTest’s version was overriding ActiveSupport’s version, causing the inheritable attributes to never be copied on inheritance.</p>
+<p>Frustrating!</p>
+<p>All it takes is the addition of one line—just a single word!—to “fix” MiniTest’s version:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="pc">self</span>.inherited klass <span class="c"># :nodoc:</span><tt>
+</tt>  <span class="cv">@@test_suites</span>[klass] = <span class="pc">true</span><tt>
+</tt>  <span class="r">super</span>  <span class="c"># &lt;-- THIS RIGHT HERE</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>You can argue that ActiveSupport shouldn’t be monkeypatching system classes like that. Maybe, maybe not. The point is, it is, and it actually does it in a pretty “good neighbor” way. It saves a reference to any prior “inherited” definition, and calls it from within its version, chaining the calls together.</p>
+<p>Sadly, MiniTest’s assumption that it would be the only consumer of the inherited hook in its ancestor chain totally kills ActiveSupport’s attempts at working together. I’ve had to resort to calling the <code>tests</code> helper in each test subclass, explicitly. Not a huge deal, but I’d sure love to have back the two hours I spent debugging this.</p>
+<p>The lesson? <strong>Always be a good neighbor</strong>. Never assume you are the only kid on the playset. Call super when you override a method. Create a call chain when you replace a method <em>in situ</em>. Think of the children!</p>

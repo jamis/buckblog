@@ -1,0 +1,32 @@
+---
+layout: post
+title: Coming home to Vim
+post_id: 73
+categories:
+- Essays and Rants
+date: 2008-10-10 10:16:00.000000000 -06:00
+author: Jamis
+permalink: 2008/10/10/coming-home-to-vim.html
+---
+
+<p>Over three years ago, <a href="http://weblog.jamisbuck.org/2005/4/10/text-editing-dilemma">I was faced with a dilemma</a>. I had recently switched to the Mac (from Linux) and was still using my text editor of choice (<a href="http://www.vim.org">vim</a>), but at the time, vim’s “integration” with <span class="caps">OS X</span> was pretty minimal (and that’s putting it optimistically). I experimented with emacs, but it never clicked for me, and honestly, emacs on <span class="caps">OS X</span> wasn’t all that better than vim at the time. Sadly, reluctantly, I said good-bye to vim and switched to <a href="http://www.macromates.com">TextMate</a>.</p>
+<p>TextMate was (and certainly still is) a fantastic text editor. The project drawer was awesome, finding files via cmd-T was super powerful, and smarter auto-completion and snippets promised a new and faster way to pound code. After a couple of months of reteaching my fingers how to edit text, I was happy.</p>
+<p>Sometimes, though, late at night, I would think again of vim.</p>
+<p>Fast forward three years. The vim landscape is different now. There is actually a Mac-friendly <span class="caps">GUI</span> version of vim now, <a href="http://code.google.com/p/macvim">MacVim</a>, which actually looks like it belongs on <span class="caps">OS X</span>. Vim 7 supports UI tabs, and a much more powerful auto-completion mechanism than before. And plugins like <a href="http://www.vim.org/scripts/script.php?script_id=1567">rails.vim</a> and <a href="http://www.vim.org/scripts/script.php?script_id=1984">fuzzyfinder.vim</a> mean that TextMate no longer has a corner on powerful project navigation.</p>
+<p>For the last few weeks I’ve been toying with switching back to vim. TextMate’s “snippet” feature never clicked for me, and the only times I used it were by accident (when it annoyed me more than it helped me), but I really was hooked on the project browser, and cmd-T, and a few other things. I realized that, with a little work, perhaps a way could be found to reimplement most of the things I loved about TextMate, in vim.</p>
+<p>This last week I’ve worked exclusively in vim, to test that theory. It’s like coming home. As I said, TextMate is a powerful and wonderful editor, too, but <em>differently</em> powerful and wonderful. Vim’s wonderfulness and power is the wonderfulness and power of git, or linux, where the learning curve is steep (ridiculously steep at times), but the rewards of mastery are sublime. I didn’t even realize I had missed a sane shift-J, or using the dot key to repeat the last command. Fix transposition typos with ‘xp’. Select a single word with ‘viw’. Drop bookmarks with ‘m’, and jump right back to them with single quote.</p>
+<p>If any of that makes your stomach roil, then vim is not for you. :) But to me, it’s like being embraced by a long-lost friend after years apart. And vim holds no grudges.</p>
+<p>There was still the issue of the TextMate features that I had particularly come to love. First to tackle was cmd-T, since my workflow had become so dependent on that for finding files. Takeshi <span class="caps">NISHIDA</span>’s <a href="http://www.vim.org/scripts/script.php?script_id=1984">fuzzyfinder.vim</a> script seemed like exactly what I wanted…at first. It’s definitely a powerful tool, but the fuzzy finder for files was not TextMate’s cmd-T, and my instinctive attempts to treat it so were causing me a lot of aggravation.</p>
+<p>So I took an evening and wrote <a href="http://github.com/jamis/fuzzy_file_finder/tree/master">fuzzy_file_finder</a>, a Ruby library that mimics (and improves on, if I do say so myself) TextMate’s cmd-T functionality. Then, I extended fuzzyfinder.vim with <a href="http://github.com/jamis/fuzzyfinder_textmate/tree/master">fuzzyfinder_textmate</a>, which bound the fuzzy_file_finder to vim. The result?</p>
+<p>See for yourself: <a href="http://s3.amazonaws.com/buckblog/videos/fuzzyfinder_textmate.mov">http://s3.amazonaws.com/buckblog/videos/fuzzyfinder_textmate.mov</a> (600K, QuickTime video).</p>
+<p>I’m still working on a solution for the project browser. Yes, I know there are several (“countless” might be a more accurate term) vim plugins that present a project drawer in a split window, but even before being spoiled by TextMate those didn’t feel right to me. I’m experimenting with a cocoa tree view that sends files to a specific vim server, and it mostly works, but I’m still not sure it’s the right solution. If I do come up with something, I’ll definitely open it up and share it. (On the other hand, if any of you out there in readerland already know of such a thing, please point me at it!)</p>
+<p>So, I’m still reacquaiting myself with all my old muscle memories, but here are some commands I wasn’t previously very familiar with which are proving useful in conquering my TextMate habits:</p>
+<ul>
+	<li>:e [file]. This is great if you don’t want to use fuzzy finding. Vim will even do tab completion to make things easier.</li>
+		<li>:ls. Shows all of your buffers.</li>
+		<li>:buffer [file]. Fantastic for quickly switching between buffers. You can give it just part of a file name and it will jump to the buffer that matches.</li>
+		<li>The ctrl-6 (technically ctrl-caret) key is awesome for switching back and forth between two buffers. For instance, if I just need to quickly look at one buffer, I can jump right back to where I was with ctrl-caret.</li>
+		<li>ctrl-W introduces a whole host of options for working with split windows.</li>
+	</ul>
+<p>And lastly, can I just say that Vim is seriously the poster-child for documentation? I recommend spending 15-30 minutes, every day, in :help, just exploring. There is a <span class="caps">LOT</span> there, and all excellently documented.</p>
+<p>So, all you vimsters out there: what commands do <em>you</em> frequently use? What features of vim are you so dependent on that you’d be useless without them? Do share!</p>

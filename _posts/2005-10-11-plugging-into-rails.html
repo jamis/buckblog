@@ -1,0 +1,36 @@
+---
+layout: post
+title: Plugging into Rails
+post_id: 254
+categories:
+- Spotlight
+date: 2005-10-11 15:14:00.000000000 -06:00
+author: Jamis
+permalink: 2005/10/11/plugging-into-rails.html
+summary: >
+  A convention for Rails plugins in introduced
+---
+
+<p>So, you’ve got a new <code>acts_as_chunky_bacon</code> mixin you want to add to <a href="http://www.rubyonrails.com">ActiveRecord</a>, but those villianous core team members have turned you down and called you unworthy. What other options do you have? People <em>need</em> this mixin. You understand that in Ruby, things ought to act like <a href="http://poignantguide.net/ruby">chunky bacon</a>.</p>
+<p>It used to be (in that dim age before the 2005 <a href="http://rubyconf.org/">RubyConf</a>) that your only recourse was to package the thing up and tell people to go through the hassle of putting your mixin somewhere, adding it to their load-path, and requiring the file.</p>
+<p>No more! Edge Rails now sports a very-simple-but-effective plugin system. You, as the author, can now give someone a zip file and tell them to simply uncompress it into their <code>vendor/plugins</code> directory—<em>and that’s it</em>. No more configuration required by the user.</p>
+<p>All you, as the author, need to do is create a project with the following directory structure:</p>
+<pre>
+  acts_as_chunky_bacon/
+  acts_as_chunky_bacon/init.rb
+  acts_as_chunky_bacon/lib
+  acts_as_chunky_bacon/lib/acts_as_chunky_bacon.rb
+</pre>
+<p>When the application starts, the <code>lib</code> directory will be automatically added to the load path, and the <code>init.rb</code> automatically loaded. (Either may be absent.) The <code>init.rb</code> just needs to do something like the following:</p>
+<pre>
+  ActiveRecord::Base.send :include, ActsAsChunkyBacon
+</pre>
+<p>What does this mean? It means that consumers of your plugin only need to drop your project in their <code>vendor/plugins</code> directory, and then start applying it to their own model objects:</p>
+<pre>
+  class PoignantGuide &lt; ActiveRecord::Base
+    acts_as_chunky_bacon :from =&gt; "chapter 3" 
+    ...
+  end
+</pre>
+<p>Currently, we at <a href="http://37signals.com">37signals</a> are using this plugin system to share code <a href="http://basecamphq.com">between</a> <a href="http://backpackit.com">our</a> <a href="http://www.writeboard.com">various</a> <a href="http://www.tadalist.com">applications</a>. We are using it for things like email notification on errors, or common <code>before_filter</code>’s, or our web service infrastructure that allows <a href="http://www.backpackit.com">Backpack</a> and <a href="http://www.basecamphq.com">Basecamp</a> to integrate with <a href="http://www.writeboard.com">Writeboard</a>.</p>
+<p>I <em>really</em> like this new plugin system. It probably isn’t perfect, yet&mdash;I’m sure people will find ways to make it even handier&mdash;but it really makes it a lot easier to share code. Hopefully it will also make it easier for the Rails core team to say “no” to many proposed new features, since many of them can now be more easily shared as third-party additions.</p>

@@ -1,0 +1,158 @@
+---
+layout: post
+title: Fun with SwitchTower
+post_id: 202
+categories:
+- Tips & Tricks
+date: 2005-08-07 09:22:00.000000000 -06:00
+author: Jamis
+permalink: 2005/08/07/fun-with-switchtower.html
+---
+
+<p>With <a href="http://manuals.rubyonrails.com/read/book/17">SwitchTower</a> out of the gate and feedback coming in, I thought I’d take a moment to post a few custom tasks I created while working on <a href="http://www.backpackit.com">Backpack</a> and <a href="http://www.tadalist.com">Tada Lists</a>.</p>
+<p>Firstly, the default SwitchTower tasks assume you are using Apache to host your apps. (Mostly this is an assumption of the <code>enable_web</code> and <code>disable_web</code> tasks, because they require some conditional rewrite rules in order to do their thing.) However, Tada Lists is being run via <a href="http://lighttpd.net">lighttpd</a>, which doesn’t have (to my knowledge) any way to say “use this rewrite rule only if this file exists”.</p>
+<p>So, what we’re doing instead is managing two lighttpd configurations—one for “live” mode, and one for “maintenance” mode. When in maintenance mode, all requests are rewritten so that a “system/maintenance.html” file is displayed.</p>
+<p>Then, I create two new tasks, <code>after_disable_web</code> and <code>before_enable_web</code>. I use these tasks to kill the running lighttpd instance on the web servers, and then start up a new lighttpd instance using the correct configuration:</p>
+<p>(Note that these are “hook” tasks that are called automatically by SwitchTower when the <code>disable_web</code> and <code>enable_web</code> tasks are called—you don’t need to call these explicitly, they just extend the existing tasks.)</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">desc <span class="s"><span class="dl">"</span><span class="k">Restart lighttpd with the $HOST-maint.conf file</span><span class="dl">"</span></span><tt>
+</tt>task <span class="sy">:after_disable_web</span>, <span class="sy">:roles</span> =&gt; <span class="sy">:web</span> <span class="r">do</span><tt>
+</tt>  pids = <span class="s"><span class="dl">"</span><span class="k">ps wwwax | grep lighttpd | grep -v grep </span><span class="dl">"</span></span> +<tt>
+</tt>          <span class="s"><span class="dl">"</span><span class="k">| grep -v assets | cut -b 1-5</span><span class="dl">"</span></span><tt>
+</tt>  sudo <span class="s"><span class="dl">"</span><span class="k">kill `</span><span class="il"><span class="dl">#{</span>pids<span class="dl">}</span></span><span class="k">`</span><span class="dl">"</span></span><tt>
+</tt>  sudo <span class="s"><span class="dl">"</span><span class="k">lighttpd -f </span><span class="il"><span class="dl">#{</span>current_path<span class="dl">}</span></span><span class="k">/config/lighttpd/</span><span class="dl">"</span></span> +<tt>
+</tt>          <span class="s"><span class="dl">"</span><span class="k">${HOSTNAME%.37signals.com}-maint.conf</span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>desc <span class="s"><span class="dl">"</span><span class="k">Restart lighttpd with the $HOST.conf file</span><span class="dl">"</span></span><tt>
+</tt>task <span class="sy">:before_enable_web</span>, <span class="sy">:roles</span> =&gt; <span class="sy">:web</span> <span class="r">do</span><tt>
+</tt>  pids = <span class="s"><span class="dl">"</span><span class="k">ps wwwax | grep lighttpd | grep maint </span><span class="dl">"</span></span> +<tt>
+</tt>         <span class="s"><span class="dl">"</span><span class="k">| grep -v grep | cut -b 1-5</span><span class="dl">"</span></span><tt>
+</tt>  sudo <span class="s"><span class="dl">"</span><span class="k">kill `</span><span class="il"><span class="dl">#{</span>pids<span class="dl">}</span></span><span class="k">`</span><span class="dl">"</span></span><tt>
+</tt>  sudo <span class="s"><span class="dl">"</span><span class="k">lighttpd -f </span><span class="il"><span class="dl">#{</span>current_path<span class="dl">}</span></span><span class="k">/config/lighttpd/</span><span class="dl">"</span></span> +<tt>
+</tt>         <span class="s"><span class="dl">"</span><span class="k">${HOSTNAME%.37signals.com}.conf</span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>(Note that the above tasks will need a little more work if you host multiple apps on the same web server—you’ll probably want to find a way to only kill the lighttpd instances pertaining to the app in question.)</p>
+<p>The other tasks I created were for examing the status of the master and slave database servers. To do this, I needed the root MySQL password so that I could run the <code>SHOW MASTER STATUS</code> query, but I didn’t want to put the password in the recipe… not exactly a secure solution. So, instead, I set the password variable to a <code>Proc</code> instance. When SwitchTower sees a variable that is a <code>Proc</code>, it will execute the <code>Proc</code> and cache the result. So, the variable is defined like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">set <span class="sy">:root_db_password</span>, <span class="co">Proc</span>.new {<tt>
+</tt>  sync = <span class="co">STDOUT</span>.sync<tt>
+</tt>  <span class="r">begin</span><tt>
+</tt>    echo <span class="pc">false</span><tt>
+</tt>    <span class="co">STDOUT</span>.sync = <span class="pc">true</span><tt>
+</tt>    print <span class="s"><span class="dl">"</span><span class="k">Enter DB password for 'root': </span><span class="dl">"</span></span><tt>
+</tt>    gets.chomp<tt>
+</tt>  <span class="r">ensure</span><tt>
+</tt>    <span class="co">STDOUT</span>.sync = sync<tt>
+</tt>    echo <span class="pc">true</span><tt>
+</tt>    puts<tt>
+</tt>  <span class="r">end</span><tt>
+</tt>}<tt>
+</tt></pre></td>
+</tr></table>
+<p>This means that the first time the <code>root_db_password</code> is queried, the <code>Proc</code> will be invoked, the user will be prompted for the root DB password, and the result cached so that subsequent uses of the variable reuse the result.</p>
+<p>The tasks themselves look something like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt>23<tt>
+</tt>24<tt>
+</tt><strong>25</strong><tt>
+</tt>26<tt>
+</tt>27<tt>
+</tt>28<tt>
+</tt>29<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">desc <span class="s"><span class="dl">"</span><span class="k">Show the master DB status</span><span class="dl">"</span></span><tt>
+</tt>task <span class="sy">:show_master_status</span>, <span class="sy">:roles</span> =&gt; <span class="sy">:db</span>, <span class="sy">:only</span> =&gt; { <span class="sy">:primary</span> =&gt; <span class="pc">true</span> } <span class="r">do</span><tt>
+</tt>  require <span class="s"><span class="dl">'</span><span class="k">yaml</span><span class="dl">'</span></span><tt>
+</tt>  db = <span class="co">YAML</span>.load(<span class="co">File</span>.read(<span class="co">File</span>.dirname(<span class="pc">__FILE__</span>) + <span class="s"><span class="dl">"</span><span class="k">/database.yml</span><span class="dl">"</span></span>))<tt>
+</tt>  prod = db[<span class="s"><span class="dl">'</span><span class="k">production</span><span class="dl">'</span></span>]<tt>
+</tt><tt>
+</tt>  cmd = <span class="s"><span class="dl">'</span><span class="k">echo "SHOW MASTER STATUS</span><span class="k">\G</span><span class="k">" </span><span class="dl">'</span></span> +<tt>
+</tt>        <span class="s"><span class="dl">"</span><span class="k">| mysql -u root -p </span><span class="il"><span class="dl">#{</span>prod[<span class="s"><span class="dl">'</span><span class="k">database</span><span class="dl">'</span></span>]<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>  run cmd <span class="r">do</span> |ch, stream, data|<tt>
+</tt>    logger.info data, <span class="s"><span class="dl">"</span><span class="k">[</span><span class="il"><span class="dl">#{</span>stream<span class="dl">}</span></span><span class="k"> :: </span><span class="il"><span class="dl">#{</span>ch[<span class="sy">:host</span>]<span class="dl">}</span></span><span class="k">]</span><span class="dl">"</span></span><tt>
+</tt>    ch.send_data <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span>root_db_password<span class="dl">}</span></span><span class="ch">\n</span><span class="dl">"</span></span> <span class="r">if</span> data =~ <span class="rx"><span class="dl">/</span><span class="k">^Enter password:</span><span class="dl">/</span></span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>desc <span class="s"><span class="dl">"</span><span class="k">Show the slave DB status</span><span class="dl">"</span></span><tt>
+</tt>task <span class="sy">:show_slave_status</span>, <span class="sy">:roles</span> =&gt; <span class="sy">:db</span>, <span class="sy">:only</span> =&gt; { <span class="sy">:slave</span> =&gt; <span class="pc">true</span> } <span class="r">do</span><tt>
+</tt>  require <span class="s"><span class="dl">'</span><span class="k">yaml</span><span class="dl">'</span></span><tt>
+</tt>  db = <span class="co">YAML</span>.load(<span class="co">File</span>.read(<span class="co">File</span>.dirname(<span class="pc">__FILE__</span>) + <span class="s"><span class="dl">"</span><span class="k">/database.yml</span><span class="dl">"</span></span>))<tt>
+</tt>  prod = db[<span class="s"><span class="dl">'</span><span class="k">production</span><span class="dl">'</span></span>]<tt>
+</tt><tt>
+</tt>  cmd = <span class="s"><span class="dl">'</span><span class="k">echo "SHOW SLAVE STATUS</span><span class="k">\G</span><span class="k">" </span><span class="dl">'</span></span> +<tt>
+</tt>        <span class="s"><span class="dl">"</span><span class="k">| mysql -u root -p </span><span class="il"><span class="dl">#{</span>prod[<span class="s"><span class="dl">'</span><span class="k">database</span><span class="dl">'</span></span>]<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>  run cmd <span class="r">do</span> |ch, stream, data|<tt>
+</tt>    logger.info data, <span class="s"><span class="dl">"</span><span class="k">[</span><span class="il"><span class="dl">#{</span>stream<span class="dl">}</span></span><span class="k"> :: </span><span class="il"><span class="dl">#{</span>ch[<span class="sy">:host</span>]<span class="dl">}</span></span><span class="k">]</span><span class="dl">"</span></span><tt>
+</tt>    ch.send_data <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span>root_db_password<span class="dl">}</span></span><span class="ch">\n</span><span class="dl">"</span></span> <span class="r">if</span> data =~ <span class="rx"><span class="dl">/</span><span class="k">^Enter password:</span><span class="dl">/</span></span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>To use them, then, I just do:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">rake remote_exec ACTION=show_master_status,show_slave_status<tt>
+</tt></pre></td>
+</tr></table>
+<p>And <em>voila</em>!</p>

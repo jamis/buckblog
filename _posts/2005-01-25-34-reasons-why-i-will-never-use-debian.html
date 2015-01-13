@@ -1,0 +1,53 @@
+---
+layout: post
+title: 34 Reasons Why I Will Never Use Debian
+post_id: 258
+categories:
+- Essays and Rants
+date: 2005-01-25 07:41:00.000000000 -07:00
+author: Jamis
+permalink: 2005/01/25/34-reasons-why-i-will-never-use-debian.html
+---
+
+<p>This has got to be the most Ruby-unfriendly Linux distro on the planet… Here are 34 reasons, enumerated, why I will never use <a href="http://www.debian.org">Debian</a>:</p>
+<ol>
+	<li>irb1.8</li>
+		<li>libbigdecimal-ruby1.8</li>
+		<li>libcurses-ruby1.8</li>
+		<li>libdbm-ruby1.8</li>
+		<li>libdl-ruby1.8</li>
+		<li>libdrb-ruby1.8</li>
+		<li>liberb-ruby1.8</li>
+		<li>libgdbm-ruby1.8</li>
+		<li>libiconv-ruby1.8</li>
+		<li>libopenssl-ruby1.8</li>
+		<li>libpty-ruby1.8</li>
+		<li>libracc-runtime-ruby1.8</li>
+		<li>libreadline-ruby1.8</li>
+		<li>librexml-ruby1.8</li>
+		<li>libruby1.8</li>
+		<li>libruby1.8-dbg</li>
+		<li>libsdbm-ruby1.8</li>
+		<li>libsoap-ruby1.8</li>
+		<li>libstrscan-ruby1.8</li>
+		<li>libsyslog-ruby1.8</li>
+		<li>libtcltk-ruby1.8</li>
+		<li>libtest-unit-ruby1.8</li>
+		<li>libtk-ruby1.8</li>
+		<li>libwebrick-ruby1.8</li>
+		<li>libxmlrpc-ruby1.8</li>
+		<li>libyaml-ruby1.8</li>
+		<li>libzlib-ruby1.8</li>
+		<li>rdoc1.8</li>
+		<li>ri1.8</li>
+		<li>ruby1.8</li>
+		<li>ruby1.8-dev</li>
+		<li>ruby1.8-elisp</li>
+		<li>ruby1.8-examples</li>
+		<li>libpgsql-ruby1.8</li>
+	</ol>
+<p>Some brilliant (and I use the term extremely loosely) Debian package maintainer decided to break Ruby into a million little pieces. They must have been big-time haters of Ruby, because the only reason I can think of for doing this is to make it as difficult as possible for Debian users to install a fully-functional Ruby on their system.</p>
+<p>I spent some time this afternoon helping a friend install <a href="http://rubyforge.org/projects/sqlite-ruby">sqlite-ruby</a> on their Debian machine, but a simple little test script was failing. Why? Because he hadn’t installed the <code>libstrscan-ruby1.8</code> package. I, as the developer of sqlite-ruby, should not have to enumerate every single one of the dependencies that sqlite-ruby has on the standard library, because <em>the standard library should come standard with every installation</em>. Isn’t that what “standard library” means?</p>
+<p>Anyway, I’ll get off of my soapbox now.</p>
+<p>Stupid Debian…</p>
+<p><strong>Edit:</strong> <a href="http://blog.leetsoft.com/articles/read/8">Tobias Leutke agrees.</a></p>

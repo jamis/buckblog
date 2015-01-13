@@ -1,0 +1,37 @@
+---
+- date: 2007-05-10
+  author: wuputah
+  content: "<p>Yes, multiple callbacks! This I can and will use very soon. Thank you
+    for reading my mind!</p>"
+- date: 2007-05-11
+  author: sean
+  content: "<p>“Ok, well, maybe not that last, unless she’s a really special lady.
+    But the rest certainly apply.”</p>\n\n\n\t<p>The ones with “Chicks Dig <span class=\"caps\">UNIX</span>”
+    shirts are a sure bet. ;)</p>"
+- date: 2007-05-25
+  author: Jim Kane
+  content: <p>Hey Jamis, I wanted to say thanks for all the work you’ve put into making
+    Cap.  In addition to our small stable of Rails-based apps, we’re also deploying
+    almost all of our <span class="caps">PHP</span>-based apps from a Mercurial repository.  It’s
+    the deployment system I’ve always wanted but never had the time to build.</p>
+- date: 2007-05-27
+  author: Thursten
+  content: "<p>how do you enable the public key auth in capistrano? can you post a
+    full example Capfile somewhere please? thanks. I love the railsconf tutorial,
+    but didn’t see how you were connecting to your example server.</p>"
+- date: 2007-05-28
+  author: Jamis
+  content: "<p>Thursten, public key auth is enabled by default. If you can use the
+    command-line ssh using public keys, then Capistrano should “just work” with the
+    same configuration. Feel free to join the capistrano mailing list (http://groups.google.com/group/capistrano)
+    and ask around if you’re having problems.</p>"
+- date: 2007-05-29
+  author: Pat Nakajima
+  content: "<p>I created a recipe for Capistrano 2 to aid the deployment of <span
+    class=\"caps\">PHP</span> projects, independent of Rails. It takes advantage of
+    namespaces, meaning deployment is as easy as “cap deploy:php”</p>\n\n\n\t<p>I’d
+    love any feedback anybody could give me.</p>"
+- date: 2007-05-29
+  author: Pat Nakajima
+  content: "<p>It occurs to me that I forgot to leave the link for my recipe. Oops.
+    Here it is: http://devthatweb.com/view/automate-the-deployment-of-any-php-project-using-capistrano</p>"

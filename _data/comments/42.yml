@@ -1,0 +1,68 @@
+---
+- date: 2009-01-28
+  author: Charlie O'Keefe
+  content: "<p>It’d be interesting for github to have a way of selecting a ‘preferred
+    repository to install gems from.</p>\n\n\n\t<p>For instance, if I asked for the
+    gem “jamis-fuzzyfinder_textmate” it would always install yours. And if I asked
+    for simply “fuzzyfinder_textmate” it would point to yours. But if someone stepped
+    up and took over your project, you’d have the option of passing the baton (maybe
+    they could even call it a ‘baton’, I don’t know what name it should have).</p>\n\n\n\t<p>Then
+    a “gem install fuzzyfinder_textmate” would find the one maintained by the new
+    person you passed the baton to.</p>"
+- date: 2009-01-29
+  author: Michael H. Buselli
+  content: "<p>Jamis, do you recall which version of fuzzyfinder.vim works with the
+    last version of fuzzyfinder_textmate.vim?  Thanks!</p>"
+- date: 2009-01-29
+  author: Jamis
+  content: "<p>@Michael, I do not, I’m afraid. If you figure it out, please feel free
+    to add a comment to this thread.</p>"
+- date: 2009-01-29
+  author: Niels
+  content: "<p>2.16 works fine for me, Michael.</p>"
+- date: 2009-01-29
+  author: Michael H. Buselli
+  content: "<p>Niels, thanks.  I have also just confirmed that no version of fuzzyfinder.vim
+    after 2.16 works with the version of fuzzyfinder_textmate.vim that I downloaded
+    from github today.  Thinking about it a little more, that probably should have
+    been the obvious first guess from the release/commit history of the two files
+    respectively.</p>"
+- date: 2009-02-03
+  author: Paul Marsh
+  content: "<p>Also to go along with that version note, although FuzzyFinder is listed
+    as a vim 7.0 script on vim.org it actually needs 7.1 from 2.0 onward.</p>\n\n\n\t<p>Thanks
+    for the script Jamis sure someone will give it a good home.</p>"
+- date: 2009-02-03
+  author: jferrer
+  content: |-
+    <p>I’m still using 2.13 and it works fine for me.
+    Thanks Jamis. fuzzyfinder_textmate is wonderful.</p>
+- date: 2009-02-03
+  author: Matt Baron
+  content: "<p>Thanks again, Jamis.  I’m a big fan of FuzzyFinder-Textmate</p>"
+- date: 2009-02-24
+  author: Rafa
+  content: "<p>FuzzyFinder has a bug when works TagList plugin (it open the file in
+    taglist, very annoying). It’s solved in fuzzyfinder 2.16 changing the line 1483:</p>\n\n\n\t<pre><code>wincmd
+    p</code></pre>\n\n\n\t<p>to:</p>\n\n\n\t<pre><code>wincmd j</code></pre>\n\n\n\t<p>Then
+    the next time that you open a file it’ll open in correct window.</p>"
+- date: 2009-03-07
+  author: MitkOK
+  content: "<p>Hi.</p>\n\n\n\t<p>Can you please share working FuzzyFinder &amp; FuzzyFinderTextMate
+    vim files.\nI tried FuzzyFinder from v2.11 to 2.19 but with no success. FuzzyFinderTextmate
+    installed from github.</p>\n\n\n\t<p>Thanks,\nMitko Kostov.</p>"
+- date: 2009-03-07
+  author: Iván
+  content: "<p>Thanks a lot Jamis, one of the better plugins ever.</p>\n\n\n\t<p><span
+    class=\"caps\">FYI</span>: working perfectly with FuzzyFinder 2.16.</p>"
+- date: 2009-03-19
+  author: Simo
+  content: "<p>If you get following crash after installing this:</p>\n\n\n\t<p>(eval):1093:
+    [BUG] unexpected local variable\nruby 1.8.7 (2008-08-11 patchlevel 72) [powerpc-darwin8]</p>\n\n\n\t<p>Vim:
+    Caught deadly signal <span class=\"caps\">ABRT</span>\nVim: Finished.\nAbort trap</p>\n\n\n\t<p>Then
+    you might also have lusty-explorer (http://www.vim.org/scripts/script.php?script_id=1890)
+    installed. For some reason, these scripts don’t like each others. Both are made
+    in ruby.</p>\n\n\n\t<p>To avoid this problem, rename the fuzzyfinder_textmate.vim
+    to zfuzzyfinder_textmate.vim. This makes  it to be loaded last, and  this somehow
+    avoids the problem. Thanks for the Stephen Bach, author of lusty-explorer, for
+    this info.</p>"

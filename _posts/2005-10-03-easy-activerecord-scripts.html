@@ -1,0 +1,86 @@
+---
+layout: post
+title: Easy ActiveRecord Scripts
+post_id: 251
+categories:
+- Tips & Tricks
+date: 2005-10-03 15:04:00.000000000 -06:00
+author: Jamis
+permalink: 2005/10/03/easy-activerecord-scripts.html
+---
+
+<p><a href="http://ar.rubyonrails.com">ActiveRecord</a> (the <span class="caps">ORM</span> component of <a href="http://www.rubyonrails.com">Rails</a>) is really a pretty slick little piece of equipment. Not only does it integrate seamlessly with the other parts of the Rails stack, it can be easily used on its own. I do so frequently when trying to duplicate <a href="http://dev.rubyonrails.com/report/1">reported bugs</a>. Consider the following little script:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt>23<tt>
+</tt>24<tt>
+</tt><strong>25</strong><tt>
+</tt>26<tt>
+</tt>27<tt>
+</tt>28<tt>
+</tt>29<tt>
+</tt><strong>30</strong><tt>
+</tt>31<tt>
+</tt>32<tt>
+</tt>33<tt>
+</tt>34<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">require <span class="s"><span class="dl">'</span><span class="k">active_record</span><span class="dl">'</span></span><tt>
+</tt><tt>
+</tt><span class="co">ActiveRecord</span>::<span class="co">Base</span>.logger = <span class="co">Logger</span>.new(<span class="co">STDERR</span>)<tt>
+</tt><span class="co">ActiveRecord</span>::<span class="co">Base</span>.colorize_logging = <span class="pc">false</span><tt>
+</tt><tt>
+</tt><span class="co">ActiveRecord</span>::<span class="co">Base</span>.establish_connection(<tt>
+</tt>  <span class="sy">:adapter</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">sqlite</span><span class="dl">"</span></span>,<tt>
+</tt>  <span class="sy">:dbfile</span>  =&gt; <span class="s"><span class="dl">"</span><span class="k">:memory:</span><span class="dl">"</span></span><tt>
+</tt>)<tt>
+</tt><tt>
+</tt><span class="co">ActiveRecord</span>::<span class="co">Schema</span>.define <span class="r">do</span><tt>
+</tt>  create_table <span class="sy">:foxes</span> <span class="r">do</span> |t|<tt>
+</tt>    t.column <span class="sy">:name</span>, <span class="sy">:string</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  create_table <span class="sy">:trucks</span> <span class="r">do</span> |t|<tt>
+</tt>    t.column <span class="sy">:fox_id</span>, <span class="sy">:integer</span><tt>
+</tt>    t.column <span class="sy">:color</span>, <span class="sy">:string</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">class</span> <span class="cl">Fox</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+</tt>  has_many <span class="sy">:trucks</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">class</span> <span class="cl">Truck</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+</tt>  belongs_to <span class="sy">:fox</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>fox = <span class="co">Fox</span>.create <span class="sy">:name</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">Small</span><span class="dl">"</span></span><tt>
+</tt>fox.trucks.create <span class="sy">:color</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">Blue</span><span class="dl">"</span></span><tt>
+</tt>fox.trucks.create <span class="sy">:color</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">Orange</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>puts <span class="co">Fox</span>.find(<span class="i">1</span>).trucks.length<tt>
+</tt></pre></td>
+</tr></table>
+<p>The above script uses an in-memory SQLite database, so it doesn’t leave any messes around on disk. It also logs to <code>STDERR</code>, so I can see all the <span class="caps">SQL</span> that is produced, and it turns off colorized logging (because I prefer a white-background terminal and AR’s colors aren’t very friendly to that). It then defines the tables using <code>ActiveRecord::Schema</code>, defines the classes, adds some data, and then manipulates the data.</p>
+<p>Nice and simple! (Note that <code>ActiveRecord::Schema</code> is only available in the beta gems, currently, but everything else should work with the released version of AR.)</p>

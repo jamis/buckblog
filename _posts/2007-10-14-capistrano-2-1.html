@@ -1,0 +1,95 @@
+---
+layout: post
+title: Capistrano 2.1
+post_id: 116
+categories:
+- Announcements
+date: 2007-10-14 11:58:00.000000000 -06:00
+author: Jamis
+permalink: 2007/10/14/capistrano-2-1.html
+---
+
+<p>After a much larger delay than I would have liked, <a href="http://www.capify.org">Capistrano</a> 2.1 is now available! There is a lot going on in this release, including some pretty exciting changes. As ever, install it via RubyGems with:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">gem install capistrano</pre></td>
+</tr></table>
+<p>Here’s what’s new, roughly in order of magnitude:</p>
+<p><strong>No default <span class="caps">PTY</span>.</strong> Prior to 2.1, Capistrano would request a pseudo-tty for each command that it executed. This had the side-effect of causing the profile scripts for the user to <em>not</em> be loaded. Well, no more! As of 2.1, Capistrano no longer requests a pty on each command, which means your .profile (or .bashrc, or whatever) will be properly loaded on each command! Note, however, that some have reported on some systems, when a pty is not allocated, some commands will go into non-interactive mode automatically. If you’re not seeing commands prompt like they used to, like svn or passwd, you can return to the previous behavior by adding the following line to your capfile:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">default_run_options[<span class="sy">:pty</span>] = <span class="pc">true</span></pre></td>
+</tr></table>
+<p><strong>Disable sh wrapping.</strong> Some shared hosts do not allow the <span class="caps">POSIX</span> shell to be used to execute arbitrary commands, which is what Capistrano has done since 2.0. If you’re on such a host, you can add the following line to your capfile:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">default_run_options[<span class="sy">:shell</span>] = <span class="pc">false</span></pre></td>
+</tr></table>
+<p>Capistrano will then run the command directly, rather than wrapping it in an “sh -c” command. Note, though, that this means that your own user shell on the remote hosts <em>must</em> be <span class="caps">POSIX</span> compatible, or you’ll get cryptic errors.</p>
+<p><strong>Git <span class="caps">SCM</span> support.</strong> Many thanks to Garry Dolley, Geoffrey Grosenbach, and Scott Chacon for their work on the new Git <span class="caps">SCM</span> module for Capistrano. If you’re a user of Git, you can now do:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">set <span class="sy">:scm</span>, <span class="sy">:git</span></pre></td>
+</tr></table>
+<p><strong>Accurev <span class="caps">SCM</span> support.</strong> Thanks to Doug Barth, all you Accurev users can now enjoy Capistrano, too. Just do:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">set <span class="sy">:scm</span>, <span class="sy">:accurev</span></pre></td>
+</tr></table>
+<p><strong>Rails’ Plugin Support.</strong> Capfile’s generated via the “capify” utility will now include a line that will autoload all recipes from vendor/plugins/*/recipes/*.rb. If you want this feature and you’ve already got a Capfile (and you don’t mind losing any changes you might have made to your Capfile), you can delete the Capfile and re-run “capify .”. Or, you can just add the following line to your Capfile, before the line that loads ‘config/deploy’:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">Dir</span>[<span class="s"><span class="dl">'</span><span class="k">vendor/plugins/*/recipes/*.rb</span><span class="dl">'</span></span>].each { |plugin| load(plugin) }</pre></td>
+</tr></table>
+<p><strong>Windows-safe reads.</strong> Any time Capistrano needs to read a file’s contents, it will now use the “b” flag, so that binary reads on Windows do not corrupt the file.</p>
+<p><strong>Cap shell and sudo.</strong> The Capistrano shell now properly recognizes sudo commands and prompts for the password correctly.</p>
+<p><strong>Use `match’ to check dependencies.</strong> There is a new remote dependency method for deploy:check: “match”. You can now look for arbitrary regular expressions in the output of various commands to see if things are set up correctly:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">depend <span class="sy">:remote</span>, <span class="sy">:match</span>, <span class="s"><span class="dl">"</span><span class="k">rake -V</span><span class="dl">"</span></span>, <span class="rx"><span class="dl">/</span><span class="k">version 0</span><span class="ch">\.</span><span class="k">7</span><span class="dl">/</span></span></pre></td>
+</tr></table>
+<p><strong>Namespaces#top.</strong> Sometimes you’ll find yourself wanting to execute a task from within another task, but the parent namespace of the target task is conflicting with a similarly-named namespace, and things are breaking. You can now use the “top” method to jump to the top of the namespace hierarchy:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">namespace <span class="sy">:apache</span> <span class="r">do</span><tt>
+</tt>  namespace <span class="sy">:deploy</span> <span class="r">do</span><tt>
+</tt>    task <span class="sy">:restart</span> <span class="r">do</span><tt>
+</tt>      run <span class="s"><span class="dl">"</span><span class="k">restart apache</span><span class="dl">"</span></span><tt>
+</tt>      top.deploy.restart<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p><strong>Other changes.</strong> There are lots of other, smaller bug fixes and changes, too:</p>
+<ul>
+	<li>Default to 0664 instead of 0660 on upload.</li>
+		<li>Fix deploy:pending to query <span class="caps">SCM</span> for the subsequent revision so that it does not include the last deployed change.</li>
+		<li>Prefer ‘Last Changed Rev’ over ‘Revision’ when querying latest revision via Subversion.</li>
+		<li>Explicitly require ‘stringio’ in copy_test.</li>
+		<li>When Subversion#query_revision fails, give a more sane error.</li>
+		<li>Don’t run the upgrade:revisions task on non-release servers.</li>
+		<li>Use the—password switch for subversion by default, but add :scm_prefer_prompt variable for those who’d rather not send the password on the command-line.</li>
+		<li>Use sudo -p switch to set sudo password prompt to something predictable.</li>
+		<li>Allow independent configurations to require the same recipe file within the same Ruby process.</li>
+		<li>Allow auth-caching of subversion credentials to be enabled via :scm_auth_cache.</li>
+		<li>Don’t let a task trigger itself when used as the source for an “on” hook.</li>
+		<li>Add version_dir, current_dir, and shared_dir variables for naming the directories used in deployment.</li>
+		<li>Use the :runner variable to determine who to sudo as for deploy:restart.</li>
+		<li>Change the “-h” output so that it does not say that “-q” is the default.</li>
+	</ul>
+<p>Enjoy! And please report any bugs on the <a href="http://dev.rubyonrails.org">Rails trac</a>, with the component set to “Capistrano”.</p>

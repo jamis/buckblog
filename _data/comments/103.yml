@@ -1,0 +1,150 @@
+---
+- date: 2007-02-06
+  author: Eric Anderson
+  content: "<p>It is a neat trick but I can’t help but wonder if this is one of those
+    tricks that will have a obscured meaning 6 months down the road or for another
+    developer that has not thought of the trick. Wouldn’t it be much clearer to say:</p>\n\n\n\t<p>class
+    Account &lt; ActiveRecord::Base\n  def notification_address\n    self[:notification_address]
+    || email_address\n  end\nend</p>"
+- date: 2007-02-06
+  author: Eric Anderson
+  content: "<p>Now if I can just figure out how to make my code example have that
+    nifty look yours does. :)</p>"
+- date: 2007-02-06
+  author: Jamis
+  content: "<p>Eric, I don’t really think “super” is obscure. It means to call the
+    method of the superclass, and that’s really what you want, right? You’re overriding
+    the default definition of “notification_address”, and you want to get at the prior
+    definition (which just happens to be implemented in the superclass via method_missing).</p>\n\n\n\t<p>However,
+    your solution is fine, too, though less <span class=\"caps\">DRY</span>. What
+    happens if you decide to rename the attribute to <code>notification_email</code>?</p>"
+- date: 2007-02-06
+  author: Eric Anderson
+  content: "<p>Jamis,</p>\n\n\n\t<p>To me the problem is that from a purely logical
+    standpoint “notification_address” isn’t defined in the superclass. “notification_address”
+    is really a property on “Account” and it is only through an artifact of ActiveRecord::Base
+    that it is able to do the right thing.</p>\n\n\n\t<p>When you say “super” you
+    are saying “carry out this same method as my parent defines it”. But ActiveRecord::Base
+    doesn’t really define that attribute. The base class does (automatically of course
+    by the parent class but that is an implementation detail).</p>\n\n\n\t<p>Perhaps
+    a hypothetical would better explain what I mean. Currently database attributes
+    are implemented by method_missing. What if ActiveRecord version 20 (i.e. sometime
+    down the road) decided that it is to annoying that a ActiveRecord object don’t
+    answer respond_to? correctly. To fix the problem they change the implementation
+    to actually define the method on the base class instead of relying on method_missing.
+    When they do this your code starts failing. Why? Because your code is dependent
+    on an implementation detail of ActiveRecord. Logically the attribute belongs to
+    “Account” and therefore it is illogical to ask the parent class to carry out the
+    implementation.</p>\n\n\n\t<p>Of course my solution is a bit less <span class=\"caps\">DRY</span>
+    but that seems like a minor offense compared to assuming implementation details
+    of a 3rd party library.</p>"
+- date: 2007-02-06
+  author: Jamis
+  content: "<p>That’s a compelling argument, Eric. I think I still prefer using <code>super</code>,
+    but I can certainly see why you might prefer to grab the attribute directly from
+    the record.</p>"
+- date: 2007-02-06
+  author: Eric Duminil
+  content: "<p>Hi!</p>\n\n\n\t<p>Sorry if I always need some more time to understand
+    your examples, but how would you specify “the notification_address attribute in
+    the record’s attribute set”?</p>\n\n\n\t<p>How, and <span class=\"caps\">BTW</span>,
+    how do you get “that nifty look” for code examples, as Eric A. asked?</p>\n\n\n\t<p>Have
+    a good day,\nEric</p>"
+- date: 2007-02-06
+  author: Mike H
+  content: "<p>Eric Anderson says what I wanted to say, but better.  If there was
+    a “previous_definition” keyword, that would be appropriate, but super doesn’t
+    mean what it means in this example.</p>\n\n\n\t<p>If we’re talking about dry,
+    some “default_attribute_value” metaprogramming would really be the best way to
+    go.  Clarity and <span class=\"caps\">DRY</span>, best of both worlds.</p>"
+- date: 2007-02-06
+  author: Jamis
+  content: "<p>Eric D, more or less just as Eric A did: self[:notification_address]
+    will grab the attribute directly from the record, without going through pseudo-accessor
+    that ActiveRecord provides.</p>\n\n\n\t<p>Oh, and if you specify some code within
+    &lt;macro:code lang=”ruby”&gt;...&lt;macro:code&gt; tags, it’ll be syntax-highlighted
+    as ruby code.</p>"
+- date: 2007-02-06
+  author: Shalev
+  content: "<p>“Just as you’d expect.”</p>\n\n\n\t<p>Well that’s the problem, isn’t
+    it?  Why would we expect this to work the way it does unless we were aware of
+    the specific implementation details of AR?  This trick is cool, but it looks like
+    it could be almost more magic than it should be.</p>\n\n\n\t<p>(Yes, I am more
+    or less just adding my support to Eric A’s argument).</p>"
+- date: 2007-02-06
+  author: Jamis
+  content: "<p><strong>Sigh.</strong></p>\n\n\n\t<p>Alright, calm down, people. It
+    seemed obvious to me, even without knowing how activerecord works, that super
+    would do what it does.</p>\n\n\n\t<p>Why?</p>\n\n\n\t<p>Because, in my mind, I’m
+    <em>overriding</em> the default behavior of an attribute. And where is that default
+    behavior defined? In the superclass. And how do you call the previous implementation
+    of something from a subclass? Via super.</p>\n\n\n\t<p>It seemed plain to me.
+    I apologize if it is not so plain to everyone else.</p>\n\n\n\t<p>If it isn’t
+    plain to you, don’t use it.</p>"
+- date: 2007-02-06
+  author: Joe
+  content: "<p>Jamis, please don’t get discouraged that the people in your comments
+    don’t agree with you – most of us that like your tricks are too busy implementing
+    them in our own applications to say anything about them. =)</p>"
+- date: 2007-02-06
+  author: Tim Lucas
+  content: "<p>Neat. Seems obvious, but for some reason, most probably out of habit,
+    I always use <code>ActiveRecord::Base#read_attribute</code>.</p>\n\n\n\t<p>Eric:
+    Way too much discussion for what amounts to “very leet but possibly less obvious.
+    Apply as desired according to your own coding style and guidelines.” I’d also
+    argue using <code>#read_attribute</code> is even more clear than square bracket
+    operators, and is also documented in AR::Base under “overriding default accessors”.</p>"
+- date: 2007-02-06
+  author: Assaf
+  content: "<p>I think the test for a super method is, whether it’s implemented by
+    the super class.</p>\n\n\n\t<p>Would other classes implementing ActiveRecord::Base
+    have this method? If so, it’s a super method. If not, it’s part of the derived
+    class.</p>\n\n\n\t<p>It’s a simple test that could keep you out of trouble.</p>\n\n\n\t<p>I
+    love method_missing, I use it often, but I also think there’s a huge propensity
+    for overuse that leads to fragile code. This is one place where I would advocate
+    thinking twice and only using it as last resort.</p>\n\n\n\t<p>I would always
+    write read_attribute :email_address instead of assuming how Base implements its
+    method_missing.</p>\n\n\n\t<p>Just today I had to deal with this sort of method_missing
+    magic when trying to use Net::SFTP inside Rake. Not pleasent:\nhttp://blog.labnotes.org/2007/02/06/method_missing-best-saved-for-last/</p>"
+- date: 2007-02-06
+  author: Jamis
+  content: "<p>Joe, thanks for the kind words. I’d like to say here that I certainly
+    don’t mind people disagreeing with me; it’s a great exercise for me to think hard
+    about what I’m saying, and helps to form more concrete boundaries for my opinions.</p>\n\n\n\t<p>That
+    said, everything I say on this blog should considered to have an implicit disclaimer
+    before each one: “your mileage may vary.” Much of Rails is about aesthetics, and
+    as such, what looks beautiful to one might look otherwise to someone else. If
+    you feel to disagree with something I say, by all means, do. But at least think
+    hard about what I say, first. I will do likewise upon reading the comments posted
+    here.</p>\n\n\n\t<p>Whether we succeed in convincing one another, well…we can’t
+    hope for too much, now, can we? :)</p>"
+- date: 2007-02-07
+  author: jeroen@supercool.nl
+  content: "<p>Jamis,</p>\n\n\n\t<p>First off, I find your writings invaluable, great
+    stuff.</p>\n\n\n\t<p>I think these posts often create very nice discussions. I
+    think it’s important that when you’re working with other people it is sometimes
+    better to be a little more verbose, use a little less magic just to make it easier
+    for someone new to the project (or even rails) to understand what’s going on.</p>\n\n\n\t<p>I
+    find this a recurring issue with Ruby code. If the code is well documented, with
+    examples (not just <span class=\"caps\">API</span> docs) you can have some beautiful
+    and easy/natural to use code. You can create some really cool DSLs with just Ruby:
+    Rails, Capistrano, Rake, Builder etc. But if you look at the source of those projects,
+    I find them quite hard to understand, since a lot of stuff relies on method_missing
+    and other more obscure techniques. I don’t want to call this “good” or “bad”,
+    it’s just something to think about whenever you do something cool with Ruby/Rails’
+    more advanced features. I’ve just started some projects with people new to rails,
+    so it’s definitely something I need to think about.</p>"
+- date: 2007-02-08
+  author: Eric DUMINIL
+  content: "<p>Ok, sorry if I’m <strong>really</strong> slow, but we don’t play in
+    the same league you and I!</p>\n\n\n\t<p>So, if I got it right, there should be
+    a “notification_address” column in accounts table, which can be left nil. I tried
+    without this column, and it obviously didn’t work.</p>\n\n\n\t<p>Thanks for the
+    tip anyway, I hope I’ll leave the Nuby world some day thanks to your pieces of
+    advice!</p>"
+- date: 2007-02-13
+  author: Nate Murray
+  content: "<p>Maybe I am missing something, but this doesn’t seem to work quite right
+    with “int” fields.</p>\n\n\n\t<p>For instance, say I have an unset attribute “products_count”</p>\n\n\n\t<p>products_count
+    # =&gt; 0 \nread_attribute(“products_count”) # =&gt; nil</p>\n\n\n\t<p>Is this
+    right, or is there something I’m missing here?</p>"

@@ -1,0 +1,14 @@
+---
+layout: post
+title: Net::SSH 1.1.1
+post_id: 91
+categories:
+- Announcements
+date: 2007-05-09 22:11:00.000000000 -06:00
+author: Jamis
+permalink: 2007/05/09/net-ssh-1-1-1.html
+---
+
+<p>Hot on the heels of <a href="http://weblog.jamisbuck.org/2007/5/1/net-ssh-1-1-0">Net::SSH 1.1.0</a> comes version 1.1.1. This version fixes the most egregious problems that have been reported, primarily for Windows users. Windows users should no longer get the “address family for hostname not supported” errors, and the broken mkdir call has been fixed.</p>
+<pre><code>$ gem install net-ssh</code></pre>
+<p>For those of you having problems with the host key verification stuff, my apologies. However, it is all working beautifully for me, both on Windows and on my Mac, so it’s really hard for me to figure out what might be going wrong for others. I’m going to need someone who is having the problem, and who is not afraid of jumping into the Net::SSH source code, to do some investigating for me. That, or you’ll have to send me really, really detailed reports so that you can help me duplicate the issues.</p>

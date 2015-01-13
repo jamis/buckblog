@@ -1,0 +1,31 @@
+---
+layout: post
+title: Capistrano 2.0
+post_id: 83
+categories:
+- Announcements
+date: 2007-07-21 18:38:00.000000000 -06:00
+author: Jamis
+permalink: 2007/07/21/capistrano-2-0.html
+---
+
+<p>I fully expect this announcement to be eclipsed by the far more world-shattering event of the release of Harry Potter #7, but I suppose it runs in the family. (I have a <a href="http://www.amazon.com/Real-Virginian-Burnham-Trafton-Stagecoach/dp/0870260715">stagecoach robber in my family</a> several generations back, whose <em>pièce de résistance</em> happened to coincide with the sinking of the Titanic.)</p>
+<p>Capistrano 2.0 is real. (<a href="http://www.capify.org">What is Capistrano?</a>)</p>
+<p>Install it thus:</p>
+<pre><code>gem install capistrano</code></pre>
+<p>It’s been through four preview releases, and has seen significant changes since 1.4.1. If you’re currently using 1.4.1, be sure to check out the <a href="http://www.capify.org/upgrade">upgrade documentation</a> at <a href="http://www.capify.org">http://www.capify.org</a>. If you’re altogether new to Capistrano, you might like to read about <a href="http://www.capify.org/getting-started">getting started</a>.</p>
+<p>Since the last preview release (number four, version 1.99.3), the changes are primarily bug fixes, but the following featureish modifications snuck in, too:</p>
+<ul>
+	<li>The uploader has added a tiny bit of sleep to prevent the <span class="caps">CPU</span> from going bonkers during uploads.</li>
+		<li>You can specify the $CAPISTRANO:HOST$ placeholder in the filenames that you give to “put”, and it will be replaced with the actual host that the file is being uploaded to.</li>
+	</ul>
+<p>Also, some people reported <span class="caps">SFTP</span> uploads were hanging for them. If this happens to you, try adding the following line to the top of your recipe file:</p>
+<pre><code>set :synchronous_connect, true</code></pre>
+<p>That will cause connections to the servers to be established serially, rather than in parallel, so if you’ve got a lot of servers that you are connecting to, it might make things a bit time-consuming. However, this appeared to work around the hanging <span class="caps">SFTP</span> issue.</p>
+<p>You can read the complete changelog <a href="http://svn.rubyonrails.org/rails/tags/capistrano_2-0-0/CHANGELOG">here</a>. If you are using Capistrano at all, please also consider joining the <a href="http://groups.google.com/group/capistrano">mailing list</a>, it’s a great place to share tips and report issues.</p>
+<p><span class="caps">KNOWN ISSUES</span></p>
+<p>Yes, there are a few of these. Two are of immediate significance:</p>
+<ol>
+	<li>If you try to use the ‘put’ command to upload a file to two or more hosts via a gateway, you run a good chance of encountering “corrupted mac” errors. This is due to design flaws in Net::SSH and Net::SFTP, and (to my knowledge) cannot be worked around. The current best practice is to upload to a single host, and then use scp or rsync from the remote hosts to pull the file.</li>
+		<li>A very few people have reported commands hanging inexplicably and infrequently. I suspect this is also due to flaws in Net::SSH, but I’m not certain yet.</li>
+	</ol>

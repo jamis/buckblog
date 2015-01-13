@@ -1,0 +1,12 @@
+---
+- date: 2008-04-20
+  author: Kfz versicherung
+  content: |-
+    <p>Nice post!
+    Net::SSH 2.0 is working with all Ruby version?</p>
+- date: 2008-04-20
+  author: Jamis
+  content: "<p>@Kfz, define “all”. :) Net::SSH v2 is not working with Ruby 1.9, and
+    won’t until after I release 2.0. It is known to work with 1.8.5 and 1.8.6, and
+    probably works with 1.8.2 to 1.8.4 as well. It will not work with Rubies earlier
+    than 1.8.2 due to missing interfaces in the Ruby OpenSSL bindings.</p>"

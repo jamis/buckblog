@@ -1,0 +1,152 @@
+---
+- date: 2008-12-06
+  author: Luis Lavena
+  content: "<p>Hey jamis,</p>\n\n\n\t<p>I’m already worked on make your life more
+    easy on this subject:</p>\n\n\n\t<p>http://github.com/luislavena/rake-compiler</p>\n\n\n\t<p>I
+    didn’t have the time to completely implement a fix for sqlite3-ruby gem, but got
+    it working and build with the project in a couple of hours.</p>\n\n\n\t<p>removed
+    the swig generation from the extconf since it forces the generation of the .c
+    file every time, not only on Windows.</p>\n\n\n\t<p>Already forked your project,
+    need to find the time to iron those details.</p>\n\n\n\t<p>On the painful note,
+    let me remind you is not as easy you mention, you still need to building tools,
+    the development headers and the library and headers of the gem you’re installing,
+    and of course, in case of mysql as example, having mysql_config or mysql_config5
+    in the path.</p>\n\n\n\t<p>With proper build process I never had all these problems
+    you guys keep describing, dunno why.</p>"
+- date: 2008-12-07
+  author: yaanno
+  content: "<p>Janmis: I think it is a good idea, letting more platform oriented/binded
+    people to do the painful job so you can focus on the ruby lib.</p>\n\n\n\t<p>Luis:
+    You did an amazing work with that compiler library (rubyinstaller is great too).
+    I think we either need a windows build server (like the Java guys) or we should
+    know exactly the build tool set available for the standard developer machines.</p>"
+- date: 2008-12-07
+  author: Elijah Miller
+  content: "<p>This reminds me of big announcement from Perl only a few days ago:
+    Microsoft is giving every <acronym title=\"RubyGem for Perl\">CPAN</acronym> author
+    access to a hosted virtual server providing all versions of windows.</p>\n\n\n\t<p>http://tech.slashdot.org/tech/08/12/06/227246.shtml</p>\n\n\n\t<p>Add
+    this to their release that bundles windows development files with Perl(aka Strawberry
+    Perl) and you have a great situation for proper windows modules to exist in.</p>"
+- date: 2008-12-07
+  author: Luis Lavena
+  content: "<p>yaanno: rake-compiler can do cross-compilation:</p>\n\n\n\t<p>Rake::ExtensionTask.new(‘sqlite3_api’)
+    do |ext|\n  ext.cross_compile = true\nend</p>\n\n\n\t<p>And then you get:</p>\n\n\n\t<p>rake
+    cross compile</p>\n\n\n\t<p>Add now the gem spec as second parameter, and you
+    get a gem for Windows:</p>\n\n\n\t<p>rake cross native gem</p>\n\n\n\t<p>The only
+    missing piece is download the headers and libs for Windows, but Jonathan Scott
+    did it for DataObjects:</p>\n\n\n\t<p>http://github.com/sam/do/tree/master/do_sqlite3/Rakefile#L113-214</p>\n\n\n\t<p>No
+    need to do it exactly like that, but it’s automated ;-)</p>\n\n\n\t<p>So, then
+    you end no needing Windows at all, and people can stop ranting.</p>\n\n\n\t<p>Then,
+    we can focus in world peace…</p>"
+- date: 2008-12-07
+  author: Kragen Javier Sitaker
+  content: "<p>Bravo on dropping Microsoft Windows support.  I’m sure it won’t be
+    a popular decision, but it makes the world that little bit better for the rest
+    of us.</p>"
+- date: 2008-12-07
+  author: Bork, Federal Agent
+  content: "<p>@Kragen: troll? I don’t think he said he’s dropping Windows support,
+    just that he’s not making it a priority.</p>"
+- date: 2008-12-08
+  author: Kragen Javier Sitaker
+  content: "<p>@Bork: I don’t understand why you would stoop to vicious name-calling
+    at your first contact with me, but I wasn’t trolling.  I was responding to Jamis’s
+    slightly more recent post about Capistrano at http://groups.google.com/group/capistrano/msg/f5213577eaeadc47
+    — I would have emailed him directly, but I don’t have his email address.  He said:</p>\n\n\n\t<p>“Microsoft
+    may be an 800lb gorilla, but it’s not <em>my</em> gorilla…</p>\n\n\n\t<p>“Now,
+    if you’re stuck in Windows by corporate policy, you have my\nsympathy. But I’m
+    still not budging on this issue. I will not break my\nback or my sanity on Windows
+    troubleshooting any more.</p>\n\n\n\t<p>“On the other hand, if you’re stuck in
+    Windows by choice, you don’t\neven have my sympathy. :) It is to <span class=\"caps\">YOU</span>
+    that I’m speaking, directly,\nwhen I say that if you want Capistrano on Windows,
+    then it’s your\nresponsibility to do something about it.”</p>\n\n\n\t<p>I think
+    that’s a courageous move that is likely to win Jamis some enemies, but will make
+    life better for everyone.  Hopefully he’ll apply the same policy to SQLite3-Ruby
+    too.</p>"
+- date: 2008-12-09
+  author: Jamis
+  content: "<p>@Luis, that sounds like a neat long-term solution. I’m not entirely
+    clear though: are you volunteering to build sqlite3-ruby for me, or are you suggesting
+    I use rake-compiler myself to do it?</p>"
+- date: 2008-12-09
+  author: David Trasbo
+  content: "<p>Jamis, I would be more than happy to do this for you. I’m a hobbyist
+    Ruby/Rails developer running Windows. The thing is that I do not know exactly
+    how to do point four. If you’re not describing the process in details because
+    you don’t know how it’s done on Windows, I (ahem) suggest you find someone else…
+    :)</p>"
+- date: 2008-12-09
+  author: Jamis
+  content: "<p>@David, yeah, when I was building the windows extension for it, it
+    was a painful, tedious process of making sure I had sqlite3 installed with the
+    dev libraries, figuring out how to link against those libraries and the ruby libraries,
+    and figuring out how to build a dll.</p>\n\n\n\t<p>All of which was (did I mention?)
+    painful. :/ I don’t know the process well enough to explain it to someone, though,
+    so I’ll just sit tight. Thanks, though.</p>"
+- date: 2008-12-10
+  author: Luis Lavena
+  content: "<p>@Jamis: I’m not saying that I can, but neither that I can’t.</p>\n\n\n\t<p>I
+    have my hands full with current and new One-Click Installer for Windows, but maybe
+    a 4 hours hacking at the airport this weekend can help you out.</p>\n\n\n\t<p>Just
+    released rake-compiler to ease the burden from me being injecting some sanity
+    in several open source projects.</p>\n\n\n\t<p>If I decide move forward, fork
+    it, introduce what I think are needed fixes to make the build, test and release
+    process of the project easy for both sides, you will still need to officially
+    merge those changes.</p>\n\n\n\t<p>Even more, for me to be able to release gems
+    for Windows, I’ll need to be part of the project at rubyforge, since gems at github
+    cannot be released simultaneously with binaries.</p>\n\n\n\t<p>In any of the above
+    cases, you will need to be more responsive, so this is a step back on your “I’m
+    not taking care anymore” statement.</p>\n\n\n\t<p>I know you’re doing this as
+    part of your contribution or whatever, but if I invest any time, I want it to
+    be respected and taken in consideration.</p>\n\n\n\t<p>With this I meant to say
+    that patches, like I did for this and other projects cannot sit in a RubyForge
+    ticket for 3 months getting dust.</p>\n\n\n\t<p>So, if you feel that what I propose
+    is still be a burden, I don’t know what else can be done.</p>"
+- date: 2008-12-10
+  author: Jamis
+  content: "<p>@Luis, thanks for the clarification. I just wasn’t sure if you were
+    volunteering, or merely sharing a useful tip.</p>\n\n\n\t<p>As for “patches…cannot
+    sit in a Rubyforge ticket for 3 months getting dust,” why not? What harm did it
+    do to wait 3 months for them to be applied? They were eventually applied, and
+    a new release was made. No one was harmed. It’s not a big deal.</p>\n\n\n\t<p>But
+    if that bothers you, that’s fine. You’re certainly never obligated to submit patches.</p>\n\n\n\t<p>All
+    I’m asking, here, is for someone to build a binary for sqlite3-ruby trunk, so
+    that I can bundle a gem and release. Once someone gets it to me, I guarantee I’ll
+    have a new sqlite3-ruby release either that day, or the next.</p>\n\n\n\t<p>If
+    no one steps up and volunteers in another couple of days, I’m going to just release
+    the gem without a windows version pre-built. Not a big deal, except for windows
+    users.</p>"
+- date: 2008-12-11
+  author: Luis Lavena
+  content: "<p>@Jamis, the problem with the ‘sitting 3 months in rubyforge’ is because
+    I’ve seen releasing happening while these patches are needed to build the Windows
+    version of these gems.</p>\n\n\n\t<p>That becomes a big deal.</p>\n\n\n\t<p>Also,
+    your process of building the gem is not bullet proof, which I’ll prefer a more
+    agnostic approach (which I standardized in rake-compiler). So anyone, Windows
+    or Linux or <span class=\"caps\">OSX</span> user can build the gem outside your
+    box or mine.</p>\n\n\n\t<p>Can you wait a couple of days? I’m taking a flight
+    on the weekend, when I’ll be able to work on this.</p>\n\n\n\t<p>From that statement
+    you can see I’m volunteering, but I’ll prefer automate the process and do it once
+    than do a crappy on-the-rush release from my side.</p>"
+- date: 2008-12-11
+  author: Jamis
+  content: "<p>@Luis, if you’re volunteering, I’ll wait as long as necessary. As for
+    the other, if I released a gem while your tickets were languishing, then that
+    is indeed my fault by my my failure to check the ticket list in RubyForge prior
+    to releasing.</p>\n\n\n\t<p>I’m not a release manager. Frankly, I suck as a release
+    manager. But I do the best I can. I apologize if you were offended by my poor
+    performance as a release manager. I can only say that I’ll try to do better.</p>"
+- date: 2008-12-23
+  author: Ahad
+  content: "<p>I’m a windows user and a newbie Rails developer.  I have alot of problems
+    with sqlite3.  Yeah Windows makes this extremely painful, so i am using the mysql
+    gem and adapter instead.</p>"
+- date: 2009-01-18
+  author: Marie
+  content: "<p>Jamis – This has <span class=\"caps\">NOTHING</span> to do with this
+    topic but your blog won’t let someone leave comments on old posts.</p>\n\n\n\t<p>Please
+    contact me using the provided e-mail address about possibly getting your old generator
+    files to be used again.</p>\n\n\n\t<p>None of the links to any of them work because
+    that host is long gone and I haven’t found any tools as useful as those.</p>\n\n\n\t<p>We
+    can talk but I’d like to make them available again on my website.</p>\n\n\n\t<p>Sorry
+    for the digression.  Please continue with your discussion.</p>"

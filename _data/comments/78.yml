@@ -1,0 +1,53 @@
+---
+- date: 2007-09-01
+  author: AkitaOnRails
+  content: "<p>Great work, Jamis. I particularly like the subversion refinements,
+    I will test them right away.</p>"
+- date: 2007-09-03
+  author: Graeme Mathieson
+  content: "<p>Great stuff, thanks!</p>\n\n\n\t<p>I’ve got a combination of two features
+    there causing me a wee problem.  In order for Subversion to prompt you for a password,
+    it needs a pty.  I seem to have kicked it into working by changing line 29 of
+    lib/capistrano/recipes/deploy/strategy/remote.rb to:</p>\n\n\n\t<pre><code>run(command,
+    :pty =&gt; true) do |ch,stream,text|</code></pre>\n\n\n\t<p>ie just passing in
+    `:pty =&gt; true` to the run command just in case it needs a pty.</p>\n\n\n\t<p>I
+    guess that’s going to screw up people that don’t have their scm command on their
+    path and are relying on a bashrc to set it up.</p>\n\n\n\t<p>And yeah, you are
+    looking at Solaris for the sudo-equivalent without a `<del>p`.  On the plus side,
+    it’s called `pfexec` and doesn’t (at least not any way I’ve figured of configuring
+    it!) ever prompt for a password.  My deploy has just failed because of it, so
+    I’m sure I’ll have something more to say shortly. :</del>)</p>"
+- date: 2007-09-03
+  author: Graeme Mathieson
+  content: "<p>Aha, on line 73 of lib/capistrano/configuration/actions/invocation.rb,
+    I’ve changed it to the following:</p>\n\n\n\t<pre><code>command = [fetch(:sudo,
+    \"sudo\"), fetch(:sudo_args, \"-p '#{sudo_prompt}' #{user}\"), command].compact.join(\"
+    \")</code></pre>\n\n\n\t<p>That way, I can do:</p>\n\n\n\t<pre><code>set :sudo_args,
+    nil</code></pre>\n\n\n\t<p>while everybody else in the world ever can remain happy
+    as they are. :-)</p>"
+- date: 2007-09-03
+  author: Jamis
+  content: "<p>@Graeme, ugh, that’s nasty (on both counts). Perhaps I’ll just put
+    the—password switch back for subversion. As for sudo…gah. I’m so sick of solaris
+    doing it’s own thing. Perhaps I’ll tweak so that if sudo_prompt is false it does
+    as you suggested (to avoid adding yet another setting).</p>"
+- date: 2007-09-04
+  author: Graeme Mathieson
+  content: <p>To be fair, Solaris can have `sudo` installed too.  However, they have
+    a full <span class="caps">RBAC</span> implementation (something I think SELinux
+    aspires to?) which does so much more than sudo is capable of, and I have a preference
+    for using the built-in tools as much as possible.  I’ve only scratched the surface
+    of its capabilities, but the Solaris <span class="caps">RBAC</span> system is
+    incredibly good.</p>
+- date: 2007-09-08
+  author: Hob
+  content: "<p>Nice!  That single pty change is huge.  I should be able to clean up
+    several recipies with that.</p>"
+- date: 2007-09-18
+  author: Garry
+  content: "<p>Where can I submit a patch for a new feature?  I have a module that
+    lets one use Git as their <span class=\"caps\">SCM</span>.</p>\n\n\n\t<p>http://scie.nti.st/2007/9/4/capistrano-2-0-with-git-shared-repository</p>\n\n\n\t<p>Thanks.</p>"
+- date: 2007-09-18
+  author: Jamis
+  content: "<p>Please submit all patches to http://dev.rubyonrails.org, and mark them
+    as pertaining to the Capistrano component. Thanks!</p>"

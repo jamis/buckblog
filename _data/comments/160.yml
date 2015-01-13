@@ -1,0 +1,217 @@
+---
+- date: 2006-03-09
+  author: vinbarnes
+  content: "Jamis, shouldn't all of the multiple user sessions follow Jim's lead and
+    be <code>new_session_as</code> rather than <code>new_session</code>? \n<pre>\n
+    \ def test_multiple_users\n    jim = new_session_as(:jim)\n    bob = new_session(:bob)\n
+    \   stacey = new_session(:stacey)\n\n    jim.adds_account(...)\n    bob.goes_to_preferences\n
+    \   stacey.cancels_account\n  end\n</pre>\n\nAlso, what do you see the role of
+    regression/acceptance tests (like SeleniumOnRails) being versus the new integration
+    tests?\n\nGreat article, thanks."
+- date: 2006-03-09
+  author: Jamis
+  content: |-
+    vinbarnes, good catch! I've fixed it.
+
+    Regarding automated in-browser testing, I do still think there is a place for that, too. Note that the integration testing framework does not test the Javascript on your page, or verify that an RJS template will really perform as expected. I'd *love* for a way to be found to hook integration tests up to a JS engine and DOM simulator, so it could all be done without requiring a browser, but for now that's a pipe dream. :)
+- date: 2006-03-09
+  author: Peter Fitzgibbons
+  content: "You still need browser-based testing even if you have a JS/DOM simulator...
+    the browsers have bugs too!\r\n\r\nBTW: You've created a beautiful thing!  I can't
+    wait to start my new project so I can whip up integration tests first!"
+- date: 2006-03-10
+  author: Jacob Fugal
+  content: '"fictional financial application" = BudgetWise? :)'
+- date: 2006-03-10
+  author: Jamis
+  content: Nice catch, Jacob. ;) BW is still on my radar, just pushed aside for a
+    bit due to other projects.
+- date: 2006-03-11
+  author: Michael
+  content: assert_response doesn't work for me. Apparently the assert_response method
+    has access to response but not to @response, so there is an error in the assertions.rb
+    on line 60, when it tries to execute @response.send("#{type}?"). When I do a @response
+    = response just before the assert_response-call everything works fine... (rev
+    3839)
+- date: 2006-03-11
+  author: Jamis
+  content: Michael, very strange! It seems to be working fine for me... Can you email
+    me one of your tests? (jamis@37signals.com)
+- date: 2006-03-11
+  author: Piotr Usewicz
+  content: Ah, great piece of software... I'm pretty glad to see that with ruby you
+    can create astonishing software, which's code looks wonderful.
+- date: 2006-03-12
+  author: Jon Tirsen
+  content: |
+    Jamis, these "integration" tests are really nice and I think they hit a sweet spot in between exercising a large portion of your application without requiring too much testing infrastructure. These tests are certainly more functional tests than the so called functional tests are! (They are actually unit tests for a controller.)
+
+    The Java community also started going down the path of full on browser simulation but have lately started abandoning it. The problem of course is that writing a complete browser is not that easy! So you end up getting bugs in the browser "simulation" that are different from the bugs in the browsers!
+- date: 2006-03-28
+  author: yudongli2002@yahoo.com
+  content: "A built in automated in-browser testing will complete Ruby testing stack.
+    \n\nIt will be a great day when Ruby has the build-in equivalent of Watir/IEUnit
+    for both IE and Firefox.\n\n\n\n\n\n"
+- date: 2006-03-28
+  author: keithm@infused.org
+  content: I would like to simulate hitting my application with different host names.  I
+    can do this with functional tests by calling @request.host = 'whatever.com'.  What's
+    the best way to implement this in an Intregration Test?
+- date: 2006-03-29
+  author: Jamis
+  content: |
+    Keith, if you are using an "implicit" session, you can just do:
+
+    <table class="CodeRay"><tr>
+      <td title="click to toggle" class="line_numbers"><pre>1<tt>
+    </tt>2<tt>
+    </tt>3<tt>
+    </tt></pre></td>
+      <td class="code"><pre><span class="r">def</span> <span class="fu">test_something</span><tt>
+    </tt>  host! <span class="s"><span class="dl">"</span><span class="k">foo.bar.com</span><span class="dl">"</span></span><tt>
+    </tt><span class="r">end</span><tt>
+    </tt></pre></td>
+    </tr></table>
+
+
+    If you are using explicit sessions, you can use the @host=@ accessor of the session:
+
+    <table class="CodeRay"><tr>
+      <td title="click to toggle" class="line_numbers"><pre>1<tt>
+    </tt>2<tt>
+    </tt>3<tt>
+    </tt>4<tt>
+    </tt></pre></td>
+      <td class="code"><pre><span class="r">def</span> <span class="fu">test_something_else</span><tt>
+    </tt>  sess = open_session<tt>
+    </tt>  sess.host = <span class="s"><span class="dl">"</span><span class="k">foo.bar.com</span><span class="dl">"</span></span><tt>
+    </tt><span class="r">end</span><tt>
+    </tt></pre></td>
+    </tr></table>
+- date: 2006-03-31
+  author: Tom Werner
+  content: |-
+    As of the 1.1 release, can you really use assert_template in integration tests?
+
+    Here's my test:
+
+    def test_signup
+      get "/general/index"
+      assert_response :success
+      assert_template "/general/index"
+    end
+
+    When run, it produces:
+
+    expecting &lt;”/general/index”&gt; but rendering with &lt;”/usr/local/lib/ruby/gems/1.8/gems/actionpack-1.12.0/lib/action_controller/templates/rescues/unknown_action.rhtml”&gt;
+
+    The url ”/general/index” works fine in the browser, but the integration tests fail on the template assertion.
+
+    Any ideas?
+- date: 2006-04-04
+  author: Keeran
+  content: "Hi Jamis - many thanks for this great introduction - I think I understand
+    a lot of what you are describing, but I haven't come across the term 'DSL' before.
+    \n\nA quick google hints at 'Domain Specific Language' - is this what you mean?
+    If so, I'm guessing the term is appropriate because you are defining methods/helpers
+    specific to the test class/suite.\n\nNewbie question I know, just wanting to get
+    my foundations right before leaping any further.\n\nThanks once again,\n\nKeeran"
+- date: 2006-04-04
+  author: Jamis
+  content: |-
+    Tom, are you inheriting from ActionController::IntegrationTest? If not, you're probably getting the _other_ get method--the one defined for functional tests, and it won't like the "/general/index" URI, because it expects it to be the name of an action.
+
+    Keeran, yup, DSL stands for Domain Specific Language.
+- date: 2006-04-04
+  author: August
+  content: "The thing I'm struggling with is figuring out what the full response is
+    to my tests. For example, I get a 200 instead of the expected re-direct. test.log
+    does not have enough detail (ie, html of response or similar) for me to quickly
+    track down what is going on. \n\nWhat other approaches are folks using. Is there
+    a way to occasionaly dump the full response body to an integration test out somewhere
+    when debugging?\n\nIt would make the test enviroment a bit less of a black box
+    if I could reach into it a bit more. "
+- date: 2006-04-04
+  author: Jamis
+  content: August, to get the full response body, simply inspect response.body.
+- date: 2006-04-06
+  author: Paul Ingles
+  content: "Jamis,\n\nAs you say, the integration tests won't cover everything you
+    need for your app, and there are some situations where you can't avoid a thorough
+    scripted walk through the GUI. [Selenium](http://www.openqa.org/selenium/) is
+    pretty much the best thing I've used in the past (and _will_ work with AJAX, you
+    just have to modify some of the Selenium prototypes for it to handle the asynchronicity
+    of it all).\n\nAlthough that's good, it does mean you have to fire up a browser
+    etc., you may want to take a look at [Selenium on Rails](http://andthennothing.net/archives/2006/02/19/new-version-of-selenium-on-rails).
+    \n\nNote, that although I've not tried it, it was thoroughly recommended by an
+    [ex-colleague](http://blog.joshchisholm.com) (and even more of a testing lover
+    than myself):"
+- date: 2006-04-07
+  author: nate at inklingmarkets.com
+  content: "Has there been any reported trouble with integration testing and render_components?\n\nMy
+    app has been working awesome for months, but my first integration test returns
+    a \"No action responded\" in the response body on a call to a render_component....
+    \n\nLooks awesome though."
+- date: 2006-04-07
+  author: nate at inklingmarkets.com
+  content: "answered my own question.  i see the patch: \n\nhttp://dev.rubyonrails.org/ticket/4632"
+- date: 2006-04-26
+  author: Zack Chandler
+  content: "Thanks for the great writeup.  \nI am using  ordered fixtures to ensure
+    that rake loads my fixtures in order (otherwise has_many relationships will not
+    link to correct record).\n\n<pre>\n--- !omap\n- zack:\n   username: zackchandler\n-
+    franko:\n   username: franko\n</pre>\n\nThe problem is that now I can't reference
+    \n\nzack = new_session_as(:zack)\n\nas in your example.  Any ideas?\n\n\n"
+- date: 2006-05-07
+  author: Stefan
+  content: "Hi, \n\nis there a way to specify the request environment variable HTTP_REFERER?\n\nI'm
+    using redirect_to :back and can't find a way to set @request.env[\"HTTP_REFERER\"]
+    in my integration test.\n\n"
+- date: 2006-05-07
+  author: Ronaldinho
+  content: So, integration tests does not replace functional test? From the examples
+    above, it looks like it's limited to assert_response and assert_template checks.
+    I tried inspecting the assigns() but it's always nil.
+- date: 2006-05-12
+  author: Chris Anderson
+  content: |-
+    Jamis,
+
+    I just decided to dive into integration tests, but am having trouble building a login_as method for my users. I store the passwords hashed in the database, so there's no way to login_as :jchris without having to specify the password each time. I like the way acts_as_authenticated works for this, but I need a way to edit the session hash directly. It seems non-obvious. I'll probably have it figured out soon, but I just wanted to note that that might be a good example to have right up front.
+
+    Chris
+- date: 2006-05-18
+  author: Rhyee
+  content: 'Did Chris or anyone else manage to find a way to access passwords in an
+    integration test when using acts_as_authenticated? '
+- date: 2006-08-31
+  author: deadsouls
+  content: I encountered a problem where I can't use this exact login method because
+    my passwords are stored in hashed format. What would be the easiest way to cheat
+    and modify the session variables manually?
+- date: 2006-08-31
+  author: deadsouls
+  content: LOL! I just noticed all the other comments asking the exact same question.
+    Does anyone know the answer to this?
+- date: 2006-09-10
+  author: s1lence
+  content: deadsouls, it's easy. Make the login method accept the hashed password
+    as well and post to login with the username and the hashed_password. If you want
+    extra security check in the login method of your controller that RAILS_ENV is
+    set to 'test' to allow the hashed_password instead of the password.
+- date: 2006-09-13
+  author: Gerard Dragoi
+  content: "<p>After reading your article, I have to change my habits and do my \"programming
+    language talk\" in Ruby. \nSo, I can now ask my boss to express his needs in a
+    DSL--- somehow an ad-hoc language :-) .</p>\n\n<p>\n--- I'm still in the Java
+    camp but I have to recongnise that what I saw it's really beautiful.</p>\n\n\nSo
+    thanks a lot, Jamis!\n\nBest regards from Romania!\n\n "
+- date: 2006-12-12
+  author: Daniel Haran
+  content: "<p>Hi Jamis,</p>\n\n\n\t<p>I don’t know if you’re still checking these
+    comments… trying to apply this pattern, I’m getting a weird error, pasted here:</p>\n\n\n\t<p>http://pastie.caboo.se/27278</p>\n\n\n\t<p>A
+    global search and replace in vendor/rails/actionpack/lib/action_controller/integration.rb
+    fixes the problem, e.g.:\n-      attr_accessor :accept\n+      attr_accessor :http_accept</p>\n\n\n\t<ol>\n\t<li>The
+    Accept header to send.</li>\n\t</ol>\n\n\n\t<p>For some reason, it seems accept
+    is not being interpreted as an attribute but as a function. I’d appreciate any
+    pointers you can give :)</p>"

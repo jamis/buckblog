@@ -1,0 +1,70 @@
+---
+layout: post
+title: Net::SSH Refactoring Adventure
+post_id: 327
+categories:
+- Under the Hood
+date: 2004-10-09 03:41:00.000000000 -06:00
+author: Jamis
+permalink: 2004/10/09/net-ssh-refactoring-adventure.html
+---
+
+<p>This article is just the first in a series describing the steps I am going through to refactor <a href="http://net-ssh.rubyforge.org">Net::SSH</a> to use dependency injection. I’m currently using the DI framework code-named <a href="http://ruby.jamisbuck.org/syringe">Syringe</a> to do the dirty work. (Note: that link for Syringe is temporary only, and may not be valid if you are reading this article more than a few weeks after it was posted.)</p>
+<p>As I mentioned in <a href="http://www.jamisbuck.org/jamis/blog.cgi/programming/dependency-injection/On%20the%20Road%20to%20a%20New%20DI%20Container_20041008091039.tx">On the Road to a New DI Container</a>, I had already started refactoring Net::SSH to use <a href="http://copland.rubyforge.org">Copland</a>. Thus, most of the transport layer was already refactored.</p>
+<p>The challenge, therefore, was to take what worked in Copland, and find the “right” way to do it with Syringe.</p>
+<h3>Original Approach—Pre-Refactoring</h3>
+<p>Let me begin by describing the approach that is currently used in <a href="http://net-ssh.rubyforge.org">Net::SSH</a> 0.1. To keep things comprehensible, I’ll focus just on one small part of the transport layer, the part that manages the <span class="caps">HMAC</span> algorithms.</p>
+<p>The original implementation puts all the <span class="caps">HMAC</span> logic in a single file: <a href="http://rubyforge.org/cgi-bin/viewcvs/cgi/viewcvs.cgi/net-ssh/lib/net/ssh/transport/mac.rb?rev=1.4&amp;cvsroot=net-ssh&amp;content-type=text/vnd.viewcvs-markup">net/ssh/transport/mac.rb</a>. This defines two classes: HMACFactory, and <span class="caps">HMAC</span>.</p>
+<p>The <span class="caps">HMAC</span> class is a wrapper for the actual OpenSSL <span class="caps">HMAC</span> implementations. It also handles the case where no <span class="caps">HMAC</span> algorithm has been selected, by returning an empty string for the requested <span class="caps">HMAC</span> digest.</p>
+<p>The HMACFactory has a hard-coded case statement of all known OpenSSL <span class="caps">HMAC</span> implementations that are simultaneously supported by the <span class="caps">SSH2</span> specification. It allows a client to specify an <span class="caps">SSH2 HMAC</span> algorithm name, and a key, and have the corresponding <span class="caps">HMAC</span> instance returned to them.</p>
+<p>This has three drawbacks:</p>
+<ul>
+	<li>It is closely coupled to OpenSSL, making it impossible to swap a new cryptography backend into Net::SSH.</li>
+		<li>It hard-codes the required digest and key lengths, and the digest implementation for each algorithm.</li>
+		<li>It does not easily allow new <span class="caps">HMAC</span> algorithms to be added to the factory.</li>
+	</ul>
+<h3>Refactoring for Copland</h3>
+<h4>Allowing Multiple Crytography Backends</h4>
+<p>The first step involved adding another layer of abstraction, so that the cryptography backend (OpenSSL) could be swapped in and out. This was pretty simple—I just created a new package, “net.ssh.transport.ossl”, that defined a set of <em>configuration points</em> (hashes, basically), and factories.</p>
+<p>There was one configuration point for each type of entity: keys, digests, ciphers, and yes, <span class="caps">HMAC</span> algorithms.</p>
+<p>Each configuration point was fed as a dependency into a corresponding factory, that knew how to query the configuration point and initialize and return the requested service.</p>
+<h4>The <span class="caps">HMAC</span> package</h4>
+<p>I refactored this by breaking it into one (trivial) class for each <span class="caps">HMAC</span> implementation, instead of one class that can wrap any implementation. Each class, then, knows how long its digest and key need to be, thus decentralizing that information. (This resulted in 6 new classes, one each for <span class="caps">SHA1</span>, SHA1-96, <span class="caps">MD5</span>, MD5-96, and None, and one abstract parent class that each of them descend from.)</p>
+<p>Then, I defined a <code>package.yml</code> file that described each new class (except the parent class) as a service.</p>
+<p>Each of the five services in this package was then fed into the HMACAlgorithms configuration point of “net.ssh.transport.ossl”.</p>
+<h4>Summary of this Step</h4>
+<p>What did all that buy us, besides multiplying the number of classes? Well:</p>
+<ol>
+	<li>It made it <span class="caps">MUCH</span> easier to add new <span class="caps">HMAC</span> algorithms in the future. In fact, third parties can now add new <span class="caps">HMAC</span> algorithms without even having to touch the existing Net::SSH code!</li>
+		<li>It made it possible to swap the OpenSSL cryptography backend out and replace it with something else. (Not that there really IS anything else at the present, but I know of at least one other endeavor to create a cryptography library in Ruby.)</li>
+	</ol>
+<h3>Refactoring for Syringe</h3>
+<p>There really wasn’t any refactoring to do at this stage, since it was all done in Copland. All that was left was to find the right way to define the services using Syringe. It turned out to be much more straightforward than Copland (and I believe that Copland’s approach is pretty darn straightforward!).</p>
+<h4>Disclaimer</h4>
+<p><em>The Syringe <span class="caps">API</span> is still being researched, and is liable to change. The approach described here will probably not be valid in the future, and is given only as an example of how a Ruby-based DI container might represent services in a complex system.</em></p>
+<h4>Defining Services</h4>
+<p>The <code>package.yml</code> file for the Copland-based implementation of the <span class="caps">HMAC</span> package is 40 lines (including whitespace and description elements). The <code>package.rb</code> file for the Syringe version is less than half that long—18 lines.</p>
+<p>Here’s the contents of <code>package.rb</code>:</p>
+<pre>
+  require 'syringe'
+
+  # Defines the services that implement the various SSH2 HMAC algorithms
+  # that are supported by OpenSSL.
+  Syringe.register_library_namespace( 'net/ssh/transport/ossl/hmac', :hmac) do |space|
+
+    %w{sha1 sha1-96 md5 md5-96 none}.each do |name|
+      space.register( name.sub(/-/, "_").intern ) do
+        require 'net/ssh/transport/ossl/hmac/#{name}'
+        Net::SSH::Transport::OSSL::HMAC.const_get( name.upcase.sub(/-/, "_").intern ).new
+      end
+    end
+
+    if space.knows_key?( :hmac_algorithm_sources )
+      space.hmac_algorithm_sources &lt;&lt; space
+    end
+
+  end
+</pre>
+<p>See the line that invokes <code>register_library_namespace</code>? That creates a callback in the Syringe system, so that when a container is sent the <code>require</code> message with the given path as a parameter, this callback will be invoked. A new namesapce (called, in this case, <code>:hmac</code>) will be added to that calling container, and passed to the block.</p>
+<p>The block programmatically registers all known <span class="caps">HMAC</span> implementations with the namespace. (Note that part of the construction process is to require the appropriate file—this reduces runtime overhead by only requiring the files for services that are actually <em>used</em>.)</p>
+<p>Lastly, note the <code>knows_key?</code> call. Every container responds to both <code>has_key?</code> and <code>knows_key?</code>. If sent the <code>has_key?</code> message, the container will return true if the named service is contained within itself, and false otherwise. The <code>knows_key?</code> message, on the other hand, returns true if the service exists in the container, <em>or any of its ancestor namespaces</em>, and false otherwise. Thus, the call shown above will add the current namespace to a collection of namespaces called <code>hmac_algorithm_sources</code>, which must exist somewhere in the hierarchy of namespaces above the current namesapce (“<code>space</code>“).</p>

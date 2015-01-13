@@ -1,0 +1,172 @@
+---
+- date: 2006-09-27
+  author: Dan Webb
+  content: All that talk of dice awoke loads of memories of playing D n D from when
+    I was a kid.  I remember labouring over creating characters for up to a day for
+    some weird reason I never applied programming to the problem.  It would seem a
+    bit weird everyone sitting around with laptops though, I suppose I'm just a luddite.
+- date: 2006-09-27
+  author: Jamis
+  content: Dan, I totally agree that laptops are inappropriate at the gaming table.
+    The programming I did for D&amp;D was intended to help DM's prepare for a game,
+    not necessarily to be used in-game.
+- date: 2006-09-27
+  author: Kevin Marsh
+  content: "Jamis,\r\n\r\nThanks for taking the time to start blogging again. Your
+    last few posts (OK, most of your posts!) have been very informative and engaging.
+    Keep up the good work!"
+- date: 2006-09-27
+  author: Jamis
+  content: "Thanks for the kind words, Kevin! I've made a goal to try and blog every
+    day for a week (excepting weekends), and I've just about met that goal. I'm going
+    to see how long I can keep it up, without resorting to banal entries. :)\r\n\r\nIf
+    anyone has any Ruby- or Rails-related topics they would like to see discussed,
+    I'm open to suggestions!"
+- date: 2006-09-27
+  author: Robert
+  content: Thanks for sharing Jamis! I personally like reading up on other people's
+    methods of writing their own Ruby DSL's and what they are doing with Ruby.
+- date: 2006-09-27
+  author: Doug
+  content: Great article!
+- date: 2006-09-27
+  author: Eric
+  content: "Nice work with the DSL.  As the language progresses, please do keep us
+    informed.  I've been working on a similar thing in python.  Just trying to give
+    myself some nice DM tools.  At any rate, seeing different implementations is always
+    good for the creative juices.\r\n\r\nThanks,\r\n\r\ne."
+- date: 2006-09-27
+  author: Einar
+  content: "Excellent article.\r\n\r\nI also want to encourage those who tend to refer
+    to D&amp;D playing as the \"good old days\", to pick it up again. Playing it as
+    an adult is just as fun."
+- date: 2006-09-27
+  author: Jacob Fugal
+  content: "A patch to your Dice class. :) I think the change to Dice#* is significant,
+    but the other two are just aesthetic -- definitely subject to taste.\r\n\r\n  class
+    Dice\r\n    # Consider 1.d6 * 2 + 5\r\n    # The original will range from 12..22\r\n
+    \   # This new one will range from  7..17 (not multiplying\r\n    # 5 by 2)\r\n
+    \   def *(n)\r\n      Dice.new(count, sides, increment*n, multiplier*n)\r\n    end\r\n\r\n
+    \   # Similar to yours but IMO slightly clearer. The only\r\n    # difference
+    is the existence of the intermediate hash\r\n    # and extra iteration (in sum)
+    in the case where\r\n    # collect is false. Unless count is significantly large\r\n
+    \   # this should have minimal impact. Also removed the\r\n    # application of
+    multiplier from the increment due to\r\n    # the above change.\r\n    def roll(collect=false)\r\n
+    \     result = (1..count).collect{ roll_one * multiplier }\r\n      result &lt;&lt;
+    increment unless increment.zero?\r\n      collect ? result : result.sum\r\n    end\r\n\r\n
+    \   private\r\n    # factored out for clarity, not really significant\r\n    def
+    roll_one\r\n      rand(sides) + 1\r\n    end\r\n  end\r\n\r\nJacob Fugal"
+- date: 2006-09-27
+  author: Jacob Fugal
+  content: "Sorry... maybe formatting will work this time.\r\n\r\n<pre>\r\n  class
+    Dice\r\n    # Consider 1.d6 * 2 + 5\r\n    # The original will range from 12..22\r\n
+    \   # This new one will range from  7..17 (not multiplying\r\n    # 5 by 2)\r\n
+    \   def *(n)\r\n      Dice.new(count, sides, increment*n, multiplier*n)\r\n    end\r\n\r\n
+    \   # Similar to yours but IMO slightly clearer. The only\r\n    # difference
+    is the existence of the intermediate hash\r\n    # and extra iteration (in sum)
+    in the case where\r\n    # collect is false. Unless count is significantly large\r\n
+    \   # this should have minimal impact. Also removed the\r\n    # application of
+    multiplier from the increment due to\r\n    # the above change.\r\n    def roll(collect=false)\r\n
+    \     result = (1..count).collect{ roll_one * multiplier }\r\n      result &lt;&lt;
+    increment unless increment.zero?\r\n      collect ? result : result.sum\r\n    end\r\n\r\n
+    \   private\r\n    # factored out for clarity, not really significant\r\n    def
+    roll_one\r\n      rand(sides) + 1\r\n    end\r\n  end\r\n</pre>"
+- date: 2006-09-27
+  author: Jacob Fugal
+  content: "Sorry to be spamming your blog... more changes to go along with the above.\r\n\r\n<pre>\r\n
+    \ class Dice\r\n    # added bit to keep only the actual dice\r\n    def best(n,
+    collect=false)\r\n      list = to_a.first(count).sort.last(n)\r\n      collect
+    ? list : list.sum\r\n    end\r\n\r\n    # Changed to pull increment outside the
+    multiplier\r\n    def max\r\n      (count * sides) * multiplier + increment\r\n
+    \   end\r\n\r\n    # Changed to pull increment outside the multiplier\r\n    def
+    min\r\n      count * multiplier + increment\r\n    end\r\n\r\n    # Changed to
+    print the multiplier and increment in the\r\n    # same order they are applied\r\n
+    \   def to_s\r\n      s = \"#{count}d#{sides}\"\r\n      s &lt;&lt; \"*%d\" %
+    multiplier if multiplier != 1\r\n      s &lt;&lt; \"%+d\" % increment if increment
+    != 0\r\n      s\r\n    end\r\n  end\r\n</pre>"
+- date: 2006-09-27
+  author: Jamis
+  content: "Jacob,\r\n\r\nThanks! However, applying the multiplier to the increment
+    in the multiplication operator would change the way the object is displayed, via
+    to_s, right? Meaning \"(1.d6 * 2 + 5).to_s\" will be \"1d6+10*2\".\r\n\r\nI'll
+    admit that my implementation doesn't cover every possible use of the dice. But
+    pragmatically, I've never seen an RPG say \"1d6 * 2 + 5\". They always specify
+    the increment first, followed by the multiplier, so I optimized for that case.
+    :)\r\n\r\nNice work on the optimized roll implementation. However, I don't believe
+    Array#sum is a standard method, is it?\r\n"
+- date: 2006-09-27
+  author: Jacob Fugal
+  content: "<p><i>However, applying the multiplier to the increment in the multiplication
+    operator would change the way the object is displayed, via to_s, right? Meaning
+    \"(1.d6 * 2 + 5).to_s\" will be \"1d6+10*2\"</i></p>\r\n\r\n<p>Yeah, I noticed
+    that after posting the first \"patch\". It should be fixed in the change to Dice#to_s
+    in the second \"patch\".</p>\r\n\r\n<p><i>I'll admit that my implementation doesn't
+    cover every possible use of the dice. But pragmatically, I've never seen an RPG
+    say \"1d6 * 2 + 5\". They always specify the increment first, followed by the
+    multiplier, so I optimized for that case. :)</i></p>\r\n\r\n<p>Good point, but
+    then again, I'm having a hard time remembering a case where I've seen <code>(1d6
+    + 4) * 2</code>. :) The changed behavior of the multiplier and increment still
+    allows <code>(1.d6 + 4) * 2</code>. Mechanically, you'll get the same numbers.
+    It will stringify as <code>\"1d6 * 2 + 8\"</code>, though. The original implementation
+    didn't even allow the reverse however (well, without playing games with the increment
+    to get the expected value).</p>\r\n\r\n<p><i>Nice work on the optimized roll implementation.
+    However, I don't believe Array#sum is a standard method, is it?</i></p>\r\n\r\n<p>I
+    don't know if I'd call it optimized... just clarified. And your right, I don't
+    think Array#sum is in 1.8.x. IIRC, it was going to be in 1.9, though. I've got
+    it added into a utility library I frequently use, so I always forget it's not
+    standard. :)</p>"
+- date: 2006-09-27
+  author: Gregg Irwin (Nampa, ID)
+  content: "Greetings to Caldwell from South of Lake Lowell! Nice article. I played
+    the Warlock variant of D&amp;D, so things were a bit different (lo, those many
+    years ago), but still a cool idea to do a DSL for this domain.\r\n\r\nI messed
+    around just a bit, and came up with a REBOL dialect that looks like this:\r\n\r\n;
+    test case                     result\r\n[roll [D6]]                     [3]\r\n[roll
+    [2 D6]]                   [1 6]\r\n[roll [3 D4]]                   [4 3 1]\r\n[roll
+    [4 D8]]                   [4 8 4 2]\r\n[sum roll [3 D6]]               7\r\n[avg
+    roll [5 D20]]              14.2\r\n[10 * sum roll [3 D4]]          50\r\n[roll
+    [4 D6 drop lowest]]       [2 4 6]\r\n[roll [4 D6 keep best]]         [4]\r\n[roll
+    [the best 3 of 4 D6]]     [4 3 3]\r\n[roll [worst 3 of 4 D6]]        [1 1 3]\r\n[roll
+    [4 D6 drop the worst 2]]  [3 5]"
+- date: 2006-09-27
+  author: Gregg Irwin
+  content: "Argh. Need to use <pre> I guess?\r\n\r\n<pre>\r\n;test case                      result\r\n[roll
+    [D6]]                     [3]\r\n[roll [2 D6]]                   [1 6]\r\n[roll
+    [3 D4]]                   [4 3 1]\r\n[roll [4 D8]]                   [4 8 4 2]\r\n[sum
+    roll [3 D6]]               7\r\n[avg roll [5 D20]]              14.2\r\n[10 *
+    sum roll [3 D4]]          50\r\n[roll [4 D6 drop lowest]]       [2 4 6]\r\n[roll
+    [4 D6 keep best]]         [4]\r\n[roll [the best 3 of 4 D6]]     [4 3 3]\r\n[roll
+    [worst 3 of 4 D6]]        [1 1 3]\r\n[roll [4 D6 drop the worst 2]]  [3 5]\r\n</pre></pre>"
+- date: 2006-09-29
+  author: albert
+  content: "Am I totally off here, but... as I can recall I havent seen any use of
+    the multiplier as described here...\r\n\r\nI mean:\r\n\r\n3d6 * 2 isnt 3(d6*2)
+    right? I cant recall ever that i got to multiply each roll... Or have I just been
+    cheated out of a vast amount of gold?  :&lt;"
+- date: 2006-09-29
+  author: Jamis
+  content: albert, it's not generally something the players get to do. When a DM rolls
+    for random treasure, or when he wants to know what the age of some elf is, the
+    multipler comes into play. Also, as I mentioned above, starting gold for a particular
+    character class is determined as 3d4x10 (meaning "roll 3d4, then multiply the
+    result by 10").
+- date: 2006-10-02
+  author: Jacob Fugal
+  content: "<p>@Albert:</p>\r\n\r\n<p>That's a good question. You can look at it this
+    way... <code>2d6 == 1d6 + 1d6</code>. For each of the individual 1d6, you can
+    treat it as if it were an integer -- it's non-deterministic, but it's still an
+    integer (since the range is limited to integers). Since we're dealing with integers,
+    even non-deterministic ones, we can apply the distributive property of multiplication
+    on the integers. Thus, <code>2d6 * 4 = 4 * (1d6 + 1d6) = (4 * 1d6) + (4 * 1d6)</code>.
+    So it's the same either way.</p>"
+- date: 2006-10-26
+  author: PabloEL
+  content: "<p>Sounds good.. I have looked through your source for the <span class=\"caps\">NPC</span>
+    generator, looking to extend and change things. But by C-fu was not up to the
+    challenge..</p>\n\n\n\t<p>For the past year or so I have been working on a dynamic
+    npc generator in python. I’m hoping to be able to have a fairly flexible system
+    at the end of it all. I have found it is quite difficult, especially all the niche
+    effects. It is a lot bigger than it seems. Fair juice to you for doing it so well
+    in C…</p>\n\n\n\t<p>The one reason that I have started this was because the NPCs
+    that your generator created where naked. I wanted to link it to a equipment gen
+    that would mod AC and the rest.</p>\n\n\n\t<p>Pab</p>"

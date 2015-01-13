@@ -1,0 +1,21 @@
+---
+layout: post
+title: IE is teh 3v1l
+post_id: 209
+categories:
+- Essays and Rants
+date: 2005-06-03 10:04:00.000000000 -06:00
+author: Jamis
+permalink: 2005/06/03/ie-is-teh-3v1l.html
+---
+
+<p>It’s been said before. I’m sure it will be said again. And again, and again.</p>
+<p><em>IE is teh 3v1l.</em></p>
+<p>You would be hard-pressed to find a browser as worthless in every way as IE. Want to know what happened today?</p>
+<p>We were getting reports from users of <a href="http://www.backpackit.com">Backpack</a> that when they tried to print a page from <span class="caps">IE 6</span> they got Javascript errors.</p>
+<p>So, thinking it was some bonehead thing on my part I started digging in. I was able to readily duplicate the error on my Windows box, but (lovely IE!) the error message was singularly unhelpful. “Object doesn’t support this property or method”. The location it gave was useless, because it didn’t specify a file—only a line number and character offset. I then installed the MS script debugger, which simply dropped me into the middle of one of the <span class="caps">DLL</span>-generated scripts, and told me absolutely nothing about the root cause of the problem.</p>
+<p>So, I dropped back to the tried-and-true JS debugging method—start ripping out code until it works, and then add the code back a bit at a time until it breaks again. After about a half-hour of narrowing the search, I found the culprit.</p>
+<p>We have a text area named “tags”, which we use to allow users to edit the tags on their pages. Seems like a natural enough name, no?</p>
+<p>However, IE didn’t like that name. Oh, it handled it fine <em>most of the time</em>, displaying it, editing it, etc. It handled it fine, right up until the time you tried to print, and then IE choked on it. Perhaps IE uses that name internally during printing or something. Who knows?</p>
+<p>Changing the name to “edit_tags” (and fixing all the relevant functional tests and auxiliary scripts that referenced the field as “tags”) caused the error to go away.</p>
+<p>Talk about bizarre. If I were Microsoft, I would be frankly <em>embarrassed</em> to own a product like IE.</p>

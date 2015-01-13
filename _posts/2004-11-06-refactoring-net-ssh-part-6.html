@@ -1,0 +1,25 @@
+---
+layout: post
+title: 'Refactoring Net::SSH: Part 6'
+post_id: 319
+categories:
+- Under the Hood
+date: 2004-11-06 08:11:00.000000000 -07:00
+author: Jamis
+permalink: 2004/11/06/refactoring-net-ssh-part-6.html
+---
+
+<p>In spite of appearances, progress has been happening (slowly) on <a href="http://net-ssh.rubyforge.org">Net::SSH</a>. This next installment of the “Refactoring Net::SSH” series will give a brief look at what the latest changes have been, and what’s next on my “to do” list.</p>
+<h2>Tweaking the Transport Layer</h2>
+<p>As you may recall, the last article in this series was about the completion of the refactoring of the transport layer. Complete or not, I’ve continued tinkering on it. Originally, I had intended to allow a single <a href="http://needle.rubyforge.org">Needle</a> registry to contain multiple <span class="caps">SSH</span> sessions.</p>
+<p>I’ve changed my mind.</p>
+<p>The reasons for this are several, but the primary one is that it is just much easier if you only allow singletons in your registry. (Or, rather, it is easier if you require the primary dependencies in your app to be singletons. I still have many prototype services in the new Net::SSH.) If a service is known to be a singleton, you can just inject it as a dependency into any other service you want, and you’re guaranteed that the same instance of that service will be used throughout your application. By making the transport session service a <em>prototype</em> service, instead of singleton, I made alot more work for myself, because I now had to manually inject the correct instance of the session into each service that required it.</p>
+<p>So, the transport session is now a singleton, and a registry may only contain a single instance of it. This isn’t a big deal—it just means that when I get around to finishing Net::SSH, the primary client interface will need to create a new registry (behind the scenes, of course) for each <span class="caps">SSH</span> connection that is requested.</p>
+<p>It turned out to be surprisingly easy to make the change, although there are still a few places left to tweak for consistency’s sake. All I had to do was change the definition of the transport session service, and then change how other services that were dependent on the session referenced that service. Took about 15 minutes.</p>
+<h2>User Authentication</h2>
+<p>Last week I finished refactoring the user authentication service.  This included the ssh-agent interface, the user key manager, and the three supported authentication mechanisms (password, public-key, and host-based). Before, all of this was implemented in three classes: Agent, UserKeyManager, and UserAuth. I split it up even further, making (among other things) each supported authentication mechanism its own class. It is now all unit tested, and although I haven’t done a formal integration test with the transport layer, I <em>did</em> write a simple test script that seemed to work as expected.</p>
+<p>(Which brings me to a question, for any integration-testing gurus that happen to read this. What would be the best way to test the integration of the user authentication stuff with the transport layer? The only way I can think of is to add a new user to my machine and hard code that user’s password in the integration tests (to test the password authentication mechanism). I would also need to enable host-based authentication in my ssh server, and enable this test user to log into my machine based on the host they are on.  I hesitate to do either of these things, for security reasons…)</p>
+<h2>Next…</h2>
+<p>The next piece to tackle is the connection layer, which manages the opening, closing, and processing of <span class="caps">SSH</span> channels. This will be a monstrous bit of work, made more so because I don’t particularly like how it is currently implemented. Plus, I’ve forgotten the details of how it works, so I’ll need to hit the <span class="caps">SSH</span> spec again to refresh my memory of the particulars. Because I’m not too excited at the prospect of this, things have ground almost to a halt on the Net::SSH refactoring, although I did spend some time yesterday reacquainting myself with the current implementation.</p>
+<p>I’m afraid I won’t be able to reuse very much of the existing implementation…and it’s close to 1,000 lines of code. Ouch. :(</p>
+<p>I <em>really</em> want to finish this. There are several other projects I’d rather be working on!</p>

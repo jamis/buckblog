@@ -1,0 +1,67 @@
+---
+layout: post
+title: A Rubyish DSL for Logic Programming
+post_id: 171
+categories:
+- Announcements
+date: 2006-11-06 11:37:00.000000000 -07:00
+author: Jamis
+permalink: 2006/11/06/a-rubyish-dsl-for-logic-programming.html
+---
+
+<p>Alright, I had a rather productive weekend. After mentioning in my post about <a href="http://weblog.jamisbuck.org/2006/10/28/prolog-in-ruby">Prolog in Ruby</a> that it would be nice to have a more Rubyish implementation, I started hammering away on an implementation of my own.</p>
+<p>The result:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">db = <span class="co">KBase</span>::<span class="co">Database</span>.new <span class="r">do</span><tt>
+</tt>  + <span class="co">X</span>.is_sibling_of(<span class="co">Y</span>).if { <span class="co">Z</span>.is_parent_of(<span class="co">X</span>) &amp; <span class="co">Z</span>.is_parent_of(<span class="co">Y</span>) &amp; <span class="co">X</span>.is_not(<span class="co">Y</span>) }<tt>
+</tt>  + <span class="co">X</span>.is_parent_of(<span class="co">Y</span>).if { <span class="co">X</span>.is_father_of(<span class="co">Y</span>) }<tt>
+</tt>  + <span class="co">X</span>.is_parent_of(<span class="co">Y</span>).if { <span class="co">X</span>.is_mother_of(<span class="co">Y</span>) }<tt>
+</tt><tt>
+</tt>  + jamis.is_father_of(kaitrin)<tt>
+</tt>  + jamis.is_father_of(nathaniel)<tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>result = db.query { nathaniel.is_sibling_of(<span class="co">X</span>) }<tt>
+</tt>puts <span class="s"><span class="dl">"</span><span class="k">querying </span><span class="il"><span class="dl">#{</span>result.goal<span class="dl">}</span></span><span class="k">...</span><span class="dl">"</span></span><tt>
+</tt>result.each <span class="r">do</span> |solution|<tt>
+</tt>  puts <span class="s"><span class="dl">"</span><span class="k">solution:</span><span class="dl">"</span></span><tt>
+</tt>  solution.bindings.each <span class="r">do</span> |variable, value|<tt>
+</tt>    puts <span class="s"><span class="dl">"</span><span class="k"> - </span><span class="il"><span class="dl">#{</span>variable<span class="dl">}</span></span><span class="k">: </span><span class="il"><span class="dl">#{</span>value<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt>puts <span class="s"><span class="dl">"</span><span class="k">no solutions!</span><span class="dl">"</span></span> <span class="r">if</span> result.empty?</pre></td>
+</tr></table>
+<p>The output from the above program:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">$ ruby resolver.rb<tt>
+</tt>querying nathaniel.is_sibling_of(X)...<tt>
+</tt>solution:<tt>
+</tt> - X: kaitrin<tt>
+</tt>$</pre></td>
+</tr></table>
+<p>I’ll be cleaning it up next, and will write about the implementation of the <span class="caps">DSL</span>. It was a fun project! Honestly, though, the <span class="caps">DSL</span> was the easy part…the hard part was getting the prolog-like matching and backtracking working. It’s still not perfect, but it works for queries like the above.</p>

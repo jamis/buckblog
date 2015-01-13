@@ -1,0 +1,13 @@
+---
+- date: 2006-01-01
+  author: Eric Hodel
+  content: |-
+    Why bother using mkmf.rb?
+
+    RubyInline probably does what you need without any pain.
+- date: 2006-01-01
+  author: Jamis
+  content: |-
+    Upon looking at the docs, it appears that RubyInline probably would be sufficient for most of what I need. Thanks for forcing me to take a closer look at it, Eric.
+
+    Still, mkmf _ought_ to be documented, if it's in the stdlib.

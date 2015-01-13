@@ -1,0 +1,68 @@
+---
+layout: post
+title: GDB wrapper for Ruby
+post_id: 149
+categories:
+- Announcements
+date: 2006-09-25 11:10:00.000000000 -06:00
+author: Jamis
+permalink: 2006/09/25/gdb-wrapper-for-ruby.html
+---
+
+<p>In his usual inimitable fashion, _why raised his hand in the comments to <a href="http://weblog.jamisbuck.org/2006/9/22/inspecting-a-live-ruby-process">Inspecting a live ruby process</a> and asked “I wonder if this could be wrapped up into an extension?” Intriguing idea!</p>
+<p>I played around with it a bit over the weekend, and came up with a relatively simple script that wraps the <span class="caps">GDB</span> console, using <code>popen</code> to communicate with it from Ruby. It lets you do some fun stuff, but it’s still kind of fragile. I’m releasing it into the public domain, in the hopes that someone will take the idea and run with it, since I don’t really have any more time to play with it.</p>
+<p>You can grab it <a href="http://weblog.jamisbuck.org/assets/2006/9/25/gdb.rb">here</a>.</p>
+<p>Basic usage:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt>23<tt>
+</tt>24<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">require <span class="s"><span class="dl">'</span><span class="k">gdb</span><span class="dl">'</span></span><tt>
+</tt><tt>
+</tt><span class="c"># create a new GDB::Ruby instance and attach it to</span><tt>
+</tt><span class="c"># pid 12345</span><tt>
+</tt>gdb = <span class="co">GDB</span>::<span class="co">Ruby</span>.new(<span class="i">12345</span>)<tt>
+</tt><tt>
+</tt><span class="c"># print the (ruby) backtrace of the remote process</span><tt>
+</tt>gdb.backtrace.each { |line| puts line }<tt>
+</tt><tt>
+</tt><span class="c"># show the current local variables, and their values</span><tt>
+</tt>p gdb.local_variables<tt>
+</tt><tt>
+</tt><span class="c"># evaluate arbitrary ruby code in the remote process</span><tt>
+</tt>p gdb.eval(<span class="s"><span class="dl">'</span><span class="k">%(pid #{$$})</span><span class="dl">'</span></span>)<tt>
+</tt><tt>
+</tt><span class="c"># show how many instances of each class exist in the</span><tt>
+</tt><span class="c"># remote process</span><tt>
+</tt>p gdb.object_space<tt>
+</tt><tt>
+</tt><span class="c"># raise an exception in the remote process</span><tt>
+</tt>gdb.raise <span class="co">Exception</span>, <span class="s"><span class="dl">"</span><span class="k">go boom!</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt><span class="c"># close the connection to the remote process</span><tt>
+</tt>gdb.quit</pre></td>
+</tr></table>
+<p>As I said, it’s a little fragile; it doesn’t really do much in the way of error handling. Also, I’ve noticed that it will occassionally kill the process it attaches to (I suspect some bad interaction with garbage collection, but I haven’t dug much into it). For the curious, it uses the <span class="caps">C API</span> to work its magic, rather than the eval-based approach described by <a href="http://eigenclass.org/hiki.rb?ruby+live+process+introspection">Mauricio</a>. A more robust implementation could possibly be created using eval.</p>
+<p>So, forgive the unoriginal name and the spotty implementation. It’s a fun experiment, nonetheless. Let me know what you think!</p>

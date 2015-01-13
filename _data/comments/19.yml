@@ -1,0 +1,374 @@
+---
+- date: 2010-03-01
+  author: Scott
+  content: "<p>I think you meant “UJS” instead of “RJS” in the third paragraph.</p>"
+- date: 2010-03-01
+  author: Jamis
+  content: "<p>Yup, you’re right Scott. Thanks for catching that.</p>"
+- date: 2010-03-01
+  author: Tom Brice
+  content: <p>I am very interested in how this kind of thing (as well as <span class="caps">RJS</span>)
+    is designed to work in a Rails3 world.  I’m thankful to you for starting the discussion.</p>
+- date: 2010-03-01
+  author: kangax
+  content: "<p>Prototype already extends `document` with `observe`, so you can replace
+    `$(document.body).observe` with just `document.observe`. This will add event listener
+    to root element — `document.documentElement` — instead of `document.body` (which
+    is more or less identical).</p>"
+- date: 2010-03-01
+  author: Jamis
+  content: "<p>@kangax, thanks! This is what comes of cargo-culting. :) Your suggestion
+    works great, and even lets me do Behaviors.add outside of a dom:loaded closure.
+    Much cleaner.</p>"
+- date: 2010-03-01
+  author: Sam Hill
+  content: "<p>Much of the time when working on a group project I avoid id’s entirely
+    in my css, and use them exclusively for js. I find it’s not restrictive nearly
+    all of the time, and then one can still use document.getElementById(), which is
+    good for performance…</p>"
+- date: 2010-03-01
+  author: Jamis
+  content: "<p>@Sam, ids only work if you can guarantee no more than one element on
+    a page with a particular behavior. My fairly-simple project has already run into
+    several instances where this isn’t true, so id-based selection wasn’t sufficient.</p>"
+- date: 2010-03-01
+  author: Steve St. Martin
+  content: "<p>the link_to_function as well as the previous 2.3.x behavior has not
+    been removed, just is not the rails 3 way, the previous inline behavior exists
+    in its own plugin now, take a look at http://github.com/rails/prototype_legacy_helper</p>"
+- date: 2010-03-01
+  author: Brian Morearty
+  content: "<p>Purity for purity’s sake. Thanks for saying it, Jamis.</p>\n\n\n\t<p>My
+    reaction when I first heard about <span class=\"caps\">UJS</span> a couple years
+    ago was that it was really cool.  But I quickly became disillusioned when I realized
+    <span class=\"caps\">UJS</span> can hurt the user experience.  I’ll take a better
+    UX over pure code.</p>\n\n\n\t<p>For an example go to http://www.dzone.com and
+    click the login link in the top right corner of the page quickly, before the browser
+    has had a chance to hook up the <span class=\"caps\">UJS</span>. You will see
+    a weird, ugly login page and be confused. (This really happened to me. I was weirded
+    out.) This would not happen if the event had been hooked up inline.</p>\n\n\n\t<p>Also
+    it doesn’t matter that much if the generated code is impure. What matters most
+    is that the code you have to maintain is clean. Worrying about impure generated
+    JavaScript would be like worrying about the maintainability of the assembly language
+    code that a C++ compiler generates.</p>"
+- date: 2010-03-01
+  author: Jamis
+  content: "<p>@Steve, “removed” means “not in Rails 3”. By moving it to its own plugin,
+    link_to_function has indeed been “removed”.</p>\n\n\n\t<p>I’ve talked with Josh
+    Peek about this (who made that change in Rails 3), and his stance clarified things
+    a bit for me, though. He is not opposed to small bits of inline Javascript, and
+    in fact suggested that link_to(..., :onclick =&gt; ””) be used in place of link_to_function.
+    The link_to_function helper was removed because it tended to encourage <em>too
+    much</em> inline Javascript.</p>\n\n\n\t<p>@Brian, amen. Sing it, brother!</p>"
+- date: 2010-03-01
+  author: Bryant Cutler
+  content: <p>Actually, I think attaching the behavior via <span class="caps">CSS</span>-style
+    selectors is fine. Ideally, your markup has class names and ids that denote the
+    semantic function of the various <span class="caps">HTML</span> elements, rather
+    than something specifically presentational. And of course, there’s nothing stopping
+    you from using multiple space-separated classes on your <span class="caps">HTML</span>
+    elements, some for styling and some for behavior. If you had to tie the Javascript
+    functionality to an actual <span class="caps">CSS</span> selector, it’d be lame,
+    but using a <span class="caps">CSS</span>-style selector to chose document nodes
+    for behavior attachment is totally kosher.</p>
+- date: 2010-03-02
+  author: Radoslav Stankov
+  content: "<p>You can also use my Event.delegate / http://gist.github.com/66568 /
+    and simplify even more:</p>\n\n\n\t<p>document.delegate(“*[data-behaviors~=” +
+    behavior + “]”, trigger, handler);</p>"
+- date: 2010-03-02
+  author: Jonathan del Strother
+  content: "<p>@Brian dzone.com are using window.onload to hook up their event handlers,
+    which is a really bad idea since it has to wait until all the page resources have
+    finished loading.  If they were using DOMContentLoaded I’m pretty sure you wouldn’t
+    run into that problem.</p>"
+- date: 2010-03-02
+  author: Morgan Roderick
+  content: "<p>“But what I soon discovered was that you wind up with a bunch of <span
+    class=\"caps\">CSS</span> classes that are not used for styling at all” ... how
+    did that happen?</p>\n\n\n\t<p>When I write <span class=\"caps\">CSS</span> files,
+    I only add stuff I need … just because an <span class=\"caps\">HTML</span> element
+    has a class attribute, doesn’t mean you have to mirror that in your <span class=\"caps\">CSS</span>
+    file.</p>\n\n\n\t<p>Or is what you really mean, that you end up with a bunch of
+    <span class=\"caps\">HTML</span> class attributes, that you’re not using for styling
+    at all?</p>\n\n\n\t<p>That’s a perfectly valid situation,\nhttp://www.w3.org/TR/html401/struct/global.html#h-7.5.2</p>\n\n\n<hr>\n\n\n\t<p>Finding
+    dom nodes with <span class=\"caps\">CSS</span> selectors, using modern JavaScript
+    libraries and modern browsers, can only be faster than finding unqualified elements
+    with <span class=\"caps\">HTML5</span> specific attributes using a regular expression.</p>\n\n\n\t<p>There
+    is even the querySelectorAll as native method built in modern browsers, that speeds
+    things up considerably.</p>"
+- date: 2010-03-02
+  author: Stefano C.
+  content: "<p>Patching LowPro in order to be able to use it like this:</p>\n\n\n\t<p>Event.addBehavior({‘add-alias’:
+    AddAliasBehavior})</p>\n\n\n\t<p>is extremely simple:</p>\n\n\n<h2>78c78,79\n&lt;
+    \      var parts = sel.split(/:(?=[a-z]+$)/), css = parts<sup><a href=\"#fn0\">0</a></sup>,
+    event = parts<sup><a href=\"#fn1\">1</a></sup>;</h2>\n<blockquote>\n\t<p>var parts
+    = sel.split(/:(?=[a-z]+$)/), behavior_name = parts<sup><a href=\"#fn0\">0</a></sup>,
+    event = parts<sup><a href=\"#fn1\">1</a></sup>;\n\tvar css = ‘*[data-behavior~=’
+    + behavior_name + ‘]’</p>\n\n</blockquote>"
+- date: 2010-03-02
+  author: Stefano C.
+  content: "<p>Whoopsie, sorry for the formatting mess :-)</p>"
+- date: 2010-03-02
+  author: Svoop
+  content: "<p>Check out RightJS. It’s a slim JS lib which offers – amongst other
+    things – behaviors (and soon native behaviors) as part of the core. It’s very
+    performant, often pretty close to metal JS code, yet makes your <span class=\"caps\">UJS</span>
+    code way more readable. The author of RightJS has an affinity towards Ruby, so
+    many helper methods look and feel like Ruby. (You can even enable underscore_method_names
+    instead of the default camelCaseMethodName.)</p>\n\n\n\t<p>http://www.rightjs.org</p>"
+- date: 2010-03-02
+  author: kostiantyn.kahanskyi@gmail.com
+  content: "<p>Sounds for me like the old “TDD is too expensive!” and “Rails doesn’t
+    scale!” :-(</p>"
+- date: 2010-03-02
+  author: Jamis
+  content: "<p>@kostiantyn, really? But <span class=\"caps\">TDD</span> is actually
+    valuable, and Rails does scale. The difference here is that I have yet to see
+    an argument in favor of <span class=\"caps\">UJS</span> that doesn’t boil down
+    to “you shouldn’t put Javascript in your views because…well…because!”</p>\n\n\n\t<p>@everyone
+    else: I tried to explain my stance on <span class=\"caps\">CSS</span> selectors,
+    but I’ll try one more time. When you’re looking at an element with a bunch of
+    <span class=\"caps\">CSS</span> classes, how do you know that any of them map
+    to a behavior? And when you’re looking at a behavior definition in Javascript,
+    how do you know which <em>specific</em> elements it applies to? I’m not being
+    theoretical here: I’ve lived this. I’ve had to support apps where <span class=\"caps\">CSS</span>
+    styles are used to define behaviors, and it is <em>hard</em>, coming into the
+    code for the first time, or even after some small time has passed, to find your
+    way around.</p>\n\n\n\t<p>And yes, using <span class=\"caps\">CSS</span> classes
+    would be “more performant”, but keep in mind that even for a worst-case scenario,
+    my implementation is O(log(n)). We’re searching UP the tree, and not down it.
+    Best (and most common) case: the element you clicked on has the data-behaviors
+    attribute defined, in which case there is no searching at all, and we’re O(1).
+    Worst case: someone clicks on a random location on the page, and the code has
+    to search from that clicked element up to the root element. Not a scary proposition:
+    still a cool O(log(n)), and often n will be small enough that it might as well
+    be O(1) anyway.</p>\n\n\n\t<p>At the end of the day: this is what works for me,
+    and made <span class=\"caps\">UJS</span> not hurt as much. You don’t like it?
+    That’s fine, go implement something better and write a blog post about it. Try
+    to convince me that your way is better. But please don’t touch “performance” unless
+    you have actual numbers to back it up.</p>"
+- date: 2010-03-02
+  author: Bragi
+  content: "<p>How come no one have mentioned jQuery yet?</p>\n\n\n\t<p>It’s trivial
+    to add that kind of behaviour with this library plus it was partially written
+    by Yehuda :)</p>"
+- date: 2010-03-02
+  author: Maximilian Schulz
+  content: "<p>@Bragi: I am wondering myself. I use those principles of unobtrusive
+    JS in combination with jQuery for quite some time and it works perfectly. I still
+    have to check the rails.js file for the jQuery lib, although I used it already
+    in a small project. But I really do not the see the problem of moving the inline
+    js.</p>\n\n\n\t<p>And about the argument, I think we all strive to have the purist
+    solution of all. Or at least I often do my refactorings on the basis of creating
+    a cleaner solution. I would say it is the same argument why we all write the styling
+    in a separate stylesheet and do not include it in the html code. It is a clear
+    separation of concerns:</p>\n\n\n\t<ul>\n\t<li>Everything related to styling belongs
+    into a stylesheet</li>\n\t\t<li>The pure data and its structure is within the
+    html file</li>\n\t\t<li>The client logic belongs into a javascript file</li>\n\t</ul>\n\n\n\t<p>I
+    like it that way and find it much easier to structure my code and keep it clean.
+    Especially once you get a grip of the way to structure your javascript code.</p>"
+- date: 2010-03-02
+  author: 'Tim '
+  content: "<p>Jamis,</p>\n\n\n\t<p>I can make 3 valid arguments for unobtrusive js,
+    maybe 4:</p>\n\n\n\t<p>1) Abstracting out functionality.  For instance, if I have
+    5 links that all need the same event handler.</p>\n\n\n\t<p>2) <span class=\"caps\">TDD</span>
+    – though I don’t test drive my js now, I should &amp; couldn’t if it were inline.</p>\n\n\n\t<p>3)
+    Maintenance/Organization –  It’s much easier to find/modify code if it’s in one
+    place.</p>\n\n\n\t<p>4) Purity is not for purity’s sake.  What happens to the
+    poor designer that forgot to close a div and now has to dig through 5k+ lines
+    of inline js/script tags to find the div?</p>\n\n\n\t<p>I think the argument for
+    purity’s sake is somewhat valid as well.  Script really belongs outside of <span
+    class=\"caps\">HTML</span>.  Though this is an after thought for most, as is me,
+    because we aren’t as particular about our javascript as a Rubyist would be about
+    their Ruby or instance. ;)</p>\n\n\n\t<p>I’d be interested to hear a dedicated
+    JS dev’s thoughts on your post &amp; everyone’s comments.</p>"
+- date: 2010-03-02
+  author: Jamis
+  content: "<p>@Tim, thanks for chiming in with a sane response. I completely agree
+    with your points 1-3, and even #4 to some extent.</p>\n\n\n\t<p>However, I want
+    to make it clear that when I vote for inline JS, I’m not voting for <span class=\"caps\">EVERYTHING
+    INLINE</span>. That way lies insanity. Of course you want the bulk of your code
+    abstracted away. But what is so bad about something like the following?</p>\n\n\n<table
+    class=\"CodeRay\"><tr>\n  <td title=\"click to toggle\" class=\"line_numbers\"><pre><tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre><span class=\"ta\">&lt;a</span> <span class=\"an\">href</span>=<span
+    class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">#</span><span class=\"dl\">\"</span></span>
+    <span class=\"an\">onclick</span>=<span class=\"s\"><span class=\"dl\">\"</span><span
+    class=\"k\">Handlers.executeClick(this)</span><span class=\"dl\">\"</span></span><span
+    class=\"ta\">&gt;</span>Click me!<span class=\"ta\">&lt;/a&gt;</span></pre></td>\n</tr></table>\n\n\n\t<p>How
+    is that worse than any of the other proposals that don’t involve any inline JS?</p>\n\n\n\t<p>All
+    I want, really, is a way to easily and explicitly associate an event on an element
+    to an action in the code. Implicit declarations using <span class=\"caps\">CSS</span>
+    selectors do not cut it for me.</p>"
+- date: 2010-03-02
+  author: Harry
+  content: "<p>There are some performance reasons for putting all scripts in external
+    files and making behavior unobtrusive.</p>\n\n\n\t<ul>\n\t<li>http://www.stevesouders.com/blog/2009/05/06/positioning-inline-scripts/</li>\n\t</ul>\n\n\n\t<ul>\n\t<li>http://developer.yahoo.com/performance/rules.html#js_bottom</li>\n\t</ul>"
+- date: 2010-03-02
+  author: Todd
+  content: <p>Document.write and onclick <span class="caps">FTW</span></p>
+- date: 2010-03-02
+  author: S. M. Sohan
+  content: "<p>Your post has been linked at the www.DrinkRails.com blog</p>"
+- date: 2010-03-02
+  author: Gabe da Silveira
+  content: "<p>I understand where you’re coming from on this one Jamis, but I think
+    you’re off the mark.  I’m considering writing up a full response in my blog, but
+    I want to point out quickly that using a custom attribute for behavior hooks is
+    not a clear win by any means.</p>\n\n\n\t<p>Like any decoupling or indirection,
+    there is a mental overhead that <span class=\"caps\">UJS</span> imposes.  If all
+    your behavior hooks are explicit via custom attributes, there is a certain comfort
+    that can be taken from knowing that behavior will not exist unless it is right
+    there in the <span class=\"caps\">HTML</span>.  However in exchange you now need
+    to create behavior in two places.  You’ve just shifted complexity around.</p>\n\n\n\t<p>With
+    <span class=\"caps\">UJS</span> you select the elements you want to attach behavior
+    to.  This can all be done from a static JS file without any modifications to the
+    <span class=\"caps\">HTML</span>.  Obviously sometimes you have to add more hooks,
+    just the same as you would with <span class=\"caps\">CSS</span> modifications,
+    but if the markup is semantic and the underlying data schema is not changing then
+    you can do quite a lot without modifying the <span class=\"caps\">HTML</span>.</p>\n\n\n\t<p>With
+    inline hooks you have to remember to add them to every occurrence of the tag.
+    \ Now when you create a div.widget, you need to remember to explicitly add all
+    the behaviors you want right there in the <span class=\"caps\">HTML</span>.  Maybe
+    that item is rendered in 20 different templates, and you have to remember to add
+    it to all of them?  So if you’re using Rails you create a helper method and then
+    use that everywhere.  Great!  Until you want to dynamically construct one of those
+    items on the client side via <span class=\"caps\">JS DOM</span> methods.  What’s
+    that?  You use <span class=\"caps\">AJAX</span> to request an <span class=\"caps\">HTML</span>
+    fragment rendered by a partial?  Aside from the increased latency and server load,
+    that can work fairly elegantly… that is until some aspect of that element depends
+    on the context around it.  Now you are suddenly pulling all kinds of context,
+    passing it to the server, and then potentially jumping through more hoops when
+    it comes back.</p>\n\n\n\t<p>Maybe this isn’t very convincing without a concrete
+    example… If you’re interested I can give you a very specific example of where
+    I was able to trade 300 lines of Ruby in for 100 lines of Javascript with dramatically
+    fewer page reloads, numerous edge cases fixed and the addition of some very powerful
+    UI enhancements that would have been simply impossible with a server-centric worldview.
+    \ Using delegated event handlers in javascript made this possible and was a clear
+    win across a dozen different metrics (memory consumption, performance, server
+    load, code length, code clarity, encapsulation, etc, etc)</p>\n\n\n\t<p>Fundamentally
+    I think the problem you’re having is that the standards aren’t as clear for how
+    to use <span class=\"caps\">UJS</span> as they are for <span class=\"caps\">CSS</span>.
+    \ After all, when you change a class attribute, you already know you have to check
+    the <span class=\"caps\">CSS</span> for changes.  You just to get into the habit
+    of looking JS that is hooked onto that class as well.  Maybe you use assert_select
+    in your view tests in which case you need to update those as well—you wouldn’t
+    create a new custom attribute just for testing would you?</p>\n\n\n\t<p>To me
+    it’s all about standardizing your approach.  In my Rails app I claim one global
+    namespace and then attach individual javascript objects encapsulating the behavior
+    for each type of object.  The individual static javascript files tend to mirror
+    the names of the models and controllers.  When I’m writing <span class=\"caps\">HTML</span>
+    templates I don’t need to futz around with complex helpers, I just create a div.widget
+    as plain <span class=\"caps\">HTML</span>, then go to standard.css to style it,
+    and widget.js to add behaviour.  It works very very well and it’s not purity for
+    purity’s sake.</p>"
+- date: 2010-03-02
+  author: Jamis
+  content: "<p>@Gabe, thanks for sharing your thoughts. I do understand your point,
+    but I don’t agree with it. :) I don’t buy the example you used, I guess. So I
+    would have to add my custom attribute to each element…and? Wouldn’t you have to
+    define the elements all those other times, anyway? And give them <span class=\"caps\">CSS</span>
+    classes to select on? I don’t see the problem.</p>\n\n\n\t<p>I’m totally willing
+    to admit that there may be cases where the custom attribute approach isn’t a good
+    fit. I’m certainly not advocating this over all other techniques in every situation.
+    But for the cases I’ve needed, this approach works fantastically, and is self-documenting,
+    which you can’t say for the <span class=\"caps\">CSS</span> selector approach.
+    As I said, I’ve been in the boat where i had to decipher what an app was doing
+    when all the behaviors were implicit, and that was not a fun experience.</p>"
+- date: 2010-03-02
+  author: Gabe da Silveira
+  content: "<p>Yes you do have to define the class name, but what I’m getting at is
+    that’s <strong>all</strong> you should have to define.  This gets to essence of
+    the value of a semantic class name.  If you just say, for example, here is a div.rating.
+    \ Then you can go in <span class=\"caps\">CSS</span> and define what a rating
+    looks like, and you can go in JS and define the behavior of a rating, and you
+    can write assert_select to say this page should be outputting X number of ratings,
+    etc, etc.</p>\n\n\n\t<p>Adding a custom attribute to define behavior does clarify
+    intent, but that same case can be made for using tons of utility classes (or even
+    inline styles!) for styling your page rather than using <span class=\"caps\">CSS</span>
+    selectors to style semantically named elements.  Sometimes there is a reason for
+    this approach (eg. grid systems for large sites), but often times you end up with
+    a proliferation of classes that make the <span class=\"caps\">HTML</span> harder
+    to right and reuse (ie. the well-known class-itis phenomenon).</p>\n\n\n\t<p>By
+    specifying behavior inline by custom attributes, you do make it easier for new
+    developers to understand that bit of <span class=\"caps\">HTML</span>, but that
+    is offset by the fact that if future template writers forget one custom attribute
+    then one template of the site is potentially broken (whereas if you broke the
+    behavior by modifying the class, it would break across the site and you would
+    be less likely to miss it).  It’s not a big deal you have one or two custom attributes,
+    but the more you add the more error-prone it is, and if you break the convention
+    in one or two places you can kiss all the self-documenting goodness goodbye.  Therefore,
+    if you have non-trivial javascript functionality, it’s better to just define your
+    standard architectural conventions up front rather than relying on a technique
+    which is not going to scale well.</p>"
+- date: 2010-03-02
+  author: Jason Cheow
+  content: "<p>I was first a JavaScript developer before I started on Rails and the
+    reason why I took to Rails so easily was the clear separation between model, view
+    and controller.</p>\n\n\n\t<p>To chime in on the “purity for purity’s sake” thing,
+    the reason why I prefer <span class=\"caps\">UJS</span> is the same reason I like
+    using Rails—clear separation between markup, styles and behaviour.</p>\n\n\n\t<p>Moving
+    inline JavaScript to external files is like the concept of skinny controller,
+    fat model for me. Having a ton of code in the controller makes it explicit what
+    each action in a controller does, but moving them to the model separates controller
+    from business logic. For JavaScript then, moving inline code to an external file
+    separates behaviour from markup. Both aids code maintainability.</p>\n\n\n\t<p>As
+    for the problem of not being able to see at first glance what behaviour a certain
+    element on a page has, I use Gabe’s method of naming my JavaScript files the same
+    way Rails names its controllers: application.js for global behaviours, [controller
+    name].js for behaviours specific to a resource.</p>\n\n\n\t<p>True, you won’t
+    be able to see immediately what behaviours each element are hooked up to, but
+    you can always match the resource you are examining to the correspondingly named
+    JavaScript file, and within the file, if it’s well organised and documented, it
+    shouldn’t be that difficult to locate the code you are looking for, especially
+    if you are using <span class=\"caps\">CSS</span> selectors to hook up behaviours
+    to elements.</p>"
+- date: 2010-03-05
+  author: Justin Blake
+  content: <p>I think Jamis clears up his view nicely in comment 23. He’s not bashing
+    <span class="caps">UJS</span> because he wants to throw a bunch of javascript
+    into his <span class="caps">HTML</span>.</p>
+- date: 2010-03-12
+  author: Phil McClure
+  content: "<p>Surely you’re not suppose to touch the rail.js driver… I wrote a bit
+    about <span class=\"caps\">UJS</span> on my blog – http://therailworld.com/posts/26-Using-Prototype-and-JQuery-with-Rails3-UJS-</p>\n\n\n\t<p>With
+    this approach, the javascript is store in its own view.  Very structured and very
+    easy to find what relates to what.</p>"
+- date: 2010-03-14
+  author: Tore Darell
+  content: "<p>I think the <span class=\"caps\">UJS</span> evangelists have failed
+    to really convince people why their (our) way is the Right Way. Most of the noise
+    coming from the <span class=\"caps\">UJS</span> cargo cult is moralising chants
+    and lectures, but what people want to know is what’s in it for them. I’ve tried
+    <a href=\"http://thejavascriptway.com/posts/9-the-real-world-case-for-unobtrusive-javascript\">explaining</a>
+    exactly what makes it so much better than the alternative – I wouldn’t be doing
+    all this work if there weren’t massive benefits to it.</p>\n\n\n\t<p>That article
+    is not a reply to this post, it’s more of a non-moralising description of the
+    benefits of using JavaScript for what it really is. Summed up, the argument is
+    this: People forget about basic programming best practises when dealing with JavaScript.
+    JavaScript is a real programming language, and those of us who follow these practises
+    use that fact to our advantage and reap the benefits from it.</p>\n\n\n\t<p>Don’t
+    listen to the vocal <span class=\"caps\">UJS</span> cargo culters; most of them
+    can’t tell a prototype from a constructor function.</p>"
+- date: 2010-03-17
+  author: blanquer
+  content: "<p>Jamis,</p>\n\n\n\t<pre><code>You might want to check out http://github.com/rightscale/behaveJS
+    (in case you don't know it)</code></pre>\n\n\n\t<p>It’s not just a test or a prototype,
+    but currently used in production for the RigthScale management dashboard site
+    (which is fairly rich and big Rails app). I believe you might find it implements/addresses
+    many of your original points of unobtrusiveness, behavioral definitions, cleanliness
+    of html, javascript page performance…</p>\n\n\n\t<pre><code>Cheers!</code></pre>"
+- date: 2010-03-27
+  author: Rod Knowlton
+  content: "<p>Jamis,</p>\n\n\n\t<p>The argument for <span class=\"caps\">UJS</span>
+    that I’ve not seen mentioned here, and which to me is the primary argument, is
+    <em>accessibility</em>.</p>\n\n\n\t<p><span class=\"caps\">UJS</span> is an important
+    part of progressive enhancement and graceful degradation. Using it preserves the
+    core functionality of a site even for those without JavaScript enabled, such as
+    screen-readers.</p>"
+- date: 2010-05-24
+  author: chris
+  content: "<p>I agree with Rod. Accessibility is one of the most important things
+    to take into account while developing a web presence nowadays. Why discard users
+    while with a little effort it’s possible to make the page accessible to almost
+    all users.</p>"

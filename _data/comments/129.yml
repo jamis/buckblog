@@ -1,0 +1,105 @@
+---
+- date: 2007-01-23
+  author: Jim Morris
+  content: "<p>Testing network code is never easy :( and these examples you give seem
+    especially hard.</p>\n\n\n\t<p>I usually use flexmock for these kinds of problems,
+    and mock out as high a level as I can, to focus my tests on the specific method.</p>\n\n\n\t<p>For
+    instance in the file transfer abstraction, I’d flexmock sftp, and have it return
+    different results for testing those edge cases.</p>\n\n\n\t<p>I found flexmock
+    to be the most flexible of the mocking packages, although it takes a while to
+    get the hang of it, but well worth it.</p>"
+- date: 2007-01-23
+  author: Jamis
+  content: "<p>Thanks for the tip, Jim, I don’t feel quite so stupid knowing that
+    the examples given are “especially hard” to test. I’ll see about using flexmock
+    more for some of those.</p>"
+- date: 2007-01-23
+  author: Paul Brown
+  content: "<p>For testing the commandline components, I’d use expect.  Not Ruby,
+    but it does do a good job of testing commandline tooling.</p>"
+- date: 2007-01-23
+  author: Jon Leighton
+  content: "<p>Mocha (http://mocha.rubyforge.org/) might be useful?</p>"
+- date: 2007-01-23
+  author: Joe
+  content: "<p>Just submit it to that Rails Way site.  Those guys are smart, they’ll
+    help you.</p>"
+- date: 2007-01-23
+  author: Lori Olson
+  content: "<p>I was going to say – use Mocks – but I see someone beat me to it.</p>\n\n\n\t<p>Seriously,
+    though, I discovered something interesting in some of my fellow programmers.  They
+    don’t use mocks because they say mocks are too hard to build.  But that’s just
+    a cover for the real problem, which is that they don’t understand the thing needing
+    to be “mocked” well enough to mock it… which sort of explains why the unit tests
+    suck.</p>"
+- date: 2007-01-23
+  author: Jim Morris
+  content: "<p>I agree with Lori, mocking is an acquired art, and it isn’t always
+    obvious how to mock an object or indeed which objects to mock. Also injection
+    of mock objects sometimes requires minor refactoring of the code under test, which
+    I think is quite acceptable practice as good unit tests have such obvious advantages.</p>"
+- date: 2007-01-23
+  author: Jamis
+  content: "<p>I will admit that I am not as familiar with mocking and stubbing as
+    I would like to be—I’ve done it some (with both Net::SSH and Capistrano, even),
+    but I’d like to understand it better. Can anyone recommend any resources for becoming
+    better acquainted? Trial and error are demanding teachers, any cliff notes for
+    that course are welcome. :)</p>"
+- date: 2007-01-24
+  author: Michael Schuerig
+  content: "<p>Start with Martin Fowler’s essay http://www.martinfowler.com/articles/mocksArentStubs.html</p>\n\n\n\t<p>Then
+    dig around at http://www.mockobjects.com/</p>"
+- date: 2007-01-24
+  author: Assaf
+  content: "<p>I had to do something similar with Net::HTTP. Basically tesing how
+    the app would interact with a Web server that could return a page, 404, redirect,
+    etc.</p>\n\n\n\t<p>After digging through Net::HTTP I found what I was looking
+    for. All the <span class=\"caps\">API</span> calls (start, get, get_response)
+    come down to one internal method that makes the actual <span class=\"caps\">HTTP</span>
+    request. Ruby has open classes, so it was just a matter of redefining that one
+    method. Instead of doing <span class=\"caps\">HTTP</span> calls, it would execute
+    a block of my choosing, simulating a server.</p>\n\n\n\t<p>I could then script
+    how the server behaves by writing something like this in my test case:</p>\n\n\n\t<ol>\n\t<li>Setup
+    Net::HTTP to simulate a server.\nNet::HTTP.in_response_to “http://example.com/index.html”
+    do\n  return [200, “Hello”]\nend</li>\n\t\t<li>Actual test comes here …</li>\n\t</ol>\n\n\n\t<p>That
+    worked well for simple case. But say you want to test that the library will make
+    one request, server returns a redirect, the library would then make another request
+    to the new <span class=\"caps\">URL</span>, get a page and be done. If you think
+    about it for a second, that requires a lot of state management and assertions.
+    It quickly becomes unreadable.</p>\n\n\n\t<p>So instead, I changed Net::HTTP to
+    call a mock object, making different calls depending on the request <span class=\"caps\">URI</span>.
+    I could then write the expected behavior:</p>\n\n\n\t<ol>\n\t<li>Decide how the
+    server will behave.\nmock.once.expect(”/”).response { redirect_to “index.html”
+    }\nmock.once.expect(”/index.html”).response { return [200, “Hello”] }</li>\n\t\t<li>Actual
+    test comes here …</li>\n\t</ol>\n\n\n\t<p>The mock framework will make sure that
+    each of these requests happen exactly once and in that order. It will fail the
+    test if ”/” was requested twice, or if ”/index.html” was never requested, or if
+    somehow ”/index.xml” was requested.</p>\n\n\n\t<p>It’s the easiest way to express
+    the expected behavior of the server and test against it.</p>\n\n\n\t<p>You can
+    do the same to test console IO <del>- replace <span class=\"caps\">STDOUT</span>/STDIN
+    with something that looks like IO -</del> SFTP, etc. The hardest part is setting
+    up the first test, I spent more than a day on <span class=\"caps\">HTTP GET</span>
+    alone. But after that, the rest of the tests just flow</p>"
+- date: 2007-01-24
+  author: Jim Morris
+  content: |-
+    <p>The ruby cookbook ch 17.9 has an example using flexmock.
+    Also most of the packages have decent examples. I actually learned the skill from easymock when I was doing some heavy duty Java server programming.</p>
+- date: 2007-01-25
+  author: Brandon Keepers
+  content: "<p>I agree that mocking the low level code to test the high level code
+    is the way to go, but something I’ve been struggling with lately is that at some
+    point, I actually need to do remote calls to test the lower level code, and make
+    sure the server responds like I think it does.</p>\n\n\n\t<p>For example, I’ve
+    been working on a <a href=\"http://rubyforge.org/projects/caldav\">CalDAV</a>
+    client recently, and while I’m trying to mock as much as possible, using the CalDAV
+    spec as a guide, I really should be doing some remote tests against real servers
+    to make sure they comply with the spec, and make sure I understand it.</p>\n\n\n\t<p>(Assaf:
+    check out <a href=\"http://fakeweb.rubyforge.org/\">FakeWeb</a> for mocking <span
+    class=\"caps\">HTTP</span>.  It does basically the same thing you described in
+    the first half of your comment.  It would be nice to see it get the ability to
+    use mocks/expectations.)</p>"
+- date: 2007-01-25
+  author: Assaf
+  content: "<p>Brandon, thanks for the tip. FakeWeb was exactly what I needed early
+    on. It doesn’t do mocks, though. A MockFakeWeb would be a killer.</p>"

@@ -1,0 +1,31 @@
+---
+- date: 2006-03-01
+  author: Alex
+  content: Has this tool ever been released?  It would come in quite handy for me
+    right about now.. :)
+- date: 2006-03-01
+  author: Jamis
+  content: Alex, yes, it is called SwitchTower. You can read the manual at http://manuals.rubyonrails.org/read/book/17,
+    and install it via rubygems (@gem install switchtower@). If rubygems isn't an
+    option, you can go to http://rubyforge.org/projects/switchtower and grab a zip
+    or tgz file of it, too.
+- date: 2006-03-01
+  author: Alex
+  content: Fabulous!  Thanks.
+- date: 2006-09-05
+  author: spazmo
+  content: |+
+    For future reference, SwitchTower is now called Capistrano:
+
+    gem install capistrano
+
+- date: 2006-11-12
+  author: raghavendra@better-marketing.com
+  content: "<p>when can this application be public in distributuion so that all the
+    rubyonrails develpers can enjoy the fulliest enjoyment</p>"
+- date: 2006-11-12
+  author: Jamis
+  content: "<p>The app, as commenter #4 pointed out, is already available, and is
+    called Capistrano. You can install it via rubygems (gem install capistrano), or
+    you can go to http://rubyforge.org/projects/capistrano to download the package
+    and install it manually.</p>"

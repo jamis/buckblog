@@ -1,0 +1,102 @@
+---
+layout: post
+title: Enumerated types in Ruby
+post_id: 201
+categories:
+- Tips & Tricks
+date: 2005-08-07 12:04:00.000000000 -06:00
+author: Jamis
+permalink: 2005/08/07/enumerated-types-in-ruby.html
+---
+
+<p>It’s not often that I need an enumerated type in Ruby—there is usually a more elegant way of doing things, I’ve found. But when I’m interfacing with a C library (such as <a href="http://fmod.org/">fmod</a>, in this case), it can be a pain to stop and define constants for every enumerated type.</p>
+<p>It’s probably been done before, but I found the following little class quite helpful:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">EnumeratedType</span><tt>
+</tt>  <span class="r">class</span> &lt;&lt;<span class="cl">self</span><tt>
+</tt>    <span class="r">def</span> <span class="fu">start</span>(n)<tt>
+</tt>      <span class="iv">@next_value</span> = n<tt>
+</tt>    <span class="r">end</span><tt>
+</tt><tt>
+</tt>    <span class="r">def</span> <span class="fu">const_missing</span>(sym)<tt>
+</tt>      <span class="iv">@next_value</span> ||= <span class="i">0</span><tt>
+</tt>      const_set(sym, <span class="iv">@next_value</span>)<tt>
+</tt>      <span class="iv">@next_value</span> += <span class="i">1</span><tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>It lets you create enumerated types like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">OutputType</span> &lt; <span class="co">EnumeratedType</span><tt>
+</tt>  <span class="co">AUTODETECT</span><tt>
+</tt>  <span class="co">UNKNOWN</span><tt>
+</tt>  <span class="co">NOSOUND</span><tt>
+</tt>  <span class="co">WAVWRITER</span><tt>
+</tt>  <span class="co">DSOUND</span><tt>
+</tt>  <span class="co">WINMM</span><tt>
+</tt>  <span class="co">ASIO</span><tt>
+</tt>  <span class="co">OSS</span><tt>
+</tt>  <span class="co">ALSA</span><tt>
+</tt>  <span class="co">ESD</span><tt>
+</tt>  <span class="co">SOUNDMANAGER</span><tt>
+</tt>  <span class="co">COREAUDIO</span><tt>
+</tt>  <span class="co">XBOX</span><tt>
+</tt>  <span class="co">PS2</span><tt>
+</tt>  <span class="co">GC</span><tt>
+</tt>  <span class="co">XBOX360</span><tt>
+</tt>  <span class="co">PSP</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>If you want to start with a different integer than 0, you can just do:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">OutputType</span> &lt; <span class="co">EnumeratedType</span><tt>
+</tt>  start <span class="i">15</span><tt>
+</tt>  <span class="co">AUTODETECT</span><tt>
+</tt>  ...<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>You can also use start anywhere in the list, to have subsequent constants enumerated starting with the given value.</p>

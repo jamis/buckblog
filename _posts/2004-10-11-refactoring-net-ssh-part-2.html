@@ -1,0 +1,126 @@
+---
+layout: post
+title: 'Refactoring Net::SSH: Part 2'
+post_id: 339
+categories:
+- Under the Hood
+date: 2004-10-11 00:42:00.000000000 -06:00
+author: Jamis
+permalink: 2004/10/11/refactoring-net-ssh-part-2.html
+---
+
+<p>This is the second in a series of articles that deal with refactoring the <a href="http://net-ssh.rubyforge.org">Net::SSH</a> library to take advantage of dependency injection. The first was <a href="http://www.jamisbuck.org/jamis/blog.cgi/programming/dependency-injection/Net::SSH%20Refactoring%20Adventure_20041009094146.tx">Net::SSH Refactoring Adventure</a>.</p>
+<p>Because I am using <a href="http://www.jamisbuck.org/syringe">Syringe</a>, and because the Syringe <span class="caps">API</span> has not yet solidified, refactoring Net::SSH to use Syringe is something of an iterative process. For example, I defined the services using one version of the Syringe <span class="caps">API</span>. Then, I implemented a suggestion from Eivind Eklund, adding a few new <span class="caps">API</span>’s to Syringe. This caused me to go back and change how the services were defined in Net::SSH, and so forth.</p>
+<h3>Original Interface</h3>
+<p>The original interface (which is still supported) was to call <code>#register</code> on the container every time one wanted to install a new service definition:</p>
+<pre>
+  container.register( :something ) { SomeImplementation.new }
+</pre>
+<p>This works great. It is actually the same syntax that <a href="http://onestepback.org">Jim Weirich</a> proposed in his article on <a href="http://onestepback.org/index.cgi/Tech/Ruby/DependencyInjectionInRuby.rdoc">dependency injection in Ruby</a>, which inspired me to write Syringe in the first place.</p>
+<p>However, Eivind pointed out that if you are registering many services in one place (which will often be the case), the “<code>container.register</code>” part starts detracting from the readability of your code. You wind up with something like this:</p>
+<pre>
+  container.register( :something ) { ... }
+  container.register( :another ) { ... }
+  container.register( :yet_another ) { ... }
+  container.register( :foo ) { ... }
+  container.register( :bar ) { ... }
+  container.register( :baz ) { ... }
+  ...
+</pre>
+<h3>New Interface</h3>
+<p>So, Eivind proposed using an <code>instance_eval</code>‘d block, within which the service names are functions to which their construction blocks are attached directly. This seems to follow the <acronym title="Don’t Repeat Yourself">DRY</acronym> rule, as well.</p>
+<p>This new interface is introduced via the <code>register!</code> method (note the bang at the end of the name).</p>
+<pre>
+  container.register! do
+    something {...}
+    another {...}
+    yet_another {...}
+    foo {...}
+    bar {...}
+    baz {...}
+    ...
+  end
+</pre>
+<p>Likewise, there are corresponding methods for registering libraries:</p>
+<pre>
+  Syringe::register_library! {...}
+  Syringe::register_library_namespace! {...}
+</pre>
+<p>And also for declaring a namespace on a container:</p>
+<pre>
+  Container#namespace! {...}
+</pre>
+<p>Note the convention: bang methods in Syringe will denote the <code>instance_eval</code>‘d version of the method.</p>
+<p>I should also note that the <code>instance_eval</code> is done on a proxy object, to prevent pollution of the <code>Container</code> namespace. The proxy object also defines convenience methods for service interception, requiring libraries, and namespace declaration:</p>
+<pre>
+  container.register! do
+    something { ... }
+    namespace :foo do
+      something {...}
+      ...
+    end
+
+    intercept( :something ).with { ... }
+    require "some/syringe-ified/library'
+  end
+</pre>
+<h3>Application of the New Interface</h3>
+<p>So, in Net::SSH, there is a namespace called “net.ssh.transport.ossl”. This namespace (and its subnamespaces) includes all of the OpenSSL-specific functionality in Net::SSH. As such, it declares a lot of services—various factories, some Hashes for storing configuration information, etc. It was functional and fairly readable in the old syntax:</p>
+<pre>
+  Syringe.register_library_namespace( "net/ssh/transport/ossl/package", :ossl ) do |c|
+    c.register( :hmac_algorithm_sources ) { Array.new }
+    c.require( "/net/ssh/transport/ossl/hmac/package" )
+
+    c.register( :cipher_names ) do
+      Hash.new "3des-cbc" =&gt; "des-ede3-cbc",
+               "blowfish-cbc" =&gt; "bf-cbc",
+               ...
+    end
+
+    ...
+
+    c.register( :cipher_factory, :model =&gt; :singleton_deferred ) do |c|
+      require 'net/ssh/transport/ossl/cipher-factory'
+      svc = Net::SSH::Transport::OSSL::CipherFactory.new( c.cipher_names )
+      svc.identity_cipher = c.identity_cipher
+      svc
+    end
+
+    c.register( :hmac_factory, :model =&gt; :singleton_deferred ) do |c|
+      require 'net/ssh/transport/ossl/hmac-factory'
+      Net::SSH::Transport::OSSL::HMACFactory.new( c.hmac_algorithm_sources )
+    end
+
+    ...
+  end
+</pre>
+<p>However, converting it to the new syntax made it even <em>better</em>:</p>
+<pre>
+  Syringe.register_library_namespace!( 'net/ssh/transport/ossl/package', :ossl ) do
+
+    hmac_algorithm_sources { Array.new }
+    require 'net/ssh/transport/ossl/hmac/package'
+
+    cipher_names do
+      Hash.new "3des-cbc"     =&gt; "des-ede3-cbc",
+               "blowfish-cbc" =&gt; "bf-cbc",
+               ...
+    end
+
+    ...
+
+    cipher_factory( :model =&gt; :singleton_deferred ) do |c|
+      require 'net/ssh/transport/ossl/cipher-factory'
+      svc = Net::SSH::Transport::OSSL::CipherFactory.new( c.cipher_names )
+      svc.identity_cipher = c.identity_cipher
+      svc
+    end
+
+    hmac_factory( :model =&gt; :singleton_deferred ) do |c|
+      require 'net/ssh/transport/ossl/hmac-factory'
+      Net::SSH::Transport::OSSL::HMACFactory.new( c.hmac_algorithm_sources )
+    end
+
+    ...
+  end
+</pre>

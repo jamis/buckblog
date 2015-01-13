@@ -1,0 +1,19 @@
+---
+- date: 2006-04-18
+  author: Steven
+  content: |-
+    Hey any idea why when i run my command:
+
+    sudo "/etc/init.d/lighttpd restart" it fails to return?
+
+    capistrano just hangs indefinately (the task does run but it is as if capistrano is waiting for something to be returned and it never happens).
+- date: 2007-01-23
+  author: mGee
+  content: "<p>So where’s the book?<cite>?</cite> It’s 2007 do you know where your
+    book is?</p>"
+- date: 2007-01-23
+  author: Jamis
+  content: "<p>Alas, I’m no longer affiliated with this book. Various things came
+    up that prevented my fulfilling my end of that bargain. The last I heard, AW was
+    moving ahead with different authors. I imagine if the book is still slated for
+    publication, it will be listed somewhere on their site.</p>"

@@ -1,0 +1,45 @@
+---
+- date: 2008-08-16
+  author: Patrick Gundlach
+  content: "<p>You can assign a static <span class=\"caps\">MAC</span> address to
+    the machine, then you can copy and move the virtual machine around and still have
+    network access.</p>\n\n\n\t<p>If you don’t assign a static <span class=\"caps\">MAC</span>
+    address or you say ‘I’ve copied it’, sudo dhclient should be enough to get network
+    access again.</p>\n\n\n\t<p>Patrick</p>"
+- date: 2008-08-19
+  author: Jamis
+  content: <p>Thanks, Patrick, I’ll try dhclient next time and see if that does it
+    for me. A static <span class="caps">MAC</span> won’t, though, because I want to
+    clone the image so I can have multiple running at once. (I’m trying to mimic a
+    cluster of machines for local capistrano testing and training.)</p>
+- date: 2008-09-09
+  author: Andy
+  content: <p>I’m using <span class="caps">DHCP</span> and copying a Ubuntu 8.04 image
+    and ran across the same problem.  Thanks for refreshing my memory on where all
+    the network settings are located!  What did we do before the internet and a search
+    engine to solve problems like this?</p>
+- date: 2008-09-09
+  author: Jim Wylder
+  content: "<p>I tend to blame Ubuntu on this one.  Shouldn’t a Linux Server Distribution
+    be able to handle its mac address changing without losing network connectivity?</p>"
+- date: 2008-10-01
+  author: mlarkypants@hotmail.com
+  content: "<p>This method is not straight forward as put forward I believe as most
+    systems will just come back with unable to resolve host once a change has been
+    made, this will prevent further changes of any kind being made to the system.</p>"
+- date: 2008-10-16
+  author: carlo
+  content: "<p>Anyone tried this one?</p>\n\n\n\t<p><span class=\"caps\">UBUNTU VMWARE
+    IMAGES</span></p>\n\n\n\t<p>http://chrysaor.info/?page=images</p>"
+- date: 2008-10-24
+  author: Pelle Braendgaard
+  content: "<p>You can also  just remove the <span class=\"caps\">ATTR</span>{address}==”...”
+    section completely and it should theoretically work every time you copy it without
+    problems.</p>\n\n\n\t<p><span class=\"caps\">SUBSYSTEM</span>==”net”, <span class=\"caps\">ACTION</span>==”add”,
+    <span class=\"caps\">DRIVERS</span>==”?<strong>”, <span class=\"caps\">ATTR</span>{type}==”1”,
+    <span class=\"caps\">KERNEL</span>==”eth</strong>”, <span class=\"caps\">NAME</span>=”eth0”</p>"
+- date: 2008-11-09
+  author: scott@thereisnoarizona.org
+  content: <p>You should be able to remove the /etc/udev/rules.d/70-persistent-net.rules
+    file and reboot. It will be rebuilt on reboot with the detected <span class="caps">MAC</span>
+    addresses/devices. Delete the existing file, shutdown, then make the copy.</p>

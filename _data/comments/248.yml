@@ -1,0 +1,18 @@
+---
+- date: 2005-11-20
+  author: Maik
+  content: "Thank you for being open about the situation and the problems involved.\n\nRather
+    than repeating the \"YOU DON'T NEED THAT FEATURE\" crap! And there is a lot of
+    that in the forum.\n\nI do admit that many many features requested are unnecessary,
+    ugly and probably dangerous, but somtetimes there are some excellent Ideas and
+    those should be at least recognized as such, even though the implementation may
+    be temporarily challenging.\n\nHonesty pays off! \n\nYou are doing a great job.\n"
+- date: 2005-11-20
+  author: jason
+  content: |+
+    nice writeup, jamis.
+
+    Personally, when i hear my brain prepare a sentence with the words "just" or "only" in them, i force myself to stop and re-evaluate what i am about to say.  The problem of estimation grows exponentially as your application increases in size, as your development group experiences turnover, etc.
+
+    There are times when i know 100% that a given thing will "just be a conf file change," but those times are few and far between.
+

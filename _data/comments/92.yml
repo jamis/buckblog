@@ -1,0 +1,31 @@
+---
+- date: 2007-05-02
+  author: Graeme Mathieson
+  content: "<p>I’m having some trouble with the key verification.  My <code>~/.ssh/known_hosts</code>
+    has a few entries where a bunch of aliases for a machine are listed with the same
+    key.  (Something I manually tidied up because I keep my known_hosts in subversion.)
+    \ That works fine with openssh, but net-ssh seems to be getting a little upset.
+    \ I’ve changed <code>Net::SSH::HostKeyVerifier#load_keys_from</code> to the following:</p>\n\n\n<pre><code>
+    \       def load_keys_from(path)\n          File.readlines(path).map do |line|\n
+    \           hosts, type, key = line.chomp.split\n            key = key.unpack(\"m*\").first\n\n
+    \           hosts.split(/,/).map do |host|\n              host, port = host.split(/:/,
+    2)\n              host = host.gsub(/[\\[\\]]/, \"\")\n              { :host =&gt;
+    host, :port =&gt; port, :type =&gt; type, :key =&gt; key }\n            end\n
+    \         end.flatten\n        end</code></pre>\n\n\t<p>which now appears to do
+    the job.  Unfortunately, it loses the IP address verification in addition to the
+    hostname.</p>"
+- date: 2007-05-07
+  author: Nathan
+  content: "<p>I’ve also had issues with key verification and the new Net-SSH.</p>\n\n\n\t<p>It
+    seems to be utilizing an “ssh-dss” authentication key from the server vs the “ssh-rsa”
+    key which I already have in my known_hosts.  I’m now ending up with duplicate
+    host entries in my known_hosts file, one for each type of key (depending on if
+    I’ve used net-ssh to connect, ssh-dss, or connected via an interactive ssh session,
+    ssh-rsa).</p>\n\n\n\t<p>Since it seems to be a <span class=\"caps\">DSA</span>
+    vs <span class=\"caps\">RSA</span> thing, I’m guessing it has something to do
+    with <span class=\"caps\">SSH</span> vs <span class=\"caps\">SSH2</span>?</p>\n\n\n\t<p>At
+    first it wouldn’t allow connections to known servers, as the provided <span class=\"caps\">DSA</span>
+    key didn’t match the stored <span class=\"caps\">RSA</span> key.  My immediate
+    fix was to just rename my known_hosts file, which seemed to work fine.  Then,
+    after I manually ssh in (after net-ssh creates its own known_host entry), I’ll
+    pick up the <span class=\"caps\">RSA</span> key for the interactive prompts.</p>"

@@ -1,0 +1,52 @@
+---
+- date: 2007-01-02
+  author: John Topley
+  content: "<p>That’s lovely! As an aside, is there any way that you can stop your
+    code snippets from spilling over into your sidebar?</p>"
+- date: 2007-01-02
+  author: Kevin Marsh
+  content: "<p>Maybe something like Evan Weaver’s blog? http://blog.evanweaver.com/</p>\n\n\n\t<p>Hover
+    over the snippets to expand</p>"
+- date: 2007-01-02
+  author: Jamis
+  content: "<p>I believe the snippets only spill over if you are using IE. If you
+    are seeing the problem on non-IE browsers, let me know. The specifics.</p>\n\n\n\t<p>The
+    hover-over-snippets trick is interesting, but I kind of find it districting, myself.</p>\n\n\n\t<p>My
+    feelings on IE are well known, though, so if you <strong>are</strong> using IE,
+    I’m afraid my advice to you is to switch browsers, because I won’t be expending
+    any effort to support IE.</p>"
+- date: 2007-01-02
+  author: John Long
+  content: "<p>The code snippets spill over for me in Safari.</p>"
+- date: 2007-01-02
+  author: Jon Leighton
+  content: "<p>Related: http://lukeredpath.co.uk/2006/7/7/testing-your-rails-views-with-hpricot</p>\n\n\n\t<p>Hpricot
+    would be faster I guess, but wouldn’t be included in core as it’s a dependency
+    (and a compiled one at that). Maybe somebody should make assert_select use Hpricot
+    but only if it’s installed…</p>"
+- date: 2007-01-02
+  author: Jamis
+  content: "<p>Yup, ok, I see the spillover happening in Safari. I’m not sure why
+    it’s happening—Safari is generally better-behaved than that. I’ll see what I can
+    figure out, though I can’t make any guarantees on <em>when</em> I’ll figure it
+    out. :(</p>"
+- date: 2007-01-02
+  author: Ryan
+  content: <p>I just read about assert_select in the second edition of the <span class="caps">AWDWR</span>
+    book.  I’ve yet to try it, but it seems amazing.  I’m looking forward to your
+    daily coding tips.</p>
+- date: 2007-01-03
+  author: Dave Hoover
+  content: "<p>Thanks for posting this Jamis, it inspired me to add support for assert_select
+    and assert_tag to Watir on Rails.  More here:  http://redsquirrel.com/cgi-bin/dave/2007/01/03</p>"
+- date: 2007-01-05
+  author: Bill Siggelkow
+  content: <p>I love the way assert_select leverages the <span class="caps">CSS</span>
+    attribute selector syntax (http://www.w3.org/TR/CSS21/selector.html#attribute-selectors).
+    It is this kind of attention to detail and incorporation of prior art that makes
+    developers lives that much easier. Taking this realization further, does the assert_select
+    syntax support the ~= and |= operators? It would be nice if it did for completeness.</p>
+- date: 2007-01-05
+  author: Jamis
+  content: <p>Bill, according to <a href="http://blog.labnotes.org/2006/09/04/assert_select-cheat-sheet/">this
+    cheat sheet</a>, it does. :)</p>

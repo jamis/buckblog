@@ -1,0 +1,118 @@
+---
+- date: 2008-03-06
+  author: Nate Klaiber
+  content: "<p>I would agree. Even if your FD_SET method changed it’s arguments, it’s
+    likely you would have to change it in other spots as well. As you said, there
+    is a point where running it through a loop would be beneficial – but for just
+    a few calls there is no need to run a loop, almost seems like overkill.</p>"
+- date: 2008-03-06
+  author: Daniel Berger
+  content: "<p>Where is that code from? Just curious.</p>\n\n\n\t<p>Dan</p>"
+- date: 2008-03-07
+  author: Joachim Bengtsson
+  content: "<p>/This/ is duplication of code: http://overooped.com/post/27931909 .
+    Ugggh. I hate working with this code base…</p>"
+- date: 2008-03-07
+  author: Neil Wilson
+  content: "<p>That’s the kind way of looking at it. The unkind reason is that (certain)
+    programmers like to be clever clogs – particularly those using a character code
+    as an array index as in this example.</p>\n\n\n\t<p>I wonder what trick they’d
+    use to mask out <span class=\"caps\">FD 257</span>?</p>"
+- date: 2008-03-07
+  author: Vidar Hokstad
+  content: "<p>Ignoring the loop, this is a bizarrely beautiful “abuse” of FD_SET
+    – I’d have to admit I’ve never contemplated using it as a generic bitfield before…</p>\n\n\n\t<p>Neil,
+    this isn’t an attempt to mask out any filedescriptors – it’s using FD_* as a lookup
+    bitmap for characters only. From the name it sounds like the idea is to use it
+    to loop over a string and check the fd_set to decide whether or not a character
+    should be url encoded.</p>\n\n\n\t<p>A bit wasteful (on my system fd_set is 128
+    bytes vs. the 32 bytes needed, but it can be far larger), but I doubt it’d be
+    that tricky to understand in context, if it hadn’t been for that loop.</p>\n\n\n\t<p>Vidar</p>"
+- date: 2008-03-07
+  author: Leon Breedt
+  content: "<p>Like Vidar, I had to do a double take when I saw FD_SET was being used,
+    pointer incrementing to walk over a string is pretty standard in C, but FD_SET
+    for this completely out-of-context use?</p>\n\n\n\t<p>Clever, but I’d probably
+    take the responsible programmer out back and shoot him, if he was working for
+    me…After marveling at the thought process which led him to use it :)</p>"
+- date: 2008-03-07
+  author: Vidar Hokstad
+  content: "<p>I guess It’s a bit like Duff’s device (look it up if you haven’t come
+    across it) – evil and beautiful (in the way H.R. Giger pictures are beautiful…)
+    \ at the same time.</p>"
+- date: 2008-03-08
+  author: Mario Gleichmann
+  content: "<p>Who said that calling the same function in a row (even with the same
+    arguments) is code duplication?</p>\n\n\n\t<p>I would say, code duplication is
+    rather about placing the same block of ‘logic’ twice or more within your codebase
+    (same functionality located on different locations, thus violating <span class=\"caps\">DRY</span>
+    principle)</p>\n\n\n\t<p>Greetings</p>\n\n\n\t<p>Mario</p>"
+- date: 2008-03-08
+  author: Ricky Clarkson
+  content: "<p>List(’”’,’#’) foreach FdSet(_, hdrEncodeMap))</p>\n\n\n\t<p>This is
+    a Scala equivalent – in this case I don’t think it’s ridiculous to use this to
+    get rid of the duplication.  The _ in there is an unnamed lambda parameter (I
+    changed the other identifiers to camelCase so that the _ would not be lost in
+    the noise; presumably if you needed the underscore_convention you would pick a
+    different character than _ for the lambda parameter).</p>\n\n\n\t<p>I’m not touting
+    Scala here, just saying that the language/libs you use might affect whether removing
+    code duplication is seen as worth it.. whenever it’s not, consider finding/writing
+    a better language/libs.</p>"
+- date: 2008-03-08
+  author: Alex C
+  content: "<p>“Make things as simple as possible, and no simpler.” \n  – Probably
+    Not Einstein</p>"
+- date: 2008-03-11
+  author: QB
+  content: "<p>Dear Buckblog,</p>\n\n\n\t<p>It doesn’t “beg the question”, it “raises
+    the question”.  Learn what question begging is before throwing the phrase around.
+    \ Do you use the word “penultimate” to mean “the best”?  I hope not.</p>\n\n\n\t<p>There.
+    Had to get that off my chest. Now, back to work.</p>"
+- date: 2008-03-11
+  author: Jamis
+  content: <p>To make reader @QB happy, I’ve changed “begs” to “raised”, although
+    I’m of the opinion that such was nitpicking on his part. :) (For the curious,
+    <a href="http://en.wikipedia.org/wiki/Begging_the_question">begging the question</a>,
+    since QB only wanted to cry foul and not educate, apparently!)</p>
+- date: 2008-03-12
+  author: Stacy
+  content: "<p>The proper tool to remove duplication is abstraction, if no suitable
+    abstraction can be found then the duplication should be left alone. I think the
+    code above would be fine if it were encapsulated in a function:</p>\n\n\n\t<p>FD_SET_MANY(”\\”#”,
+    url_encode_map);</p>\n\n\n\t<p>The primary concern when refactoring should not
+    be to remove duplication, this is ridiculously low level, textual goal. The primary
+    concern when refactoring should be the creation of appropriate abstractions.</p>"
+- date: 2008-03-14
+  author: JK
+  content: |-
+    <p>If they were bent on reducing replication the middle line could have been:
+    FD_SET(*tmp++, url_encode_map); :p</p>
+- date: 2008-03-14
+  author: Jaosn
+  content: "<p>Daniel Berger: Google tells me it’s in haproxy.c from the HAProxy project.</p>"
+- date: 2008-03-16
+  author: dmnd
+  content: "<p>From the article:</p>\n\n\n\t<p>“Calling the same function twice is
+    <span class=\"caps\">NOT</span> duplicating code. Not if the arguments change
+    between calls.”</p>\n\n\n\t<p>The arguments in this case did not all change. Only
+    one of them did. What if there were 5 arguments to that function, 4 of which remained
+    the same between successive calls? Would you call that duplication?</p>\n\n\n\t<p>This
+    example does have <strong>some</strong> duplication and I don’t really have a
+    problem with abstracting it away. If I wrote this code I’d probably end up following
+    Stacey’s advice (comment 13).</p>"
+- date: 2008-03-19
+  author: Ernie
+  content: "<p>Agreed. I’m relatively new to the Rails community, but one of the things
+    I like most about it is that, as a general rule, Rails programmers seem to allow
+    transparency of intent to trump other considerations when coding. I’ve felt this
+    way about code for a long time.</p>\n\n\n\t<p>Why needlessly abbreviate variable
+    and function/method/subroutine/what-have-you names to near-meaninglessness  when
+    not forced to by the language you’re implementing in?</p>\n\n\n\t<p>Why not try
+    writing 10 lines of clear code instead of 3 lines filled with “cute” tricks?</p>\n\n\n\t<p>So
+    many times it seems like people optimize for <span class=\"caps\">CPU</span> efficiency
+    instead of developer efficiency, when <span class=\"caps\">CPU</span> cycles come
+    cheap. Not to say there aren’t some times that it’s necessary, just that people
+    tend to jump the gun on optimizations… heck, with today’s interpreter/compiler
+    optimizations, you may well end up with identical bytecode/binaries anyway.</p>\n\n\n\t<p>Jamis,
+    your articles over at The Rails Way have come in really handy as I’ve been learning,
+    by the way. Thanks for your contribution to the community.</p>"

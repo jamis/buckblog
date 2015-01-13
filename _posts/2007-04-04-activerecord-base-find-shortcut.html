@@ -1,0 +1,34 @@
+---
+layout: post
+title: ActiveRecord::Base#find shortcut
+post_id: 94
+categories:
+- Tips & Tricks
+date: 2007-04-04 10:07:00.000000000 -06:00
+author: Jamis
+permalink: 2007/04/04/activerecord-base-find-shortcut.html
+---
+
+<p>I use ActiveRecord::Base#find <em>a lot</em> in the Rails console. <em>A lot</em>. As a result, I’ve started doing the following:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> &lt;&lt;<span class="cl">ActiveRecord::Base</span><tt>
+</tt>  alias_method <span class="sy">:[]</span>, <span class="sy">:find</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>That little snippet saves me up to five entire keystrokes, every time I need to do a find!</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">prs = <span class="co">Person</span>[<span class="i">5</span>]<tt>
+</tt>prs = <span class="co">Person</span>[<span class="sy">:first</span>]<tt>
+</tt>prs = <span class="co">Person</span>[<span class="sy">:all</span>, <span class="sy">:conditions</span> =&gt; { <span class="sy">:name</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">Jamis</span><span class="dl">"</span></span> }]<tt>
+</tt></pre></td>
+</tr></table>
+<p>And, thanks to the existing hash and array semantics, it loses none of find’s readability for most cases. Good stuff!</p>

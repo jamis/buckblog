@@ -1,0 +1,226 @@
+---
+layout: post
+title: Introducing the Capistrano Shell
+post_id: 153
+categories:
+- Spotlight
+date: 2006-09-20 21:12:00.000000000 -06:00
+author: Jamis
+permalink: 2006/09/20/introducing-the-capistrano-shell.html
+summary: >
+  A new Capistrano extension is introduced, allowing commands to be run
+  interactively and in parallel on multiple servers at once
+---
+
+<p>Our current cluster at 37signals consists of (at the moment) 12 machines. The first few weeks that we were running them live were rather bumpy, and I took to using Capistrano to do a bit of ad-hoc monitoring, using the <code>uptime</code> task (from the <a href="http://rubyforge.org/projects/capistrano">capistrano-ext</a> gem) to keep an eye on things:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">cap -v uptime</pre></td>
+</tr></table>
+<p>However, with 12 machines, the wait for that command to run each time was about 20 to 30 seconds, which is far too long for my impatient self.</p>
+<p>Part of that seemingly-interminable wait was alleviated by changing Capistrano so that it connects to servers in parallel, rather than serially. Prior to 1.2, when you executed a task that needed to connect to multiple servers, each connection was established one at a time, in a single thread. Now, they are established in parallel, one per thread. The connection overhead, which used to be 18 seconds on my laptop, dropped to just over 6 seconds. Not a bad savings!</p>
+<p>However, there was more that could be done. Why, when I am running this command every few minutes, should I need to reestablish the connection with every request? What if I could cache the connection somehow?</p>
+<p>This line of thinking led to what I feel is the most exciting new feature in Capistrano 1.2: cap shell.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt>23<tt>
+</tt>24<tt>
+</tt>25<tt>
+</tt>26<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">jamis&gt; cap -v shell<tt>
+</tt>====================================================================<tt>
+</tt>Welcome to the interactive Capistrano shell! This is an experimental<tt>
+</tt>feature, and is liable to change in future releases.<tt>
+</tt>--------------------------------------------------------------------<tt>
+</tt>cap&gt; !uptime<tt>
+</tt>[establishing connection(s) to db2, db1, db3, file1, app1, app2, app3, app4, app5, web1, web2, web3]<tt>
+</tt>querying servers...<tt>
+</tt>[app1 ] up   15 days, 7:40, load 3.53, 1.36, 0.83<tt>
+</tt>[app2 ] up  15 days, 8 hrs, load 0.23, 0.38, 0.44<tt>
+</tt>[app3 ] up  19 days, 11:13, load 0.29, 0.40, 0.43<tt>
+</tt>[app4 ] up  19 days, 12:02, load 0.58, 0.49, 0.51<tt>
+</tt>[app5 ] up   20 days, 9:50, load 0.50, 0.45, 0.43<tt>
+</tt><tt>
+</tt>[db2  ] up  28 days, 22:29, load 0.05, 0.06, 0.07<tt>
+</tt><tt>
+</tt>[file1] up  60 days, 12:42, load 0.06, 0.17, 0.17<tt>
+</tt><tt>
+</tt>[web1 ] up  19 days, 22:31, load 0.17, 0.12, 0.13<tt>
+</tt>[web2 ] up  36 days, 22:18, load 0.06, 0.10, 0.11<tt>
+</tt><tt>
+</tt>[db1  ] up  28 days, 21:07, load 1.27, 0.90, 0.82<tt>
+</tt>[db3  ] up  28 days, 22:53, load 1.19, 0.94, 0.85<tt>
+</tt><tt>
+</tt>[web3 ] up 188 days, 19:36, load 0.09, 0.06, 0.01<tt>
+</tt>cap&gt; </pre></td>
+</tr></table>
+<p>Subsequent invocations of the uptime task from within that shell will reuse the existing connections. The result? It now takes less than two seconds to give me my answers.</p>
+<p>But the shell is good for more than just executing tasks. You can execute arbitrary commands and have them run on your servers:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">cap&gt; uname -srp<tt>
+</tt>[db2] FreeBSD 6.1-STABLE amd64<tt>
+</tt>[web2] FreeBSD 6.1-STABLE amd64<tt>
+</tt>[web3] FreeBSD 6.0-RELEASE amd64<tt>
+</tt>[file1] Linux 2.6.9-34.0.2.ELsmp x86_64<tt>
+</tt>[app1] FreeBSD 6.0-RELEASE amd64<tt>
+</tt>[app2] FreeBSD 6.1-STABLE amd64<tt>
+</tt>[app3] FreeBSD 6.1-STABLE amd64<tt>
+</tt>[app4] FreeBSD 6.1-STABLE amd64<tt>
+</tt>[app5] FreeBSD 6.1-STABLE amd64<tt>
+</tt>[web1] FreeBSD 6.1-STABLE amd64<tt>
+</tt>[db1] FreeBSD 6.1-STABLE amd64<tt>
+</tt>[db3] FreeBSD 6.1-STABLE amd64<tt>
+</tt>cap&gt; </pre></td>
+</tr></table>
+<p>(Note that prefixing the command with an exclamation point causes Capistrano to interpret it as the name of a task, and to execute it as such. Without the exclamation mark, it is considered a bare command, and is simply executed verbatim on each host.)</p>
+<p>Also, you can focus the task or command so that it only executes on a specific role, or host:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">cap&gt; with app uname -srp<tt>
+</tt>[app1] FreeBSD 6.0-RELEASE amd64<tt>
+</tt>[app2] FreeBSD 6.1-STABLE amd64<tt>
+</tt>[app3] FreeBSD 6.1-STABLE amd64<tt>
+</tt>[app4] FreeBSD 6.1-STABLE amd64<tt>
+</tt>[app5] FreeBSD 6.1-STABLE amd64<tt>
+</tt>cap&gt; on web1,web2 uname -srp<tt>
+</tt>[web1] FreeBSD 6.1-STABLE amd64<tt>
+</tt>[web2] FreeBSD 6.1-STABLE amd64<tt>
+</tt>cap&gt; </pre></td>
+</tr></table>
+<p>You can use <code>with role</code> to focus the command to all machines answering to the named role. Use a comma-delimited list to execute on machines in any of a list of roles.</p>
+<p>If that is too general, you can get as specific as you wish using <code>on host</code>. This lets you execute only on the named host, or hosts. In fact, you can name hosts this way that aren’t even defined in your deploy.rb—it’ll establish connections on the fly to any machines it doesn’t recognize.</p>
+<p>Lastly, you can use both <code>with</code> and <code>on</code> to set the scope for subsequent commands. Just leave the command off:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt>23<tt>
+</tt>24<tt>
+</tt>25<tt>
+</tt>26<tt>
+</tt>27<tt>
+</tt>28<tt>
+</tt>29<tt>
+</tt><strong>30</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">cap&gt; with app<tt>
+</tt>scoping with app<tt>
+</tt>cap&gt; uname -srp<tt>
+</tt>[app1] FreeBSD 6.0-RELEASE amd64<tt>
+</tt>[app2] FreeBSD 6.1-STABLE amd64<tt>
+</tt>[app4] FreeBSD 6.1-STABLE amd64<tt>
+</tt>[app3] FreeBSD 6.1-STABLE amd64<tt>
+</tt>[app5] FreeBSD 6.1-STABLE amd64<tt>
+</tt>cap&gt; hostname -s<tt>
+</tt>[app1] 82095-app1<tt>
+</tt>[app4] 82098-app4<tt>
+</tt>[app5] 82099-app5<tt>
+</tt>[app2] 82096-app2<tt>
+</tt>[app3] 82097-app3<tt>
+</tt>cap&gt; with all<tt>
+</tt>scoping with all<tt>
+</tt>cap&gt; hostname -s<tt>
+</tt>[db2] 82101-db2<tt>
+</tt>[web3] 82094-web3<tt>
+</tt>[app1] 82095-app1<tt>
+</tt>[app2] 82096-app2<tt>
+</tt>[db1] 82100-db1<tt>
+</tt>[file1] 82103-file1<tt>
+</tt>[app3] 82097-app3<tt>
+</tt>[app4] 82098-app4<tt>
+</tt>[app5] 82099-app5<tt>
+</tt>[web1] 82092-web1<tt>
+</tt>[web2] 82093-web2<tt>
+</tt>[db3] 82102-db3<tt>
+</tt>cap&gt; </pre></td>
+</tr></table>
+<p>(Note the use of the special <code>all</code> keyword, to return the scope to all roles and machines.)</p>
+<p>So, armed with this new tool, I was able to keep an eye on the load of each machine in the cluster using the <code>uptime</code> task. When I noticed something anomalous, I focused on the box in question and looked for rogue processes:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">cap&gt; on app3 ps waux | head -n 5<tt>
+</tt>...<tt>
+</tt>cap&gt; on app3 sudo kill 12345<tt>
+</tt>Password:<tt>
+</tt>...<tt>
+</tt>cap&gt;</pre></td>
+</tr></table>
+<p>It worked <em>great</em>. It’s definitely not a substitute for a real <span class="caps">SSH</span> shell, but it’s perfect for quick-and-dirty tasks that require you to switch between hosts frequently.</p>
+<p>Which begs the question: <em>why</em> isn’t it a substitute for a real <span class="caps">SSH</span> shell?</p>
+<p>Well, firstly, cap shell is stateless. Each command is executed in a new shell on the remote host. This means that commands like <code>cd</code> and <code>export</code> are pretty useless, since they won’t stick.</p>
+<p>Secondly, cap shell isn’t intended to deal with interactive commands. You can’t, for instance, run <span class="caps">IRB</span> on multiple hosts simultaneously using cap shell. It does manage to deal with commands like <code>tail -f</code>, but that’s about the limit.</p>
+<p>Thirdly, if you thought <code>rm -rf /</code> was dangerous when connected to a single host, imagine the damage you could do with cap shell! This is probably one of the biggest reasons it is still experimental. Until I can find a way to make it less likely to accidentally wipe an entire cluster with a single command, you ought to go into using this with caution.</p>
+<p>Still, even with all those caveats, cap shell has become an irreplaceable tool in my toolbox. I’d love to hear from you with ideas for how to make it better, and safer.</p>

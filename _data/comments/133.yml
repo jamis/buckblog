@@ -1,0 +1,139 @@
+---
+- date: 2007-01-19
+  author: Pat Maddox
+  content: "<p>Yeah, that’s an example of what Kent Beck calls the “execute around
+    method” pattern in his smalltalk best practice patterns book.</p>\n\n\n\t<p>When
+    I first started with Ruby, I didn’t have any trouble understanding blocks, but
+    I had a tough time identifying good places to use them in my own code.  Once it
+    clicks though, it’s pretty powerful.</p>\n\n\n\t<p>To write code that uses blocks,
+    you have to identify what parts you can do best, and what parts are best left
+    to some client code.  It helped for me to think of this code:</p>\n\n\n<table
+    class=\"CodeRay\"><tr>\n  <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt><strong>5</strong><tt>\n</tt>6<tt>\n</tt>7<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre><tt>\n</tt>  <span class=\"r\">def</span> <span class=\"fu\">setup_with_extra_stuff</span>(obj,
+    method)<tt>\n</tt>    <span class=\"c\"># a bunch of setup code here</span><tt>\n</tt>
+    \   result = obj.send(method, some_collection)<tt>\n</tt>    <span class=\"c\">#
+    a bunch of teardown code here</span><tt>\n</tt>    <span class=\"r\">return</span>
+    result<tt>\n</tt>  <span class=\"r\">end</span><tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>That
+    example will probably be useful to some, and not useful to others.  Since I of
+    course had a lot more experience with methods than with blocks, it demonstrated
+    to me how I might want to run some of my own code, and let someone else pass in
+    their own code (in the form of an arbitrary method call) to execute.  From there
+    it’s an easy transition to blocks.  It’s essentially the same concept at work,
+    but with blocks it’s a lot cleaner.</p>\n\n\n\t<p>My only gripe with Ruby is that
+    you can’t pass multiple blocks to methods.  You can do it by calling lambda and
+    passing those objects in, but it doesn’t feel very clean.</p>"
+- date: 2007-01-19
+  author: Jamis
+  content: "<p>I really must read that book. Thanks for the reminder, Pat! And yah,
+    I agree, it’d be lovely if Ruby allowed multiple blocks to be passed in. I’ve
+    wanted that several times.</p>"
+- date: 2007-01-19
+  author: Jon Maddox
+  content: "<p>Excellent and poignant.</p>\n\n\n\t<p>It was the assert_difference
+    method that actually made blocks click for me. I’ve been loving them ever since.
+    Hunting down repetitious code for places to use them.</p>"
+- date: 2007-01-19
+  author: Seth
+  content: "<p>Thanks for the write-up Jamis. That’s the clearest explanation I’ve
+    seen of how blocks can be useful.</p>\n\n\n\t<p>Not exactly block related, but
+    my favorite use of yield goes something like this…</p>\n\n\n\t<p>In all of my
+    layouts I define this in the header tags…</p>\n\n\n<pre><code>\n\n&lt;html&gt;\n
+    \ &lt;head&gt;\n    ...js &amp; css stuff here\n    &lt;%= yield :header %&gt;\n
+    \ &lt;/head&gt;\n&lt;/html&gt;\n\n</code></pre>\n\n\t<p>This lets me insert JS,
+    css, or whatever into the head of my layout from views later on like so…</p>\n\n\n<pre><code>\n\n&lt;%
+    content_for :header do %&gt;\n  &lt;%= javascript_include_tag 'my_js' %&gt;\n&lt;%
+    end %&gt;\n\n</code></pre>\n\n\t<p>The JS gets inserted into the header where
+    it should be.</p>"
+- date: 2007-01-20
+  author: Michael Schuerig
+  content: "<p>I’m going off on a tangent here. I’m currently doing something very
+    similar to what Seth does, but I’d like to package the</p>\n\n\n\t<pre><code>&lt;%=
+    yield :header %&gt;</code></pre>\n\n\n\t<p>in a helper method. Something like</p>\n\n\n\t<pre><code>&lt;%=
+    insert_headers %&gt;</code></pre>\n\n\n\t<p>I have to say that I’m stumped. I
+    don’t see how the helper method could do the yield.</p>"
+- date: 2007-01-20
+  author: Vinicius Teles
+  content: "<p>Jamis, I’ve found this kind of problem very often before, but as I
+    used to program in Java, I had a hard time to solve it elegantly. Now, using Ruby,
+    I know that blocks can be very helpful for that, but I’m still struggling with
+    them. This example really clarifies. Thanks a lot!</p>"
+- date: 2007-01-20
+  author: Jamis
+  content: "<p>Michael, the way it works is that yielding <code>:header</code> simply
+    returns the contents of the <code>@contents_for_header</code> instance variable.
+    Thus:</p>\n\n\n<table class=\"CodeRay\"><tr>\n  <td title=\"click to toggle\"
+    class=\"line_numbers\"><pre>1<tt>\n</tt></pre></td>\n  <td class=\"code\"><pre>&lt;%=
+    <span class=\"r\">yield</span> <span class=\"sy\">:header</span><tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>is
+    really the same as</p>\n\n\n<table class=\"CodeRay\"><tr>\n  <td title=\"click
+    to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt></pre></td>\n  <td class=\"code\"><pre>&lt;%=
+    <span class=\"iv\">@contents_for_header</span> <span class=\"s\"><span class=\"dl\">%&gt;</span><span
+    class=\"k\"><tt>\n</tt></span></span></pre></td>\n</tr></table>\n\n\n\t<p>Thus,
+    if your <code>insert_headers</code> helper method simply returns the <code>@contents_for_header</code>
+    instance variable, you’ll get the same effect as yielding.</p>"
+- date: 2007-01-20
+  author: Michael Schuerig
+  content: "<p>Jamis, thanks for “approving” that solution. I’m still a bit hesitant
+    as it accesses the contents in a way that is deprecated for public consumption.
+    Anyway, it’s not going to break, I gather.</p>"
+- date: 2007-01-20
+  author: Jamis
+  content: "<p>Michael, actually, I cannot guarantee it will never break, because
+    as you noted accessing instance variables is not recommended. However, if you
+    can’t use the ‘yield’ interface for whatever reason, that might be your only option.</p>\n\n\n\t<p>There
+    may be a totally different way to tackle the issue, though. Why can’t you just
+    do “yield :header”? Does your insert_headers helper do something more than just
+    return the @content_for_header variable?</p>"
+- date: 2007-01-20
+  author: Michael Schuerig
+  content: "<p>Jamis, the helper does hardly anything, it only wraps a div around
+    the content. It’s more a point about semantics. I’m using another helper to collect
+    content for tooltips. This helper is implemented by means of content_for. However,
+    users of my helper method don’t and shouldn’t have to know anything about its
+    implementation. It would puncture the abstraction, if users had to insert the
+    collected tooltip content with</p>\n\n\n\t<pre><code>&lt;%= yield :tooltips %&gt;</code></pre>\n\n\n\t<p>Providing
+    a method so that they can write</p>\n\n\n\t<pre><code>&lt;%= tooltips %&gt;</code></pre>\n\n\n\t<p>sustains
+    the abstraction.</p>"
+- date: 2007-01-20
+  author: Jamis
+  content: "<p>Ah, ok. In that case, here’s a way to work around the explicit use
+    of instance variables. Create a partial (e.g., “shared/_tooltips.rhtml”), and
+    put all your markup in there, including the call to yield:</p>\n\n\n<table class=\"CodeRay\"><tr>\n
+    \ <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre><span class=\"ta\">&lt;div</span> <span class=\"an\">id</span>=<span
+    class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">tooltips</span><span
+    class=\"dl\">\"</span></span> <span class=\"an\">class</span>=<span class=\"s\"><span
+    class=\"dl\">\"</span><span class=\"k\">tooltips</span><span class=\"dl\">\"</span></span><span
+    class=\"ta\">&gt;</span><tt>\n</tt>  <span class=\"il\"><span class=\"dl\">&lt;%=</span>
+    <span class=\"r\">yield</span> <span class=\"sy\">:tooltips</span> <span class=\"dl\">%&gt;</span></span><tt>\n</tt><span
+    class=\"ta\">&lt;/div&gt;</span><tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>Then,
+    your tooltips helper becomes a trivial call to render:</p>\n\n\n<table class=\"CodeRay\"><tr>\n
+    \ <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre><span class=\"r\">def</span> <span class=\"fu\">tooltips</span><tt>\n</tt>
+    \ render <span class=\"sy\">:partial</span> =&gt; <span class=\"s\"><span class=\"dl\">\"</span><span
+    class=\"k\">shared/tooltips</span><span class=\"dl\">\"</span></span><tt>\n</tt><span
+    class=\"r\">end</span><tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>Does that
+    work for you, Michael?</p>"
+- date: 2007-01-20
+  author: Michael Schuerig
+  content: "<p>Thanks, that’s the right idea. I’m not using a partial, though, render
+    :inline does it just fine.</p>"
+- date: 2007-01-21
+  author: Alan Francis
+  content: "<p>Spooky!   I was just working on a bunhc of tests that checked the child
+    count went up or down and I wrote a comment to myself to replace them with just
+    this very pattern in the next session -)—A.</p>"
+- date: 2007-01-21
+  author: DanH
+  content: "<p>Why do so many bloggers get a hard-on over this? I was doing this with
+    Clipper back in 90.</p>"
+- date: 2007-01-21
+  author: Jamis
+  content: "<p>DanH, sure, and Smalltalk was doing it decades earlier than that. It
+    doesn’t mean that everyone knows what it is, or how to do it. It also doesn’t
+    mean the technique is less useful, because it’s “old”.</p>\n\n\n\t<p>If you feel
+    the need to tout your superiority, please do it elsewhere. Thanks.</p>"
+- date: 2007-01-22
+  author: Debasish Ghosh
+  content: "<p>Isn’t this what the OO guys refer to as the Template Method pattern
+    ? This is wonderful how in a language with more powerful abstractions, some of
+    the design patterns just disappear within the language.</p>"

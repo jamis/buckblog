@@ -1,0 +1,26 @@
+---
+- date: 2005-12-09
+  author: Ryan Platte
+  content: "Of course, there are also web apps that will do this for free. With \"one
+    of them,\":http://www.phonetic.com/ I found years ago that my phone number growing
+    up ended in @-NERD@. \n\nFortunately I discovered this late into high school,
+    and not earlier, so I was spared endless harrassment, however justified."
+- date: 2005-12-10
+  author: James Edward Gray II
+  content: We did a <a href="http://www.rubyquiz.com/quiz20.html">Ruby Quiz</a> on
+    this very topic.
+- date: 2005-12-10
+  author: Joe Homs
+  content: |-
+    If you want a free version of this tool, look no further than <a href="http://www.phonespell.org/">http://www.phonespell.org/</a>
+
+    It doesn't have any cool address book integration, but it may find other words that you might otherwise have to pay for.
+- date: 2005-12-10
+  author: Tom Moertel
+  content: Sounds like a perfect puzzle for a bit of Haskell hacking, doesn't it?  <tt>;-)</tt>
+- date: 2007-09-17
+  author: Faruk Ozturkmen
+  content: "<p>For those who are looking for conversions or better still if you are
+    in the market to find which Phonewords currently available in Australia should
+    look here http://www.phonewords.com.au . And naturally you’ll find extensive list
+    of International Telecommunication Directories.</p>"

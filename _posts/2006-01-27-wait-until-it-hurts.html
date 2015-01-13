@@ -1,0 +1,54 @@
+---
+layout: post
+title: Wait Until it Hurts
+post_id: 195
+categories:
+- Essays and Rants
+date: 2006-01-27 10:09:00.000000000 -07:00
+author: Jamis
+permalink: 2006/01/27/wait-until-it-hurts.html
+---
+
+<p>There’s a story behind the recent release of <a href="http://net-ssh.rubyforge.org">Net::SSH 1.0.7</a> that I want to share, and which ties in nicely with the <a href="http://37signals.com/svn">indoctrination</a> that I’ve been immersed in (and finding invaluable) at work.</p>
+<p>For some time there has been a bug in Net::SSH that caused requests to die sporadically with a “corrupt mac detected” error. People have reported this, sending me bug reports and stack traces, but I was never able to duplicate it. Because I was never able to duplicate it, and because I wasn’t being flooded with reports of it, I felt no pain. Sure, I empathized with the people reporting the bug, in a “gee, I’m really sorry about that” kind of way, but I had no motivation to dig in and find the problem.</p>
+<p>Last week I began playing with some fun <a href="http://manuals.rubyonrails.com/read/book/17">SwitchTower</a> tasks. For instance, I wanted a way to tail on the rails logs of all of our applications at once, so I could count the number of requests per second that were being handled. Our applications are distributed across four application servers, so this seemed like a great opportunity for SwitchTower. Here’s what I came up with:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">desc <span class="s"><span class="dl">"</span><span class="k">Show application statistics in real-time</span><span class="dl">"</span></span><tt>
+</tt>task <span class="sy">:watch_status</span>, <span class="sy">:roles</span> =&gt; <span class="sy">:app</span> <span class="r">do</span><tt>
+</tt>  count = <span class="i">0</span><tt>
+</tt>  last = <span class="co">Time</span>.now<tt>
+</tt>  run <span class="s"><span class="dl">"</span><span class="k">tail -f /first/rails.log /second/rails.log</span><span class="dl">"</span></span> <span class="r">do</span> |ch, stream, out|<tt>
+</tt>    puts <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span>ch[<span class="sy">:host</span>]<span class="dl">}</span></span><span class="k">: </span><span class="il"><span class="dl">#{</span>out<span class="dl">}</span></span><span class="dl">"</span></span> <span class="r">and</span> <span class="r">break</span> <span class="r">if</span> stream == <span class="sy">:err</span><tt>
+</tt><tt>
+</tt>    count += <span class="i">1</span> <span class="r">if</span> out =~ <span class="rx"><span class="dl">/</span><span class="k"> (</span><span class="ch">\w</span><span class="k">+) </span><span class="ch">\w</span><span class="k">+</span><span class="ch">\[</span><span class="k">(</span><span class="ch">\d</span><span class="k">+)</span><span class="ch">\]</span><span class="k">: Completed in</span><span class="dl">/</span></span><tt>
+</tt><tt>
+</tt>    <span class="r">if</span> <span class="co">Time</span>.now - last &gt;= <span class="i">1</span><tt>
+</tt>      puts <span class="s"><span class="dl">"</span><span class="k">%2d rps</span><span class="dl">"</span></span> % count<tt>
+</tt>      count = <span class="i">0</span><tt>
+</tt>      last = <span class="co">Time</span>.now<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>(It’s rough, but it really works—just replace the rails.log paths with the paths to your applications. Feel free to polish it off and make it more useful.)</p>
+<p>While running this, I <em>finally</em> saw my first, honest-to-goodness, in-the-flesh “corrupted mac detected” error, and it happened reproducibly. Suddenly, it got personal. <em>I felt the pain.</em> I really wanted this feature, but it would never be practical as long as it could not be relied upon to work for extended periods.</p>
+<p>Armed with this new motivation, as well as a way to reproduce the problem, I set out to ease the pain. It turned out to be a problem that only occurred in a multithreaded environment. The scheduler was periodically interrupting the socket read of the mac value. All that was needed was to keep retrying the read until the full length of the data was obtained. And now it’s fixed!</p>
+<p>The lesson? Wait until you’re feeling pain until you fix something. We all have lots of things vying for our time, and no one likes it when they <em>have</em> to make something a priority. Wait until something hurts, whether because you’re being affected personally, or because you’re being flooded by support requests. It <em>always</em> feels nice to make something stop hurting.</p>

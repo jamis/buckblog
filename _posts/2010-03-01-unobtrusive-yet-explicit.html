@@ -1,0 +1,84 @@
+---
+layout: post
+title: Unobtrusive, yet explicit
+post_id: 19
+categories:
+- Projects
+- Tips & Tricks
+date: 2010-03-01 17:15:00.000000000 -07:00
+author: Jamis
+permalink: 2010/03/01/unobtrusive-yet-explicit.html
+summary: >
+  The author discusses the drawbacks of unobtrusive javascript and proposes
+  a solution
+---
+
+<p>A few weeks ago I started a new side project (a string-figure catalog, not yet ready for an audience, sadly), and I figured it would be a good opportunity to dabble in the new goodies in Rails 3. It’s been a fun experience, for the most part, but I’ll save my “wins and fails” for a separate post.</p>
+<p>For now, I want to focus on one particular frustration: <a href="http://en.wikipedia.org/wiki/Unobtrusive_JavaScript">Unobtrusive Javascript</a> (UJS). In any project of even moderate complexity, I’ve found that Javascript plays a role, and in Rails 2 the primary way to play that game was by inlining your Javascript. (This is where you put Javascript directly into your tags, for instance in “onchange” or “onclick” handlers.)</p>
+<p>Apparently this is a Bad Thing, although the only arguments I’ve found against inline Javascript sound suspiciously like “purity for purity’s sake”. At any rate, Rails 3 is embracing <span class="caps">UJS</span>, and you’ll find that helper methods like “link_to_function” don’t even exist in Rails 3.</p>
+<p>This raises the question: what do you do instead? Well, you have to use <span class="caps">UJS</span>. Only, <span class="caps">UJS</span> in Rails isn’t super mature yet; there’s a lot of manual labor involved simply trying to work around the absence of “link_to_function”.</p>
+<p>So, I set to work. Initially, I tried to copy what <a href="http://github.com/rails/prototype-ujs">rails.js</a> was doing (for Ajax operations, etc.): I installed a handler, and examined the triggering element to see what operations match:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="pt">document</span>.observe(<span class="s"><span class="dl">"</span><span class="k">dom:loaded</span><span class="dl">"</span></span>, <span class="r">function</span>() {<tt>
+</tt>  $(<span class="pt">document</span>.body).observe(<span class="s"><span class="dl">"</span><span class="k">click</span><span class="dl">"</span></span>, <span class="r">function</span>(<span class="pt">event</span>) {<tt>
+</tt>    <span class="r">var</span> element = <span class="pt">event</span>.findElement(<span class="s"><span class="dl">"</span><span class="k">a[data-toggle]</span><span class="dl">"</span></span>);<tt>
+</tt>    <span class="r">if</span>(element) {<tt>
+</tt>      <span class="r">var</span> action = element.readAttribute(<span class="s"><span class="dl">"</span><span class="k">data-toggle</span><span class="dl">"</span></span>);<tt>
+</tt>      element.hide();<tt>
+</tt>      element.next().show();<tt>
+</tt>      <span class="pt">event</span>.<span class="fu">stop</span>();<tt>
+</tt>    } <span class="r">else</span> {<tt>
+</tt>      <span class="r">var</span> element = <span class="pt">event</span>.element();<tt>
+</tt>      <span class="r">if</span>(!element.readAttribute(<span class="s"><span class="dl">"</span><span class="k">data-tab</span><span class="dl">"</span></span>)) element = element.up(<span class="s"><span class="dl">"</span><span class="k">a[data-tab]</span><span class="dl">"</span></span>)<tt>
+</tt>      <span class="r">if</span>(element) {<tt>
+</tt>        selectTab(element.readAttribute(<span class="s"><span class="dl">"</span><span class="k">data-tab</span><span class="dl">"</span></span>));<tt>
+</tt>      }<tt>
+</tt>    }<tt>
+</tt>  });<tt>
+</tt>});</pre></td>
+</tr></table>
+<p>I quickly realized that this does not scale, for two reasons. The first is that you quickly wind up with a massive branch statement inside each of your observer functions, with finicky conditions that (hopefully) map to actual elements in your views. The second is that the relationship between your markup and your Javascript is tenuous at best; even coming back to my code just a few days later, I found it was challenging to discover what code was executed when a link was clicked.</p>
+<p>This is, I believe, one of the greatest strengths of inline Javascript: the relationship between markup and code is immediately obvious, and it requires very little hunting to follow the path of execution from the inception of an event.</p>
+<p>So I went looking at what other options exist. <a href="http://github.com/danwrong/low-pro">Low Pro</a>, an extension to Prototype for aiding with <span class="caps">UJS</span>, looked promising; I liked how each behavior was registered separately, which seemed like it would give a stronger relationship between markup and execution. However, Low Pro uses <span class="caps">CSS</span> selectors to identify which markup gets associated with which callbacks, and while this <em>sounds</em> like it ought to be a great idea, it falls down for one really big reason: <span class="caps">CSS</span> selectors depend on styling attributes (classes and ids), and trying to tie functionality to those means you are still left staring at markup and wondering where all the events go. Sometimes a class is stylistic, and sometimes it is logical, and there is not generally any clear way to determine which is which.</p>
+<p>Now, you could resort to naming conventions: if a class name is prefixed with “behavior-” (or similar), then it refers to a behavior that is defined in Javascript. That’s closer to what I was looking for, so I played with that.</p>
+<p>But what I soon discovered was that you wind up with a bunch of <span class="caps">CSS</span> classes that are not used for styling at all, because they specifically refer to dynamic behaviors. What I <em>really</em> wanted was an altogether different attribute for specifying behaviors, like what “onchange” and “onclick” gave me before. Only I had to beware upsetting the Manifold Avatars of <span class="caps">UJS</span> Purity by embedding actual Javascript.</p>
+<p>What I finally ended up doing (I’ll say I “stumbled on it”, rather than “invented it”, since I’m positive it’s been done before) was defining a “data-behaviors” attribute on every element that needed one:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c">&lt;%= link_to "Add an alias", "#", "data-behaviors" =&gt; "add-alias" %&gt;</span></pre></td>
+</tr></table>
+<p>Then, in my Javascript driver, I registered callbacks for those named behaviors:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">Behaviors.add(<span class="s"><span class="dl">"</span><span class="k">click</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">add-alias</span><span class="dl">"</span></span>, <span class="r">function</span>(element) {<tt>
+</tt>  <span class="c">// ...</span><tt>
+</tt>});</pre></td>
+</tr></table>
+<p>The result is <span class="caps">UJS</span> that clearly reveals the relationship between the markup and the code; you can easily search for all elements in the views that behave like “add-alias”, for instance, and given a behavior name (like “add-alias”), you can quickly find the code that gets executed for it. Elements can have multiple behaviors, too: just give a space-delimited list of behavior names in the “data-behaviors” attribute.</p>
+<p>It’s not perfect, though: the current implementation doesn’t deal well with elements that want to behave like X on “click”, but Y on “change”. That’s not a scenario I’ve needed to deal with yet, though, so I’m sure when (if?) it comes up, a solution can be found. In the meantime, I’m quite pleased with this. It “clicks”, whereas other <span class="caps">UJS</span> solutions just felt obscure and heavy-weight.</p>
+<p>Below is the code for behaviors.js. Please feel free to fork the gist on Github and hack away; I’m sure it can be improved upon in lots of ways.</p>
+<script src="http://gist.github.com/318967.js"></script>
+<p>Enjoy!</p>
+<p><strong>Update:</strong> Josh Peek suggested some tips that resulted in a drastic simplification of behaviors.js. It’s simple enough now that there’s almost no point in providing it as a separate library!</p>

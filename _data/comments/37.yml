@@ -1,0 +1,88 @@
+---
+- date: 2009-04-20
+  author: Gustav Paul
+  content: "<p>Sweet man, I look forward to checkout it out!</p>"
+- date: 2009-04-20
+  author: Robert Zolkos
+  content: "<p>This looks very interesting.  Thanks for releasing it.  Will download
+    now and give it a whirl !</p>"
+- date: 2009-04-20
+  author: Talha Syed
+  content: "<p>Great stuff, I’m going to install this tonight!</p>"
+- date: 2009-04-20
+  author: S. Brent Faulkner
+  content: "<p>Awesome news Jamis! Congratulations!</p>"
+- date: 2009-04-20
+  author: Adam Kirkwood
+  content: "<p>Awesome stuff Jamis. I appreciate you making your code available to
+    the public. Thank you.</p>"
+- date: 2009-04-20
+  author: ashwin
+  content: "<p>thanks Jamis. forked and started playing around with charts :)</p>"
+- date: 2009-04-25
+  author: Eric Davis
+  content: "<p>Thank you for releasing this.  I’ve forked it and will give it a run
+    through this weekend.</p>"
+- date: 2009-04-28
+  author: jratcliffscarab@gmail.com
+  content: "<p>Jamis,</p>\n\n\n\t<p>I’ve been searching the web for a copy of your
+    original dungeon generator source code that you released into the public domain.
+    \ Unfortunately all of the links I can find go to old ‘arrg’ site that is dead.</p>\n\n\n\t<p>Do
+    you have a current link for your dungeon generator code?</p>\n\n\n\t<p>Much thanks,</p>\n\n\n\t<p>John</p>"
+- date: 2009-04-28
+  author: jratcliffscarab@gmail.com
+  content: "<p>Jamis,</p>\n\n\n\t<p>I already sent you a couple of messages, but I
+    managed to find a copy of your dungeon generator on your github site.</p>\n\n\n\t<p>Unfortunately
+    the code won’t compile as you have uploaded it.  It is missing a header file ‘gameutil.h’
+    which defines a number of datastructures and helper routines.</p>\n\n\n\t<p>Do
+    you know where ‘gameutil.h’ is?</p>\n\n\n\t<p>Much thanks again,</p>\n\n\n\t<p>John</p>"
+- date: 2009-04-29
+  author: Jamis
+  content: <p>@John, please see the <span class="caps">README</span> that is bundled
+    with the code. It indicates all the dependencies (including, in this case, dnd-util,
+    http://github.com/jamis/dnd-util/tree/master).</p>
+- date: 2009-05-01
+  author: Rian Awi
+  content: "<p>This is great. I’ve started using it. One question: what do you do
+    with the cash money drawn from the bank account into your wallet? How do you track
+    it?</p>"
+- date: 2009-05-03
+  author: Jamis
+  content: "<p>@Rian, easy answer: I don’t. But you could, if you wanted. Just set
+    up a new account (called “Cash”), and when you withdraw money from your bank account,
+    treat it as a transfer from your bank to your cash account. Then, keep track of
+    your receipts and record your cash expenses against that account.</p>\n\n\n\t<p>I
+    don’t use cash enough to warrant the extra effort, though. Typically, I just have
+    a “cash” bucket to indicate when I’ve done a cash withdrawal, and simply budget
+    so much per paycheck for cash expenses.</p>"
+- date: 2009-05-07
+  author: Chris Cameron
+  content: "<p>Hey Jamis,</p>\n\n\n\t<p>This is great, I’m going to play around with
+    it, I created something with similar ideas a while ago and released it only as
+    an iPhone web app. I didn’t put a lot into it, maybe I’ll use yours to fix it
+    up.</p>\n\n\n\t<p>Thanks!</p>\n\n\n\t<p>-Chris</p>"
+- date: 2009-05-09
+  author: J
+  content: "<p>Hey Jamis,</p>\n\n\n\t<p>great work man.  I just watched one of your
+    videos showing the app, and I think it has a pretty nice user interface.</p>\n\n\n\t<p>The
+    only beef I got against this kind of app, is that it suffers the same problem
+    as all other financial software I’ve seen: it is disconnected from the source
+    of information (ie transactions made by the bank) which forces your users to manually
+    punch this in.   The pattern that I’ve seen (both from myself and other people
+    I know) is that a user will happily put up with this for about two months, and
+    then abandon the idea (after realizing that to properly track all expenses, requires
+    typing all 200 purchases  made last month… too much time and effort).</p>\n\n\n\t<p>I
+    don’t mean to discourage you in anyway, but if you can find a way to allow your
+    users to import this information into your app (as opposed to typing it in), you’ll
+    get people to use the product on a permanent basis… just a suggestion.</p>"
+- date: 2009-05-09
+  author: Jamis
+  content: "<p>@J, thanks! To be honest, I’m not writing this for people who can’t
+    be bothered to hand-enter their expenses. I’ve been putting up with it nicely
+    for two months now, and am still going strong. There are plenty of apps out there
+    that allow you to import directly from your bank account; I’m not out to compete
+    with them.</p>\n\n\n\t<p>Frankly, I prefer hand entering the expenses. It lets
+    you (firstly) review what you’ve been spending your money on, and (secondly) categorize
+    it appropriately. If you just import the expenses from the bank, you’re trusting
+    your bank to get it right, and you’re missing out on a great opportunity to double
+    check your spending habits.</p>"

@@ -1,0 +1,137 @@
+---
+- date: 2006-10-23
+  author: Adam Sanderson
+  content: "<p>Do you have have any more information about MySQL and PostgreSQL using
+    single indexes?  I remember reading some of this for MySQL, I’d like to try and
+    get more information for PostgreSQL.  Getting a database to use its indexes makes
+    all the difference.</p>"
+- date: 2006-10-23
+  author: Jamis
+  content: "<p>Adam, I’m afraid I have very, very little experience with PostgreSQL,
+    so I can’t help you there. For MySQL, I strongly recommend “High Performance MySQL”
+    by Jeremy Zawodny and Derek Balling. It’s a little dated (written when 4.0 brand
+    new) but the concepts are still very relevant.</p>"
+- date: 2006-10-23
+  author: Sam Leibowitz
+  content: "<p>MySQL also has a certification program: they offer seperate certifications
+    for developers and DBAs. Whatever you think about the certifcation process, the
+    textbook is pretty good.</p>\n\n\n\t<p>Another tip you might try: \nmysql&gt;
+    \ <span class=\"caps\">SELECT</span> * <span class=\"caps\">FROM</span> someTable
+    <span class=\"caps\">PROCEDURE</span> <acronym title=\"10,256\">ANALYSE</acronym>\\G</p>\n\n\n\t<p>That
+    will give you the optimal field type for every column in the table. The two numeric
+    arguments tells it the maximum number of elements you’re willing to accept for
+    an <span class=\"caps\">ENUM</span> field, and the maximum number of characters
+    you’ll accept in its definition, respectively.</p>\n\n\n\t<p>But indexes are definitely
+    the place to start. Joins that can be accomplished very easily given a couple
+    of good indices can become very taxing in their absence.</p>"
+- date: 2006-10-23
+  author: Jamis
+  content: <p>Sam, that <span class="caps">PROCEDURE ANALYSE</span> thing… is that
+    mysql 5 only? I’m not having any luck with it on 4.1.</p>
+- date: 2006-10-23
+  author: Jamis
+  content: <p>Ah, nevermind, the empty parens got eaten by the comemnt system. For
+    the record, that is <span class="caps">PROCEDURE ANALYSE</span> followed by empty
+    parentheses. :)</p>
+- date: 2006-10-23
+  author: Adam Sanderson
+  content: "<p>Skimming the PostgreSQL documentation, it looks like they actually
+    can handle multiple indexes at a time in 8.1</p>\n\n\n\t<p>http://www.postgresql.org/docs/8.1/static/indexes-bitmap-scans.html</p>"
+- date: 2006-10-23
+  author: Hunter Nield
+  content: <p>I came across the <a href="http://www.agilewebdevelopment.com/plugins/query_analyzer">Query
+    Analyzer</a> plugin a while back. For development it is brilliant as it outputs
+    the <span class="caps">EXPLAIN</span> into the logs after each query. Great for
+    checking to see what needs optimising.</p>
+- date: 2006-10-23
+  author: Todd Huss
+  content: "<p>The thing I love about migrations is that you can define indexes in
+    a migration with add_index. For example to create a unique index across 2 fields
+    you can add the following to your migration:</p>\n\n\n\t<p>add_index “table”,
+    [“field1”, “field2”], :name =&gt; “index_name”, :unique =&gt; true</p>"
+- date: 2006-10-24
+  author: Pat
+  content: "<p>The best thing to do is read all the documentation for your db so you
+    become intimately familiar with it.  I don’t use mysql, but at least for postgres
+    the docs are very in depth.  Also you should sign up for the mailing list for
+    your db of choice.</p>"
+- date: 2006-10-25
+  author: Ryan Allen
+  content: "<p>As far as I remember <span class=\"caps\">RDBMS</span>’ should use
+    multiple indexes depending on the types of things you’re doing. The more</p>\n\n\n\t<p>For
+    example if you’re doing a few joins, for each join an index will be used depending
+    on what you have in the ‘on’ clause. Typically the <span class=\"caps\">RDBMS</span>
+    will pick what index it thinks is best.</p>\n\n\n\t<p>Then you’ve got the where
+    clause, which another index will be used again, if you have more than one condition
+    the <span class=\"caps\">RDBMS</span> will again pick which index it thinks it
+    should use.</p>\n\n\n\t<p>It may be different for different <span class=\"caps\">RDBMS</span>’,
+    but I think that’s typically how they work.</p>"
+- date: 2006-10-25
+  author: Ryan Allen
+  content: "<p>Oh and I must suggest a book if you’re wanting to <em>really</em> learn
+    <span class=\"caps\">SQL</span>. This book is DB independent and even explains
+    the differences between the popular vendors. If you’re like ‘oh I don’t really
+    use joins…’ and ‘what’s a group by?’ then this book is unreal. It even has a good
+    coverage of NULLs which many other books do not.</p>\n\n\n\t<p>http://www.amazon.com/SQL-Second-Visual-QuickStart-Guide/dp/0321334175</p>\n\n\n\t<p>I
+    promise you’ll emerge an expert. Enjoy!</p>"
+- date: 2006-10-25
+  author: Jamey Cribbs
+  content: "<p>Regarding your point about adding indexes on fields that are foreign
+    keys, I think it really depends on what side of the association you are coming
+    from.  For example, if I have two models called Server and Administrator:</p>\n\n\n\t<p>class
+    Server &lt; ActiveRecord::Base\n  belongs_to :administrator\nend</p>\n\n\n\t<p>class
+    Administrator &lt; ActiveRecord::Base\n  has_many :servers\nend</p>\n\n\n\t<p>The
+    servers table has a foreign key called administrator_id that holds references
+    to the administrators table’s primary key, administrator_id.</p>\n\n\n\t<p>If
+    you do a:</p>\n\n\n\t<p>Server.find(:all, :include =&gt; :administrator)</p>\n\n\n\t<p>Having
+    an index defined on servers.administrator_id is not going to do you any good.
+    \ However, if you do:</p>\n\n\n\t<p>Administrator.find(:all, :include =&gt; :servers)</p>\n\n\n\t<p>then,
+    the index on servers.administrator_id will be used.</p>"
+- date: 2006-10-27
+  author: Ruby on Rails Blog
+  content: "<p>Well, it has always been the case that indexing is less about how to
+    do it and more about when to do it. That has clearly been what seperates the champs
+    from the chumps when it comes to fast retrieval database operations.</p>"
+- date: 2006-10-28
+  author: Paul
+  content: "<p>Only one thing I would add which is really important.</p>\n\n\n\t<p>Check
+    the cardinality of the column before indexing.</p>\n\n\n\t<p>MySQL: <span class=\"caps\">SHOW
+    INDEX FROM</span> table_name</p>\n\n\n\t<p>The distribution of values in a column
+    is important as well. In Database speak that is the cardinality of an column.</p>\n\n\n\t<p>The
+    more unique a value in a column the higher its cardinality. \nExample: types of
+    sexes is extremely low, email address is very high.</p>\n\n\n\t<p>Until PostgreSQL
+    and MySQL get bitmap indexes like Oracle it is better to full scan the table than
+    get data from the table via an index where the cardinality is very low.</p>\n\n\n\t<p>Getting
+    rid of file sorts and temp table stuff is important in MySQL, be careful of IN/EXIST
+    subqueries, the MySQL optimiser is still not fully baked for those, from my experience.</p>"
+- date: 2006-10-28
+  author: Adam Keys
+  content: "<p>On the databases I’ve worked with in the past, its worth noting that
+    indices incur a write penalty.  So anytime you’re inserting a row (and probably
+    updating), the DB has to generate data for and insert data into the index, possibly
+    re-organizing it.  In most scenarios, this is fine as reads often out-number writes
+    5:1 or so.  However, for something like an audit table (for example), you might
+    want to choose your indices sparingly.</p>\n\n\n\t<p>Other than that, this has
+    been a very valuable thread, Jamis.  Thanks for starting it!</p>"
+- date: 2006-10-30
+  author: Alexander Staubo
+  content: "<p>For a good treatment of indexes, see “The Art of <span class=\"caps\">SQL</span>”
+    (http://www.amazon.com/Art-SQL-Stephane-Faroult/dp/0596008945) on O’Reilly, a
+    refreshingly no-nonsense, high-level, database-agnostic view on relational databases,
+    with much material devoted to how to make the relational model work for you within
+    the constraints of the non-relational <span class=\"caps\">SQL</span> language.</p>\n\n\n\t<p>As
+    Adam Sanderson points out, PostgreSQL 8.1 will use in-memory bitmap indexes to
+    perform multi-index joins (a feature <span class=\"caps\">DB2</span> has had for
+    years). Bizgres has implemented on-disk bitmap indexes similar to Oracle’s, scheduled
+    for inclusion sometime after 8.2. Oracle’s compressed bitmap indexes, which are
+    only available in the $30k-per-CPU enterprise version, yields ridiculously fast
+    queries on high-cardinality attributes.</p>\n\n\n\t<p>Oh, and the command to get
+    explain output from PostgreSQL is “explain”, not “analyze”. Usually you will want
+    to run “explain analyze”, which requests actual timings in addition to the estimated
+    costs. PostgreSQL’s explain output, incidentally, is the best I have seen—Oracle’s
+    is all right and MySQL’s is practically unreadable.</p>"
+- date: 2006-11-02
+  author: Jim Kane
+  content: |-
+    <p>Note to those who asked about MySQL only using one index per query: this restriction was removed in the 5.0 series.
+    http://dev.mysql.com/doc/refman/5.0/en/index-merge-optimization.html</p>

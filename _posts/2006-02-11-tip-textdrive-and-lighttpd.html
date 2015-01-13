@@ -1,0 +1,81 @@
+---
+layout: post
+title: 'Tip: TextDrive and Lighttpd'
+post_id: 168
+categories:
+- Tips & Tricks
+date: 2006-02-11 15:21:00.000000000 -07:00
+author: Jamis
+permalink: 2006/02/11/tip-textdrive-and-lighttpd.html
+---
+
+<p>Here’s a tip if you’re running rails applications under lighttpd on <a href="http://www.textdrive.com">TextDrive</a>: don’t use static fcgi processes.</p>
+<p>The static <span class="caps">FCGI</span> processes are the ones you get when you specify a <code>bin-path</code> in your configuration, a la:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">fastcgi.server = ( ".fcgi" =&gt;<tt>
+</tt>    ( "localhost" =&gt;<tt>
+</tt>        (<tt>
+</tt>          "min-procs" =&gt; 1,<tt>
+</tt>          "max-procs" =&gt; 1,<tt>
+</tt>          "bin-path" =&gt; "public/dispatch.fcgi",<tt>
+</tt>          "bin-environment" =&gt; ( "RAILS_ENV" =&gt; "production" )<tt>
+</tt>        )<tt>
+</tt>    )<tt>
+</tt>  )</pre></td>
+</tr></table>
+<p>There are two problems with doing it this way:</p>
+<ol>
+	<li>Lighttpd doesn’t always like the way the Rails’ <code>reaper</code> process plays with its processes, so you sometimes need to restart lighttpd when deploying a new version of your application.</li>
+		<li>Restarting lighttpd becomes <em>extremely</em> expensive, because all of the fastcgi processes get started up. With a single application that’s not a big deal, but if you start running more than one, you begin hating life when you have to restart lighttpd.</li>
+	</ol>
+<p>So, the solution?</p>
+<p>First, create a <code>tmp</code> directory in your rails project.</p>
+<p>Then, create a <code>spawn</code> script that looks something like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">APP=yourapp<tt>
+</tt>ROOT=/home/you/path/to/$APP<tt>
+</tt>TMP=$ROOT/tmp<tt>
+</tt>ENV=production<tt>
+</tt><tt>
+</tt>RAILS_ENV=$ENV spawn-fcgi -f $ROOT/public/dispatch.fcgi \<tt>
+</tt>     -s $TMP/$APP-0.socket -P $TMP/$APP-0.pid<tt>
+</tt>RAILS_ENV=$ENV spawn-fcgi -f $ROOT/public/dispatch.fcgi \<tt>
+</tt>     -s $TMP/$APP-1.socket -P $TMP/$APP-1.pid&lt;/pre&gt;</pre></td>
+</tr></table>
+<p>Go ahead and run this script. (What this does is spawn your fcgi processes <em>externally</em>. In this case, it spawns two processes, each listening on a different unix domain socket.)</p>
+<p>Finally, tweak your lighttpd configuration so that it references the externally spawned fastcgi processes, instead of spawning directly:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">fastcgi.server = ( ".fcgi" =&gt;<tt>
+</tt>   ( "localhost" =&gt;<tt>
+</tt>     ( "socket" =&gt; "/home/you/path/to/APP/tmp/APP-0.socket" ),<tt>
+</tt>     ( "socket" =&gt; "/home/you/path/to/APP/tmp/APP-1.socket" )))</pre></td>
+</tr></table>
+<p>(Be sure to replace the paths with the correct paths that were specified in the <code>spawn</code> script.) Then, restart lighttpd. Lighttpd will balance requests between the sockets you specify, so you can specify as few or as many as you need. (The fewer you use, the happier the TextDrive staff will be.)</p>
+<p>Now, you can use the Rails <code>reaper</code> command with confidence to restart your application, and restarting lighttpd is a very light, very inexpensive affair because your fastcgi processes are managed independently. You can now tweak your lighttpd configuration without fear!</p>
+<p>(Note, however, that a reboot of the machine hosting your account will require you to run the spawn scripts for your applications again… I’m sure there’s a handy solution for that floating around somewhere, but I don’t know it offhand.)</p>

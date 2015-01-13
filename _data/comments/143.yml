@@ -1,0 +1,52 @@
+---
+- date: 2007-01-10
+  author: jux
+  content: <p>Thanks for the tip. I often end up being confused by all these little
+    <span class="caps">RJS</span>-templates. I believe this is much clearer, although
+    a bit of a sacrifice on <span class="caps">MVC</span>.</p>
+- date: 2007-01-10
+  author: Jamis
+  content: "<p>“although a bit of a sacrifice on <span class=\"caps\">MVC</span>.”</p>\n\n\n\t<p>Perhaps.
+    But perhaps not. In my mind, <span class=\"caps\">RJS</span> templates are not
+    “the view”—they are mini programs that define <em>how you want to manipulate the
+    view</em>. And that sounds a lot more like a controller than a view, to me.</p>\n\n\n\t<p>I’ll
+    admit, though, that’d I’d rather see individual <span class=\"caps\">RJS</span>
+    template files in the view directory than in the controller directory.</p>"
+- date: 2007-01-10
+  author: Joe Martinez
+  content: "<p>Jamis, is render(:update) a recent addition to edge or did it come
+    in w/ the rjs stuff?</p>"
+- date: 2007-01-10
+  author: Adam Roth
+  content: <p>Been there for a long time now. I noticed inline <span class="caps">RJS</span>
+    in the Opinion <span class="caps">SVN</span> repository (message board created
+    by leetsoft) many months ago.</p>
+- date: 2007-01-10
+  author: _Kevin
+  content: "<p>I use this approach almost exclusively.  I find it much easier to keep
+    track of what is going on.</p>"
+- date: 2007-01-10
+  author: Myles Byrne
+  content: |-
+    <p>Simply helpful implicitly calls dom_id on active record objects passed to the [] method so you simplify the render call to:</p>
+
+
+    <pre><code>
+    render(:update) { |page| page[@item].remove }
+    </code></pre>
+- date: 2007-01-10
+  author: Jamis
+  content: "<p>Doh, thanks Myles. :) You sure can.</p>"
+- date: 2007-01-13
+  author: zerohalo
+  content: "<p>Thanks, Jamis, for the posts. They’re always enlightening. To second
+    your post above, I completely agree with putting <span class=\"caps\">RJS</span>
+    in the controller instead of its own file—unless it’s very long, or several methods
+    are sharing the same <span class=\"caps\">RJS</span> file and explicitly calling
+    it, it’s just another file to keep track of.</p>\n\n\n\t<p>And since the call
+    to the <span class=\"caps\">RJS</span> file doesn’t have to be explicit, it’s
+    not obvious from looking at the controller whether a particular method is calling
+    an <span class=\"caps\">RJS</span> file or not. So I found myself checking my
+    filesystem to see if there was an <span class=\"caps\">RJS</span> file with that
+    method name that was being called. So in the end, it created more work for me
+    than just including the <span class=\"caps\">RJS</span> code right in the method.</p>"

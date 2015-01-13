@@ -1,0 +1,103 @@
+---
+layout: post
+title: 'Net::SSH: checked in'
+post_id: 321
+categories:
+- Projects
+date: 2004-11-22 08:04:00.000000000 -07:00
+author: Jamis
+permalink: 2004/11/22/net-ssh-checked-in.html
+---
+
+<p>I’ve checked in the new-and-improved <a href="http://net-ssh.rubyforge.org">Net::SSH</a>, so those of you that want to see it, <a href="http://rubyforge.org/scm/?group_id=274">knock yourselves out</a>. I feel pretty good about it. I think it demonstrates (among other things) how dependency injection can help manage complex applications.</p>
+<p>Unit tests (and integration tests) are all implemented:</p>
+<pre>
+  -&gt; rake test_all
+  (in /home/jgb3/cvs/net-ssh)
+  ruby18 -Ilib -e0  -rtest/ALL-TESTS  -- -- -i
+  Loaded suite -e
+  Started
+  .............................................................................
+  .............................................................................
+  .............................................................................
+  .............................................................................
+  .............................................................................
+  .............................................................................
+  ...............
+  Finished in 32.595861 seconds.
+
+  477 tests, 2490 assertions, 0 failures, 0 errors
+</pre>
+<p>Code coverage of the tests still needs some work to get it to 100%, but considering that prior versions of Net::SSH had almost no unit tests at all, I think the current coverage of 92% is hard to knock. (The coverage is probably even better than that, due to limitations in how accurately <code>rcov</code> parses Ruby source files.)</p>
+<pre>
+  Mon Nov 22 14:26:04 MST 2004
+  Average (code only): 91.9%
+  Average (with comments): 95.3%
+
+  ../lib/net/ssh/connection/channel.rb                      411  206   87.3%   77.2%
+  ../lib/net/ssh/connection/constants.rb                     47   22  100.0%  100.0%
+  ../lib/net/ssh/connection/driver.rb                       343  206   99.1%   98.5%
+  ../lib/net/ssh/connection/services.rb                      72    9   90.3%   82.1%
+  ../lib/net/ssh/errors.rb                                   27    6  100.0%  100.0%
+  ../lib/net/ssh/proxy/errors.rb                             34   10  100.0%  100.0%
+  ../lib/net/ssh/proxy/http.rb                              126   77   98.4%   97.4%
+  ../lib/net/ssh/proxy/socks4.rb                             83   44  100.0%  100.0%
+  ../lib/net/ssh/proxy/socks5.rb                            160  101   98.8%   98.0%
+  ../lib/net/ssh/service/forward/driver.rb                  319  188   95.9%   93.6%
+  ../lib/net/ssh/service/forward/local-network-handler.rb    74   36  100.0%  100.0%
+  ../lib/net/ssh/service/forward/remote-network-handler.rb   81   45   81.5%   71.1%
+  ../lib/net/ssh/service/forward/services.rb                 76   38   69.7%   39.5%
+  ../lib/net/ssh/service/process/driver.rb                  153   31  100.0%  100.0%
+  ../lib/net/ssh/service/process/open.rb                    193   86   99.0%   97.7%
+  ../lib/net/ssh/service/process/popen3.rb                  160   78   98.8%   97.4%
+  ../lib/net/ssh/service/process/services.rb                 66   32  100.0%  100.0%
+  ../lib/net/ssh/service/services.rb                         44   18  100.0%  100.0%
+  ../lib/net/ssh/session.rb                                 219  104   91.3%   83.7%
+  ../lib/net/ssh/transport/algorithm-negotiator.rb          267  198   84.3%   78.8%
+  ../lib/net/ssh/transport/compress/compressor.rb            53   21   79.2%   61.9%
+  ../lib/net/ssh/transport/compress/decompressor.rb          53   21   79.2%   61.9%
+  ../lib/net/ssh/transport/compress/none-compressor.rb       39   14  100.0%  100.0%
+  ../lib/net/ssh/transport/compress/none-decompressor.rb     39   14  100.0%  100.0%
+  ../lib/net/ssh/transport/compress/services.rb              68   37  100.0%  100.0%
+  ../lib/net/ssh/transport/compress/zlib-compressor.rb       60   25  100.0%  100.0%
+  ../lib/net/ssh/transport/compress/zlib-decompressor.rb     52   22  100.0%  100.0%
+  ../lib/net/ssh/transport/constants.rb                      66   35  100.0%  100.0%
+  ../lib/net/ssh/transport/errors.rb                         47   13  100.0%  100.0%
+  ../lib/net/ssh/transport/identity-cipher.rb                61   26  100.0%  100.0%
+  ../lib/net/ssh/transport/kex/dh-gex.rb                    106   67   96.2%   94.0%
+  ../lib/net/ssh/transport/kex/dh.rb                        231  126  100.0%  100.0%
+  ../lib/net/ssh/transport/kex/services.rb                   60   32  100.0%  100.0%
+  ../lib/net/ssh/transport/ossl/buffer-factory.rb            52   22  100.0%  100.0%
+  ../lib/net/ssh/transport/ossl/buffer.rb                    87   44  100.0%  100.0%
+  ../lib/net/ssh/transport/ossl/cipher-factory.rb            98   48  100.0%  100.0%
+  ../lib/net/ssh/transport/ossl/digest-factory.rb            51   20  100.0%  100.0%
+  ../lib/net/ssh/transport/ossl/hmac-factory.rb              71   31   97.2%   93.5%
+  ../lib/net/ssh/transport/ossl/hmac/hmac.rb                 62   25  100.0%  100.0%
+  ../lib/net/ssh/transport/ossl/hmac/md5-96.rb               44   18  100.0%  100.0%
+  ../lib/net/ssh/transport/ossl/hmac/md5.rb                  46   19  100.0%  100.0%
+  ../lib/net/ssh/transport/ossl/hmac/none.rb                 46   19  100.0%  100.0%
+  ../lib/net/ssh/transport/ossl/hmac/services.rb             68   35  100.0%  100.0%
+  ../lib/net/ssh/transport/ossl/hmac/sha1-96.rb              44   18  100.0%  100.0%
+  ../lib/net/ssh/transport/ossl/hmac/sha1.rb                 45   19  100.0%  100.0%
+  ../lib/net/ssh/transport/ossl/key-factory.rb              113   62  100.0%  100.0%
+  ../lib/net/ssh/transport/ossl/services.rb                 149   96   88.6%   82.3%
+  ../lib/net/ssh/transport/packet-stream.rb                 210  113   96.2%   92.9%
+  ../lib/net/ssh/transport/services.rb                      146  108  100.0%  100.0%
+  ../lib/net/ssh/transport/session.rb                       296  199   97.6%   96.5%
+  ../lib/net/ssh/transport/version-negotiator.rb             73   33   97.3%   93.9%
+  ../lib/net/ssh/userauth/agent.rb                          218  130   94.0%   90.0%
+  ../lib/net/ssh/userauth/constants.rb                       35   14  100.0%  100.0%
+  ../lib/net/ssh/userauth/driver.rb                         176   98   98.9%   98.0%
+  ../lib/net/ssh/userauth/methods/hostbased.rb              119   69  100.0%  100.0%
+  ../lib/net/ssh/userauth/methods/password.rb                70   38  100.0%  100.0%
+  ../lib/net/ssh/userauth/methods/publickey.rb              137   79  100.0%  100.0%
+  ../lib/net/ssh/userauth/methods/services.rb                63   36  100.0%  100.0%
+  ../lib/net/ssh/userauth/services.rb                       126   86   95.2%   93.0%
+  ../lib/net/ssh/userauth/userkeys.rb                       258  140   90.3%   82.9%
+  ../lib/net/ssh/util/buffer.rb                             274  159   95.3%   93.1%
+  ../lib/net/ssh/util/openssl.rb                            146   80   74.7%   61.3%
+  ../lib/net/ssh/version.rb                                  29   10  100.0%  100.0%
+  ./ALL-TESTS.rb                                             21    3  100.0%  100.0%
+  -------------------------------------------------------- ---- ----  ------  ------
+  TOTAL                                                    7263 3889   95.3%   91.9%
+</pre>

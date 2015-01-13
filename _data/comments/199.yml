@@ -1,0 +1,115 @@
+---
+- date: 2005-09-26
+  author: Joe
+  content: "You stole my idea!  :-)\n\nSee http://joevandyk.com:2529/repository/file/trunk/load_database.sh
+    for what I load often during development.  It's posted below:\n\n#!/bin/sh\necho
+    'drop database gamefest_development; | mysql -h localhost -u root\necho 'create
+    database gamefest_development;' | mysql -h localhost -u root\nrake migrate &amp;&amp;
+    rake reload_db\n\nI drop the development database, then create the development
+    database.  \n\nThen rake migrate is run which creates all the tables.\n\nI have
+    a task (reload_db) in my rake file that will load all my test fixtures into the
+    development database.\n\nSo, after making changes to the database schema, I can
+    do ./load_database, and everything's loaded from scratch.\n\nIt's been pretty
+    helpful.\n\n"
+- date: 2005-09-26
+  author: Joe
+  content: Eeek, pasting the script file didn't work out all that well.
+- date: 2005-09-27
+  author: Alan Francis
+  content: "Alan Francis said 2 days later:\r\n\r\nHi Jamis,\r\n\r\nCould you give
+    us a 5 minute tutorial on using the migration from the get-go ?\r\n\r\nI've just
+    started a project and have my schema in a .sql file which I load with my own little
+    populate_database script.\r\n\r\nBefore I go any further, I'd rather switch and
+    use the ActiveRecord stuff. \r\n\r\nSo assuming I'm starting a brand new project,
+    I do 'rails myproject'. At the moment the next thing I do is start editing my
+    .sql file.  What should I do instead ?\r\n\r\nAlan\r\n"
+- date: 2005-09-27
+  author: Chad Fowler
+  content: |
+    Alan,
+
+    Have a look at http://wiki.rubyonrails.org/rails/pages/UnderstandingMigrations
+
+    You use a generator to create the initial migration files, and then you fill in their "self.up" and "self.down" methods with the simple language of ActiveRecord::Schema (e.g. "add_table do |t|; t.column :name, :string; end)
+
+    Chad
+- date: 2005-09-27
+  author: Alan Francis
+  content: Thanks, Chad :-)
+- date: 2005-09-27
+  author: Alan Francis
+  content: |
+    Quick question, can foreign key constraints be specified ?  I looked, but couldn't see it.
+- date: 2005-09-27
+  author: Scott Laird
+  content: I guess I should have publicized http://rubyforge.org/projects/schemagenerator/
+    a bit better :-)
+- date: 2005-09-27
+  author: Ryan Platte
+  content: |-
+    I've been kinda squatting on the RubyForge name "ActiveSchema" for some months now -- I had an idea that I never got around to implementing, and then RoR gained migration support. I'll give it to someone who presents a RoR schema idea I like, or to Rails if there's something that they'd like to be named "activeschema".
+
+    Is Rails the first framework to offer built-in database refactoring support?
+- date: 2005-09-27
+  author: Alan Francis
+  content: Found it, indirectly.  Doing it in raw SQL is a little clunky, but I guess
+    that's exactly what I'm doing at the moment :-)
+- date: 2005-09-27
+  author: Jay Levitt
+  content: Not for nothing, but it sure seems like SchemaDumper could be a first step
+    on the road to specifying the initial schema right in Rails, solving the DRY problem...
+    ya?
+- date: 2005-09-27
+  author: Jamis
+  content: |-
+    Jay, rather than specify the initial schema using the SchemaDumper, I'd just use migrations. Use the migration generator to create an initial migration and then define your first few tables and indexes right there, using the migration DSL(Domain Specific Language).
+
+    In fact, that's what I've been doing with "BudgetWise":http://bw.urug.org. It works really, really well.
+- date: 2005-09-28
+  author: Scott Laird
+  content: Yeah, we're generating the schemas directly from migrations in Typo now
+    too, and it works really well.  Before we started doing this, any DB changes had
+    to be specified in a migration file and then in 3 schema files (mysql, pgsql,
+    sqlite).  It was a big DRY problem.  That's fixed now, using my schema generator
+    on RubyForge.  It does nasty things to the internals of Rails (gotta love open
+    classes), but it works with the three dbs that we care about right now.
+- date: 2005-09-28
+  author: Jamis
+  content: Scott, thanks for pointing out your schema generator stuff. If you're after
+    raw SQL definitions of your schemas, that is definitely the way to go. The SchemaDumper
+    tackles it from the other direction, and will never give you SQL without requiring
+    you to import into a DB and then dump the schema. It's nice to have both tools
+    available.
+- date: 2005-11-14
+  author: Subimage
+  content: Any updates on this? Is there a better way to jump into using migrations
+    now since v1 is coming out?
+- date: 2005-12-14
+  author: Jon
+  content: |-
+    I just upgraded one of my apps to 0.14.4 to try out migrations, and it works like a charm.  I already had a database full of data and didn't want to start from scratch, but wanted to use migrations for future updates.
+
+    In response to the question above about 'first run' situations, here's what I did:
+
+    Follow the instructions above (rake db_schema_dump, script/generate migration Initial, copy to 001_initial.rb)
+
+    Add any foreign key constraints to the migration file.
+
+    Create a table named schema_info with a single integer column named version (this is what rake migrate does for you the first time you run it).
+
+    Put a single entry in it with a value of 1 and when you run "rake migrate", rake will skip your first migration.
+
+    Presto! No table_already_exists errors, the data doesn't get touched (I'm using MySQL 4.1 and 5.0, btw), and migrations after that (up and down) work like a charm.
+
+    Also, if you are adding foreign key constraints in the migration file, make sure you either create dependent tables after independent tables, or add your foreign keys after you add your tables.
+- date: 2006-07-06
+  author: John Sietsma
+  content: "A bit late, but I'll add a comment underneath all your spam.\n\nTo get
+    around the table already exists problem I first added an empty migration and then
+    the real one with matching table creates and drops.\n\nFor some reason if I enter:
+    \nrake migration VERSION=0\nit doesn't execute the down function in the first
+    migration file.\n\nSo, if I have an emtpy migration number 1 and do the real work
+    in migration 2, then I can do:\nrake migration VERSION=1\nand have all my tables
+    dropped for me. Next time I run migrate the tables are created without error.\n\nI'm
+    a rails newbie, so hopefully this is the problem you were talking about! If not,
+    feedback welcome...\n"

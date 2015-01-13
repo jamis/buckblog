@@ -1,0 +1,56 @@
+---
+- date: 2006-10-28
+  author: Kasper Weibel
+  content: "<p>In 1996 I had a Prolog <span class=\"caps\">CS1</span> course when
+    at university. At first it seemed a quite unusual language to me, but when you
+    get used to not having any arms or legs programming wise it’s actually very powerful.</p>\n\n\n\t<p>Let
+    me recommend Clocksin and Mellish as an excellent literary source on the subject.</p>\n\n\n\t<p>http://www.amazon.com/Programming-in-PROLOG-F-Clocksin/dp/3540583505</p>"
+- date: 2006-10-29
+  author: Dr Nic
+  content: "<p>We learnt Prolog in an AI class, but beyond hapless attempts at generating
+    AI, can someone remind me what else Logic Programming can do? Where would I write
+    logic syntax instead of normal procedural syntax and be happy about it?</p>\n\n\n\t<p>Nic</p>"
+- date: 2006-10-29
+  author: Dr Nic
+  content: "<p>Forget that – read the rest of the eigenclass article and there are
+    examples at the bottom.</p>"
+- date: 2006-10-30
+  author: Roel Wuyts
+  content: "<p>Hi all,</p>\n\n\n\t<p>I implemented a Prolog in Smalltalk (called Soul,
+    with some extras that I will not dwell about here, but that have to do with integrating
+    Prolog and Smalltalk). So I wanted to chime in with a number of examples that
+    we have been doing with an integration of a logic language and a reflective object-oriented
+    one.</p>\n\n\n\t<p>This is fun to do what we call ‘Logic Meta Programming’ : you
+    can do logic queries on source code, which can be quite a lot shorter than doing
+    the same via your language’s built-in introspection primitives (especially if
+    you need forms of backtracking support). We used this to implement all kinds of
+    structural verification queries (e.g. find me all classes that implement a visitor
+    design pattern), architectural checks (give me all classes from this layer that
+    reference classes from the layer below), aspect-oriented programming (using the
+    logic language to express pointcuts or using it to do the actual weaving – composition
+    of code), etc.</p>\n\n\n\t<p>Oh, yes, a fellow named Kris Gybels has done very
+    interesting linguistic integration of Prolog and OO languages. It’s not trivial
+    to come up with a good syntactic integration where you can transparantly pass
+    values from one of the two paradigms to the other, without jumping through hoops
+    (like through using an <span class=\"caps\">API</span>). We have lots of ideas
+    and implementations of various forms of symbiosis, so if you are interested in
+    this, we will happily tell you the various things we tried.</p>\n\n\n\t<p>If you
+    want more info on any of these, just drop me a mail (roel.wuyts@gmail.com) and
+    I’ll happily respond. Or Google and start reading all kinds of research articles
+    ;-)</p>\n\n\n\t<p>And consider writing a research paper for the Dnamic Languages
+    Symposium or the <span class=\"caps\">IEEE</span> Special Issue on Rapid Prototyping
+    with Dynamically Typed Languages.</p>"
+- date: 2006-10-31
+  author: TomP
+  content: "<p>As he points out near the top of his blog entry, the tiny_prolog.rb
+    library is not Mauricio’s – he picked it up from a couple of Japanese articles.
+    \ The links are near the top of his blog entry,</p>\n\n\n\t<p>http://www.okisoft.co.jp/esc/prolog/in-ruby.html\nhttp://codezine.jp/a/article.aspx?aid=461</p>\n\n\n\t<p>Babelfish
+    can render these into semi-understandable “all-your-base-are-belong-to-us”-like
+    English, if you want to try to read them.  It can’t do anything with the author’s
+    name, unfortunately, so I still don’t know who to credit with this work.  The
+    syntax used in the original work is somewhat more Rubyish than Mauricio’s.</p>"
+- date: 2006-10-31
+  author: Jamis
+  content: "<p>TomP, thanks for pointing that out. It’s true that the lion’s share
+    of the work was by the Japanese author, and Mauricio then added some sugar on
+    top.</p>"

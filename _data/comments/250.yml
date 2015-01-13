@@ -1,0 +1,28 @@
+---
+- date: 2005-10-30
+  author: Sam
+  content: |-
+    Here are some things to think about when learning Haskell:
+
+    Lazy (rather, non-strict) evaluation in Haskell is quite an impressive change-of-pace from most of what else is out there. In my experience it makes code easier to reason about for the programmer, but sometimes less so for the compiler. The effects of this are far reaching in the positive arena, but it is important to note that lazy evaluation comes with a significant performance price tag in the general case, although laziness also allows for interesting fusion and deforestation of and between intermediate data structures in other algorithms.
+
+    A type-polymorphic language, as opposed to an ad-hoc polymorphic language such as C++ or Java, is substantially better suited to abstration. Conversely, it forces the programmer to think in a structured way which contributes to a substantial learning curve.
+
+    Haskell has a complicated type system, and considering popular extensions like multi-parameter type classes and functional dependencies, it is becoming more complicated regularly. However, things like type classes (multi-parameter or not), monads, functional dependencies, GATDs, etc. find their uses within any programmer's tool belt and are quickly indispensible. I imagine the reasearch currently being done in the field of type theory will produce a number of real winners, and will become encoded in a semantic that is approachable in a less rigorous way, but the trend right now is to reach in every possible dimension for research in PLT/type theory. Note the trend from Miranda to Epigram in lazy functional programming languages.
+
+    I don't mean to say that Haskell is the best possible language. These are just a few things to think about when or before attempting to learn Haskell.
+
+    I experienced a fairly rapid understanding of the "big picture" of functional programming, and I believe that most programmers will quickly see the immediate benefits of a language like Haskell, and through a substantial effort and with the help of very smart and kind people at the IRC channel (#haskell@freenode.net) and the wiki (haskell.org/hawiki), I have come to find that for the most part, the promises made were filled, and those that weren't were the focus of exciting research that has kept me continuously enthralled in things I could never before have imagined.
+
+
+    Sorry for the rant! I hope my vague oppinions are of use to those just beginning in Haskell, as I hope they are.
+- date: 2005-10-30
+  author: Wilkes Joiner
+  content: |-
+    "Yet Another Haskell Tutorial" is another excellent place to start.
+    http://www.isi.edu/~hdaume/htut
+- date: 2005-10-31
+  author: Martin DeMello
+  content: "This immortal gem from the \"Gentle Introduction\" made it into my quotefile:\n\nIf
+    k1 and k2 are kinds, then k1-&gt;k2 is the kind of types that take a type of kind
+    k1 and return a type of kind k2. "

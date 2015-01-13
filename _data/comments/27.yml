@@ -1,0 +1,45 @@
+---
+- date: 2010-11-01
+  author: Trevor
+  content: "<p>Hey, just one thought, on your zoomed in view, just make tapping anywhere
+    on the instructions goto the next instruction. Going forward is what most people
+    will do anyways, so why not make it easier.</p>\n\n\n\t<p>Anyways, looking forward
+    to this app for my daughter.</p>\n\n\n\t<p>Cheers.</p>"
+- date: 2010-11-01
+  author: Jamis
+  content: "<p>Good idea, Trevor! It’s a little more complicated, because the instructions
+    can include hyperlinks that take you to other figures, but it’s something I’ll
+    look into post-v1.</p>"
+- date: 2010-11-01
+  author: Henrik N
+  content: "<p>The obvious solution for this seems to be voice control.</p>\n\n\n\t<p>Wouldn’t
+    have to be very refined – basically supporting something like “next” (and “back”?),
+    and it would only have to respond to those when in “hands-free mode”, not all
+    the time, so there shouldn’t be a lot of noise.</p>\n\n\n\t<p>No idea what APIs
+    and libs are available.</p>"
+- date: 2010-11-01
+  author: Lois Stokes
+  content: <p>Mahalo for using <span class="caps">ISFA</span> notation. I’m afraid
+    that mizz notations are not something that I have mastered.</p>
+- date: 2010-11-01
+  author: Jamis
+  content: "<p>@Henrik, I agree that voice control would be nice, and I’m adding it
+    to my list of things to consider.</p>"
+- date: 2010-11-01
+  author: Jamis
+  content: <p>@Lois, mizz code is definitely an advanced notation. It’s super useful
+    once you wrap your mind around it, but that’s always the trick, isn’t it? :) if
+    I do add it to Ekawada down the road, it’ll always be optional; <span class="caps">ISFA</span>
+    notation will be the default.</p>
+- date: 2010-11-04
+  author: Sebi
+  content: "<p>I think it would improve the figures if you color the fingers holding
+    the string, especially since the figures are to be viewed on a small screen.</p>"
+- date: 2010-11-04
+  author: Jamis
+  content: "<p>@Sebi, that’s a fair point. I’ll think about that and see how that
+    could be made to work.</p>"
+- date: 2010-11-04
+  author: Sebi
+  content: "<p>Or maybe take advantage of the platform and put in animated gifs instead
+    of pictures. That would be really cool.</p>"

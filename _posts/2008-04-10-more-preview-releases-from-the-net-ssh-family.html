@@ -1,0 +1,121 @@
+---
+layout: post
+title: More preview releases from the Net::SSH family
+post_id: 58
+categories:
+- Announcements
+- Projects
+date: 2008-04-10 21:12:00.000000000 -06:00
+author: Jamis
+permalink: 2008/04/10/more-preview-releases-from-the-net-ssh-family.html
+---
+
+<p>I’ve got lots of code to share with you all today:</p>
+<h3>Net::SSH 2.0 Preview Release #3</h3>
+<p>Not very many external changes, but channels now have an <code>on_open_failure</code> callback that you can employ to be told when a channel could not be opened.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">channel = ssh.open_channel <span class="r">do</span> |ch|<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>channel.on_open_failure <span class="r">do</span> |ch, code, reason|<tt>
+</tt>  puts <span class="s"><span class="dl">"</span><span class="k">could not open channel because </span><span class="il"><span class="dl">#{</span>reason.inspect<span class="dl">}</span></span><span class="k"> </span><span class="il"><span class="dl">#{</span>code<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>This change was necessary to make port forwarding a bit more reliable for Net::SSH::Gateway (see below).</p>
+<p>Also, individual Net::SSH sessions may contain their own custom properties, much as Net::SSH channel objects do, which can be quite handy when you need to keep some state associated with the session.</p>
+<pre><code>ssh[:key] = "value"</code></pre>
+<p>This change (and several other internal refactorings) was necessary for the correct working of the Net::SSH::Multi library (see below).</p>
+<p>To get the preview release #3 (version 1.99.2):</p>
+<pre><code>gem install --source http://gems.jamisbuck.org net-ssh</code></pre>
+<p>You can follow development via GitHub:</p>
+<pre><code><a href="http://github.com/jamis/net-ssh/tree/master">http://github.com/jamis/net-ssh/tree/master</a></code></pre>
+<h3>Net::SFTP 2.0 Preview Release #2</h3>
+<p>All that was added in this preview release was custom properties on Upload instances:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">uploader = sftp.upload(<span class="s"><span class="dl">"</span><span class="k">local.file</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">remote.file</span><span class="dl">"</span></span>)<tt>
+</tt>uploader[<span class="sy">:failed</span>] = <span class="pc">false</span><tt>
+</tt><span class="c"># ...</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>This was necessary to get Capistrano file transfers to work with Net::SFTP 2.0.</p>
+<p>To get the preview release #2 (version 1.99.1):</p>
+<pre><code>gem install --source http://gems.jamisbuck.org net-sftp</code></pre>
+<p>You can follow development via GitHub:</p>
+<pre><code><a href="http://github.com/jamis/net-sftp/tree/master">http://github.com/jamis/net-sftp/tree/master</a></code></pre>
+<h3>Net::SSH::Gateway 1.0 Preview Release #1</h3>
+<p>Net::SSH::Gateway is (in essence) the extraction of the gateway code from Capistrano into its own library. It lets you tunnel <span class="caps">SSH</span> connections through some “gateway” server to servers that would be otherwise inaccessible.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">require <span class="s"><span class="dl">'</span><span class="k">net/ssh/gateway</span><span class="dl">'</span></span><tt>
+</tt><tt>
+</tt>gateway = <span class="co">Net</span>::<span class="co">SSH</span>::<span class="co">Gateway</span>.new(<span class="s"><span class="dl">'</span><span class="k">gateway.host</span><span class="dl">'</span></span>, <span class="s"><span class="dl">'</span><span class="k">username</span><span class="dl">'</span></span>)<tt>
+</tt>gateway.ssh(<span class="s"><span class="dl">'</span><span class="k">remote.host</span><span class="dl">'</span></span>, <span class="s"><span class="dl">'</span><span class="k">user</span><span class="dl">'</span></span>) <span class="r">do</span> |ssh|<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>You can also use it as a general facilitator for forwarding connections over a local port, when you don’t care what port is to be used—you just want to connect to a remote server.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">gateway.open(<span class="s"><span class="dl">'</span><span class="k">remote.host</span><span class="dl">'</span></span>, <span class="i">80</span>) <span class="r">do</span> |port|<tt>
+</tt>  <span class="co">Net</span>::<span class="co">HTTP</span>.get_print <span class="s"><span class="dl">'</span><span class="k">127.0.0.1</span><span class="dl">'</span></span>, <span class="s"><span class="dl">'</span><span class="k">/path</span><span class="dl">'</span></span>, port<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The current thinking is that the next release of Capistrano will ditch its own gateway implementation in favor of Net::SSH::Gateway. To get this first preview release (version 0.99.0):</p>
+<pre><code>gem install --source http://gems.jamisbuck.org net-ssh-gateway</code></pre>
+<p>You can follow development via GitHub:</p>
+<pre><code><a href="http://github.com/jamis/net-ssh-gateway/tree/master">http://github.com/jamis/net-ssh-gateway/tree/master</a></code></pre>
+<h3>Net::SSH::Multi 1.0 Preview Release #1</h3>
+<p>Net::SSH::Multi is the guts of Capistrano, extracted into a library of their own. It allows you to define and categorize servers, and then execute commands in parallel on them, or on subsets of them, using an interface similar, if not identical, to that of Net::SSH::Connection::Session and Channel.</p>
+<p>Eventually, Capistrano will be refactored to take advantage of Net::SSH::Multi, but doing so will require some significant changes to Capistrano’s innards, and would almost certainly break many third-party libraries. Thus, you won’t see Capistrano on Net::SSH::Multi until Capistrano 3.0 or so (which will <em>not</em> be the next release of Capistrano). However, you can use Net::SSH::Multi to implement most of Capistrano’s functionality in whatever form you like. Want Capistrano-in-a-rakefile? Have at it!</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">require <span class="s"><span class="dl">'</span><span class="k">net/ssh/multi</span><span class="dl">'</span></span><tt>
+</tt><tt>
+</tt><span class="co">Net</span>::<span class="co">SSH</span>::<span class="co">Multi</span>.start <span class="r">do</span> |session|<tt>
+</tt>  session.use <span class="s"><span class="dl">'</span><span class="k">jamis@somewhere.com</span><span class="dl">'</span></span><tt>
+</tt>  session.use <span class="s"><span class="dl">'</span><span class="k">jamis@elsewhere.com</span><span class="dl">'</span></span><tt>
+</tt><tt>
+</tt>  session.exec <span class="s"><span class="dl">'</span><span class="k">hostname</span><span class="dl">'</span></span><tt>
+</tt>  session.loop<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Grab the first preview release (version 0.99.0):</p>
+<pre><code>gem install --source http://gems.jamisbuck.org net-ssh-multi</code></pre>
+<p>You can follow development via GitHub:</p>
+<pre><code><a href="http://github.com/jamis/net-ssh-multi/tree/master">http://github.com/jamis/net-ssh-multi/tree/master</a></code></pre>
+<p>For all of these libraries I’ve tried to make the rdoc and ri documentation as informative as possible, so please refer to those to get started. If those aren’t helpful enough, let me know what could make them more useful!</p>

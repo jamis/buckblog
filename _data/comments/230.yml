@@ -1,0 +1,11 @@
+---
+- date: 2006-03-28
+  author: Sergio Bayona
+  content: "Very interesting read Jamis. I am writting an accounting module for a
+    Rails-based property rental application.\n\nThe accounting portion of the tool
+    is a lot less complex because I don't have to deal with budgets or credit cards
+    but it has to be a double-entry accounting system. Having said that, this module
+    has been the most difficult to write. The reason is accounting is difficult in
+    itself and it is challenging to write software that does the job yet is simple
+    enough to use. \n\nAt any rate, I'd be very interested to hear whatever progress
+    you've made and/or any code that you may release."

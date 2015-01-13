@@ -1,0 +1,26 @@
+---
+- date: 2008-01-11
+  author: Alex Young
+  content: "<p>I think it’d be pretty great if there was a book dedicated to Capistrano,
+    even if it was a relatively short <span class=\"caps\">PDF</span> edition.</p>\n\n\n\t<p>Even
+    though it’s relatively easy to use I don’t think most people realise what you
+    can do with it.  It certainly saves me a lot of time!</p>"
+- date: 2008-01-11
+  author: "@Alex"
+  content: <p>That sounds like something targeted to a peepcode <span class="caps">PDF</span></p>
+- date: 2008-01-18
+  author: John Philip Green
+  content: "<p>I’ve ordered a copy… this is the third glowing recommendation I’ve
+    seen.</p>\n\n\n\t<p>Can you confirm that my colleague Carsten’s Email Veracity
+    Plugin made it in? (link: http://rails.savvica.com/2007/11/6/email-veracity-plugin)</p>"
+- date: 2008-01-20
+  author: lefish
+  content: "<p>Hey, who is Mike and i wanna know what’s Mick’s book?</p>"
+- date: 2008-01-24
+  author: Justin Blake
+  content: <p>Wow, every single one of those capistrano tips sounds great. I haven’t
+    done much with it besides the normal deploy stuff and a few custom hook tasks,
+    but have been dying to start getting into most of what you’ve listed as being
+    in the book. I’ll definitely be picking that one up. I have such a hard time reading
+    <span class="caps">PDF</span> books though so I’ll probably wait for the really
+    for real paper version. Unless I get a kindle…</p>

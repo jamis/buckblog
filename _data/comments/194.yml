@@ -1,0 +1,75 @@
+---
+- date: 2006-01-03
+  author: rabble
+  content: |-
+    This is how we do it with odeo too. Although we envoke it with direct environment variables....
+
+    $ STAGE=development rake deploy
+- date: 2006-01-03
+  author: atmos
+  content: wow, I wanna use this at work with our j2ee crap...
+- date: 2006-01-03
+  author: mgc
+  content: I was writing code for staging/production deployments this very evening
+    and this recipe works great. Had me going in no time with 2 deployment targets
+    in 1 deploy.rb.
+- date: 2006-01-04
+  author: Jamie Hill
+  content: |-
+    That's great, thanks.
+
+    I'm still looking for a clean way to check if a file exists on the server and other simple tasks, is there a nice way of "plugging in" this functionality to create methods similar to 'delete'
+- date: 2006-01-04
+  author: Jamis
+  content: "Jamie, that's a great question, and a good topic for another blog entry.
+    Here's a quick answer, though:\r\n\r\nFirst, you can load multiple recipes via
+    the switchtower commandline, using the @-r@ switch multiple times:\r\n\r\n<pre>\r\n
+    \ switchtower -r /path/to/my/recipes -r config/deploy -a deploy\r\n</pre>\r\n\r\nArmed
+    with that, you can put reusable chunks of recipes into a file and use them in
+    multiple places. Here's an example of a method that tests for the existence of
+    a file on the remote server:\r\n\r\n<pre><code>def exists?(path)\n  exists = false\n
+    \ run \"test -e #{path} &amp;&amp; echo exists\", :once =&gt; true do |ch, str,
+    out|\n    exists ||= out == :out &amp;&amp; str.chomp == \"exists\"\n    raise
+    str if out == :err\n  end\n  exists\nend\n</code></pre>\r\n\r\n(Warning: I haven't
+    actually tested the above code--but the theory is sound... ;))"
+- date: 2006-01-06
+  author: Glenn Vanderburg
+  content: Jamis, I think the current mechanism works well, except for one small deficiency.  I
+    typically want a different RAILS_ENV on the staging server -- not quite as chatty
+    and slow as development, but not as streamlined as production, either.  Rails
+    makes it so easy to add a new environment, but SwitchTower has some built-in assumptions
+    in places (e.g., migrate) that you want RAILS_ENV=production on the deployment
+    servers, and you have to jump through hoops to override that.  It would be nice
+    if there were an easy way to change RAILS_ENV for the remote executions based
+    on deployment stage.
+- date: 2006-01-06
+  author: Jamis
+  content: Glenn, thanks for the suggestion. Others have suggested it as well, and
+    the next version of ST will definitely allow you to specify which RAILS_ENV to
+    use (for those tasks that require one, line @migrate@).
+- date: 2006-01-11
+  author: Jamie Hill
+  content: Jamis, your solution for the file_exists? won't work as the run method
+    is only available inside a task block as far as I can see.
+- date: 2006-01-11
+  author: Jamis
+  content: |-
+    Jamie, you're absolutely right. You can pass @self@ (which is the actor reference) to the method, and then do @actor.run@ instead, which should work:
+
+    <pre><code>def file_exists?(actor, file)
+      ...
+      actor.run(...)
+      ...
+    end
+    </code></pre>
+- date: 2006-02-02
+  author: Gary
+  content: |+
+    I also use the env variable approach but  define tasks that set the environment vars. I then use ST rake to stack the tasks. For example this command deploys to staging
+
+    rake staging deploy
+
+    and this to production
+
+    rake production deploy
+

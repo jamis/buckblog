@@ -1,0 +1,72 @@
+---
+layout: post
+title: Prolog in Ruby
+post_id: 185
+categories:
+- Essays and Rants
+date: 2006-10-28 14:29:00.000000000 -06:00
+author: Jamis
+permalink: 2006/10/28/prolog-in-ruby.html
+---
+
+<p><a href="http://weblog.jamisbuck.org/2006/9/29/d-d-knowledge-bases-and-prolog-oh-my">About a month ago</a>, I began experimenting with <a href="http://en.wikipedia.org/wiki/Prolog">Prolog</a>. (If you’re a Mac user wanting to tinker with Prolog, I’d recommend <a href="http://www.swi-prolog.org/"><span class="caps">SWI</span>-Prolog</a>. I couldn’t get any other prolog implementation to build or run on my MacBook Pro.) I’m certainly not an expert now, and I’m not leaving Ruby for Prolog, but I did learn enough to appreciate the power of logic programming. (Curiously, I found that logic programming is very similar to functional programming in some respects.)</p>
+<p>How timely, then, was Mauricio Fernandez’s article today about <a href="http://eigenclass.org/hiki.rb?tiny+prolog+in+ruby">Logic Programming in Ruby</a>.</p>
+<p>It is cool stuff, to be sure! Prolog, in Ruby. You could just drop Mauricio’s library into your app and have a logic engine available for you, using a Prolog-esque <acronym title="Domain Specific Language">DSL</acronym>. (A previous article on a similar topic, but which only described a possible <span class="caps">DSL</span>, is <a href="http://www.kdedevelopers.org/node/2369">here</a>.)</p>
+<p>That Prolog <span class="caps">DSL</span> in Ruby is an excellent first step. It opens all kinds of doors. The <em>next</em> step, I think, is a way to do logic programming <em>in</em> Ruby, using a Rubyish syntax. Prolog is nice and all, and its syntax (intentionally) mirrors the mathematic syntax of formal logic, but admit it: unless you’re familiar with that formal syntax, the meaning of a Prolog program is about as transparent as a two-year-old Perl program. Consider the following example from Mauricio’s article:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">sibling[<span class="sy">:X</span>,<span class="sy">:Y</span>] &lt;&lt;= [ parent[<span class="sy">:Z</span>,<span class="sy">:X</span>], parent[<span class="sy">:Z</span>,<span class="sy">:Y</span>], noteq[<span class="sy">:X</span>,<span class="sy">:Y</span>] ]<tt>
+</tt>parent[<span class="sy">:X</span>,<span class="sy">:Y</span>] &lt;&lt;= father[<span class="sy">:X</span>,<span class="sy">:Y</span>]<tt>
+</tt>parent[<span class="sy">:X</span>,<span class="sy">:Y</span>] &lt;&lt;= mother[<span class="sy">:X</span>,<span class="sy">:Y</span>]<tt>
+</tt><tt>
+</tt>father[<span class="s"><span class="dl">"</span><span class="k">matz</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">Ruby</span><span class="dl">"</span></span>].fact<tt>
+</tt>mother[<span class="s"><span class="dl">"</span><span class="k">Trude</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">Sally</span><span class="dl">"</span></span>].fact<tt>
+</tt>father[<span class="s"><span class="dl">"</span><span class="k">Tom</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">Sally</span><span class="dl">"</span></span>].fact<tt>
+</tt>father[<span class="s"><span class="dl">"</span><span class="k">Tom</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">Erica</span><span class="dl">"</span></span>].fact<tt>
+</tt>father[<span class="s"><span class="dl">"</span><span class="k">Mike</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">Tom</span><span class="dl">"</span></span>].fact<tt>
+</tt><tt>
+</tt>query sibling[<span class="sy">:X</span>, <span class="s"><span class="dl">"</span><span class="k">Sally</span><span class="dl">"</span></span>]</pre></td>
+</tr></table>
+<p>Wouldn’t it be cool if you could define that with something closer to natural language? (Natural language, I know, introduces all kinds of ambiguities, which is why mathematicians use a more rigorous formal language for describing things like logic, but just follow along for a minute.) The following has not been implemented (at least by me), but wouldn’t it be nifty if it worked?</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="sy">:X</span>.sibling_of(<span class="sy">:Y</span>).if <span class="sy">:Z</span>.parent_of(<span class="sy">:X</span>).and(<span class="sy">:Z</span>.parent_of(<span class="sy">:Y</span>)).and(<span class="sy">:X</span>.noteq(<span class="sy">:Y</span>))<tt>
+</tt><span class="sy">:X</span>.parent_of(<span class="sy">:Y</span>).if <span class="sy">:X</span>.father_of(<span class="sy">:Y</span>)<tt>
+</tt><span class="sy">:X</span>.parent_of(<span class="sy">:Y</span>).if <span class="sy">:X</span>.mother_of(<span class="sy">:Y</span>)<tt>
+</tt><tt>
+</tt><span class="s"><span class="dl">"</span><span class="k">matz</span><span class="dl">"</span></span>.father_of <span class="s"><span class="dl">"</span><span class="k">Ruby</span><span class="dl">"</span></span><tt>
+</tt><span class="s"><span class="dl">"</span><span class="k">Trude</span><span class="dl">"</span></span>.mother_of <span class="s"><span class="dl">"</span><span class="k">Sally</span><span class="dl">"</span></span><tt>
+</tt><span class="s"><span class="dl">"</span><span class="k">Tom</span><span class="dl">"</span></span>.father_of <span class="s"><span class="dl">"</span><span class="k">Sally</span><span class="dl">"</span></span><tt>
+</tt><span class="s"><span class="dl">"</span><span class="k">Tom</span><span class="dl">"</span></span>.father_of <span class="s"><span class="dl">"</span><span class="k">Erica</span><span class="dl">"</span></span><tt>
+</tt><span class="s"><span class="dl">"</span><span class="k">Mike</span><span class="dl">"</span></span>.father_of <span class="s"><span class="dl">"</span><span class="k">Tom</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt><span class="c"># returns an Enumerable of the possible solutions</span><tt>
+</tt>result = <span class="sy">:X</span>.sibling_of(<span class="s"><span class="dl">"</span><span class="k">Sally</span><span class="dl">"</span></span>).solutions<tt>
+</tt>result.each { |solution| p solution }</pre></td>
+</tr></table>
+<p>Maybe that’s too verbose, or too much syntax. I’m sure it’s a little naive. (the Towers of Hanoi example, for instance, is hard to convert to this kind of syntax.) It’s pretty much off the top of my head, and could no doubt be made better. Nevertheless, I think it reads more naturally than Prolog, and feels more like Ruby.</p>
+<p>Perhaps I’ll tinker on this…I’ve got at least one side project that could use a logic engine, and I’d love to use one with a clean, Ruby-esque syntax. If anyone beats me to the punch, though, I won’t be disappointed.</p>

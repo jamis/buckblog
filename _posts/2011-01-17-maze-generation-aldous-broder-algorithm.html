@@ -1,0 +1,678 @@
+---
+layout: post
+title: 'Maze Generation: Aldous-Broder algorithm'
+post_id: 16
+categories:
+- Under the Hood
+date: 2011-01-17 07:33:00.000000000 -07:00
+author: Jamis
+permalink: 2011/01/17/maze-generation-aldous-broder-algorithm.html
+summary: >
+  The significance of uniform spanning trees is discussed, and an algorithm
+  for randomly generating them is given.
+---
+
+<p>The next maze algorithm I’m going to cover, the Aldous-Broder algorithm, is one of the simplest imaginable. It’s also one of the least efficient. In fact, it is so inefficient that you might wonder why anyone would even bother implementing it, let alone discovering it and having their name attached to it.</p>
+<p>D. Aldous and A. Broder were two researchers, working independently, who were investigating <em>uniform spanning trees</em>. A spanning tree, as you may or may not already know, is any tree that connects all the vertexes in a graph. A <em>uniform</em> spanning tree is one chosen randomly (and with equal probability) among all the possible spanning trees of a given graph.</p>
+<p>Riveting, isn’t it?</p>
+<p>There are actually applications for this. Outside of recreational maze generation, I mean. I don’t know what they are myself, but Wikipedia informs me that they are in probability and mathematical physics. (If you know more specifically how uniform spanning trees are being applied in research, please share in a comment!)</p>
+<p>Anyway: Aldous and Broder were researching these uniform spanning trees, and independently arrived at the following algorithm:</p>
+<ol>
+	<li>Choose a vertex. Any vertex.</li>
+		<li>Choose a connected neighbor of the vertex and travel to it. If the neighbor has not yet been visited, add the traveled edge to the spanning tree.</li>
+		<li>Repeat step 2 until all vertexes have been visited.</li>
+	</ol>
+<p>Remember: this algorithm is notable in that it selects from all possible spanning trees (i.e. mazes) of a given graph (i.e. field) with equal probability. The other algorithms I’ve covered don’t have this property.</p>
+<p>Let’s walk through a trivial example. If you haven’t spotted yet why the algorithm is so ineffecient, hopefully the example will demonstrate it.</p>
+<h2>An example</h2>
+<p>For this demonstration, we’ll use a 3×3 grid. Any bigger than that and we could be here all day.</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>We choose a cell at random:</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w h"></td>
+</tr>
+</table>
+<p>And travel to a random neighbor:</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w h"></td>
+<td class="n s e w"></td>
+</tr>
+</table>
+<p>And since the neighbor had not been visited before, we carve a passage between the two:</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s w h"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+<p>Simple enough! Let’s do a few more quick iterations: choose a random neighbor, and carve a passage to it (but only if it hasn’t been visited before):</p>
+<table><tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w h"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s w"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n e w h"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="s w"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n e w"></td>
+<td class="n s e w h"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="s w"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n w"></td>
+<td class="n s e h"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="s w"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+</tr></table>
+<p>Now, watch what happens next. We choose a neighbor at random, but two of the three neighbors are already visisted, which means there’s a very good chance of one of them being picked. Sure enough:</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n w"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="s w"></td>
+<td class="n s e h"></td>
+</tr>
+</table>
+<p>That neighbor’s already been visited! However, this move is allowed by the algorithm; the only constraint is that because the neighbor has been visited before, we don’t carve a passage to it from the previous cell.</p>
+<p>Sure, alright. So, we’ll go with it. I think you’re seeing the pattern here, so I’ll just march through the rest of the process:</p>
+<table>
+<tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n w"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="s w h"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n w"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s e w h"></td>
+<td class="s w"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n w"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w h"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n w"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s h"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n w h"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w h"></td>
+<td class="n w"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s w h"></td>
+<td class="n"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w h"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="n"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n e w h"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n e w"></td>
+<td class="n s e w h"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n s e h"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n s e"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n h"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n s e"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s h"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n s e"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s"></td>
+<td class="n s e h"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n s e"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n"></td>
+<td class="n s e h"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n s e"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n h"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n s e h"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n s e"></td>
+<td class="n s e w h"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n s"></td>
+<td class="n s e h"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n s"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<p>I hope you noticed how the cursor seemed to meander a bit, there at the end. If you run an animation of Aldous-Broder, you’ll probably find yourself shouting “JUST <span class="caps">GO OVER THERE</span>” to the cursor, once or twice. This is because Aldous-Broder, while easy to implement, lacks any real heuristics. And you can’t really <em>add</em> any heuristics without changing the probability curve.</p>
+<p>Try the following demo to see just how frustrating Aldous-Broder can be to watch:</p>
+<script type="text/javascript" src="/javascripts/maze-minified.js"></script>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("AldousBroder", 5, 5, { "class": "small" });</script>
+<script type="text/javascript">Maze.createCanvasWidget("AldousBroder", 15, 15, { "class": "medium", id: "abroder_medium", interval: 25 });</script>
+</div>
+<p>I guess it really comes down to what you want out of a maze generator. If you absolutely must have a perfectly uniform spanning tree, then your options are limited.</p>
+<h2>Implementation</h2>
+<p>One of the really <em>nice</em> things about Aldous-Broder is how trivial it is to implement. If you can implement the grid data structure, the algorithm itself is almost hardly worth mentioning.</p>
+<p>But I’ll mention it anyway.</p>
+<p>My implementation begins by choosing a random point, and then computing the number of cells in the grid that remain unvisited:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">x, y = rand(width), rand(height)<tt>
+</tt>remaining = width * height - <span class="i">1</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Then, we just loop until all cells have been visited:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">while</span> remaining &gt; <span class="i">0</span><tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Within the loop, we just iterate over a list of random directions, until we find one that doesn’t take us outside the maze:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">[<span class="co">N</span>,<span class="co">S</span>,<span class="co">E</span>,<span class="co">W</span>].shuffle.each <span class="r">do</span> |dir|<tt>
+</tt>  nx, ny = x + <span class="co">DX</span>[dir], y + <span class="co">DY</span>[dir]<tt>
+</tt>  <span class="r">if</span> nx &gt;= <span class="i">0</span> &amp;&amp; ny &gt;= <span class="i">0</span> &amp;&amp; nx &lt; width &amp;&amp; ny &lt; height<tt>
+</tt>    <span class="c"># ...</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Once a valid direction is found, we check to see if the new cell is unvisited:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">if</span> grid[ny][nx] == <span class="i">0</span><tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>If so, we carve a path, and decrement the remaining number of visited cells:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">grid[y][x] |= dir<tt>
+</tt>grid[ny][nx] |= <span class="co">OPPOSITE</span>[dir]<tt>
+</tt>remaining -= <span class="i">1</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Regardless of whether the cell has been visited or not, we then make the new cell the current cell, and break out of the innermost loop (the one where we look for a valid direction):</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">x, y = nx, ny<tt>
+</tt><span class="r">break</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>And that’s it. All that remains is to fire it off and sit back while it does it’s little drunkard’s walk all over our nice clean grid.</p>
+<h2>Conclusion</h2>
+<p>Aldous-Broder isn’t the most efficient algorithm on the block, or the smartest, but it is definitely well-suited for the problem domain that it was created for: finding uniform spanning trees. However, even there, there are more efficient algorithms. Next time, I’ll demonstrate Wilson’s algorithm, a (slightly) more efficient way to find a uniform spanning tree.</p>
+<p>In the meantime, try your hand at Aldous-Broder. It shouldn’t set you back more than a couple of minutes, and it really is pretty fun.</p>
+<p>For reference, here is my own (Ruby) implementation of Aldous-Broder:</p>
+<script src="https://gist.github.com/760675.js?file=aldous-broder.rb"></script>
+<noscript>
+<a href="https://gist.github.com/760675">aldous-broder.rb</a> on gist.github.com</noscript>
+<p>Enjoy!</p>

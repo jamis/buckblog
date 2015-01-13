@@ -1,0 +1,63 @@
+---
+layout: post
+title: Kaleidoscope
+post_id: 10
+categories:
+- Announcements
+- Projects
+date: 2011-02-19 11:48:00.000000000 -07:00
+author: Jamis
+permalink: 2011/02/19/kaleidoscope.html
+summary: >
+  A brief observation on the nature of discovery. The author's
+  introduction to Wythoff constructions, and an announcement of a
+  novel uniform tiling library. Sample tilings are demonstrated
+---
+
+<p>It’s funny how knowledge leads to knowledge. You start digging deeper into one thing, and discover threads leading off into related fields. I began by researching maze algorithms, decided I wanted to see what mazes in more complex tesselations would look like, and after one thing or another found myself learning about <a href="http://en.wikipedia.org/wiki/Wythoff_construction">Wythoff constructions</a>.</p>
+<p>The result is <a href="http://github.com/jamis/kaleidoscope">Kaleidoscope</a>, a library for generating uniform tilings using Wythoff constructions.</p>
+<pre><code>gem install kaleidoscope</code></pre>
+<p>A uniform tiling is a tesselation of a plane using regular polygons (with a few other constraints that I won’t go into here). What this means is that, in essense, you give Kaleidoscope a few input parameters, and it hands you a bunch of regular polygons.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">require <span class="s"><span class="dl">'</span><span class="k">kaleidoscope</span><span class="dl">'</span></span><tt>
+</tt><tt>
+</tt>pattern = <span class="co">Kaleidoscope</span>::<span class="co">Pattern</span>.new(<span class="i">6</span>, <span class="i">3</span>)<tt>
+</tt><tt>
+</tt>pattern.generate! <span class="r">do</span> |point|<tt>
+</tt>  point.x * point.x + point.y * point.y &lt; <span class="i">10</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>pattern.polygons.each <span class="r">do</span> |polygon|<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The polygons are generated around the origin of the plane, within a region you specify via the block to the generate! method. Once done, you can translate and scale the polygons to wherever you like, for rendering purposes. Kaleidoscope will even include basic tricoloring data for the polygons, to make it easy to decorate your pattern.</p>
+<p>Some obligatory pretty pictures:</p>
+<p><img src="http://jamisbuck.org/images/kaleidoscope/pattern1.png" width="400" height="400"><br>
+<img src="http://jamisbuck.org/images/kaleidoscope/pattern2.png" width="400" height="400"><br>
+<img src="http://jamisbuck.org/images/kaleidoscope/pattern3.png" width="400" height="400"><br>
+<img src="http://jamisbuck.org/images/kaleidoscope/pattern4.png" width="400" height="400"><br>
+<img src="http://jamisbuck.org/images/kaleidoscope/pattern5.png" width="400" height="400"><br>
+<img src="http://jamisbuck.org/images/kaleidoscope/pattern6.png" width="400" height="400"><br>
+<img src="http://jamisbuck.org/images/kaleidoscope/pattern7.png" width="400" height="400"><br>
+<img src="http://jamisbuck.org/images/kaleidoscope/pattern8.png" width="400" height="400"></p>
+<p>The real reason I got into all this, though, was to find interesting tesselations to build mazes in:</p>
+<p><img src="http://jamisbuck.org/images/kaleidoscope/maze1.png" width="400" height="400"><br>
+<img src="http://jamisbuck.org/images/kaleidoscope/maze2.png" width="400" height="400"><br>
+<img src="http://jamisbuck.org/images/kaleidoscope/maze3.png" width="400" height="400"><br>
+<img src="http://jamisbuck.org/images/kaleidoscope/maze4.png" width="400" height="400"></p>
+<p>It was a fascinating a project, and I had a lot of fun. Oh, and I did it all test-first—a first for me! I learned a ton about <span class="caps">TDD</span>.</p>
+<p>That said, I’m ready to move on to other projects. I don’t expect I’ll do much more with this library, although there is definitely more that <em>could</em> be done. I’m releasing the code because others might find it interesting. If you do anything nifty with it, let me know!</p>

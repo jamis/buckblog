@@ -1,0 +1,28 @@
+---
+- date: 2007-07-21
+  author: Brian Smith
+  content: "<p>Jamis, you’re the man (probably not news to you). Anyway, just wanted
+    to let you know how much we all appreciate your hard work on this amazing tool.</p>"
+- date: 2007-07-21
+  author: Nathan Colgate
+  content: "<p>Thanks for a tool that makes our lives easier every day.</p>"
+- date: 2007-07-22
+  author: kommen
+  content: "<p>We already switched to the cap 2 preview 2 weeks ago and I experienced
+    no problems so far. I think it’s safe to upgrade.</p>\n\n\n\t<p>@Jamis and all
+    other contributors: Nice job!</p>"
+- date: 2007-07-22
+  author: Trevor
+  content: "<p>Awesome!!!</p>"
+- date: 2007-07-22
+  author: Bruno
+  content: "<p>That is great news. Thank you.</p>\n\n\n\t<p>I will be giving a presentation
+    on capistrano 2 tomorrow now and this is great timing.</p>\n\n\n\t<p>Also I ran
+    into a problem deploying locally due to <span class=\"caps\">PATH</span> issues,
+    I managed to solve it and posted the solution here:  http://rubyurl.com/rg6</p>\n\n\n\t<p>Thank
+    you!</p>"
+- date: 2007-08-05
+  author: Pat Nakajima
+  content: "<p>Thank you so much! Sometimes when I’m bored, I’ve been known to spend
+    hours perusing the ins and outs of your code (by the way, I love the logger class).</p>\n\n\n\t<p>Thanks
+    again, and take care!</p>"

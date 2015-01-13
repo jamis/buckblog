@@ -1,0 +1,29 @@
+---
+layout: post
+title: Net::SSH and friends, update
+post_id: 40
+categories:
+- Announcements
+date: 2009-02-01 20:58:00.000000000 -07:00
+author: Jamis
+permalink: 2009/02/01/net-ssh-and-friends-update.html
+---
+
+<p>This is a multi-project release announcement, so brace yourselves.</p>
+<p>In short, Net::SSH 2.0.9, Net::SFTP 2.0.2, Net::SSH::Gateway 1.0.1, and Net::SSH::Multi 1.0.1 have been released. Get ‘em while they’re hot!</p>
+<p>It’s all just bug fixes, for the most part, but if you want more nitty gritty, read on.</p>
+<h2>Net::SSH 2.0.9</h2>
+<p>The following issues have been addressed in Net::SSH 2.0.9:</p>
+<ul>
+	<li>If you specify a non-nil <code>user</code> argument to Net::SSH#start, it will override whatever setting exists for <code>User</code> in your .ssh/config file. (Prior to this, the .ssh/config’s <code>User</code> setting would always be used, regardless of what user you specified to Net::SSH::start.)</li>
+		<li>Some naughty ssh servers send channel requests even after the channel has been closed. Net::SSH handles these spurious requests better now.</li>
+		<li>Net::SSH::Connection::Session#shutdown! has been added for hard shutdown scenarios (where an error leaves the connection in an ambiguous state and you just want to terminate the connection without all that touchy-feely “graceful shutdown” nonsense).</li>
+		<li>The key loading behavior has been further tweaked so that Net::SSH will try to load public keys first (by appending ”.pub” to the given key file name), and if no public key with that name exists, the corresponding private key will be attempted. This way, operations that only need the public key will not require the (possibly encrypted) private key to be loaded in order to succeed.</li>
+		<li>The :passphrase option was being dropped on its way to the key manager. It is now passed all the way through, so that specifying the :passphrase option actually works now.</li>
+	</ul>
+<h2>Net::SFTP 2.0.2</h2>
+<p>Only one bug fix: if an exception was raised from within the Net::SFTP::start block, it could leave the Net::SSH session trying to gracefully close channels on a borked connection. Net::SFTP will now, instead, do a hard shutdown of the ssh session connection, rather than trying to gracefully close, if an exception every bubbles up outside the block. (A side effect of this is that Net::SFTP 2.0.2 depends on Net::SSH 2.0.9, so you can’t get one without the other.)</p>
+<h2>Net::SSH::Gateway 1.0.1</h2>
+<p>Just one minor new feature was added: you can now specify the exact port number on the local host that you want the gateway to be created on. Just pass an optional third parameter to Gateway#open. This will default to the original behavior (selecting the next available port number), but now allows you greater flexibility in how you use Net::SSH::Gateway.</p>
+<h2>Net::SSH::Multi 1.0.1</h2>
+<p>Just one minor new feature: an Channel#on_open_failed callback hook was added, to mirror the on_open_failed callback hook in Net::SSH.</p>

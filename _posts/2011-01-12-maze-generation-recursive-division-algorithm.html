@@ -1,0 +1,731 @@
+---
+layout: post
+title: 'Maze Generation: Recursive Division'
+post_id: 17
+categories:
+- Under the Hood
+date: 2011-01-12 08:29:00.000000000 -07:00
+author: Jamis
+permalink: 2011/01/12/maze-generation-recursive-division-algorithm.html
+summary: >
+  A novel method for generating fractal-like mazes is presented, with sample
+  code and an animation
+---
+
+<p>All of the maze algorithms I’ve covered so far (<a href="http://weblog.jamisbuck.org/2010/12/27/maze-generation-recursive-backtracking">recursive backtracking</a>, <a href="http://weblog.jamisbuck.org/2010/12/29/maze-generation-eller-s-algorithm">Eller’s</a>, <a href="http://weblog.jamisbuck.org/2011/1/3/maze-generation-kruskal-s-algorithm">Kruskal’s</a>, and <a href="http://weblog.jamisbuck.org/2011/1/10/maze-generation-prim-s-algorithm">Prim’s</a>) were implemented as “passage carvers”: they started with a solid grid and hollowed the passages out of it. Some algorithms can be implemented a different way (and indeed, some <em>must</em> be implemented this way): as “wall adders”, where the process begins with a large empty space, and adds walls until a maze results.</p>
+<p>The “recursive division” algorithm is one that must be implemented as a wall adder. This algorithm is particularly fascinating because of its fractal nature: you could theoretically continue the process indefinitely at progressively finer and finer levels of detail.</p>
+<p>It works like this:</p>
+<ol>
+	<li>Begin with an empty field.</li>
+		<li>Bisect the field with a wall, either horizontally or vertically. Add a single passage through the wall.</li>
+		<li>Repeat step #2 with the areas on either side of the wall.</li>
+		<li>Continue, recursively, until the maze reaches the desired resolution.</li>
+	</ol>
+<p>You’ll find that at every step, you still have a valid maze. Each repetition of the algorithm simply increases the level of detail. Pretty cool!</p>
+<p>Let’s walk through an example to get an idea of how this works in practice.</p>
+<h2>An example</h2>
+<p>We’re going to start with a larger grid this time, 5×5, just to show how the algorithm quickly converges. (If there is too much hand-waving, call me on it in the comments! I’ll be more than happy to expand wherever things get too obtuse.)</p>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n"></td>
+<td class="n"></td>
+<td class="n"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td></td>
+<td></td>
+<td class="e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td></td>
+<td></td>
+<td class="e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td></td>
+<td></td>
+<td class="e"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="s"></td>
+<td class="s"></td>
+<td class="s"></td>
+<td class="s e"></td>
+</tr>
+</table>
+<p>First, we’ll bisect it vertically, because I’m just that kind of a guy. I’ll just close my eyes and point…here…so we’ll add a wall at x=3:</p>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n"></td>
+<td class="n e"></td>
+<td class="n w"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td class="e"></td>
+<td class="w"></td>
+<td class="e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td class="e"></td>
+<td class="w"></td>
+<td class="e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td class="e"></td>
+<td class="w"></td>
+<td class="e"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="s"></td>
+<td class="s e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+</table>
+<p>Then, we randomly add a gap in the wall, so that we preserve the connectability of the graph:</p>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n"></td>
+<td class="n e"></td>
+<td class="n w"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td class="e"></td>
+<td class="w"></td>
+<td class="e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td class="e"></td>
+<td class="w"></td>
+<td class="e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td></td>
+<td></td>
+<td class="e"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="s"></td>
+<td class="s e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+</table>
+<p>And that finishes the first iteration. Now, we repeat these steps on each of the two subfields that we created by adding that wall. Let’s go with the field on the right, first.</p>
+<p>Now, theoretically, we could bisect that either vertically or horizontally. However, for best results, if you’re bisecting a field that is taller than it is wide (like we are now), it’s best to bisect horizontally. It’ll prevent really glaring biases in the finished product, and generally makes for more interesting mazes. (Similarly, when bisecting a field that is wider than it is tall, you should prefer a vertical wall.)</p>
+<p>So, let’s cut this field in half horizontally this time, and then add a passage through it:</p>
+<table><tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n"></td>
+<td class="n e"></td>
+<td class="n w"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td class="e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td class="e"></td>
+<td class="n w"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td></td>
+<td></td>
+<td class="e"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="s"></td>
+<td class="s e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n"></td>
+<td class="n e"></td>
+<td class="n w"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td class="e"></td>
+<td class="s w"></td>
+<td class="e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td class="e"></td>
+<td class="n w"></td>
+<td class="e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td></td>
+<td></td>
+<td class="e"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="s"></td>
+<td class="s e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+</table>
+</td>
+</tr></table>
+<p>(From here on out, I’m going to merge the “add wall” and “erase passage” steps into a single step: you’ve been warned!)</p>
+<p>That completes another iteration. Let’s do one more quick iteration on the top-right field, now, and see how the recursion bottoms out when you hit your target resolution.</p>
+<p>The field in the top-right is a square, so we can randomly choose between a horizontal or a vertical bisection. Let’s go with vertical:</p>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n"></td>
+<td class="n e"></td>
+<td class="n w"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td class="e"></td>
+<td class="s w e"></td>
+<td class="w e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td class="e"></td>
+<td class="n w"></td>
+<td class="e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td></td>
+<td></td>
+<td class="e"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="s"></td>
+<td class="s e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+</table>
+<p>Now, we’ve got two new subfields to recurse into, but hark! We can’t divide them any further without passing our target resolution (our grid is only 5×5, remember). So the recursion bottoms out, and we rewind back up the stack.</p>
+<p>I’m going to be moving much faster now, chugging along to the end of the algorithm.</p>
+<table>
+<tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n"></td>
+<td class="n e"></td>
+<td class="n w"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td class="e"></td>
+<td class="s w e"></td>
+<td class="w e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td class="e"></td>
+<td class="n w"></td>
+<td class="s e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td></td>
+<td></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="s"></td>
+<td class="s e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n"></td>
+<td class="n e"></td>
+<td class="n w"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td class="e"></td>
+<td class="s w e"></td>
+<td class="w e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td class="e"></td>
+<td class="n w"></td>
+<td class="s e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td></td>
+<td class="e"></td>
+<td class="n e w"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="s"></td>
+<td class="s e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n"></td>
+<td class="n e"></td>
+<td class="n w"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td class="e"></td>
+<td class="s w e"></td>
+<td class="w e"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td></td>
+<td class="s e"></td>
+<td class="n w"></td>
+<td class="s e"></td>
+</tr>
+<tr>
+<td class="n w"></td>
+<td></td>
+<td class="n"></td>
+<td class="e"></td>
+<td class="n e w"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="s"></td>
+<td class="s e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n"></td>
+<td class="n e"></td>
+<td class="n w"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td class="e"></td>
+<td class="s w e"></td>
+<td class="w e"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td></td>
+<td class="s e"></td>
+<td class="n w"></td>
+<td class="s e"></td>
+</tr>
+<tr>
+<td class="n w"></td>
+<td class="e"></td>
+<td class="w n"></td>
+<td class="e"></td>
+<td class="n e w"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="s"></td>
+<td class="s e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n"></td>
+<td class="n e"></td>
+<td class="n w"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td></td>
+<td class="e"></td>
+<td class="s w e"></td>
+<td class="w e"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td></td>
+<td class="s e"></td>
+<td class="n w"></td>
+<td class="s e"></td>
+</tr>
+<tr>
+<td class="n w"></td>
+<td class="s e"></td>
+<td class="w n"></td>
+<td class="e"></td>
+<td class="n e w"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n s"></td>
+<td class="s e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s w"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+<td class="n w"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="n w"></td>
+<td class="n"></td>
+<td class="e"></td>
+<td class="s w e"></td>
+<td class="w e"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td></td>
+<td class="s e"></td>
+<td class="n w"></td>
+<td class="s e"></td>
+</tr>
+<tr>
+<td class="n w"></td>
+<td class="s e"></td>
+<td class="w n"></td>
+<td class="e"></td>
+<td class="n e w"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n s"></td>
+<td class="s e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n s w"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+<td class="n w"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="n w"></td>
+<td class="n e"></td>
+<td class="w e"></td>
+<td class="s w e"></td>
+<td class="w e"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td></td>
+<td class="s e"></td>
+<td class="n w"></td>
+<td class="s e"></td>
+</tr>
+<tr>
+<td class="n w"></td>
+<td class="s e"></td>
+<td class="w n"></td>
+<td class="e"></td>
+<td class="n e w"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n s"></td>
+<td class="s e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s w"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+<td class="n w"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="n w"></td>
+<td class="s n e"></td>
+<td class="w e"></td>
+<td class="s w e"></td>
+<td class="w e"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n"></td>
+<td class="s e"></td>
+<td class="n w"></td>
+<td class="s e"></td>
+</tr>
+<tr>
+<td class="n w"></td>
+<td class="s e"></td>
+<td class="w n"></td>
+<td class="e"></td>
+<td class="n e w"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n s"></td>
+<td class="s e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+</table>
+</td>
+<td>
+</td>
+</tr>
+</table>
+<p>And we’re done! The result is a perfect maze.</p>
+<p>If you’re not using IE, you can step through the algorithm yourself using this nifty Javascript demo. The one of the left is a 5×5 grid, and the one on the right is a 15×15 grid (so you can get a better feel for how the recursion works on larger mazes).</p>
+<script type="text/javascript" src="/javascripts/maze-minified.js"></script>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("RecursiveDivision", 5, 5, { "wallwise": true, "watch": false, "class": "small" });</script>
+<script type="text/javascript">Maze.createCanvasWidget("RecursiveDivision", 15, 15, { "wallwise": true, "watch": false, "class": "medium", id: "division_medium", interval: 25 });</script>
+</div>
+<h2>Implementation</h2>
+<p>So, how would you implement this? My implementation really only needed a single supporting method, aside from the actual algorithm itself:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">choose_orientation</span>(width, height)<tt>
+</tt>  <span class="r">if</span> width &lt; height<tt>
+</tt>    <span class="co">HORIZONTAL</span><tt>
+</tt>  <span class="r">elsif</span> height &lt; width<tt>
+</tt>    <span class="co">VERTICAL</span><tt>
+</tt>  <span class="r">else</span><tt>
+</tt>    rand(<span class="i">2</span>) == <span class="i">0</span> ? <span class="co">HORIZONTAL</span> : <span class="co">VERTICAL</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The choose_orientation method gave me a simple abstraction for deciding which way a field with the given dimensions ought to be bisected. Once I had that in hand, I just needed a <code>divide</code> method, which recursively divided the field as described:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">divide</span>(grid, x, y, width, height, orientation)<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The algorithm was started by calling divide on the entire grid:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">divide(grid, <span class="i">0</span>, <span class="i">0</span>, width, height, choose_orientation(width, height))<tt>
+</tt></pre></td>
+</tr></table>
+<p>The method itself first checks to see if the maze has reached the target resolution:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">return</span> <span class="r">if</span> width &lt; <span class="i">2</span> || height &lt; <span class="i">2</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Then, it sets a convenience flag so we can query the orientation, and starts answering questions about where the wall needs to be drawn, and where the passage through the wall will be:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">horizontal = orientation == <span class="co">HORIZONTAL</span><tt>
+</tt><tt>
+</tt><span class="c"># where will the wall be drawn from?</span><tt>
+</tt>wx = x + (horizontal ? <span class="i">0</span> : rand(width<span class="i">-2</span>))<tt>
+</tt>wy = y + (horizontal ? rand(height<span class="i">-2</span>) : <span class="i">0</span>)<tt>
+</tt><tt>
+</tt><span class="c"># where will the passage through the wall exist?</span><tt>
+</tt>px = wx + (horizontal ? rand(width) : <span class="i">0</span>)<tt>
+</tt>py = wy + (horizontal ? <span class="i">0</span> : rand(height))<tt>
+</tt></pre></td>
+</tr></table>
+<p>Then a few helper values get set, to aid in drawing the wall:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># what direction will the wall be drawn?</span><tt>
+</tt>dx = horizontal ? <span class="i">1</span> : <span class="i">0</span><tt>
+</tt>dy = horizontal ? <span class="i">0</span> : <span class="i">1</span><tt>
+</tt><tt>
+</tt><span class="c"># how long will the wall be?</span><tt>
+</tt>length = horizontal ? width : height<tt>
+</tt><tt>
+</tt><span class="c"># what direction is perpendicular to the wall?</span><tt>
+</tt>dir = horizontal ? <span class="co">S</span> : <span class="co">E</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Once that’s all set up, we can actually draw the wall:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">length.times <span class="r">do</span><tt>
+</tt>  grid[wy][wx] |= dir <span class="r">if</span> wx != px || wy != py<tt>
+</tt>  wx += dx<tt>
+</tt>  wy += dy<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Lastly, we determine the bounds of the subfields, and recurse:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">nx, ny = x, y<tt>
+</tt>w, h = horizontal ? [width, wy-y<span class="i">+1</span>] : [wx-x<span class="i">+1</span>, height]<tt>
+</tt>divide(grid, nx, ny, w, h, choose_orientation(w, h))<tt>
+</tt><tt>
+</tt>nx, ny = horizontal ? [x, wy<span class="i">+1</span>] : [wx<span class="i">+1</span>, y]<tt>
+</tt>w, h = horizontal ? [width, y+height-wy<span class="i">-1</span>] : [x+width-wx<span class="i">-1</span>, height]<tt>
+</tt>divide(grid, nx, ny, w, h, choose_orientation(w, h))<tt>
+</tt></pre></td>
+</tr></table>
+<p>And that’s really all there is to it. My complete implementation is here, including some simple <span class="caps">ASCII</span> output routines (an <span class="caps">ANSI</span> terminal is required):</p>
+<script src="https://gist.github.com/761525.js?file=recursive-division.rb"></script>
+<noscript>
+<a href="https://gist.github.com/761525">recursive-division.rb</a> on gist.github.com</noscript>
+<h2>Conclusion</h2>
+<p>I really had a blast implementing this algorithm. It’s especially hypnotic to watch the demos as they animate its progress. I’d love to see someone implement a mandelbrot-style “infinite zoom” with a recursive-division maze. I’m not sure there’s a lot of practical value there, but it seems like it could have a high degree of “cool”. :)</p>
+<p>As far as the mazes themselves, it’s readily apparent after generating a few that the mazes will tend to have a lot of short cul-de-sacs, like Kruskal’s and Prim’s, and the nature of the algorithm tends to create long walls that span significant portions of the field, which leads to visual artifacts that (in my opinion) detract from the appearance of the maze. Some of this could be overcome by artfully choosing where to place walls, but that will only take you so far. So, alas, I don’t think I’ll be using this algorithm for anything besides demo animations.</p>
+<p>Give it a try yourself, though, and see how your implementation turns out. If you come up with something cool, let me know!</p>

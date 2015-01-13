@@ -1,0 +1,72 @@
+---
+layout: post
+title: Concerns in ActiveRecord
+post_id: 137
+categories:
+- Tips & Tricks
+date: 2007-01-17 14:02:00.000000000 -07:00
+author: Jamis
+permalink: 2007/01/17/concerns-in-activerecord.html
+---
+
+<p>Ruby does not support multiple-inheritance. Personally, I have mixed feelings about that, but the fact of the matter is, you can accomplish almost exactly the same thing using modules.</p>
+<p>Consider this ActiveRecord scenario. In Basecamp, we allow files to be attached to both messages, and comments. One way to do this would be to have both messages and comments inherit from a common ancestor, via single-table inheritance. Alas, the two models (in our case) are different enough that <span class="caps">STI</span> is not a viable option here.</p>
+<p>Instead, we employ “concerns” (as David has started calling them). A “concern” is simply a module that we mix in to both the message and comment models, which sets up the common “file attachment” functionality. We’ll call this module “Folder”, to denote that any of its clients essentially become a container for files. Observe:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">module</span> <span class="cl">Folder</span><tt>
+</tt>  <span class="r">def</span> <span class="pc">self</span>.included(base)<tt>
+</tt>    base.has_many <span class="sy">:files</span>, <span class="sy">:as</span> =&gt; <span class="sy">:owner</span>, <span class="sy">:dependent</span> =&gt; <span class="sy">:destroy</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  <span class="c"># This returns the path where files are to be uploaded</span><tt>
+</tt>  <span class="c"># for this specific "folder".</span><tt>
+</tt>  <span class="r">def</span> <span class="fu">attachment_path</span><tt>
+</tt>    <span class="s"><span class="dl">"</span><span class="k">/path/to/files/for/</span><span class="il"><span class="dl">#{</span>id<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Then, we mix the Folder concern into whichever models we want to allow files to be attached to:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">Message</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+</tt>  include <span class="co">Folder</span><tt>
+</tt>  <span class="c">#...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">class</span> <span class="cl">Comment</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+</tt>  include <span class="co">Folder</span><tt>
+</tt>  <span class="c">#...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Because of the <code>included</code> hook, defined in the module, each class that receives this module will automatically gain a “has_many :files” association. Also, because the module is mixed into the class, you can put as much or as little extra functionality there as you want to share between the classes.</p>
+<p>This has proven to be a very powerful pattern. To accommodate it, we’ve recently taken to creating an “app/concerns” directory in our projects, and adding that to the load path in config/environment.rb:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">config.load_paths += <span class="s"><span class="dl">%W(</span><span class="il"><span class="dl">#{</span><span class="co">RAILS_ROOT</span><span class="dl">}</span></span><span class="k">/app/concerns</span><span class="dl">)</span></span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Our modules then go in that directory.</p>

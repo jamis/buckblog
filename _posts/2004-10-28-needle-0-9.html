@@ -1,0 +1,15 @@
+---
+layout: post
+title: Needle 0.9
+post_id: 332
+categories:
+- Announcements
+date: 2004-10-28 06:33:00.000000000 -06:00
+author: Jamis
+permalink: 2004/10/28/needle-0-9.html
+---
+
+<p>I released <a href="http://rubyforge.org/projects/needle">Needle 0.9</a> this morning. It is (hopefully) the last unstable release of Needle, with 1.0 being scheduled for unveilment next Thursday (the 4th of November).</p>
+<p>One thing I’ve come to realize as I prepared for this latest release is something that Jim Weirich already pointed out in his now-famous <a href="http://onestepback.org/index.cgi/Tech/Ruby/DependencyInjectionInRuby.rdoc">DI article</a>. <em>Dependency Injection is a superset of Service Location</em>. Thus, Needle is not only a DI container, it is also a <em>service locator</em> container.</p>
+<p>In the current version of the Needle <a href="http://needle.rubyforge.org">users manual</a>, I devoted a chapter to this idea. <a href="http://needle.rubyforge.org/chapter-3.html">Chapter 3</a> uses Needle as a service locator, and then <a href="http://needle.rubyforge.org/chapter-4.html">Chapter 4</a> builds on that to show how dependency injection differs from it.</p>
+<p>With Needle approaching maturity, it’s been exciting to see people sampling it. Even <a href="http://www.loudthinking.com">David Heinemeier Hansson</a> (of <a href="http://www.rubyonrails.org">Ruby on Rails</a> fame) has expressed an interest to understand dependency injection better. He is looking for ways to decouple certain parts of the Rails framework, to make functional testing simpler. (After chatting with him, it looks like the service locator pattern is a better fit in Rails than full-blown dependency injection, but it was still an enlightening discussion.)</p>

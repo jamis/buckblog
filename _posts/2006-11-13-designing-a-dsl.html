@@ -1,0 +1,115 @@
+---
+layout: post
+title: Designing a DSL
+post_id: 177
+categories:
+- Projects
+date: 2006-11-13 12:19:00.000000000 -07:00
+author: Jamis
+permalink: 2006/11/13/designing-a-dsl.html
+---
+
+<p>So, as I’ve mentioned a few times recently, I’ve been working on a logic engine for Ruby, using a Ruby-ish <span class="caps">DSL</span>. It’s working quite nicely now, and is able to do the examples that <a href="http://eigenclass.org/hiki.rb?tiny+prolog+in+ruby">Mauricio so kindly provided</a>, including the Tower of Hanoi solver, and the symbolic differentiator.</p>
+<p>The exercise has been fun, as well as very educational. For the curious, you can check it out at <a href="http://svn.jamisbuck.org/projects/logic_engine">http://svn.jamisbuck.org/projects/logic_engine</a>. For now, I’d like to talk a bit about how I implemented the <span class="caps">DSL</span>, since that’s probably of more general interest.</p>
+<p>First, I “sketched it out”. Not on paper, but in a blank text document. This let me define how I wanted the <span class="caps">DSL</span> to look, and also proved as a good thought experiment, letting me try things out in a very low-risk environment.</p>
+<p>My first pass, as I blogged about <a href="http://weblog.jamisbuck.org/2006/10/28/prolog-in-ruby">here</a>, used methods on Symbol and String:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="sy">:X</span>.sibling_of(<span class="sy">:Y</span>).if <span class="sy">:Z</span>.parent_of(<span class="sy">:X</span>).and(<span class="sy">:Z</span>.parent_of(<span class="sy">:Y</span>)).and(<span class="sy">:X</span>.noteq(<span class="sy">:Y</span>))<tt>
+</tt>...<tt>
+</tt><span class="s"><span class="dl">"</span><span class="k">matz</span><span class="dl">"</span></span>.father_of <span class="s"><span class="dl">"</span><span class="k">Ruby</span><span class="dl">"</span></span><tt>
+</tt>...<tt>
+</tt>result = <span class="sy">:X</span>.sibling_of(<span class="s"><span class="dl">"</span><span class="k">Sally</span><span class="dl">"</span></span>).solutions<tt>
+</tt>result.each { |solution| p solution }</pre></td>
+</tr></table>
+<p>However, this required the  the Symbol and String namespaces to be “polluted” by method_missing hooks and so forth. It also was hard to make that work with multiple knowledgebases in the same program, since the method_missing hook for both String and Symbol would need to know which database the predicate was referencing.</p>
+<p>So, that first pass defined a few boundaries for me. I knew that I wanted multiple databases, and that terms needed to be defined within the context of a specific database. My second attempt looked something like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">db = <span class="co">Database</span>.new <span class="r">do</span><tt>
+</tt>  <span class="co">X</span>.sibling_of(<span class="co">Y</span>).if <span class="co">Z</span>.parent_of(<span class="co">X</span>).and(...).and(...)<tt>
+</tt>  matz.father_of(ruby)<tt>
+</tt>  ...<tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>result = db.query { <span class="co">X</span>.sibling_of(sally) }</pre></td>
+</tr></table>
+<p>Ugh, though. That one required const_missing to be captured, and that can only be captured at the class level, not the object instance level. How would I be able to access the current DB instance inside the const_missing hook? That seemed like it could be tricky, so I tried to work around the need for it. Instead, I considered using conventions like <a href="&lt;/p">if a method is invoked that starts with an underscore, it is a variable</a>&gt;
+
+
+</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">db = <span class="co">Database</span>.new <span class="r">do</span><tt>
+</tt>  _X.sibling_of(_Y).if _Z.parent_of(_X).and(...).and(...)<tt>
+</tt>  ...<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>But that, frankly, made my eyes bleed. I also considered using punctuation, like <code>X!</code> and <code>Y!</code> to indicate variables, but that was far too noisy. In the end, I really wanted Ruby constants to indicate variables in the assertions.</p>
+<p>Fortunately, it wasn’t so bad to implement. It only required a minor bit of “pollution” in the Module-level const_missing hook, and I tried to minimize the damage there by chaining my handler to the existing one. Then, I made sure to set the current DB instance in a thread-local variable, which I could access from the const_missing hook. (This assumes that a single thread will never be processing more than one database at a time, which is a fair assumption, I think.) You can see my implementation of the const_missing hook <a href="http://svn.jamisbuck.org/projects/logic_engine/lib/jamis/logic_engine/module.rb">here</a>.</p>
+<p>So, hurdle hurdled. The next problem was that using <code>and</code> to create a conjunction was rather ugly, and verbose. Fortunately, Ruby lets you override certain operators, and the ampersand is one of them:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">X</span>.sibling_of(<span class="co">Y</span>).if <span class="co">Z</span>.parent_of(<span class="co">X</span>) &amp; <span class="co">Z</span>.parent_of(<span class="co">Y</span>) &amp; <span class="co">X</span>.noteq(<span class="co">Y</span>)</pre></td>
+</tr></table>
+<p>By the time I got this far, I had actually begun to implement the <span class="caps">DSL</span>, so I could see how technically feasible (or infeasible) some of these constructs really were. The first thing I discovered was that there was no way for me to know, within the assertion block, which terms were being added to the database:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">db = <span class="co">Database</span>.new <span class="r">do</span><tt>
+</tt>  <span class="co">X</span>.is_parent_of(<span class="co">Y</span>).if <span class="co">X</span>.is_father_of(<span class="co">Y</span>)<tt>
+</tt>  <span class="co">X</span>.is_parent_of(<span class="co">Y</span>).if <span class="co">X</span>.is_mother_of(<span class="co">Y</span>)<tt>
+</tt>  jamis.is_father_of(nathaniel)<tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>result = db.query { jamis.is_parent_of(nathaniel) }</pre></td>
+</tr></table>
+<p>Give the above, I’d have to use some more flags to know whether a statement was created at the “top-level”, so to speak, or whether it was created as a child of another statement…and then I’d have to know whether it was safe to add the statement to the database, since when you query, you don’t want <em>that</em> term added.</p>
+<p>The simplest thing to do was to require that something be explitly called to add a new term to the database. Using the unary plus operator was the least verbose way I could think of:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">db = <span class="co">Database</span>.new <span class="r">do</span><tt>
+</tt>  + <span class="co">X</span>.sibling_of(<span class="co">Y</span>).if <span class="co">Z</span>.parent_of(<span class="co">X</span>) &amp; ...<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>The problem, though, is that this causes a compile error! It won’t work without parentheses around the arguments to <code>if</code>, and that’s ugly. So! Think think think.</p>
+<p>I solved the problem by using blocks. Instead of passing the implied terms as parameters to <code>if</code>, I define them in a block that gets attached to <code>if</code>:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">db = <span class="co">Database</span>.new <span class="r">do</span><tt>
+</tt>  + <span class="co">X</span>.sibling_of(<span class="co">Y</span>).if { <span class="co">Z</span>.parent_of(<span class="co">X</span>) &amp; ... }<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>I actually think I like that better! It’s clearer what is going on, and opens up some interesting possibilities of multiple statements occuring inside that if block. It also looks more like a control structure, which is a nice side effect.</p>
+<p>Under the hood, I’m using the “clean room” <span class="caps">DSL</span> technique. The block passed to <code>Database.new</code> is actually evaluated in the context of a “blank” object, a “clean room”, that just proxies the data back to the database. This way, method missing calls all just happen on the clean room, and I don’t have to worry about the methods on my Database class shadowing the names of atoms and predicates and such.</p>
+<p>It’s turned out pretty nicely. The matching and backtracking implementation is certainly not optimized yet, and a <span class="caps">LOT</span> of objects get created right now, but it works! Feel free to check it out at check it out at <a href="http://svn.jamisbuck.org/projects/logic_engine">http://svn.jamisbuck.org/projects/logic_engine</a>. I’d love to hear what you think of it, thus far.</p>

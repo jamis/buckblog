@@ -1,0 +1,530 @@
+---
+layout: post
+title: 'Maze Generation: Prim''s Algorithm'
+post_id: 18
+categories:
+- Under the Hood
+date: 2011-01-10 06:57:00.000000000 -07:00
+author: Jamis
+permalink: 2011/01/10/maze-generation-prim-s-algorithm.html
+summary: >
+  A method for generating random mazes using a simplified version of Prim's
+  algorithm
+---
+
+<p>My last post was about using <a href="http://weblog.jamisbuck.org/2011/1/3/maze-generation-kruskal-s-algorithm">Kruskal’s algorithm to generate random mazes</a>. This article is about using another minimal spanning tree algorithm to do the same: <a href="http://en.wikipedia.org/wiki/Prim's_algorithm">Prim’s algorithm</a>.</p>
+<p>If you recall, the random variant of Kruskal’s algorithm worked by randomly selecting edges from the graph, and adding them to the maze if they connected disjoint trees. Visually, this had the effect of growing the maze from many random points across the grid.</p>
+<p>Prim’s approaches the problem from a different angle. Rather than working edgewise across the entire graph, it starts at one point, and grows outward from that point. The standard version of the algorithm works something like this:</p>
+<ol>
+	<li>Choose an arbitrary vertex from G (the graph), and add it to some (initially empty) set V.</li>
+		<li>Choose the edge with the smallest weight from G, that connects a vertex in V with another vertex <em>not</em> in V.</li>
+		<li>Add that edge to the minimal spanning tree, and the edge’s other vertex to V.</li>
+		<li>Repeat steps 2 and 3 until V includes every vertex in G.</li>
+	</ol>
+<p>And the result is a minimal spanning tree of G. Straightforward enough!</p>
+<p>With one little change, it becomes a suitable method for generating mazes: just change step 2 so that instead of selecting the edge with the smallest weight, you select an edge at random, as long as it bridges the so-called “frontier” of the maze (the set of edges that move from within the maze, to a cell that is outside the maze).</p>
+<p>As before, let’s walk through an example and see how it works in practice.</p>
+<h2>An example</h2>
+<p>Let’s start with a simple 3×3 grid:</p>
+<table class="maze">
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w out">  </td>
+<td class="n s e w out">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w out">  </td>
+<td class="n s e w out">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w out">  </td>
+<td class="n s e w out">  </td>
+</tr>
+</table>
+<p>Now, we choose a point at random and add it to the maze:</p>
+<table class="maze">
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w out">  </td>
+<td class="n s e w out">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w out">  </td>
+<td class="n s e w h">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w out">  </td>
+<td class="n s e w out">  </td>
+</tr>
+</table>
+<p>For efficiency, let’s call the set of all cells that are not yet in the maze, but are adjacent to a cell that <em>is</em> in the maze, the “frontier”. We’ll color the frontier cells red:</p>
+<table class="maze">
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+<td class="n s e w">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+</tr>
+</table>
+<p>Now, we choose one of these frontier cells at random and carve a passage from that frontier cell to whichever adjacent cell is already part of the maze. Then we’ll mark the neighbors of the formerly frontier cell, as “frontier” cells themselves.</p>
+<table><tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+<td class="n s e w">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w out">  </td>
+<td class="n e w h">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+<td class="s e w h">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+<td class="n e w">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+<td class="s e w">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+</tr>
+</table>
+</td>
+</tr></table>
+<p>Rinse and repeat:</p>
+<table><tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+<td class="n e w">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+<td class="s e w">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+<td class="n e w">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s w h">  </td>
+<td class="s e h">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+<td class="n e w">  </td>
+</tr>
+<tr>
+<td class="n s e w mark">  </td>
+<td class="n s w">  </td>
+<td class="s e">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+<td class="n s e w mark">  </td>
+</tr>
+</table>
+</td>
+</tr></table>
+<p>Now, here’s an interesting bit. Look what happens if we (ahem, “randomly”) choose the cell at (1,0) (the top middle). It is adjacent to <em>two</em> cells that are already “in” the maze. The algorithm resolves this by simply choosing one of the “in” neighbors at random. Prim’s doesn’t care which neighbor is picked, only that each frontier cell eventually be connected to a cell already within the maze.</p>
+<table><tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+<td class="n e w">  </td>
+</tr>
+<tr>
+<td class="n s e w mark">  </td>
+<td class="n s w">  </td>
+<td class="s e">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+<td class="n s e w mark">  </td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out">  </td>
+<td class="n e w h">  </td>
+<td class="n e w">  </td>
+</tr>
+<tr>
+<td class="n s e w mark">  </td>
+<td class="s w h">  </td>
+<td class="s e">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+<td class="n s e w mark">  </td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w mark">  </td>
+<td class="n e w">  </td>
+<td class="n e w">  </td>
+</tr>
+<tr>
+<td class="n s e w mark">  </td>
+<td class="s w">  </td>
+<td class="s e">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+<td class="n s e w mark">  </td>
+</tr>
+</table>
+</td>
+</tr></table>
+<p>Let’s just keep it going to the end, now, chug chug chug:</p>
+<table>
+<tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w mark">  </td>
+<td class="n e w">  </td>
+<td class="n e w">  </td>
+</tr>
+<tr>
+<td class="n s e w mark">  </td>
+<td class="s w">  </td>
+<td class="s e">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+<td class="n s e w mark">  </td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w mark">  </td>
+<td class="n e w">  </td>
+<td class="n e w">  </td>
+</tr>
+<tr>
+<td class="n s w h">  </td>
+<td class="s h">  </td>
+<td class="s e">  </td>
+</tr>
+<tr>
+<td class="n s e w out">  </td>
+<td class="n s e w mark">  </td>
+<td class="n s e w mark">  </td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w mark">  </td>
+<td class="n e w">  </td>
+<td class="n e w">  </td>
+</tr>
+<tr>
+<td class="n s w">  </td>
+<td class="s">  </td>
+<td class="s e">  </td>
+</tr>
+<tr>
+<td class="n s e w mark">  </td>
+<td class="n s e w mark">  </td>
+<td class="n s e w mark">  </td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w mark">  </td>
+<td class="n e w">  </td>
+<td class="n e w">  </td>
+</tr>
+<tr>
+<td class="n w h">  </td>
+<td class="s">  </td>
+<td class="s e">  </td>
+</tr>
+<tr>
+<td class="s e w h">  </td>
+<td class="n s e w mark">  </td>
+<td class="n s e w mark">  </td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n s w h">  </td>
+<td class="n e h">  </td>
+<td class="n e w">  </td>
+</tr>
+<tr>
+<td class="n w">  </td>
+<td class="s">  </td>
+<td class="s e">  </td>
+</tr>
+<tr>
+<td class="s e w">  </td>
+<td class="n s e w mark">  </td>
+<td class="n s e w mark">  </td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s w">  </td>
+<td class="n e">  </td>
+<td class="n e w">  </td>
+</tr>
+<tr>
+<td class="n w">  </td>
+<td class="s">  </td>
+<td class="s e">  </td>
+</tr>
+<tr>
+<td class="s w h">  </td>
+<td class="n s e h">  </td>
+<td class="n s e w mark">  </td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s w">  </td>
+<td class="n e">  </td>
+<td class="n e w">  </td>
+</tr>
+<tr>
+<td class="n w">  </td>
+<td class="s">  </td>
+<td class="s e">  </td>
+</tr>
+<tr>
+<td class="s w">  </td>
+<td class="n s h">  </td>
+<td class="n s e h ">  </td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s w">  </td>
+<td class="n e">  </td>
+<td class="n e w">  </td>
+</tr>
+<tr>
+<td class="n w">  </td>
+<td class="s">  </td>
+<td class="s e">  </td>
+</tr>
+<tr>
+<td class="s w">  </td>
+<td class="n s">  </td>
+<td class="n s e">  </td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<p>The algorithm terminates when there are no more frontier cells to choose from, giving us the anticipated perfect maze.</p>
+<h2>Implementation</h2>
+<p>The largest bit of implementing Prim’s algorithm (for me) seems to go toward managing the interactions with that frontier set. Maybe your experience will be different. You basically need two operations: mark a cell as “in” (which then marks the “out” neighbors as frontier cells), and one that returns all the “in” neighbors of a given frontier cell. Something like this: (and please excuse the apparent hand-waving around the add_frontier method; it’s not complicated, just not entirely relevant. The full implementation is given at the end of the article.)</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">mark</span>(x, y, grid, frontier)<tt>
+</tt>  grid[y][x] |= <span class="co">IN</span><tt>
+</tt>  add_frontier(x<span class="i">-1</span>, y, grid, frontier)<tt>
+</tt>  add_frontier(x<span class="i">+1</span>, y, grid, frontier)<tt>
+</tt>  add_frontier(x, y<span class="i">-1</span>, grid, frontier)<tt>
+</tt>  add_frontier(x, y<span class="i">+1</span>, grid, frontier)<tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">def</span> <span class="fu">neighbors</span>(x, y, grid)<tt>
+</tt>  n = []<tt>
+</tt><tt>
+</tt>  n &lt;&lt; [x<span class="i">-1</span>, y] <span class="r">if</span> x &gt; <span class="i">0</span> &amp;&amp; grid[y][x<span class="i">-1</span>] &amp; <span class="co">IN</span> != <span class="i">0</span><tt>
+</tt>  n &lt;&lt; [x<span class="i">+1</span>, y] <span class="r">if</span> x<span class="i">+1</span> &lt; grid[y].length &amp;&amp; grid[y][x<span class="i">+1</span>] &amp; <span class="co">IN</span> != <span class="i">0</span><tt>
+</tt>  n &lt;&lt; [x, y<span class="i">-1</span>] <span class="r">if</span> y &gt; <span class="i">0</span> &amp;&amp; grid[y<span class="i">-1</span>][x] &amp; <span class="co">IN</span> != <span class="i">0</span><tt>
+</tt>  n &lt;&lt; [x, y<span class="i">+1</span>] <span class="r">if</span> y<span class="i">+1</span> &lt; grid.length &amp;&amp; grid[y<span class="i">+1</span>][x] &amp; <span class="co">IN</span> != <span class="i">0</span><tt>
+</tt><tt>
+</tt>  n<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Once you’ve got that implemented (along with the necessary supporting methods and data structures), the algorithm itself is remarkably straightforward.</p>
+<p>You start by marking a random cell:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">mark(rand(width), rand(height), grid, frontier)<tt>
+</tt></pre></td>
+</tr></table>
+<p>Then, you simply iterate until the frontier set is empty:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">until</span> frontier.empty?<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Within the loop, we choose a frontier cell at random:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">x, y = frontier.delete_at(rand(frontier.length))<tt>
+</tt></pre></td>
+</tr></table>
+<p>Then we choose a random “in” neighbor of that frontier cell:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">n = neighbors(x, y, grid)<tt>
+</tt>nx, ny = n[rand(n.length)]<tt>
+</tt></pre></td>
+</tr></table>
+<p>Then, we record a passage from the neighbor cell to the frontier cell:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">dir = direction(x, y, nx, ny)<tt>
+</tt>grid[y][x] |= dir<tt>
+</tt>grid[ny][nx] |= <span class="co">OPPOSITE</span>[dir]<tt>
+</tt></pre></td>
+</tr></table>
+<p>And finally, we mark the frontier cell as being “in” the maze (and add any of its outside neighbors to the frontier):</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">mark(x, y, grid, frontier)<tt>
+</tt></pre></td>
+</tr></table>
+<p>And you’re done! For those of you not using IE (which will make a total mess of this), here are two demos you can play with to see Prim’s in action:</p>
+<script type="text/javascript" src="/javascripts/maze-minified.js"></script>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("Prim", 5, 5, { "class": "small", "watch": false });</script>
+<script type="text/javascript">Maze.createCanvasWidget("Prim", 15, 15, { "class": "medium", id: "prim_medium", "watch": false, interval: 25 });</script>
+</div>
+<p>My complete implementation (in Ruby) is here:</p>
+<script src="https://gist.github.com/760667.js?file=prims.rb"></script>
+<noscript>
+<a href="https://gist.github.com/760667">prims.rb</a> at gist.github.com</noscript>
+<h2>Conclusion</h2>
+<p>Mazes generated by Prim’s algorithm share many of the characteristics of those created via Kruskal’s algorithm, such as having an abundance of short cul-de-sacs. Such an aesthetic appeals to some, and not to others, but it definitely has this to say for it: for large mazes, the short cul-de-sacs make the maze harder to puzzle out at a glance!</p>
+<p>Whether you enjoy the look of these mazes or not, I encourage you to try your hand at Prim’s algorithm. It’s a fun algorithm to code, not least of all because it comes together so easily. Personally, I enjoy watching the animation: it puts me in mind of a flame consuming a sheet of paper.</p>
+<p>Please do share what you come up with. Have fun!</p>

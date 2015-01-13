@@ -1,0 +1,24 @@
+---
+layout: post
+title: Vim, Ruby, and Family History
+post_id: 318
+categories:
+- Projects
+date: 2004-12-13 01:49:00.000000000 -07:00
+author: Jamis
+permalink: 2004/12/13/vim-ruby-and-family-history.html
+---
+
+<p>On the side, I’m an aspiring amateur genealogist and family history researcher. My latest “thing” is to record my grandparents talking about their childhood, and then transcribe the recording and organize it into a book format. To that end, I’ve got  an hour and a half of audio in <span class="caps">OGG</span> format of my grandfather telling about his childhood, his experiences in <span class="caps">WWII</span>, and so forth.</p>
+<p>My wife, who worked as a personal history transcriber in college, has a transcribing machine. It’s like a bulky tape recorder, with doodads for speeding up or slowing down the playback, and for jumping backwards a few secodns in the recording. Also, when you pause the recording and start it again, it automatically jumps back a few seconds. These features are <em>essential</em> for transcribing audio.</p>
+<p>Thus, given the <span class="caps">OGG</span> recording of my grandfather’s history, I have been looking for a program that has the features of a mechanical transcriber, especially for linux. The few programs that seemed to come close were either ugly as sin and not very stable, or had no support for <span class="caps">OGG</span> files. (True, I could always just convert the <span class="caps">OGG</span> file to something else, but I wanted to make the process as painless as possible.)</p>
+<p>I then experimented withing using the Ruby bindings to GStreamer, to write my own transcribing program. It <em>almost</em> worked, but the problem I had with GStreamer was that it is buffered, for <em>streaming</em> audio, which means it doesn’t behave very responsively when I want to pause or fast-forward. (That was my experience, anyway.)</p>
+<p>So I went looking elsewhere. I had heard of the <a href="http://www.fmod.org"><span class="caps">FMOD</span></a> library, but couldn’t find any Ruby bindings for it. I wasn’t particularly in the mood for writing the bindings myself, in C…but wait! I wondered if the DL module in Ruby could help me…</p>
+<p>The DL module allows scripts to access C functions directly, without intervening glue code. It turned out to be ridiculously simple to write a Ruby module that calls into the <span class="caps">FMOD</span> routines via Ruby/DL.</p>
+<p>So I took the <a href="http://ruby-gnome2.sourceforge.jp/hiki.cgi?Simple+Audio+Player">Simple Audio Player</a> demo from the Ruby/Gnome2 project and reworked it so that it used my <span class="caps">FMOD</span> layer instead of GStreamer. Then I added a slider to manipulate the playback rate, and made the “pause” button also rewind the audio a few seconds. Voila! A transcriber program!</p>
+<p>Now, the problem was that there was no convenient way to manipulate my transcriber via <a href="http://www.vim.org">Vim</a>, my editor of choice.</p>
+<p>I sat down and hacked some named pipe support into it. This allowed me to write a Vim plugin (in Ruby, naturally) that communicated with the transcriber over the named pipes, sending commands and receiving responses. Then I mapped the plugin’s commands to some convenient keys, and away I went. It worked flawlessly.</p>
+<p>I wanted to share this contraption I had devised, but the setup was rather horrendous. You had to have <span class="caps">GTK2</span> installed, and due to the dependency on named pipes, it would only work on Unix-like systems.</p>
+<p>However, if I could write Vim plugins in Ruby, why couldn’t I write the entire transcribing system as a Vim plugin? Then the only dependencies would be <span class="caps">FMOD</span>, and a Vim that was compiled with Ruby support.</p>
+<p>It turned out to be very simple to convert. I now simply load a file to transcribe with the <code>:VSLoad</code> command, start it playing with <code>:VSPlay</code>, toggle the pause with <code>ctrl-space</code>, speed it up with <code>alt-rightarrow</code>, and so forth. (I’ll probably register a RubyForge project soon, to host this and a few other genealogical utilities I’ve written.)</p>
+<p>Meanwhile, I’ve got about 14 minutes of my grandpa’s 90 minute narration transcribed. A few more weekends should see the transcribing completed!</p>

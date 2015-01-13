@@ -1,0 +1,32 @@
+---
+- date: 2007-01-16
+  author: Ryan Allen
+  content: |-
+    <p>That’s pretty neat. I tend to do a similar thing with find on ActiveRecord:</p>
+
+
+    <pre>
+    def self.find(n, opts = {})
+      super(n, {:order =&gt; 'name'}.merge(opts))
+    end
+    </pre>
+- date: 2007-01-16
+  author: Jamis
+  content: "<p>Ryan, nifty! Be careful, though, of forcing an order like that, because
+    unless ‘name’ is part of every index you use, your database is going to hate you.
+    ;) Sorting cannot be done efficiently in the database unless the sort key(s) are
+    part of the index that was used to satisfy the query.</p>"
+- date: 2007-01-16
+  author: Zack
+  content: "<p>Jamis, that is very cool – thanks for the tip a day!</p>\n\n\n\t<p>—Zack</p>"
+- date: 2007-01-16
+  author: Nate
+  content: "<p>Of a somewhat related nature, we created and have been using this plugin:</p>\n\n\n\t<p>http://code.inklingmarkets.com/pretty-flash/</p>\n\n\n\t<p>If
+    you want to see it in action, just trying and login to http://home.inklingmarkets.com
+    with some random user/pass.</p>\n\n\n\t<p>It basically hijacks all uses of flash[:notice]
+    and flash[:error] and throws up a pretty cool box at the bottom (A little green
+    for notices and a little red for errors).  It was heavily inspired by the flash
+    notices and errors from Shopify.  And I wanted to get it so that it was just an
+    easy drop in plugin without having to change any of my flash[:error] calls to
+    something else.</p>\n\n\n\t<p>But it looks like I could make it much niftier and
+    maybe a bit less hackish with this tip.</p>"

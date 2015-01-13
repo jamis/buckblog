@@ -1,0 +1,46 @@
+---
+layout: post
+title: Making CGI Rails Faster
+post_id: 260
+categories:
+- Tips & Tricks
+date: 2005-01-21 06:29:00.000000000 -07:00
+author: Jamis
+permalink: 2005/01/21/making-cgi-rails-faster.html
+---
+
+<p><a href="http://www.rubyonrails.com">Rails’</a> preferred installation method is <a href="http://rubygems.rubyforge.org">RubyGems</a>, a convenient, powerful utility for installing Ruby libraries and applications. Unfortunately, that convenience comes at a price—loading a library via RubyGems adds some overhead. Recent releases of RubyGems have made some good progress in reducing that overhead, but it still exists.</p>
+<p>Rails, being (by default) a gem-dependent application, incurs that overhead every time you load the app “clean” (ie, not under <span class="caps">FCGI</span> or such). For example, my in-progress financial package manager (<a href="http://www.jamisbuck.org/budget-wise">Budget-Wise</a>) took about 2.4 seconds just to load the login screen!</p>
+<p>I found that by bypassing RubyGems altogether, the load time was cut by more than half, from 2.4 seconds to just over 1.1 seconds. If you run Rails in <span class="caps">CGI</span> mode and want an option for speeding your response time, consider making the following change to your environment.rb file:</p>
+<pre>
+<code>
+  # Require Rails gems.
+  #require 'rubygems'
+  #require_gem 'activerecord'
+  #require_gem 'actionpack'
+  #require_gem 'actionmailer'
+  #require_gem 'rails'
+
+  GEM_DIR = "/usr/local/lib/ruby/gems/1.8/gems" 
+
+  $:.push "#{GEM_DIR}/activerecord-1.5.1/lib" 
+  $:.push "#{GEM_DIR}/actionpack-1.3.1/lib" 
+  $:.push "#{GEM_DIR}/actionmailer-0.6.1/lib" 
+  $:.push "#{GEM_DIR}/rails-0.9.4.1/lib" 
+
+  require 'active_record'
+  require 'action_controller'
+  require 'action_view'
+  require 'action_mailer'
+</code>
+</pre>
+<p>In other words—just comment out the part that requires the gems, and then manually add the necessary directories to your load path. Then, just require those libs you need explicitly.</p>
+<p>The drawback: you have to change your <code>environment.rb</code> file every time you upgrade any part of rails, but if that’s not an issue, you might find this a worthy enhancement to your development cycle. Of course, if you are using WEBrick or <span class="caps">FCGI</span>, this isn’t an issue at all since the gem require only happens once. You’ll only really be benefited if you use Rails in <span class="caps">CGI</span> mode.</p>
+<p><strong>Update (24 Jan 2005)</strong>: Apparently, <a href="http://www.textdrive.com">TextDrive</a> is still using version 0.8.1 of RubyGems. Using RubyGems 0.8.4 gives you just about the same speed as requiring the libraries directly, so if you are using RubyGems 0.8.4, <strong>you do not need to apply the “optimization” described above</strong>.  If, on the other hand, you don’t have the option of installing a newer version of RubyGems, consider making the following additional optimization, which cut the total load time for me down to less than 0.5 seconds. Create a file in your application’s <code>lib</code> directory called <code>rubygems.rb</code>, and put the following code in it:</p>
+<pre>
+<code>
+  raise LoadError, "place holder" 
+</code>
+</pre>
+<p>This prevents the ActionView library from requiring RubyGems, which it attempts to do explicitly in order to use the Builder gem. If RubyGems can’t be found, ActionView will load an alternative copy of the Builder library and continue on. Thus, adding the above place holder file just prevents RubyGems from being loaded at all, anywhere, by your app or by any of its dependencies.</p>
+<p>Again, if you’re using 0.8.4 (or newer) of RubyGems, this is not an issue. (Thanks to Chad and Jim for pointing this out!)</p>

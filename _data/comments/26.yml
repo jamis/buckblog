@@ -1,0 +1,20 @@
+---
+- date: 2010-11-23
+  author: blinkless
+  content: "<p>Congrats Jamis! How was the learning curve from Ruby and your current
+    language skillset to Objective-C / Cocoa?</p>"
+- date: 2010-11-23
+  author: Jamis
+  content: <p>Thanks, @blinkless! The transition wasn’t very bad, actually. I’m originally
+    a C programmer, and Objective-C even shares many things in common with Ruby. Learning
+    Cocoa was the trickiest part, but I’ve had some experience with other event-driven
+    <span class="caps">GUI</span> frameworks and many of the concepts were quite portable.</p>
+- date: 2010-11-23
+  author: Janine Lennert
+  content: |-
+    <p>Hi Jamis just downloaded your app and simply had to buy one more pack of figures.
+    Can’t wait to try it out, will give you Feedback as soon as possible, thanks very much for all your effort! We are having an <span class="caps">ASFA</span> meeting soon here in Munich (anonymous string figure addicts), and I will spread the news here in Germany :-)
+    Greetings and best wishes! Janine</p>
+- date: 2010-11-23
+  author: Jamis
+  content: "<p>Thank-you, Janine! I look forward to hearing your feedback!</p>"

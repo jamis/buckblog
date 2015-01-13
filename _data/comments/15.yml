@@ -1,0 +1,72 @@
+---
+- date: 2011-01-20
+  author: Robin Houston
+  content: "<p>It seems to me that it’s legitimate (in the sense that it still produces
+    a uniform spanning tree) to start with Aldous-Broder and then switch to Wilson’s.
+    This takes advantage of the fact that Aldous-Broder wastes a lot of time in the
+    later stages, and Wilson’s wastes a lot of time in the early stages.</p>\n\n\n\t<p>Empirically
+    (on a 10×10 grid), the most efficient point to switch algorithms is when the grid
+    is 1/3 populated.</p>\n\n\n\t<p>I’m in the middle of writing up an illustrated
+    explanation of how and why these two algorithms work – interestingly, they work
+    for entirely different reasons, even though they feel rather similar operationally
+    – and the argument for why it’s all right to switch in the middle.</p>"
+- date: 2011-01-20
+  author: Robin Houston
+  content: "<p>PS. The C code I used for computing the number of steps taken by a
+    hybrid algorithm, dependent on the switching threshold: https://gist.github.com/788007</p>\n\n\n\t<p>You
+    get a nice graph with a clear minimum at 33 or so.</p>"
+- date: 2011-01-20
+  author: Jamis
+  content: "<p>Neat idea, @Robin. Please let me know when your write-up is available,
+    I’d love to read it. Intuitively, it makes sense that the hybrid algorithm would
+    still produce USTs, but I’m curious to see a more robust justification. Also,
+    I’d love to understand the “proof” behind Wilson’s algorithm!</p>"
+- date: 2011-01-20
+  author: dave@mebigfatguy.com
+  content: "<p>It would be nice in the animation, if besides step and run, you had
+    something in between, where it would stop at interesting points, that being initial
+    point selection, and when the new maze has new paths added.</p>\n\n\n\t<p>Nice
+    tho!</p>"
+- date: 2011-01-20
+  author: Jamis
+  content: "<p>@dave, that’s a neat idea, kind of an intelligent “fast-forward”. I’ll
+    look into that.</p>"
+- date: 2011-01-20
+  author: Conrad Barski
+  content: "<p>Here it is in Clojure: http://clojure.pastebin.com/dd5ccDkP</p>"
+- date: 2011-01-20
+  author: Jamis
+  content: "<p>Thanks for sharing your implementation, @Conrad! One of these days
+    I’m going to buckle down and learn Clojure. And you can bet a maze generator will
+    be the project I use to wet my feet.</p>"
+- date: 2011-01-20
+  author: Robin Houston
+  content: "<p>@Jamis If you are impatient to understand the proof of Wilson’s algorithm,
+    I can recommend the lecture notes of Antal A. Járai at http://www.maths.bath.ac.uk/~aj276/teaching/USF/USFnotes.pdf
+    which were my primary source of information on the topic. They took me a few hours
+    to digest, and I hope that my explanation will be clearer, especially to anyone
+    unaccustomed to reading mathematics — but mine probably won’t be ready for a couple
+    of weeks, whereas these notes exist already and are very good of their kind.</p>"
+- date: 2011-01-20
+  author: Jamis
+  content: <p>@Robin, thanks for the link! That <span class="caps">PDF</span> looks
+    like a great resource; I’m throwing it on my iPad right now. I’ll take a look,
+    and will try to be patient until your writeup is ready. :)</p>
+- date: 2011-01-21
+  author: Robin Houston
+  content: "<p>For the record, I retract my claim that switching from Aldous-Broder
+    to Wilson will still produce mazes uniformly. There’s a mistake in my argument
+    for why it ought to work. Needs More Thought…</p>"
+- date: 2011-01-22
+  author: Ben Reubenstein
+  content: <p>I have been reading these maze posts in my feed reader, it <span class="caps">DOES
+    NOT</span> do it justice.  Glad I came and visited the actual site.  Interesting
+    work Jamis.</p>
+- date: 2011-01-24
+  author: http://clj-me.cgrand.net
+  content: "<p>Another take in Clojure, the core algorithm works with any topography:
+    http://gist.github.com/792959</p>"
+- date: 2011-01-24
+  author: Jamis
+  content: "<p>Christophe, thank-you for sharing. That’s a very elegant solution;
+    one more motivation for me to dig into Clojure. :)</p>"

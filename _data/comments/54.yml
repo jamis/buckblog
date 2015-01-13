@@ -1,0 +1,314 @@
+---
+- date: 2008-05-02
+  author: Chris
+  content: "<p>Sweet!</p>\n\n\n\t<p>Thanks so much for your hard work, Jamis.</p>\n\n\n\t<p>It
+    is very much appreciated!</p>"
+- date: 2008-05-02
+  author: Jim Morris
+  content: "<p>Thanks Jamis.</p>\n\n\n\t<p>Does this fix the long standing hangs when
+    using gateway?</p>\n\n\n\t<p>Also I currently get …</p>\n\n\n\t<p><span class=\"caps\">ERROR</span>:
+    \ While executing gem … (Gem::RemoteFetcher::FetchError)\n    Gem::RemoteFetcher::FetchError:
+    bad response Not Found 404 reading http://gems.rubyforge.org/gems/capistrano-2.3.0.gem</p>\n\n\n\t<p>I
+    presume we need to wait a while to grab it?</p>\n\n\n\t<p>Thanks</p>"
+- date: 2008-05-02
+  author: Jamis
+  content: "<p>@Jim, it should fix the hang problem, but then, upgrading to Net::SSH
+    1.1.4 should fix it, too, if you don’t particularly want to upgrade to Net::SSH
+    2 yet. Regarding the 404 error, yeah, the mirrors may not all have updated yet.
+    It works for some and not for others—just retry a few times until you get a mirror
+    that’s updated.</p>"
+- date: 2008-05-02
+  author: Jim Morris
+  content: "<p>It does indeed fix the gateway thanks (do I still need set :synchronous_connect,
+    true?)</p>\n\n\n\t<p>When I execute the following in my capfile…</p>\n\n\n\t<p>sudo
+    “svc -u /service/treasurehunt”</p>\n\n\nI get…\n\t<ul>\n\t<li>[err :: l_app2]\n
+    \   command finished</li>\n\t</ul>\n\n\n\t<ul>\n\t<li>executing “svc -u /service/treasurehunt”
+    \n  servers: <a href=\"l_app2\">“l_app2”</a> executing command</li>\n\t</ul>\n\n\n\t<p>It
+    does seem to execute so what does the <strong>*</strong> [err: mean?</p>\n\n\n\t<p>Thanks\nJim</p>"
+- date: 2008-05-02
+  author: Jamis
+  content: <p>@Jim, the :synchronous_connect variable is completely ignored in cap
+    2.3, so you can remove it. It has no effect on anything, anymore. As for the “err”,
+    it just means that some text was received from the server on the <span class="caps">STDERR</span>
+    stream. “err” is the tag for stderr, and “out” is the tag for stdout.</p>
+- date: 2008-05-02
+  author: Jim Morris
+  content: "<p>oops it seems to have munged my output above</p>\n\n\n\t<ul>\n\t<li>executing
+    “svc -d /service/treasurehunt  2&gt;&amp;1” \n  servers: <a href=\"l_app2\">“l_app2”</a>
+    executing command\n\t<ul>\n\t<li>[err :: l_app2]\n  command finished</li>\n\t</ul>\n</li>\n\t</ul>\n\n\n\t<p>Trying
+    again</p>"
+- date: 2008-05-02
+  author: anonymous
+  content: "<p>What about pluggable ssh? Why must we use net:ssh for cap when we use
+    openssh for everything else?</p>"
+- date: 2008-05-03
+  author: Jamis
+  content: "<p>@anonymous, pluggable anything makes things 10x more complicated and
+    introduces a lot of edge cases. I’d rather not go there. That said, if you want
+    to take a stab at a patch, I’d consider it if it doesn’t overcomplicate things.
+    If you want to use openssh, though, there’s already vlad, which does.</p>"
+- date: 2008-05-03
+  author: gregf
+  content: "<p>Really like the new upload and download options. Going to help out
+    with the site I’m working on right now. I was managing it before, but this is
+    much cleaner. nice work.</p>"
+- date: 2008-05-03
+  author: andynu
+  content: "<p>I pity the fool who lives without revision control; however, I’m thrilled
+    by `set :scm, :none` because I use Capistrano for deployment of java webapps that
+    are built by our continuous integration server. Since all the code is in svn,
+    and the builds are tied to specific revisions, there is no need for us to keep
+    the binaries in the repository. This feature is going to drastically simplify
+    my recipes. Thanks.</p>"
+- date: 2008-05-03
+  author: Matthijs Langenberg
+  content: "<p>Thanks for the improvements for the :copy strategy! Since git is nicely
+    distributed, I like it to export from my local git repository. I’m just using:
+    set :repository, ’.’</p>"
+- date: 2008-05-05
+  author: Josh Knowles
+  content: "<p>The upload/download tasks are quite nice, thanks!</p>\n\n\n\t<p>The
+    gem didn’t however pick up on the dependencies on net-ssh-gateway and net-scp
+    and I had to install these manually.</p>"
+- date: 2008-05-05
+  author: Jamis
+  content: "<p>@Josh, how did you install the gem? “gem install capistrano” should
+    (and did, for me) pick up those dependencies. However, if you do “gem install
+    ./capistrano-2.3.0.gem” (after downloading the gem separately), rubygems will
+    not enforce dependencies.</p>"
+- date: 2008-05-05
+  author: Jeremy Lecour
+  content: "<p>Hi</p>\n\n\n\t<p>I don’t know if something is wrong with my setup,
+    but since I upgraded from 2.2 to 2.3; Cap is asking for my <span class=\"caps\">SSH</span>
+    password and doesn’t use the public keys anymore.</p>\n\n\n\t<p>On a any tested
+    “client” computer, cap is asking for the password, but in the meantime, a simple
+    manual ssh connection is working with te pubkey.</p>\n\n\n\t<p>I’ve looked on
+    the server side (/var/log/auth.log) and it shows the cap password connection and
+    the manual ssh pubkey connection.</p>\n\n\n\t<p>I’ve tried this from 2 Macs (Mac
+    <span class=\"caps\">OS X 10</span>.5) and a PC (Debian 4).</p>"
+- date: 2008-05-05
+  author: Jamis
+  content: "<p>@Jeremy, yeah, it’s a known regression in Net::SSH 2.0 which has been
+    fixed, but not yet released. I’ll release it this week. The problem is that you’re
+    using keys, but not an ssh-agent, and Net::SSH 2 doesn’t know to load common key
+    names by default. For now, you can fix it by doing this:</p>\n\n\n<table class=\"CodeRay\"><tr>\n
+    \ <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre>ssh_options[<span class=\"sy\">:keys</span>] = <span
+    class=\"s\"><span class=\"dl\">%w(</span><span class=\"k\">~/.ssh/id_dsa ~/.ssh/id_rsa</span><span
+    class=\"dl\">)</span></span><tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>That
+    should “fix” it.</p>"
+- date: 2008-05-06
+  author: Josh Knowles
+  content: "<p>@Jamis, I installed via “sudo gem update”, which apparently didn’t
+    pick up the new dependencies.  Is this a bug in gems?</p>"
+- date: 2008-05-06
+  author: Jamis
+  content: "<p>@Josh, ah, yes, I’ve heard of that. “gem update” doesn’t check dependencies.
+    Not sure if that’s a bug or design decision—you should probably bring it up with
+    the gems team.</p>"
+- date: 2008-05-07
+  author: Rafael
+  content: "<p>Hi, \nfirst, ... I want to thank… I was so looking forward… but I have
+    some strange errors… may you have a clue, what that could be?</p>\n\n\n\t<p>/usr/local/lib/ruby/gems/1.8/gems/capistrano-2.3.0/lib/capistrano/recipes/deploy/scm/git.rb:217:in
+    `query_revision’: Unable to resolve revision for origin/master (RuntimeError)\n
+    \   from /usr/local/lib/ruby/gems/1.8/gems/capistrano-2.3.0/lib/capistrano/recipes/deploy/scm/base.rb:35:in
+    `send’\n    from /usr/local/lib/ruby/gems/1.8/gems/capistrano-2.3.0/lib/capistrano/recipes/deploy/scm/base.rb:35:in
+    `method_missing’\n    from /usr/local/lib/ruby/gems/1.8/gems/capistrano-2.3.0/lib/capistrano/recipes/deploy/scm/base.rb:63:in
+    `local’\n    from /usr/local/lib/ruby/gems/1.8/gems/capistrano-2.3.0/lib/capistrano/recipes/deploy/scm/base.rb:35:in
+    `method_missing’\n    from /usr/local/lib/ruby/gems/1.8/gems/capistrano-2.3.0/lib/capistrano/recipes/deploy.rb:37:in
+    `load’\n    from /usr/local/lib/ruby/gems/1.8/gems/capistrano-2.3.0/lib/capistrano/configuration/variables.rb:87:in
+    `call’\n    from /usr/local/lib/ruby/gems/1.8/gems/capistrano-2.3.0/lib/capistrano/configuration/variables.rb:87:in
+    `fetch’\n    from /usr/local/lib/ruby/gems/1.8/gems/capistrano-2.3.0/lib/capistrano/configuration/variables.rb:110:in
+    `protect’\n     ... 34 levels…\n    from /usr/local/lib/ruby/gems/1.8/gems/capistrano-2.3.0/lib/capistrano/cli/execute.rb:14:in
+    `execute’\n    from /usr/local/lib/ruby/gems/1.8/gems/capistrano-2.3.0/bin/cap:4\n
+    \   from /usr/local/bin/cap:19:in `load’\n    from /usr/local/bin/cap:19</p>"
+- date: 2008-05-07
+  author: Tim
+  content: "<p>i’m having the same problem as Rafael. 2.3 broke git checkouts for
+    me.</p>"
+- date: 2008-05-07
+  author: Tony Perrie
+  content: "<p>I’m having the same problem as Rafael. Capistrano 2.3.0 broke git checkouts
+    for me on Mac <span class=\"caps\">OS X</span> Leopard.</p>\n\n\n\t<p>command
+    finished\n/usr/local/lib/ruby/gems/1.8/gems/capistrano-2.3.0/lib/capistrano/recipes/deploy/scm/git.rb:217:in
+    `query_revision’: Unable to resolve revision for <span class=\"caps\">HEAD</span>
+    (RuntimeError)</p>"
+- date: 2008-05-07
+  author: Adam
+  content: "<p>Same for me.. 18, 19, 20.</p>"
+- date: 2008-05-08
+  author: Michael Siebert
+  content: "<p>same for me.</p>\n\n\n\t<ul>\n\t<li>executing “if [ -d /server/rails/nebraska/shared/cached-copy
+    ]; then cd /server/rails/nebraska/shared/cached-copy &amp;&amp; git fetch—tags
+    origin &amp;&amp; git reset—hard f9abb5c4263ba95dc6bae99b1fd559c89867c73a; else
+    git clone git@svn.reporting-online.com:nebraska /server/rails/nebraska/shared/cached-copy
+    &amp;&amp; cd /server/rails/nebraska/shared/cached-copy &amp;&amp; git checkout
+    -b deploy f9abb5c4263ba95dc6bae99b1fd559c89867c73a; fi” \n   servers: <a href=\"dmt.reporting-online.com\">“dmt.reporting-online.com”</a>
+    executing command\n\t<ul>\n\t<li>[out] git@svn.reporting-online.com’s password:</li>\n\t\t<li>[out]</li>\n\t\t<li>[out]
+    fatal: Could not parse object ‘f9abb5c4263ba95dc6bae99b1fd559c89867c73a’.</li>\n\t</ul>\n</li>\n\t</ul>\n\n\n\t<p>host
+    is macosx, target is debian</p>"
+- date: 2008-05-08
+  author: Markús
+  content: "<p>Grat work Jamis!</p>\n\n\n\t<p>But there’s some points with upload
+    that should be considered (I didn’t test download yet).</p>\n\n\n\t<p>I used a
+    MacBook with <span class=\"caps\">OS 10</span>.5 for local machine and a CentOS
+    Linux distro as the remote machine.</p>\n\n\n\t<p>1. Using sftp [ upload “path/to/local_file”,
+    “path/to/remote_file” ]</p>\n\n\n\t<p>With “path/to/local_file”</p>\n\n\n\t<ul>\n\t<li>You
+    cannot use “<sub>”, since it thows a wreid exception about “undefined method []=”
+    </sub>\n</li>\n\t\t<li>If you use “” in the path you must filter it with File.expand_path</li>\n\t</ul>\n\n\n\t<p>With
+    “path/to/remote_file”</p>\n\n\n\t<ul>\n\t<li>You cannot use variables like “shared_path”,
+    “current_release” etc if you specify “<sub>” in the “deploy_to” variable, since
+    <span class=\"caps\">FTP</span> does not understand “</sub>” (a little obious)</li>\n\t\t<li>You
+    <span class=\"caps\">MUST</span> specify a remote_file name, whatever, if you
+    don’t the upload will fail</li>\n\t</ul>\n\n\n\t<p>2. Using scp [ upload “path/to/local_file”,
+    “path/to/remote_file”, :via =&gt; :scp ]</p>\n\n\n\t<p>With “path/to/local_file”
+    happends the same that did with sftp method</p>\n\n\n\t<p>With “path/to/remote_file”</p>\n\n\n\t<ul>\n\t<li>You
+    can specify ”~” in “deploy_to” variable, it understands it</li>\n\t\t<li>You can
+    omit the remote_file name, only the destination directory is needed</li>\n\t</ul>\n\n\n\t<p>I’m
+    considering that sftp and scp behave identically in all Unix based machines, so
+    this should be the same for all Mac/Linux users, should not?</p>"
+- date: 2008-05-08
+  author: keeney
+  content: "<p>Rafael, remove the “origin/” part in “set: branch=”</p>"
+- date: 2008-05-09
+  author: Tony Perrie
+  content: "<p>Ignore my previous comment, that was a problem with specifying the
+    git repository.</p>"
+- date: 2008-05-09
+  author: globulous
+  content: "<p>With v2.3.0 now I receive:\nfatal: ’/usr/local/git/project.git’: unable
+    to chdir or not a git archive</p>\n\n\n\t<ul>\n\t<li>transaction: start\n * executing
+    `deploy:update_code’</li>\n\t</ul>\n\n\n\t<p>Not a problem if I revert back to
+    v2.2</p>"
+- date: 2008-05-11
+  author: zzeroo
+  content: "<p>Same problem like globulous.</p>\n\n\n\t<p>?&gt;&gt; fatal: ’/home/masterson/blog.git’:
+    unable to chdir or not a git archive</p>\n\n\n\t<p>Look at http://pastie.caboo.se/pastes/193798.
+    It’s represent the error well.</p>"
+- date: 2008-05-16
+  author: Josh
+  content: "<p>On the deploy:cleanup i’d get the following error:</p>\n\n\n\t<pre><code>no
+    passwd entry for app!</code></pre>\n\n\n\t<p>After a little digging I found where
+    “app” was coming from in try_sudo as the default for :runner.</p>\n\n\n\t<p>Not
+    sure if it’s the best fix, but changing line 96 of cap’s deploy.rb file to read
+    </p>\n\n\n\t<pre><code>as = fetch(:runner, fetch(:user, \"app\"))</code></pre>\n\n\n\t<p>did
+    the trick.</p>"
+- date: 2008-05-17
+  author: Jauder
+  content: "<p>I’m still building out my cap recipe but upgraded to Cap 2.3.0 along
+    with associated friends.</p>\n\n\n\t<p>However, doing a simple cap deploy:check
+    results in the following.</p>\n\n\n\t<p>trillian:v jauderho$ cap deploy:check\n
+    \ * executing `deploy:check’\n  * executing “test -d /var/www-rails/v.com/releases”
+    \n    servers: [“dev.v.com”]\nconnection failed for: dev.v.com (NoMethodError:
+    undefined method `strip’ for nil:NilClass)</p>\n\n\n\t<p>Any suggestions would
+    be welcome. (this was previously passing in Cap 2.0.0)</p>\n\n\n\t<p>The following
+    is what’s installed for netssh\nnet-scp (1.0.0)\nnet-sftp (2.0.0, 1.1.0)\nnet-ssh
+    (2.0.1, 1.1.2)\nnet-ssh-gateway (1.0.0)\nnet-ssh-multi (1.0.0)</p>"
+- date: 2008-05-17
+  author: Jauder
+  content: "<p>I would add that the ssh connection done manually works just fine.</p>"
+- date: 2008-05-17
+  author: thomas Maurer
+  content: "<p>I guess, the problem with this git error on cap deploy…</p>\n\n\n\t<p>fatal:
+    Could not parse object ‘f9abb5c4263ba95dc6bae99b1fd559c89867c73a’.</p>\n\n\n\t<p>is
+    because of the ‘—tags’ option added to git fetch. without this, it works for me.
+    when I look at the git-fetch manpage, it seems, that with ‘git fetch—tags’ it
+    only fetches the tags and its objects. if you have no tags, it won’t work.. then
+    you have to use ‘git fetch’. perhaps in capistrano it should just call both commands
+    in series.</p>\n\n\n\t<p>greetings.</p>"
+- date: 2008-05-21
+  author: tompata
+  content: "<p>Hello,</p>\n\n\n\t<p>the new ‘copy_cache’ directive is very useful,
+    but hard to use on windows.</p>\n\n\n\t<p>first of all, the default copy_compression
+    is ‘tar.gz’, but it’s not the default on windows, another option is ‘zip’, but
+    command line zip is also tricky…</p>\n\n\n\t<p>the default transfer method is
+    <span class=\"caps\">SFTP</span>, but there’s no configuration option to overwrite
+    to <span class=\"caps\">SCP</span> – so i had to change in source: transfer.rb…
+    :(</p>\n\n\n\t<p>T</p>"
+- date: 2008-05-22
+  author: Peter Bengtson
+  content: "<p>Same problem as Rafael. Cap 2.3 totally breaks deployment from git
+    repos.</p>"
+- date: 2008-05-22
+  author: Jason Schock
+  content: "<p>@Jamis in regards to post #15: I have an identical setup to Josh’s
+    and I’m in fact using Leopard’s built-in ssh-agent.</p>\n\n\n\t<p>When I installed
+    cap 2.3.0, I was also suddenly prompted for a password during deploy. Cap 2.2.0
+    was previously working fine.</p>\n\n\n\t<p>The ssh_options[...] fix you suggested
+    did not work for me, either (it goes in deploy.rb, correct?)</p>\n\n\n\t<p>Thanks.</p>"
+- date: 2008-06-01
+  author: Andrew Premdas
+  content: "<p>Ditto 31</p>"
+- date: 2008-06-01
+  author: Jamis
+  content: "<p>Sorry for the extended silence, all. I’ve released an update to Net::SSH,
+    Net::SFTP, and Net::SCP which should fix some (but not all) reported issues (particularly
+    those dealing with file uploads from windows being truncated). I’m still working
+    on getting another capistrano release ready, which will fix git deploys (among
+    other things).</p>"
+- date: 2008-06-02
+  author: Chris Bailey
+  content: "<p>As someone eluded to above, the fix for the “Could not parse object”
+    problem is to ensure you have at least one tag in your repository.  What the tag
+    is on doesn’t matter, and you just need one.  I wrote this up here in case folks
+    want a bit more step-by-step:</p>\n\n\n\t<p>http://codeintensity.blogspot.com/2008/06/fixing-capistrano-230-and-git-deploy.html</p>"
+- date: 2008-06-03
+  author: Thiyagarajan
+  content: "<p>Hi</p>\n\n\n\t<p>I am thiyagarajan. I am using Capistrano for deploying
+    rails application to Linux server, i am getting confusion do symlink for example
+    /var/www/apps/#{application}/current/public/images/products to /var/www/apps/#{application}/shared/products.</p>"
+- date: 2008-06-03
+  author: Thiyagarajan
+  content: "<p>Hi</p>\n\n\n\t<p>I am thiyagarajan. I am using Capistrano for deploying
+    rails application to Linux server, i am getting confusion do symlink for example
+    /var/www/apps/#{application}/current/public/images/products to /var/www/apps/#{application}/shared/products.
+    Any one help me …</p>\n\n\n\t<p>Regards,</p>\n\n\n\t<p>Thiyagarajan Veluchamy</p>"
+- date: 2008-06-04
+  author: KJW
+  content: "<p>The ‘(NoMethodError: undefined method `strip’ for nil:NilClass)’ error
+    message is probably caused by a syntax error in your ’~/.ssh/config’ file.</p>\n\n\n\t<p>My
+    .ssh/config had the string ‘ForwardX11=yes’ which caused the error because the
+    correct syntax is ‘ForwardX11 yes’ (without the ’=’).</p>\n\n\n\t<p>I’ve submitted
+    a patch for net-ssh to ignore the syntax error and produce a warning:</p>\n\n\n\t<p>http://rubyforge.org/tracker/index.php?func=detail&amp;aid=20510&amp;group_id=274&amp;atid=1125</p>"
+- date: 2008-06-05
+  author: Chris Blackburn
+  content: "<p>Yay!  Thanks so much Jamis.  We’ve been looking forward to this release.</p>"
+- date: 2008-06-05
+  author: Brian Beers
+  content: "<p>@Jauder – I had the same exact problem. I ended update deleting the
+    contents of ~/.ssh/config (I had some git configuration in there) and everything
+    works now, capistrano and git.</p>\n\n\n\t<p>Good luck</p>"
+- date: 2008-06-08
+  author: Ray
+  content: "<p>I am using Git as the scm.  cap deploy:cold works but subsequent cap
+    deploy gives me an error when it executes the deploy:update_code task.  The error
+    is http://pastie.org/211195.  I think it happens on the git reset—hard 6b677118fc7abe111098225eda9996275f5f2b30.
+    \ I have these in my deploy.rb:</p>\n\n\n\t<p>set :branch , “master” \nset :deploy_via,
+    :remote_cache\nset :git_enable_submodules, 1</p>"
+- date: 2008-06-08
+  author: Jauder
+  content: "<p><span class=\"caps\">KJW</span>, Brian Beers,</p>\n\n\n\t<p>Thanks
+    for the hints. It turns out that ’=’ is not valid in .ssh/config when parsed by
+    net-ssh (it works for normal ssh client stuff).</p>\n\n\n\t<p>Removing that causes
+    the error to go away. Thanks.</p>"
+- date: 2008-06-11
+  author: Mark
+  content: "<p>Get the same error as a few others:</p>\n\n\n\t<p>fatal: Could not
+    parse object ‘cc6d19138062d69ca8ff3c7ba7dc5b04c160ec5f’.</p>\n\n\n\t<p>When doing
+    deploy (apart from the first one).</p>\n\n\n\t<p>Hope somebody can find a fix
+    for this soon?</p>\n\n\n\t<p>Using:</p>\n\n\n\t<p>set :branch, “master” \nset
+    :deploy_via, :remote_cache\nset :keep_releases, 2\nset :git_enable_submodules,
+    1</p>"
+- date: 2008-06-11
+  author: Mark
+  content: "<p>Just found the fix for this:</p>\n\n\n\t<p>It is the ‘git fetch—tags
+    …’ but as somebody pointed out earlier. A fix for this is explained by Jamis at
+    http://groups.google.com/group/capistrano/browse_thread/thread/b14635454d40087b</p>"
+- date: 2008-06-27
+  author: Ron
+  content: "<p>Not sure what I’m doing wrong, but Cap seems to want net-s(sh, ftp,
+    cp) exactly at version 2.0.0. I have 2.0.3 (and the other newer versions) installed,
+    but it refuses to install unless I drop in exactly v2.0.0 of the libs.</p>"
+- date: 2008-07-04
+  author: Dave
+  content: "<p>So… how about that vendor/rails tip?</p>"

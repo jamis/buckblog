@@ -1,0 +1,137 @@
+---
+layout: post
+title: Extending ActiveRecord associations
+post_id: 117
+categories:
+- Tips & Tricks
+date: 2007-01-09 14:26:00.000000000 -07:00
+author: Jamis
+permalink: 2007/01/09/extending-activerecord-associations.html
+---
+
+<p>I really, <em>really</em> love the feature of ActiveRecord that lets you extend arbitrary associations with additional methods. For instance, suppose you have some Project that can have multiple Tasks:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">Project</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+</tt>  has_many <span class="sy">:tasks</span>, <span class="sy">:dependent</span> =&gt; <span class="sy">:delete_all</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Now, what you want to be able to do is partition the <code>tasks</code> association into subcollections based on the status of the tasks. One way to do that is by using extra associations with conditions:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">Project</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+</tt>  has_many <span class="sy">:tasks</span>, <span class="sy">:dependent</span> =&gt; <span class="sy">:delete_all</span><tt>
+</tt>  has_many <span class="sy">:active_tasks</span>, <span class="sy">:conditions</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">status = 'active'</span><span class="dl">"</span></span><tt>
+</tt>  has_many <span class="sy">:inactive_tasks</span>, <span class="sy">:conditions</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">status = 'inactive'</span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>That works…but it feels messy to me, like it is cluttering the Project namespace unnecessarily. What I <em>want</em> to be able to say is something like “project.tasks.active” and have it return me a list of the active tasks. Like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">Project</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+</tt>  has_many <span class="sy">:tasks</span>, <span class="sy">:dependent</span> =&gt; <span class="sy">:delete_all</span> <span class="r">do</span><tt>
+</tt>    <span class="r">def</span> <span class="fu">active</span>(reload=<span class="pc">false</span>)<tt>
+</tt>      <span class="iv">@active</span> = <span class="pc">nil</span> <span class="r">if</span> reload<tt>
+</tt>      <span class="iv">@active</span> ||= find(<span class="sy">:all</span>, <span class="sy">:conditions</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">status = 'active'</span><span class="dl">"</span></span>)<tt>
+</tt>    <span class="r">end</span><tt>
+</tt><tt>
+</tt>    <span class="r">def</span> <span class="fu">inactive</span>(reload=<span class="pc">false</span>)<tt>
+</tt>      <span class="iv">@inactive</span> = <span class="pc">nil</span> <span class="r">if</span> reload<tt>
+</tt>      <span class="iv">@inactive</span> ||= find(<span class="sy">:all</span>, <span class="sy">:conditions</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">status = 'inactive'</span><span class="dl">"</span></span>)<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>There! But…it’s a bit verbose, isn’t it? I find myself using this particular scenario quite frequently. To save myself some keystrokes, I can just define an extra method on the core Module class:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">Module</span><tt>
+</tt>  <span class="r">def</span> <span class="fu">memoized_finder</span>(name, conditions=<span class="pc">nil</span>)<tt>
+</tt>    class_eval <span class="s"><span class="dl">&lt;&lt;-STR</span></span><span class="s"><span class="k"><tt>
+</tt>      def </span><span class="il"><span class="dl">#{</span>name<span class="dl">}</span></span><span class="k">(reload=false)<tt>
+</tt>        @</span><span class="il"><span class="dl">#{</span>name<span class="dl">}</span></span><span class="k"> = nil if reload<tt>
+</tt>        @</span><span class="il"><span class="dl">#{</span>name<span class="dl">}</span></span><span class="k"> ||= find(:all, :conditions =&gt; </span><span class="il"><span class="dl">#{</span>conditions.inspect<span class="dl">}</span></span><span class="k">)<tt>
+</tt>      end</span><span class="dl"><tt>
+</tt>    STR</span></span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Armed with that extension, I can minimize the active and inactive helper methods to just:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">Project</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+</tt>  has_many <span class="sy">:tasks</span>, <span class="sy">:dependent</span> =&gt; <span class="sy">:delete_all</span> <span class="r">do</span><tt>
+</tt>    memoized_finder <span class="sy">:active</span>, <span class="s"><span class="dl">"</span><span class="k">status = 'active'</span><span class="dl">"</span></span><tt>
+</tt>    memoized_finder <span class="sy">:inactive</span>, <span class="s"><span class="dl">"</span><span class="k">status = 'inactive'</span><span class="dl">"</span></span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>It is worth noting here (since if I don’t, someone else will) that you could also define those “active” and “inactive” methods on the Task class itself, as class methods, and then call them from tasks association (since associations delegate missing methods to the association’s class):</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">Task</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+</tt>  <span class="r">def</span> <span class="pc">self</span>.active<tt>
+</tt>    find(<span class="sy">:all</span>, <span class="sy">:conditions</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">status = 'active'</span><span class="dl">"</span></span>)<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  <span class="r">def</span> <span class="pc">self</span>.inactive<tt>
+</tt>    find(<span class="sy">:all</span>, <span class="sy">:conditions</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">status = 'inactive'</span><span class="dl">"</span></span>)<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>project = <span class="co">Project</span>.find(<span class="sy">:first</span>)<tt>
+</tt>project.tasks.active<tt>
+</tt>project.tasks.inactive</pre></td>
+</tr></table>
+<p>The reason I generally prefer to avoid that in cases like this, is because I want to be able to memoize the result. In other words, I want to be able to call “project.tasks.active” multiple times and have it only query the database on the first call.</p>
+<p>Also, I like having the finders on the association, rather than the class, because I almost never want to search the entire database for (in this case) all active tasks. Rather, I want to find all active tasks for a specific project. If you define the methods on Task, you are kind of giving the impression that you expect to call them unscoped.</p>

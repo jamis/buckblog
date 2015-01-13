@@ -1,0 +1,27 @@
+---
+layout: default
+---
+
+{% assign key = page.category %}
+{% assign meta = site.category_dict[key] %}
+{% assign category = site.categories[key] %}
+
+<h2>{{ meta.proper }}</h2>
+
+{% assign month = "" %}
+<div class="articles">
+  {% for post in category %}
+    {% assign post_month = post.date | date: "%Y%m" %}
+
+    {% if post_month == month %}{% assign new_month = false %}
+    {% else %}{% assign new_month = true %}{% endif %}
+
+    {% assign month = post_month %}
+
+    {% if forloop.index > 5 %}
+      {% include post_link.html %}
+    {% else %}
+      {% include post_glimpse.html %}
+    {% endif %}
+  {% endfor %}
+</div>

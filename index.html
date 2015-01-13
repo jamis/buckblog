@@ -1,0 +1,38 @@
+---
+layout: default
+---
+
+{% assign month = "" %}
+<div class="articles">
+  {% for post in site.posts limit: 30 %}
+    {% assign post_month = post.date | date: "%Y%m" %}
+
+    {% if post_month == month %}{% assign new_month = false %}
+    {% else %}{% assign new_month = true %}{% endif %}
+
+    {% assign month = post_month %}
+
+    {% if forloop.index > 15 %}
+      {% include post_fade.html %}
+    {% elsif forloop.index > 5 %}
+      {% include post_link.html %}
+    {% elsif forloop.index > 1 %}
+      {% include post_glimpse.html %}
+    {% else %}
+      {% include post_feature.html %}
+    {% endif %}
+  {% endfor %}
+
+  <div class="etc">
+    &darr;
+  </div>
+
+  <div class="post link archive">
+    <div class="calendar">
+      <span class="month">Way</span>
+      <span class="year">Back</span>
+    </div>
+    <h2><a href="/archives.html">The Buckblog Archives</a></h2>
+    <h3>Dating to 2004 &mdash; Hundreds more articles</h3>
+  </div>
+</div>

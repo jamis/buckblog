@@ -1,0 +1,61 @@
+---
+- date: 2006-11-20
+  author: Sean Geoghegan
+  content: "<p>Thanks for the detailed article Jamis.</p>\n\n\n\t<p>Is there ever
+    likely to be a implementation of find_by_sql that lazily instantiates ActiveRecord
+    objects from the result set as they are accessed in the resulting array, allowing
+    you to iterate through large result sets but only ever have one ActiveRecord object
+    in memory at a time?  Or does this limitation run right through to the database
+    driver layer?</p>\n\n\n\t<p>Cheers.</p>"
+- date: 2006-11-20
+  author: Jamis
+  content: "<p>Sean, the problem is that the way ActiveRecord accesses the database,
+    it always returns the entire result set (as an array of hashes). You could mitigate
+    some of the weight of that by duplicating what find_by_sql does: build the <span
+    class=\"caps\">SQL</span> and then pass it to the <code>select_all</code> method
+    of the connection, and then call ActiveRecord::Base.instantiate directly for each
+    record that you need.</p>\n\n\n\t<p>That could make an interesting plugin, for
+    sure, and might even be something that could find its way into core, eventually.</p>"
+- date: 2006-11-20
+  author: ste
+  content: "<p>This is just an idea, but could it be reasonable to return an Array
+    proxy which converts Hashes into ActiveRecords on first access?\nSomething like:</p>\n\n\n<code>\nclass
+    ARProxy\n  def initialize(a_model_class, some_data)\n    @model_class = a_model_class\n
+    \   @data = some_data\n  end\n\n  def instantiate(index, obj=nil)\n    obj ||=
+    @data[index]\n    return obj if obj.is_a?(ActiveRecord::Base)\n    obj = @model_class.instantiate(obj)\n
+    \   @data[index] = obj\n    return obj \n  end\n\n  def [](index)\n    _instantiate(index)\n
+    \ end\n\n  def each\n    @data.each_with_index do |obj, index|\n      yield(instantiate(index,
+    obj))\n  end\n\n  # other Array methods which need to be reimplemented\nend\n</code>"
+- date: 2006-11-20
+  author: Jamis
+  content: "<p>ste, one of the things we want to avoid with this is storing a reference
+    to every object in the result. The problem is when you try and use ActiveRecord
+    on datasets with tens or hundreds of thousands of rows, you rapidly run out of
+    memory because of all the AR instances. Other than that, though, I think your
+    idea is interesting, and I would encourage you to create a plugin to test it “in
+    the wild”.</p>"
+- date: 2006-11-20
+  author: Dr Nic
+  content: "<p>Jamis, can you clean up his ste’s Ruby? Making me all cross eyed :)</p>"
+- date: 2006-11-23
+  author: Amr Malik
+  content: "<p>Thanks for a wonderful explanation Jamis. I especially appreciate the
+    little explanations you throw in (ids.flatten.compact.uniq).</p>\n\n\n\t<p>After
+    reading this excellent article, I was wondering, would it be worthwhile to have
+    the special case of finding a given id by just short-circuiting the whole general
+    case process and sending the sql for id=nnn straight to the backend?</p>\n\n\n\t<p>I
+    think it would be so much better than having to use the general case machinery
+    which is great for :all and maybe :first but a tad bit overkill for the situation
+    which we know will always generate the same sql (select for X where id = Y)</p>\n\n\n\t<p>Not
+    sure what the performance gains would be, but just thought i’d ask.</p>\n\n\n\t<p>Thanks
+    again for a wonderful and accessible article. Your time and effort is greatly
+    appreciated! (and yes, I am going to make a paypal contribution, because I think
+    this kind of effort needs to be supported. I would urge other readers to do the
+    same so we keep getting the next installments as this is surely a time consuming
+    process and an excellent documentation effort which needs to be supported beyond
+    mere words of support)</p>"
+- date: 2006-11-23
+  author: Jamis
+  content: "<p>Thank-you, Amr! I’m glad you’re liking the articles.</p>\n\n\n\t<p>I
+    would encourage you to try the short-circuit you suggested and run some benchmarks
+    to see how much that helps. You’re right, that find-by-id scenario is pretty common.</p>"

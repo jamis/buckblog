@@ -1,0 +1,145 @@
+---
+- date: 2011-03-04
+  author: Gordon
+  content: "<p>Cool as always!</p>"
+- date: 2011-03-04
+  author: Fref
+  content: "<p>I’d have loved to see the generation-animation for a weave maze too.</p>"
+- date: 2011-03-04
+  author: Jamis
+  content: "<p>@Fref, I’m still working on that. It’s a lot harder to do than the
+    other grid-based animations, because the weave mazes require space between the
+    cells in order to disambiguate the over/under passages. I figured it was better
+    to get something out sooner, rather than wait until I worked out how to animate
+    the process. :)</p>"
+- date: 2011-03-04
+  author: Fref
+  content: "<p>@Jamis I can imagine. I long for your next post ;)</p>"
+- date: 2011-03-04
+  author: Robin Houston
+  content: "<p>Well, there is certainly another general class of algorithms for generating
+    weave mazes. Place the crossings first — perhaps at random, but perhaps you want
+    to place them in particular locations for aesthetic reasons — and then use the
+    algorithm of your choice to find a spanning tree of the resulting graph. (All
+    the algorithms you have described on this blog will work for general graphs, with
+    the exception of Eller’s and recursive subdivision.)</p>\n\n\n\t<p>To give a bit
+    more detail, place a crossing as a cross shape covering five cells, then treat
+    each passage of the crossing as a node in your graph, each having up to six neighbours
+    (up to three at each end of the passage). Any cell that isn’t covered by a crossing
+    is just a node in the usual way, of course.</p>\n\n\n\t<p>Regarding the harder
+    problem of how to generate weave mazes perfectly uniformly, I do have an idea
+    that might work, but (assuming it does), it’s not going to be terribly fast.</p>\n\n\n\t<p>Anyway,
+    keep these coming. Wonderful food for thought!</p>"
+- date: 2011-03-04
+  author: Robin Houston
+  content: "<p>PS. I should have mentioned that clusters of adjacent crossings need
+    special treatment in this framework.</p>\n\n\n\t<p>I hope it’s clear how this
+    ought to work. For example, two adjacent crossings make a “fat cross” covering
+    eight cells of the grid, and are represented as three nodes in the graph. Three
+    crossings in an L shape cover ten cells, and make three passage nodes (one with
+    a bend in it). And so on.</p>"
+- date: 2011-03-04
+  author: Jamis
+  content: "<p>@Robin, neat approach to the weave maze problem! Thanks for sharing
+    that. If you do figure something out regarding uniform spanning trees, let me
+    know!</p>"
+- date: 2011-03-04
+  author: Jamis
+  content: "<p>Btw, Robin, I meant to ask: have you implemented the approach you described?
+    I may have to give it a try this weekend.</p>"
+- date: 2011-03-04
+  author: Robin Houston
+  content: "<p>@Jamis No, I haven’t implemented it. If I can find the time this weekend,
+    I’m going to play with the uniform algorithm. But I’m sure I won’t have time to
+    implement this approach as well, so I’d be thrilled to see what you can do with
+    it.</p>\n\n\n\t<p>(Another minor caveat: some crossing clusters are impossible
+    in the sense that they are inherently loopy, such as a cluster of five crossings
+    together in a + shape, so these would have to be excluded.)</p>"
+- date: 2011-03-04
+  author: Jamis
+  content: "<p>@Robin, it turns out that Kruskal’s algorithm is particularly well-suited
+    to building out weave mazes as you describe, since it works by joining disparate
+    trees together into a spanning tree. By scattering the over/under crossings throughout
+    the grid and joining their component cells appropriately into sets, Kruskal’s
+    can then take over and flesh out the rest of the maze with literally no alterations.</p>\n\n\n\t<p>Here’s
+    my implementation, if you’d like to see:</p>\n\n\n\t<p><a href=\"https://gist.github.com/856138\">https://gist.github.com/856138</a></p>\n\n\n\t<p>Thanks
+    for the idea! That’s a neat approach.</p>"
+- date: 2011-03-05
+  author: Robin Houston
+  content: "<p>@Jamis Nice! I enjoy the “something old, something new” combination
+    of <span class=\"caps\">ANSI</span> escape sequences with <span class=\"caps\">UTF</span>-8
+    encoded box drawing characters.</p>\n\n\n\t<p>Here’s a version that permits adjacent
+    crossings: https://gist.github.com/856316</p>"
+- date: 2011-03-05
+  author: Baz
+  content: "<p>Eh, so what’s wrong with this blindingly obvious way of creating weaves?</p>\n\n\n\t<p>For
+    each cell in a normal maze, if it is a crossroads (all four entrances open), randomly
+    assign it to be NS-under, NS-over, or remain a crossroads.</p>\n\n\n\t<p>And that’s
+    it. Obviously this doesn’t work for algorithms that never generated crossroads,
+    and I’m not sure that the maze will not be disjoint; although it does seem that
+    you could ensure that quite easily by adapting Eller’s algorithm.</p>\n\n\n\t<p>I
+    thought that was what you were hinting at in the previous blog entry, since the
+    3 rules just ensure that a weave point looks like a crossroads.</p>"
+- date: 2011-03-05
+  author: Robin Houston
+  content: "<p>http://s3.boskent.com/mazes/very-woven.png</p>"
+- date: 2011-03-05
+  author: Jamis
+  content: "<p>@Robin, very nice, I love how it’s actually simpler to allow adjacent
+    crossings. I’ll bet it could even be simpler: we probably don’t even need to check
+    the connected status of east/west and north/south pairs during the crossing phase,
+    since they can only be connected if the center cell is non-zero, and that’s already
+    grounds for dismissal all by itself.</p>\n\n\n\t<p>@Baz, the problem is just what
+    you said, you’ll wind up with disjoint trees. Think of it this way: if the maze
+    is perfect (and all of these algorithms are guaranteed to make perfect mazes),
+    then there will be exactly one path between any two pairs of cells in the maze.
+    In other words, the maze can be considered a tree. Now, if you make an intersection
+    into an over/under crossing, you are erasing the path between two cells, and since
+    those two cells were previously connected, that must have been the only way they
+    were connected. Disconnecting a branch from the tree makes it impossible to reach
+    the cells in one tree from any of the cells in the other. The maze is no longer
+    perfect. Sorry to burst your bubble. :(</p>"
+- date: 2011-03-05
+  author: Robin Houston
+  content: "<p>@Baz If you take a perfect maze and convert a crossroads into a weave,
+    the result will always be disconnected.</p>\n\n\n\t<p>There will never be a path
+    connecting the “under” and “over passages of the weave: if there were, the original
+    maze would have had a loop going through the crossroads.</p>\n\n\n\t<p>Obviously
+    you could then reconnect it by adding a new passage somewhere, from one component
+    to the other. Then you have a perfectly good algorithm, albeit one that will produce
+    mazes without much weaving.</p>"
+- date: 2011-03-05
+  author: Robin Houston
+  content: "<p>@Jamis The connectedness check is necessary. Think about what happens
+    if we were to place crossings at (0,1), (1,0), (0,-1), (-1,0), say.</p>"
+- date: 2011-03-05
+  author: Jamis
+  content: "<p>@Robin, except you can’t place a crossing with the center on any edge,
+    because then you’d wind up with the center being a dead-end, and you’d violate
+    one of the rules: no dead-end either over or under another passage.</p>\n\n\n\t<p>Unless
+    I’m misunderstanding what you mean?</p>"
+- date: 2011-03-05
+  author: Jamis
+  content: "<p>@Robin, ah, nevermind. I see what’s going on. North and south may not
+    be <em>directly</em> connected, but may still have a path between them, because
+    the algorithm now allows adjacent crossings.</p>\n\n\n\t<p>Got it. Sorry to be
+    slow on the uptake there. :)</p>"
+- date: 2011-03-05
+  author: Robin Houston
+  content: "<p>@Jamis I was struggling to work out what you meant, but I think I see
+    it now! You were confused by my coordinate system. (I was imagining the origin
+    being in the middle of the maze, rather than at the corner.)</p>\n\n\n\t<p>Let’s
+    call it (5,6), (6,5), (5,4), (4,5), in that case.</p>"
+- date: 2011-03-05
+  author: Robin Houston
+  content: "<p>@Jamis Ha ha, yes. Exactly!</p>\n\n\n\t<p>(I like that we each simultaneously
+    worked out what the other was getting at.)</p>"
+- date: 2011-03-05
+  author: Jamis
+  content: "<p>@Robin, I’ve updated my csMazes project to support weave mazes for
+    several of the algorithms, as well as this two-phase algorithm you describe (only
+    supported in Kruskal’s at the moment, though). Quite fun to play with! The two-phase
+    approach is really nice; I especially like how tunable it is, so you can generate
+    either densely woven mazes, or lightly woven mazes. And being able to manually
+    place crossings is neat, too (though csMazes doesn’t directly support that), since
+    you can get some interesting textures that way.</p>"

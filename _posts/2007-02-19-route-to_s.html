@@ -1,0 +1,35 @@
+---
+layout: post
+title: Route#to_s
+post_id: 112
+categories:
+- Tips & Tricks
+date: 2007-02-19 10:55:00.000000000 -07:00
+author: Jamis
+permalink: 2007/02/19/route-to_s.html
+---
+
+<p>Here’s a nifty trick. Route#to_s exists. Why is this cool?</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">ActionController</span>::<span class="co">Routing</span>::<span class="co">Routes</span>.routes.each <span class="r">do</span> |r|<tt>
+</tt>  puts r<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>This will give you a list of all of the routes you have defined, in a very human-consumable format. It’s great if you are trying to figure out why Rails is having problems accepting a <span class="caps">URL</span> that you think it should be accepting.</p>
+<p>Similarly, you can list all of your named routes:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">ActionController</span>::<span class="co">Routing</span>::<span class="co">Routes</span>.named_routes.routes.each <span class="r">do</span> |name, route|<tt>
+</tt>  puts <span class="s"><span class="dl">"</span><span class="k">%20s: %s</span><span class="dl">"</span></span> % [name, route]<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>This is especially handy if you are using <code>map.resources</code>, where there are lots of named routes being generated for you behind the scenes.</p>

@@ -1,0 +1,92 @@
+---
+- date: 2007-05-29
+  author: Nate
+  content: "<p>Ahh, thanks.  That was a great presentation.</p>"
+- date: 2007-05-29
+  author: Mike Moore
+  content: "<p>Jamis, I believe this presentation was the breakout hit of the conference.
+    We received more comments about this presentation than any other. I’m glad that
+    we finally have the record of this available online for those that weren’t able
+    to be there.</p>\n\n\n\t<p>A huge thanks to both you and Marcel for really stepping
+    up and helping us out of a jam. (Our backup speaker was also unable to make it.)
+    I know I speak for many when I say I hope to see more presentations like this
+    in the future. Great job!</p>"
+- date: 2007-05-29
+  author: Thorben
+  content: "<p>Just for them of you, who wonder if the video could be resized, I stumbled
+    upon a (little bit tricky) solution:\n- Resize the &lt;object&gt; in the </p>\n<p>
+    with Firebug to 1.5 of it’s original size.\n- Right click on the flash movie and
+    click on the first entry (“Flash Video Player by….”)\n- You are getting to the
+    site of this Flash Video Player.\n- Now just hit the Back-Button and (for me)
+    the video was sized up.</p>\n\n\n\t<p>I hope this helps some of you.</p>\n\n\n\t<p>Great
+    session, I learned a lot! But the other sessions seems to be worth a look, as
+    well. Just watched the JRuby talk and after a few minutes it’s getting really
+    interesting and does not stop until the last second. It’s a great win, that this
+    videos are available to the public!</p>"
+- date: 2007-05-29
+  author: Thorben
+  content: "<p>Hrmpf… Don’t want to use <span class=\"caps\">HTML</span> ;)</p>\n\n\n\t<p>-
+    Resize the &lt;object&gt; in the </p>\n<p> with Firebug to 1.5 of it’s original
+    size.</p>\n\n\n\t<p>- Right click on the flash movie and click on the first entry
+    (“Flash Video Player by….”)</p>\n\n\n\t<p>- You are getting to the site of this
+    Flash Video Player.</p>\n\n\n\t<p>- Now just hit the Back-Button and (for me)
+    the video was sized up.</p>\n\n\n\t<p>I hope this works.</p>"
+- date: 2007-05-29
+  author: Thorben
+  content: "<p><span class=\"caps\">AHHH</span>! It’s too late!</p>\n\n\n\t<p>- Resize
+    the &lt;object&gt; in the &lt;<sub>p id=”player1”&gt; (</sub> -&gt; kill-HTML-interpreting-character)
+    with Firebug to 1.5 of it’s original size.</p>\n\n\n\t<p>Sorry for three posts
+    in a row!</p>"
+- date: 2007-05-29
+  author: Amr
+  content: "<p>Can’t wait for some brave soul to post the mp3 of your talk Jamis.
+    The slides of cap 2.0 look great btw!</p>"
+- date: 2007-05-30
+  author: Dan
+  content: "<p>”...Its like a SuperModel…”</p>\n\n\n\t<p>Haha…</p>"
+- date: 2007-05-30
+  author: Alain Ravet
+  content: "<p>The best squinting I’ve done in a long time :)</p>"
+- date: 2007-05-30
+  author: Mike Moore
+  content: "<p>The ConFreaks guys have been very busy getting their business up and
+    the videos edited.  We have higher resolution of both the video and the screen
+    capture and we have discussed plans to release a higher quality version. But it
+    will take a bit of time to get all that work done.</p>"
+- date: 2007-05-30
+  author: Roger Thompson
+  content: "<p>Thanks for sharing Jamis, very insightful. Inspired by this, I’ve been
+    trying to massage more logic from controllers into models. One thing I find a
+    common challenge, is how to handle associations when doing this. Eg. an account
+    has a logo, and in my controller I’d do: </p>\n\n\n\t<pre><code>account.update_attributes(...)</code></pre>\n\n\n\t<p>And
+    then in account:</p>\n\n\n\t<pre><code>def logo=(data)\n  logo = Logo.new(data)\n
+    \ ...\n  unless logo.save\n    #Add logo errors to self.errors..?\n  end\nend</code></pre>\n\n\n\t<p>This
+    doesn’t seem quite right for some reason. Possibly one should not handle different
+    models in the same update if at all avoidable? This is probably more a “The Rails
+    Way” question than an appropriate comment for your blog, I got carried away..</p>"
+- date: 2007-05-30
+  author: Eadz
+  content: "<p>Or, view source and download the .flv then view it in a decent movie
+    player..</p>"
+- date: 2007-05-30
+  author: Zing
+  content: "<p>Looks like Marcel did all the talking. A bit of a chattermouth, innhi?
+    ;-p</p>"
+- date: 2007-05-31
+  author: Jamis
+  content: "<p>Zing, I wonder if you’ve confused marcel with me. :) I got the impression
+    from watching that I did quite a bit of chattering myself! However, given that
+    we had little time to prepare and virtually no time to rehearse, I think we carried
+    it off alright.</p>"
+- date: 2007-05-31
+  author: Justin
+  content: "<p>Just in case you want to get the source code to this application you
+    can download it from source forge:</p>\n\n\n\t<p>http://sourceforge.net/project/showfiles.php?group_id=187808</p>\n\n\n\t<p>If
+    you want to see it running it is located at http://www.ozmozr.com</p>\n\n\n\t<p>Thanks
+    again to Jamis and Marcel for reviewing the code.  That presentation was our favorite.</p>\n\n\n\t<p>Justin</p>"
+- date: 2007-06-05
+  author: Carl Youngblood
+  content: "<p>Hi Jamis et al,</p>\n\n\n\t<p>We have just finished posting higher
+    resolution AVIs to the site.  Please go back and take a look at Jamis and Marcel’s
+    presentation in an easier-to-read format.</p>\n\n\n\t<p>Thanks,</p>\n\n\n\t<p>Carl
+    Youngblood\nConfreaks <span class=\"caps\">LLC</span></p>"

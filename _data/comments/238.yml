@@ -1,0 +1,126 @@
+---
+- date: 2005-12-26
+  author: http://blog.lassekoskela.com
+  content: |-
+    Jamis,
+
+    I'd actually prioritize all of the requests on the "maybe" list before those on the "will do next" list. The way I see it, those features would tackle more "hard" restrictions than the other features would.
+- date: 2005-12-26
+  author: http://blog.lassekoskela.com
+  content: Um, err, maybe not *all* of them :)
+- date: 2005-12-26
+  author: Jonathan
+  content: "There seems to be an issue with an local subversion path in the form of
+    `file:///path/to/repo/trunk`. \n\nsvn: Unable to open an ra_local session to URL\nsvn:
+    Unable to open repository 'file:///srv/svn/repos/meinprof/trunk'\nsvn: Unable
+    to open an ra_local session to URL\nsvn: Unable to open repository 'file:///srv/svn/repos/meinprof'\nsvn:
+    Unable to open an ra_local session to URL\nsvn: Unable to open repository 'file:///srv/svn/repos'\nsvn:
+    Unable to open an ra_local session to URL\nsvn: Unable to open repository 'file:///srv/svn'\nsvn:
+    Unable to open an ra_local session to URL\nsvn: Unable to open repository 'file:///srv'\n\nMaybe
+    you can look into this."
+- date: 2005-12-26
+  author: Jamis
+  content: Jonathan, all ST does is delegate to the svn utility. Thus, the problem
+    is probably with your svn installation itself. (Unless I'm misunderstanding what
+    you are reporting?)
+- date: 2005-12-26
+  author: Jonathan
+  content: |-
+    Doing a `svn co file:///srv/svn/repos/meinprof/trunk` per hand works without a problem so I assumed that the problem lies within ST.
+
+    I will email you the `rake deploy` output.
+
+    Thanks,
+    Jonathan
+- date: 2005-12-29
+  author: darkliquid
+  content: |-
+    Hi there, I've been looking at switchtower  for doing several things in addition to just deploying web apps.
+
+    One of these is setting up the server software itself, from scratch, from source.
+
+    The trouble is, switchtower doesn't seem to be able to remember environment variable settings, and so when compiling into a new directory (eg: for creating a standalone, customized, chrooted environment), it can't remember the alterations needed to CFLAGS, PATH, LD_LIBRARY_PATH, etc, which makes it hard to use. It would be nice if it could optionally pick up the variables from &lt;notextile&gt;~/.bash_profile&lt;/notextile&gt; or &lt;notextile&gt;~/.bashrc&lt;/notextile&gt;, which currently, it doesn't (at least on my systems). Also, the usage of &lt;notextile&gt;~/.ssh/environments&lt;/notextile&gt; isn't really usable as it doesnt allow shell expansion and also provides an ability to user areas that shouldn't be able and don't need a facility to override environment variables at login.
+
+    Whats particularly annoying is that logging in via console manually works fine and picks up &lt;notextile&gt;~/.bash_profile&lt;/notextile&gt; settings, while switchtower does not.
+
+    I've been investigating hacking solutions into switchtower for my problem (in mind of add a builtin variable like the 'set :application, nil') maybe called something called, maybe, 'pre_exec' which can be inserted infront of every 'ch.exec' command in the Command class in order to, in my particular case, export the environment variables I need.
+
+    What's your opinion on the whole debacle?
+- date: 2005-12-29
+  author: Jamis
+  content: |-
+    darkliquid,
+
+    Well, "debacle" is a bit strong. :) Yah, I can see how this would be annoying, but the reason the profile settings aren't picked up is because ST doesn't use a login shell--it just executes the command directly, It's the same as executing a single command via ssh, like:
+
+    <pre>
+      ssh localhost 'echo $RUBYOPT'
+    </pre>
+
+    SSH, in this case, does not use a login shell, and so the profile settings are not read. This is a feature. :)
+
+    If you need the environment to be initialized when using ST, you have a few options. The first is that you could throw the variables in a shell script and explicitly source the script with every command:
+
+    <pre><code>env = ". ~/.bash_profile"
+    run "#{env}; echo $RUBYOPT"
+    run "#{env}; echo $PATH"
+
+    # or, for multiple commands
+    run &lt;&lt;-CMD
+      #{env}
+      echo $RUBYOPT
+      echo $PATH
+    CMD
+    </code></pre>
+
+    Another option that might work (I haven't actually tried it) is to invoke your command explicitly via bash (or whatever shell), and specify that it is a login shell. Again, you'd have to do that for every command you run, though.
+- date: 2005-12-29
+  author: darkliquid
+  content: |-
+    Hi, thanks for the quick comeback.
+
+    The debacle is more my struggle than switchtower itself. I'm somewhat prone to exaggeration when I'm tearing my hair out :D
+
+    That's more or less what I've come up with, but its a bit annoying having to do that every time I need to run a command with custom environment variables.
+
+    I suppose I can cut down on the repeated additions to the run command by using a nice DRY bit of function to wrap it up, but I'd imagine that there is more than just me out there that would like to set some environment variables or some kind of initialisation for every command on a script global basis, which is the solution I'm tring to hack together at the moment.
+
+    In what is surely a crime against coding everywhere, this little hack I've just come up with seems to do just what I want:
+
+    In the SwitchTower::Command class, channel.on_success block...
+    <pre><code>my_command = @actor.configuration[:pre_exec] + ' ; ' + command.to_s if @actor.configuration[:pre_exec]
+    ch.exec my_command
+    </code></pre>
+
+    and in the recipe:
+    <pre><code>set :pre_exec, 'export YOUR_VAR=here'
+    </code></pre>
+- date: 2005-12-29
+  author: Craig Davey
+  content: |-
+    Another hack to allow different user/pass for SVN access than for SSH access:
+
+    set :repository "--username user ––password pass <a href="http://svn.example.com">http://svn.example.com</a>"
+- date: 2006-01-02
+  author: Jonathan
+  content: |-
+    @Doug:
+
+    Thanks for the hints but that was not my problem. The svn checkout command in deploy.rb was correct for the server but not for the development machine.
+
+    The thing is that the svn repository must be reachable for both the development box and the deployment target as both do a checkout for the deployment as Jamis stated in a private email. So `file:///` cannot work.
+
+    You have to use either svn(+ssh) or http(s).
+- date: 2006-01-03
+  author: Douglas
+  content: 'when I use svn+ssh as in the repository path and invoke rake deploy, I''ll
+    keep getting "svn: Can''t create tunnel: The system cannot find the file specified"
+    for several lines then "svn: Error resolving case of ''svn+ssh''". What''s up
+    with that? I''m developing on a Windows machine and deploying to a Dreamhost server. '
+- date: 2006-01-03
+  author: Jamis
+  content: Douglas, I saw your post to the rails list about that, and I'm at a complete
+    loss. I have very, very little Ruby experience in Windows. I suspect there is
+    something funky going on with your subversion installation, or possibly SSH...
+    Does it work if you do @svn co svn+ssh://blahblahblah@ directly from the (windows)
+    command line, or do you get the same error?

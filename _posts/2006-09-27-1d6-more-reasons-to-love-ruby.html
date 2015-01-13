@@ -1,0 +1,143 @@
+---
+layout: post
+title: 1d6 more reasons to love Ruby
+post_id: 147
+categories:
+- Essays and Rants
+date: 2006-09-27 08:17:00.000000000 -06:00
+author: Jamis
+permalink: 2006/09/27/1d6-more-reasons-to-love-ruby.html
+---
+
+<p>Like any self-respecting geek, I can claim countless hours spent poring over <a href="http://www.wizards.com/dnd">Dungeons &amp; Dragons</a> manuals. After high school I more-or-less stopped gaming (for various reasons), but I rediscovered the game shortly after the 3rd edition came out. About five years ago (coincidentally about the same time that I discovered Ruby) I actually wrote a suite of utilities to aid Dungeon Masters in creating random <a href="http://www.aarg.net/~minam/npc.cgi" title="NPCs">non-player characters</a>, <a href="http://www.aarg.net/~minam/treasure2.cgi">treasure hoards</a>, <a href="http://www.aarg.net/~minam/towns.cgi">towns and cities</a>, and <a href="http://www.aarg.net/~minam/dungeon.cgi">dungeon maps</a>. In those days, C was my language of choice, so all of those were done “the hard way”. (But boy, was it ever fun!)</p>
+<p>Now, looking back (and with a bit of experience with dynamic langauges under my belt) I’ve been wondering how I might have done those generators differently. Most notably, the <span class="caps">NPC</span> generator uses all hard-coded data and rules, which makes it quite difficult to extend with new data and rules as more D&amp;D supplements are published. (In fact, it is so hard to extend that I haven’t touched it in about 4 years.)</p>
+<p>Well, Ruby is all dynamic and stuff, right? Domain-specific languages, etc, etc?</p>
+<p>Right. So I began tinkering. I figured if I could come up with <span class="caps">DSL</span> that would let me represent the data for the D&amp;D game, the rest should (more or less) fall into place.</p>
+<p>This article isn’t about that <span class="caps">DSL</span>, though. That particular <span class="caps">DSL</span> is still under construction, as I tinker on it a little bit at a time. However, one particular aspect of that <span class="caps">DSL</span> has matured nicely, and I wanted to share.</p>
+<div class="inset">
+Just a quick aside for the uninitiated: dice in roll-playing games are described both by how many dice you need to roll, and by the number of sides of the die you’re rolling. Thus, “2d4” means “roll two 4-sided dice”, and “4d8” means “roll four 8-sided dice”.
+</div>
+<p>I think every gamer-programmer in existence has written a “dice roller” app. I’m embarrassed to admit that I’ve done it myself. They are ridiculously simple to write, and all but impossible to use at the gaming table. Face it: real, physical dice are where it’s at.</p>
+<p>However, in my <span class="caps">DSL</span>, I wanted to be able to define things like hit-dice for character classes, or starting wealth, or the rules for height/weight for the different races, all of which are described in terms of dice rolls.</p>
+<p>Originally, I tried defining hit-dice like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">character_class <span class="sy">:wizard</span> <span class="r">do</span><tt>
+</tt>  hit_die <span class="i">4</span><tt>
+</tt>  ...<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Sadly, that didn’t scale well to specifying things like the starting wealth of a character, which is often defined in terms like “3d4 * 10”. My <span class="caps">DSL</span> wasn’t rich enough! I considered just using strings (<code>"3d4*10"</code>) and parsing them on demand to determine the dice to roll. Yucky. Then, I considered introducing a “dice” helper method (<code>dice(3,4)*10</code>). Also yucky. I needed a way to represent dice, using the language that gamers use. My first attempt was as follows:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">Integer</span><tt>
+</tt>  <span class="r">def</span> <span class="fu">d4</span><tt>
+</tt>    sum = <span class="i">0</span><tt>
+</tt>    times { sum += (rand(<span class="i">4</span>) + <span class="i">1</span>) }<tt>
+</tt>    sum<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Using the above, I could say things like <code>3.d4</code> and have it return the simulated result. Slick! In my <span class="caps">DSL</span>, I could now do:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">character_class <span class="sy">:wizard</span> <span class="r">do</span><tt>
+</tt>  hit_die <span class="i">4</span><tt>
+</tt>  gold { <span class="i">3</span>.d4 * <span class="i">10</span> }<tt>
+</tt>  ...<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Here, <code>gold</code> represents the starting wealth of a new wizard. The intention is that when a new character is created, the <code>gold</code> block is evaluated to determine the starting wealth.</p>
+<p>All well and good, except there is now this inconsistency with how the hit dice are described. I could describe hit dice the same way, but then I lose the ability to keep track of <em>what</em> the hit die actually was—I only know how many hit points are gained at each level. (I may appear to be splitting the proverbial hair rather fine here, but trust me, to a DM, the difference matters.)</p>
+<p>So, the second revision became something like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">Integer</span><tt>
+</tt>  <span class="r">def</span> <span class="fu">d4</span><tt>
+</tt>    <span class="co">Dice</span>.new(<span class="pc">self</span>, <span class="i">4</span>)<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>The <code>3.d4</code> invocation now returns a <code>Dice</code> instance (described below). This new object lets me encapsulate all kinds of nifty functionality. For instance, I can represent <code>3.d4 * 10</code> and <code>1.d8 + 1</code> and so forth, because I can override the multiplication and addition operators on the Dice class. Using that, I can unify all of my dice-references in the <span class="caps">DSL</span>:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">character_class <span class="sy">:wizard</span> <span class="r">do</span><tt>
+</tt>  hit_die <span class="i">1</span>.d4<tt>
+</tt>  gold    <span class="i">3</span>.d4 * <span class="i">10</span><tt>
+</tt>  ...<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Then, in the code that actually generates an <span class="caps">NPC</span> using this data, I can do:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">character.hit_points += cclass.hit_die.roll<tt>
+</tt>character.hit_dice += cclass.hit_die<tt>
+</tt>character.gold += cclass.gold.roll</pre></td>
+</tr></table>
+<p>Awesome! Things are looking good. However, ability score generation (for determining how smart, strong, wise, etc. a character is) uses some tricky rules, like “roll 4d6 and discard the lowest, summing the rest”. Well, this kind of rule becomes easy to encapsulate with the Dice class:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># the "long" way</span><tt>
+</tt>score = <span class="i">4</span>.d6.to_a.sort.last(<span class="i">3</span>).inject(<span class="i">0</span>) { |n,v| n + v }<tt>
+</tt><tt>
+</tt><span class="c"># after encapsulating the above in a "best" method</span><tt>
+</tt>score = <span class="i">4</span>.d6.best(<span class="i">3</span>)</pre></td>
+</tr></table>
+<p>(Note that <code>Dice#to_a</code> returns an array containing the result of each rolled die. It comes in very handy!)</p>
+<p>So, conclusion: Ruby is awesome. Comparing this to the mess of dice rolling routines in my C-implemented utilites, this <span class="caps">DSL</span> is wonderful.</p>
+<p>Below, you’ll find the link to the Dice implementation I’m using, but I’d encourage you to try implementing your own before you go peeking—it’s quite fun! Consider implementing the following interface:</p>
+<ul>
+	<li>
+<code>Dice#*(n)</code>: create a new dice instance that represents self multiplied by some integer value.</li>
+		<li>
+<code>Dice#+(n)</code>: create a new dice instance that represents self incremented by some integer value.</li>
+		<li>
+<code>Dice#roll</code>: roll the dice and return the result. Consider making it return an integer or an array, depending on an optional parameter.</li>
+		<li>
+<code>Dice#best(n)</code>: return the sum (or array) of the best <code>n</code> dice after rolling</li>
+		<li>
+<code>Dice#max</code>: return the highest possible value the dice object could return</li>
+		<li>
+<code>Dice#min</code>: return the lowest possible value the dice object could return</li>
+		<li>
+<code>Dice#average</code>: return the average value of the dice</li>
+		<li>
+<code>Dice#to_s</code>: return a string that represents the dice in a nice, readable format (like “4d6+2”).</li>
+	</ul>
+<p>Once you’ve got your Dice object, try to monkeypatch Integer to give you the nice “4.d6” <span class="caps">DSL I</span> described, for each of the standard die types (d4, d6, d8, d10, d12, and d20).</p>
+<p>Finally, my implementation: <a href="http://weblog.jamisbuck.org/assets/2006/9/27/dice.rb">dice.rb</a></p>
+<p>Enjoy!</p>

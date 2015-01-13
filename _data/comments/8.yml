@@ -1,0 +1,70 @@
+---
+- date: 2011-02-28
+  author: Anoymous Cow
+  content: "<p>If you used the recursive backtracker, you could apply those 3 rules
+    above to decide if you can continue, instead of just terminating (and starting
+    the back track) on the single “walls all around” dead-end condition.  You may
+    want to use a random chance for enabling these rules, as the maze may never branch
+    much if it can always go over itself.</p>\n\n\n\t<p>In terms of storage you need
+    only include the extra two states of a crossing passage, either up/down on top
+    of left/right, or vice a versa.</p>"
+- date: 2011-03-01
+  author: Robin Houston
+  content: "<p>A more interesting (or at any rate more difficult) question: how would
+    you generate a weave maze uniformly at random – so that every possible weave maze
+    is generated with equal probability?</p>"
+- date: 2011-03-01
+  author: Robin Houston
+  content: "<p>PS. I don’t know the answer! It may be that there <strong>is</strong>
+    no sensibly-efficient algorithm.</p>"
+- date: 2011-03-01
+  author: Jamis
+  content: "<p>@Anonymous, that’s pretty much the approach I used in Theseus, and
+    which I’ll be describing later this week. Way to ruin the surprise! ;)</p>\n\n\n\t<p>@Robin,
+    that is definitely an interesting question. I don’t dare touch it, though, since
+    intuition is pretty useless when dealing with uniform spanning tree algorithms.
+    :) If you ever do figure something out, though, I’d be very interested.</p>"
+- date: 2011-03-02
+  author: KevBurnsJr
+  content: |-
+    <p>One way I might implement a weave maze is by extending the maze+xml media type with a “level” or “z” cell attribute and writing an application which reads a maze from a text file (matrix of .-+|) and exposes the appropriate <span class="caps">XML</span> representations as a web service.
+    http://amundsen.com/media-types/maze/
+    http://amundsen.com/blog/archives/1091</p>
+
+
+    <table class="CodeRay"><tr>
+      <td title="click to toggle" class="line_numbers"><pre>1<tt>
+    </tt>2<tt>
+    </tt>3<tt>
+    </tt>4<tt>
+    </tt><strong>5</strong><tt>
+    </tt>6<tt>
+    </tt>7<tt>
+    </tt>8<tt>
+    </tt>9<tt>
+    </tt><strong>10</strong><tt>
+    </tt>11<tt>
+    </tt></pre></td>
+      <td class="code"><pre>.+ +-+ +-+ +-+-+ +-+ +-+---+ +-----+ +-+<tt>
+    </tt> | | | | |   |   | |   |   | |     | |<tt>
+    </tt> +---+ | +---|---+ +-+ | +---|-----|---+<tt>
+    </tt> | |   |     |       | | | | |     | | |<tt>
+    </tt> | +---+ +---+-+ +---+ | +-+ +---+---+ |<tt>
+    </tt> |       |     | |     |         | |   |<tt>
+    </tt> +-+ +-+-+---* | | +-* +-----+ *-+ +---+<tt>
+    </tt>   |   |       | | |         |   |      <tt>
+    </tt> +-----|-+ +---+ +-|---------|-* | +---+<tt>
+    </tt> <tt>
+    </tt> #...<tt>
+    </tt></pre></td>
+    </tr></table>
+- date: 2011-03-02
+  author: Mike Amundsen
+  content: "<p>As KevBurnsJr mentioned, I implemented a simple “perfect square” generator
+    and host those mazes on a public server:\nhttp://amundsen.com/examples/mazes/2d/
+    using the maze+xml media type.</p>\n\n\n\t<p>Seems trivial to render a “weave”
+    maze using that media type. My current internal storage of mazes is simply a set
+    of “rooms” w/ “doors” (see dump here: http://amundsen.com/examples/mazes/2d/five-by-five/).</p>\n\n\n\t<p>If
+    someone wanted to build a weave maze and pass me a version w/ this internal rendering
+    format (1s and 0s for rooms), i’d be happy to host the maze so folks could work
+    on clients to run against it.</p>"

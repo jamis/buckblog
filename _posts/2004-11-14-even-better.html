@@ -1,0 +1,23 @@
+---
+layout: post
+title: Even better
+post_id: 324
+categories:
+- Projects
+date: 2004-11-14 14:51:00.000000000 -07:00
+author: Jamis
+permalink: 2004/11/14/even-better.html
+---
+
+<p>Perhaps you’ve already read my last article, <a href="http://www.jamisbuck.org/jamis/blog.cgi/programming/dependency-injection/Now%20that's%20cool..._20041113114446.tx">Now that’s cool</a>, in which I described a way of doing parameterized services with <a href="http://needle.rubyforge.org">Needle</a>. If you have, go ahead and forget everything it mentioned. The next version of Needle (v1.2, to be released this Thursday) has a better way.</p>
+<p>As a result of discussions with <a href="http://kronavita.de/chris/blog">Christian Neukirchen</a> and Joel VanderWerf, I finally sat down and attempted to find a way to support parameterized services. If you missed my last article, parameterized services are just services that require contextual information to be given to them in order to instantiate them. Thus, you can’t really have parameterized singleton services (since singleton’s are only instantiated once), but for prototype services, it would be a real boon.</p>
+<p>Joel also suggested <em>multitons</em>, which are like singletons except that they <em>are</em> parameterized, and they return a unique object instance for each unique parameter set. A kind of cross between prototypes and singletons.</p>
+<p>It turned out to be almost embarassingly easy to implement both of these features. The next version of Needle will support a <code>:multiton</code> service model, and parameterized services. Observe:</p>
+<pre>
+  registry.define.printers( :model =&gt; :multiton ) { |c,p,name| Printer.new( name ) }
+  mono = registry.printers( :monochrome )
+  color = registry.printers( :color )
+  ...
+</pre>
+<p>(<em>Note that the <code>c</code> and <code>p</code> parameters are required—the first is the container that the service belongs to, and the second is the service point instance that represents the service. You use the <code>c</code> parameter to access other services, and the <code>p</code> parameter to get metadata about the current service, like <code>fullname</code>. The remaining parameters are contextual, given when requesting the service.</em>)</p>
+<p><em>Much</em> nicer than the trick I demonstrated using lambda services. Although I still think lambda services are pretty slick…I imagine they may even still be useful, though I haven’t had a chance to think too much about that.</p>

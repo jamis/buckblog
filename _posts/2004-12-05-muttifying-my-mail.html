@@ -1,0 +1,32 @@
+---
+layout: post
+title: Muttifying my Mail
+post_id: 315
+categories:
+- Reviews
+date: 2004-12-05 15:42:00.000000000 -07:00
+author: Jamis
+permalink: 2004/12/05/muttifying-my-mail.html
+---
+
+<p>A recent thread on <a href="http://blade.nagaokaut.ac.jp/ruby/ruby-talk/index.shtml">ruby-talk</a> culminated (for me) in <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/122479">this post</a>, in which I derided <a href="http://www.mutt.org">mutt</a> for requiring too much configuration and being too hard to use. As I said in the post, “why should I bother learning/installing/configuring fetchmail and procmail <span class="caps">AND</span> mutt, when I could simply use Thunderbird and have it work with minimal configuration?”</p>
+<p>Almost as soon as I posted that, I got to thinking. I use <a href="http://www.vim.org">vim</a>, don’t I? I’m no stranger to the <acronym title="Command-Line Interface">CLI</acronym>. So what have I got to be afraid of?</p>
+<p>I <em>had</em> tried mutt, once. But I was trying to pop my mail directly from mutt, and the configuration just got in the way, and the interface drove me nuts, and I ran screaming. Was I ready, <em>really</em> ready, to try again?</p>
+<p>The problem is, it is really an all-or-nothing when trying a new mail client. It’s not like you can easily go back-and-forth between clients, unless you leave your mail on the server, which is a pain because it’s got to be deleted from the server <em>somehow</em>... At any rate, I steeled myself for the pain and went for it.</p>
+<p>I found the Gentoo <a href="http://www.gentoo.org/doc/en/guide-to-mutt.xml">Guide to Mutt E-mail</a> to be an invaluable resource in getting all the pieces set up. It guided me through the configuration of <a href="http://catb.org/~esr/fetchmail">fetchmail</a> and <a href="http://www.procmail.org">procmail</a>, and hinted at some good practices for tying all the pieces together. It took the better part of Saturday, but I’ve got all my old mail copied over from <a href="http://www.mozilla.org/products/thunderbird">Thunderbird</a>. In fact, I even got <em>really</em> brave and uninstalled Thunderbird, so I’m pretty much dedicated at this point. Mutt will have to be pretty painful, indeed, to motivate me to go through all that again.</p>
+<p>So what do I think of this new setup? What has it bought me?</p>
+<p>I’m still not 100% converted to the mutt philosophies, but I’m finding myself pleasantly surprised by some things.</p>
+<ul>
+	<li>Because I fetch my mail and store my mailbox locally, I can <em>finally</em> use the <a href="http://www.gnome.org">Gnome</a> applets for checking my inbox. And because the applet only checks one folder per instance of the applet, I’ve got four instances of the applet going, each with a different animation, and each representing a different folder. This lets me see, at a glance, whether the new messages are specific to the Ruby mailing list, or the <a href="http://uug.byu.edu"><span class="caps">UUG</span></a>, or just my default inbox. <em>Very</em> nice.</li>
+		<li>Because mutt is so <em>thin</em>, almost a gnat to Thunderbird’s behemoth, I don’t have to leave it up continuously. I’ve configured the applets to open mutt to the appropriate folder when clicked. Then, when I’m done reading my email, I simply close mutt. <em>Very</em> fast.</li>
+		<li>Because I’m using procmail, I can set up all kinds of customized filters to process my incoming mail, filtering them through (in my case) <a href="http://spambayes.sourceforge.net/">Spambayes</a> to catch the ridiculous amount spam I get, and so forth. (Incidentally, I <em>love</em> spambayes. I’ve trained it on a corpus of about 100 spam messages and it is already nearly 100% accurate in determining what is spam, and what is ham. And it even has the “unsure” category, which is something that Thunderbird’s junk filter lacks, and which I absolutely cannot live without.)</li>
+		<li>I’m also using <a href="http://www.dagbrown.com/software/gurgitate-mail/">gurgitate-mail</a>, a mail filter that uses Ruby scripts to filter messages. Mostly I’m just experimenting with it, but I like it a lot right now because it is <em>so much</em> more readable than procmail recipes. And because it’s a Ruby script, you can do <em>anything</em> with it.</li>
+		<li>I’ve also written a news aggregator in Ruby (I’m calling it “Feed My Mail” currently) that is tailored specifically to this kind of setup (procmail/mutt). It runs as a cron job, polling all of my configured feeds once per hour, on the hour. Then, it constructs an email message out of each new item and sends it through procmail. This means that I can use procmail and gurgitate recipes on my <span class="caps">RSS</span> feeds, too! (If you’re interested in “Feed My Mail”, I’m thinking about cleaning it up and posting it on my <a href="http://ruby.jamisbuck.org">website</a>. It’s pretty minimalistic right now, but certainly functional!)</li>
+	</ul>
+<p>But, it’s not all roses. I’m still trying to puzzle out a few things, and have had a few headaches:</p>
+<ul>
+	<li>Compiling mutt with slang made it impossible for me to select a white (as opposed to light gray) background. I prefer black-on-white color schemes, and I couldn’t do that with mutt until I recompiled mutt against ncurses. Took me a good hour and a half to figure that one out. The documentation still seems to indicate slang can do white backgrounds, but I couldn’t get it to work.</li>
+		<li>Charsets! Argh. Frustrating. I can’t seem to get extended characters (tildes, umlauts, japanese, korean, etc.) to work. I know it <em>can</em> work, but I don’t have the time to spend on it right now. As soon as I <em>must</em> have this feature, I’ll probably stop everything and puzzle it out, but for now it’s just a frustration.</li>
+		<li>Learning curve. I’m still dizzy from the mass of options and key bindings that mutt makes available. Like vim, though, you take it a little at a time. I just wish I wasn’t such a power user—I’m wanting to do all kinds of advanced stuff, but am being forced to take baby steps to work my way up to that.</li>
+	</ul>
+<p>Anyway, it looks like I’ve got mail. Judging from which applets are animated, it looks like ruby-talk and my news aggregator have borne fruit. Time to read!</p>

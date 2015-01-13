@@ -1,0 +1,155 @@
+---
+- date: 2007-04-04
+  author: Pete Forde
+  content: "<p>Wow, this is like a bucket of cold water. Except.. good cold water.
+    I’m sure a lot of people are thinking “why didn’t I think of this?” right about
+    now.</p>\n\n\n\t<p>Are there any downsides to this? I guess I wonder why it isn’t
+    just in core.</p>"
+- date: 2007-04-04
+  author: Kent Sibilev
+  content: "<p>I’ve been doing it for ages and I think it should be in the core.</p>"
+- date: 2007-04-04
+  author: badcarl
+  content: "<p>Elegant and intuitive, I like it.</p>"
+- date: 2007-04-04
+  author: Ryan Bates
+  content: "<p>That’s really cool! Thanks for the tip.</p>\n\n\n\t<p>One thing to
+    be aware of, this doesn’t work when doing finds through associations:</p>\n\n\n\t<p>@category.products[:all,
+    ...] # won’t work</p>\n\n\n\t<p>However, calling “find” on the association will
+    still work.</p>"
+- date: 2007-04-04
+  author: Joshua
+  content: "<p>I added a similar method directly to my User class so I could quickly
+    look up users by id, email address or subdomain. Never thought to add it to AR
+    directly.</p>"
+- date: 2007-04-04
+  author: Dave Woodward
+  content: "<p>Just last night, I was doing some work in the console, and I thought
+    to myself, “I’m tired of typing User.find(..., I bet there is a way to make a
+    shortcut, I’ll look into that later.”</p>\n\n\n\t<p>Funny how you read my mind!
+    \ Or maybe I read yours?  Hmm…</p>"
+- date: 2007-04-04
+  author: Sam Smoot
+  content: "<p>How about:</p>\n\n\n\t<p>Person<sup><a href=\"#fn5\">5</a></sup>\nPerson.first\nPerson.all(:name
+    =&gt; ‘Jamis’)</p>\n\n\n\t<p>Tasty! :)</p>"
+- date: 2007-04-04
+  author: John Topley
+  content: "<p>Can this go in .irbrc?</p>"
+- date: 2007-04-04
+  author: Jamis
+  content: "<p>John, sure, just make sure there’s a guard around it so it only applies
+    when running from script/console.</p>\n\n\n\t<p>I put mine in config/environment.rb,
+    generally. That way I can use it in my code, as well as in the console.</p>"
+- date: 2007-04-04
+  author: Giles Bowkett
+  content: "<p>That’s one of those Post-It note ideas. Ten seconds after the first
+    time you see it, you’re wondering how you ever managed to survive without it.</p>"
+- date: 2007-04-04
+  author: Giles Bowkett
+  content: "<p>Sorry for two comments in a row, I’ve just been thinking about this.
+    I think this absolutely belongs in Rails core. Here’s why.</p>\n\n\n\t<p>A lot
+    of what Rails does turns <span class=\"caps\">SQL</span> into memory management.
+    Just like you don’t need to keep track of pointers and address space any more
+    with garbage-collected languages, you don’t need to know <span class=\"caps\">SQL</span>
+    to write trivial Rails apps. Obviously writing a complex Rails app very often
+    can require <span class=\"caps\">SQL</span>, but <span class=\"caps\">SQL</span>
+    to some extent disappears when using Rails.</p>\n\n\n<h1>find is a method name
+    which refers to the <b>implementation</b> of the method. #[] is the default collection
+    access method name, and it’s actually much more appropriate, because it <b>masks</b>
+    the implementation and refers only to the <b>purpose</b> of the method. #[] tells
+    you what the method does; #find tells you how the method does it. I think #[]
+    should be the encouraged idiom, and #find relegated to history.</h1>"
+- date: 2007-04-04
+  author: Jamis
+  content: "<p>Thanks, Giles. Here’s one counter argument for why it shouldn’t be
+    in core.</p>\n\n\n\t<p>It can’t be employed without surprises. Consider: Person[5]
+    works great, but account.people[5] doesn’t (it just returns the 5th person in
+    the list, rather than the person with id 5). Whereas Person.find(5) and account.people.find(5)
+    both work as expected. That disconnect cannot be resolved without breaking the
+    array semantics of plural associations.</p>\n\n\n\t<p>That’s one argument, anyway.
+    I’m actually kind of sitting the fence on this one. It’s certainly useful; perhaps
+    someone could throw together a (trivial) plugin for it?</p>"
+- date: 2007-04-04
+  author: Giles Bowkett
+  content: "<p>This isn’t a very strong argument, but there is the fact that Person<sup><a
+    href=\"#fn5\">5</a></sup> is a class method and account.people<sup><a href=\"#fn5\">5</a></sup>
+    is an instance method. So it shouldn’t be expected to do <b>exactly</b> the same
+    thing anyway.</p>\n\n\n\t<p>Sorry about the bold text, btw. I was trying to do
+    the hash-mark thing for instance methods.</p>"
+- date: 2007-04-04
+  author: Adam Michela
+  content: "<p>Just last night I was yearning for this!</p>"
+- date: 2007-04-04
+  author: luke hartman
+  content: "<p>Sorry for the lapse to newbiedom, but where would you put this shortcut?
+    In its own file? Included in every model?</p>"
+- date: 2007-04-04
+  author: Jamis
+  content: "<p>Luke, config/environment.rb is a good place for snippets like this.</p>"
+- date: 2007-04-05
+  author: Ryan Allen
+  content: "<p>I think Og uses this as its default find method and I thought it was
+    nice… But I had no idea you could do what you’ve done with [:first, :conditions
+    =&gt; ...]... That is unreal!</p>"
+- date: 2007-04-06
+  author: Michael Trier
+  content: "<p>Wicked cool Jamis.  I’ve been annoyed by all the typing in script/console
+    as well, but never stopped to think there could be a better way.  I actually vote
+    for pluginizing it and keeping it out of core.  I think it will just complicate
+    future feature changes, where handling this needs to always be a consideration.
+    \ Nice work as always.</p>"
+- date: 2007-04-08
+  author: 
+  content: "<p>Hey Jamis. Why did you use “alias_method” instead of “alias”?</p>"
+- date: 2007-04-09
+  author: Giom
+  content: "<p>Same as Roman, I always wonder exactly what is the different between
+    alias_method and alias.</p>\n\n\n\t<p>As far as I understand ‘alias’ is not a
+    method… \nBut apart from that I don’t know why one would use one instead of the
+    other.</p>"
+- date: 2007-04-09
+  author: Jamis
+  content: "<p>Mostly, I prefer <code>alias_method</code> because I like its syntax
+    better than that of <code>alias</code>. Otherwise, <code>alias</code> and <code>alias_method</code>
+    function identically; if you look at the implementation of <code>alias_method</code>,
+    you’ll see it calls the same function internally as <code>alias</code> does. Because
+    <code>alias</code> is an actual keyword and not a method call, it is probably
+    slight faster, if that matters to you. Beyond that, I think it’s largely a matter
+    of taste.</p>\n\n\n\t<p>Oh, and note that alias_method returns the module/class
+    that it was called for, while alias returns nil, so you could potentially chain
+    alias_method with other method calls.</p>"
+- date: 2007-04-09
+  author: wilson
+  content: "<p>It is funny that you bring this up, Jamis.  The other day as I was
+    typing find I thought to myself, “wait, can I just use brackets here?”</p>\n\n\n\t<p>The
+    conclusion I came to was that there would be inconsistent semantics and also less
+    uniformity Enumerable.find … which I believe is the part of Ruby that ActiveRecord::Base.find
+    was modeled after.</p>\n\n\n\t<p>In some ways it seems that AR find is moving
+    more in the direction of taking a block as its argument… does anyone know what
+    is coming down the pipe in the next version of Rails?</p>"
+- date: 2007-04-10
+  author: weepy
+  content: "<p>would using [] make AR slower ?</p>\n\n\n\t<p>i.e. it’s an extra lookup
+    ?</p>"
+- date: 2007-04-10
+  author: Jamis
+  content: "<p>weepy, it won’t make any significant difference. The speed of the find
+    itself is the bottleneck, not the extra method lookup.</p>\n\n\n\t<p>If you are
+    doing tons and tons of finds in a tight loop, you could try benchmarking it to
+    see what the difference is, but I’ll be surprised if it makes much of a blip at
+    all.</p>"
+- date: 2007-04-15
+  author: Sam Smoot
+  content: "<p>Jamis: <span class=\"caps\">WRT</span> Giles’ suggestion: There’s no
+    need to break the semantics of #[]. If we’re duck-typing anyways. There’s no reason
+    that a has_many needs to return an Array. It’s almost against the Ruby way. :-)</p>\n\n\n\t<p>That’s
+    what I do in the DataMapper anyways. Return a HasManyAssociation instance that’s
+    enumerable. So account.people<sup><a href=\"#fn5\">5</a></sup> isn’t a true Array
+    indexer, but aside from the performance hit of iterating through the loader to
+    find the existing object with that key, there’s no database call or anything,
+    so it’s still comparatively inexpensive since it would only be used at a high
+    level (the application level).</p>\n\n\n\t<p>weepy: Not at the application level.
+    The most expensive loops are going to be in the object instantiation mechanisms.
+    The methods relating to query-generation make up a small fraction of the cost
+    in comparison. So I’d avoid it in framework internals, but at the level most people
+    will be working at the expense is not worth thinking twice about.</p>"

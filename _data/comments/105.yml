@@ -1,0 +1,36 @@
+---
+- date: 2007-02-03
+  author: Duncan
+  content: "<p>Let me be the first to says thanks all! Capistrano makes software deployment
+    a joy, and these updates just keep giving.</p>"
+- date: 2007-02-03
+  author: mano
+  content: "<p>thanks Jamis,</p>\n\n\n\t<p>I use Capistrano but really can’t find
+    a good or easy documentation besides the one on the rails manual (book 17) which
+    I don’t know if it gets updated.</p>\n\n\n\t<p>Any help with this? like for example,
+    how to manage capistrano with sqlite projects? a good recipe to move/copy the
+    sqlite to the ‘shared’ folder after deploy?</p>\n\n\n\t<p>sorry, It might be just
+    me</p>"
+- date: 2007-02-03
+  author: Jamis
+  content: "<p>mano, sadly, documentation is very, very lacking with Capistrano right
+    now. I no longer have access to the rails manuals and so cannot update that book.
+    I’m working on other documentation options, but my plate is very, very full at
+    the moment.</p>\n\n\n\t<p>Note, though, that capistrano+sqlite is beyond the scope
+    of any manual I would write; it’s far too specific. Please feel free to join the
+    Capistrano mailing list at <a href=\"http://groups.google.com/group/capistrano\">Google
+    groups</a>. There are a lot of people there who would be more than willing to
+    share advice on many different usage scenarios.</p>"
+- date: 2007-02-03
+  author: August Lilleaas
+  content: "<p>So, I created a Stikipad wiki:</p>\n\n\n\t<p>http://capistrano.stikipad.com/documentation/</p>\n\n\n\t<p>Posted
+    about it in the group. Let’s hope we’ll get some proper docs soon.</p>"
+- date: 2007-02-04
+  author: Mislav
+  content: "<p>“bmihelac” is Bojan Mihelac [1], a very active Core contributor; and
+    jaw6 is Joshua Wehner [2].</p>\n\n\n\t<p>[1] http://workingwithrails.com/person/6220-bojan-mihelac\n[2]
+    http://workingwithrails.com/person/3231-joshua-wehner</p>\n\n\n\t<p>p.s. <span
+    class=\"caps\">WWR</span> is sweet! :) helps you find people</p>"
+- date: 2007-02-04
+  author: Jamis
+  content: "<p>Thanks, Mislav. I’ve updated the announcement.</p>"

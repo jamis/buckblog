@@ -1,0 +1,310 @@
+---
+- date: 2007-08-21
+  author: Craig Buchek
+  content: "<p>I recently started using Capistrano, which of course requires Net::SSH.
+    I was surprised when it did not honor the settings in my .ssh/config file. It
+    took me a while to realize that that was the problem I was having. While I was
+    able to add :port and :user options in the deploy.rb file, it seemed like it should
+    have been DRYer, pulling that info in from my existing <span class=\"caps\">SSH</span>
+    config file.</p>\n\n\n\t<p>Other than that minor quibble, great work. I love your
+    code, as well as your blog.</p>"
+- date: 2007-08-21
+  author: Jamis
+  content: "<p>I suppose I’m not opposed to having .ssh/config support, but I’m not
+    the one to write it, since I’ve never needed it. If someone else were to write
+    a parser for the ssh config file, and then patch that into Net::SSH, I’d consider
+    applying it.</p>"
+- date: 2007-08-21
+  author: Eric Hodel
+  content: "<p>There is no rakefile.</p>\n\n\n\t<p>Why isn’t the documentation just
+    RDoc?  This way you can launch gem server and see everything with all the rest
+    of your gem documentation, and you get online help with ri.</p>\n\n\n\t<p>Also,
+    you don’t have to make people figure out where their gem dir is then run rake
+    as sudo inside it.</p>"
+- date: 2007-08-21
+  author: Jamis
+  content: "<p>Bummer, sorry about that Eric. Apparently I hadn’t configured the gem
+    build correctly. <a href=\"http://weblog.jamisbuck.org/assets/2007/8/21/Rakefile\">You
+    can grab the Rakefile right here</a>.</p>\n\n\n\t<p>As for RDoc, if you can show
+    me an easy way to insert syntax highlighted code snippets in an RDoc file, I’ll
+    consider it.</p>\n\n\n\t<p>Lastly, if you don’t know where your gem dir is, you
+    aren’t ready to be running preview-release software.</p>\n\n\n\t<p>Frankly, I
+    <em>know</em> this is a rough release. It’s not “done” yet. Expect warts. Expect
+    bugs. Expect holes in the docs. If that’s not what you’re up for, then this isn’t
+    for you.</p>"
+- date: 2007-08-21
+  author: Jamis
+  content: <p>Also, I should state, there <em>is</em> rdoc documentation with net-ssh.
+    Feel free to “rake api” to your heart’s content. I intend to flesh out a real
+    <span class="caps">README</span> file before release as well. <span class="caps">HOWEVER</span>.
+    I have yet to see real rdoc documentation that “works” as a gentle introduction
+    to a project. RDoc is great for building <span class="caps">API</span> documentation.
+    Not so great for building tutorials and “how-to” style manuals. Prove me wrong,
+    please.</p>
+- date: 2007-08-23
+  author: Eric Hodel
+  content: "<p>I noticed that your <span class=\"caps\">API</span> documentation seems
+    duplicated between the RDoc and the doc/ dir, but is subtly different between
+    the two, which one is right?</p>\n\n\n\t<p>It is not currently possible to do
+    syntax highlighted code in RDoc as it is too smart/dumb to let you.</p>\n\n\n\t<p>I
+    have been adding a quick-start guide to my top-level classes.  For example `ri
+    Sphincter` will tell you everything you need to know to get started with pointers
+    to documentation elsewhere for the fancy bits.</p>\n\n\n\t<p>I’ve been doing the
+    same for RubyGems, adding RDoc to appropriate classes as I need to use them.  Not
+    having to go to the web is immensely helpful.</p>"
+- date: 2007-08-23
+  author: Jamis
+  content: "<p>Eric, in what way does the documentation differ between the pretty
+    docs and the rdoc api docs? If you can give me some specific examples, I’ll try
+    and make sure the two don’t disagree.</p>"
+- date: 2007-08-23
+  author: Eric Hodel
+  content: "<p>Everything in the quickref is different from the RDoc in the implementation.
+    \ Some methods seem to not exist, others have different documentation.</p>\n\n\n\t<p>Also:</p>\n\n\n\t<p>class
+    Net::SSH::Connection::Session</p>\n\n\n\t<p>is much preferred to all those semicolons.</p>\n\n\n\t<p>Also:</p>\n\n\n\t<p>No
+    comments feed?</p>"
+- date: 2007-08-23
+  author: Jamis
+  content: "<p>Eric, right at the top of the quickref is the following paragraph:</p>\n\n\n<blockquote>\nThis
+    quick-reference provides a brief overview of the Net::SSH <span class=\"caps\">API</span>.
+    It is not an exhaustive reference, including only those methods and options that
+    will be most frequently used. Please refer to the <span class=\"caps\">API</span>
+    documentation for a complete <span class=\"caps\">API</span> reference.\n</blockquote>\n\n\t<p>All
+    that documentation (the <span class=\"caps\">FAQ</span>’s, the quickref, etc.)
+    is only intended to help people get up and running with Net::SSH. It is not intended
+    as an exhaustive reference of all possible methods and options—that’s what the
+    rdoc is for. Obviously, this documentation will not be helpful for you, but from
+    support emails I’ve received and issues I’ve dealt with in the past, the simpler
+    and more direct you can make documentation, the more it aids people who are new
+    to your library.</p>\n\n\n\t<p>Also:</p>\n\n\n\t<pre><code>class Net::SSH::Connection::Session</code></pre>\n\n\n\t<p>Only
+    works if Net::SSH::Connection has been declared previously as a module.</p>\n\n\n\t<p>Also:</p>\n\n\n\t<p>Right,
+    no comments feed.</p>"
+- date: 2007-08-24
+  author: Eric Hodel
+  content: "<p>Sorry, I got confused between the erb and RDoc and thought I saw methods
+    that didn’t exist.</p>\n\n\n\t<p>I don’t see why the quickref and RDoc are different.</p>\n\n\n\t<p>I
+    don’t see why ri Net::SSH is empty.  A link to the quickref, at least.</p>"
+- date: 2007-08-24
+  author: Jamis
+  content: "<p>Eric, if you honestly don’t understand why the quickref is a subset
+    of the rdoc, I don’t think I’m going to have much success explaining it, but I’ll
+    try.</p>\n\n\n\t<p>Some programmers are exceptionally comfortable with learning
+    a new library from a handful of examples and the <span class=\"caps\">API</span>
+    documentation. You are one such programmer. Drinking from the proverbial fire-hose
+    doesn’t faze you particularly. Many other programmers (in my experience) prefer
+    to take things in diluted form, at least initially. For example: a tutorial that
+    walks you through just a few simple operations, and hints at more complex possibilities.
+    Or a short list of “frequently asked questions” which in no way includes every
+    possible question a user of the library might ever ask. Or a quickref page that
+    includes just a few of the most common <span class=\"caps\">API</span>’s. The
+    <span class=\"caps\">API</span> docs themselves are right there too, available
+    for them when they encounter a problem that the “gentler” docs don’t provide any
+    help for.</p>\n\n\n\t<p>As for “I don’t see why ri Net::SSH is empty”, it’s because
+    (and I’ll say it just one more time) “I’m not done yet.” Give me some time, please,
+    Eric. This is just preview release #1, not the final package.</p>"
+- date: 2007-08-24
+  author: Eric Hodel
+  content: "<p>I don’t understand why the words per method are different between quickref
+    and RDoc.</p>\n\n\n\t<p>For Net::SSH::Connection::Session#exec you have in the
+    quickref:</p>\n\n\n\t<p>Queues the command for execution and returns immediately.
+    Requires an event loop (see #loop or #process) in order for the command to actually
+    be executed. If a block is given, output is yielded to the block (three parameters,
+    channel, type, and data). Otherwise, output is written to the terminal.</p>\n\n\n\t<p>In
+    the RDoc:</p>\n\n\n\t<p>A convenience method for executing a command and interacting
+    with it. If no block is given, all output printed via $stdout and $stderr. Otherwise,
+    the block is called for each data and extended data packet, with three arguments:
+    the channel object, a symbol indicating the data type (:stdout or :stderr), and
+    the data (as a string).</p>\n\n\n\t<p>Note that this method returns immediately,
+    and requires an event loop (see Session#loop) in order for the command to actually
+    execute.</p>"
+- date: 2007-09-03
+  author: Mike Berrow
+  content: "<p>Hello Jamis,\nI am trying out the new stuff. \nWhen trying to transfer
+    multiple files with a wildcard to Net::SCP, the process hangs for me. For a single
+    (no wildcard) transfer, it works fine.</p>\n\n\n\t<p>e.g.\n  Net::SCP.download(TARGET_IP,
+    “admin”,\n                    ”/data/db/new_items.csv”, ”./fromRemote”,\n                    :ssh
+    =&gt; sshParms = {:password =&gt; ‘xxxxxxx’})\nworks fine, but\n  Net::SCP.download(TARGET_IP,
+    “admin”,\n                    ”/data/db/new_*.csv”, ”./fromRemote”,\n                    :ssh
+    =&gt; sshParms = {:password =&gt; ‘xxxxxxx’})\ndoes not.   It transfers one file
+    then hangs.</p>\n\n\n\t<p>Should this work with a wildcard in the value for ‘remote’
+    ?</p>\n\n\n\t<p>Thanks,\n—Mike Berrow</p>"
+- date: 2007-09-03
+  author: Jamis
+  content: "<p>Interesting Mike, I’d never tried that case. I’ll make a note to investigate
+    it before release.</p>"
+- date: 2007-09-11
+  author: Francis
+  content: "<p>Hi Jamis,</p>\n\n\n\t<p>This is much cleaner – nice job.</p>\n\n\n\t<p>We
+    have some older Fedora Core 4 boxes here that the examples above won’t connect
+    with, but it works with Macs, etc.  Assuming that you cared about being compatible
+    with older OSes, I’d be glad to get you and debugging if it would be useful to
+    you.  Otherwise, if you are still working on this part, just disregard.</p>\n\n\n\t<ol>\n\t<li>works\n$
+    irb -r rubygems -r net/ssh\nirb(main):007:0&gt; Net::SSH.start(‘localhost’,’testuser’)
+    {|ssh| ssh.exec(“uname”); ssh.loop}\nF, [2007-09-11T17:56:11.397186 #21916] <span
+    class=\"caps\">FATAL</span>—net.ssh.authentication.agent: could not connect to
+    ssh-agent\nPassword: \nDarwin\n=&gt; nil</li>\n\t</ol>\n\n\n\t<ol>\n\t<li>doesn’t
+    work\nirb(main):008:0&gt; Net::SSH.start(‘salt’,’testuser’) {|ssh| ssh.exec(“uname”);
+    ssh.loop}\nF, [2007-09-11T17:56:34.544652 #21916] <span class=\"caps\">FATAL</span>—net.ssh.authentication.agent:
+    could not connect to ssh-agent\nF, [2007-09-11T17:56:34.545932 #21916] <span class=\"caps\">FATAL</span>—net.ssh.authentication.session:
+    all authorization methods failed (tried publickey, hostbased, password, keyboard-interactive)\nNet::SSH::AuthenticationFailed:
+    testuser\n        from /usr/local/lib/ruby/gems/1.8/gems/net-ssh-1.99.0/lib/net/ssh.rb:67:in
+    `start’\n        from (irb):8\n        from :0</li>\n\t</ol>\n\n\n\t<p>Keep up
+    the good work!</p>"
+- date: 2007-09-24
+  author: namelessjon
+  content: "<p>Hi Jamis</p>\n\n\n\t<p>I’m just trying out the new gem.  It looks pretty
+    good so far, aside from an apparent problem connecting to SunOS boxes (though
+    that might be a problem with the sun boxes rather than net-ssh—I’m investigating.)</p>\n\n\n\t<p>My
+    question is a little simpler. When I open up a login shell via send_channel_request,
+    how do I ‘return’ control to the loop? It seems to hang after displaying the command
+    output.</p>"
+- date: 2007-10-09
+  author: Jamie van Dyke
+  content: "<p>Hey Jamis,</p>\n\n\n\t<p>I’m loving the new cleaner <span class=\"caps\">SSH</span>,
+    but what’s the status on <span class=\"caps\">SCP</span> now, is there a preview
+    release or a repository I can check out?</p>"
+- date: 2007-10-10
+  author: Jamis
+  content: "<p>@namelessjon, I’m not sure I follow? Can you pastie the code?</p>\n\n\n\t<p>@Jamie,
+    <span class=\"caps\">SCP</span> is close, I’m just finding it hard to make time
+    to work on it all. You can find the repo here: http://svn.jamisbuck.org/projects/net-scp.</p>"
+- date: 2007-10-12
+  author: Jason
+  content: "<p>I’m unable to do an <span class=\"caps\">SVN</span> checkout of either
+    the net-scp or net-ssh repository.  I just see a 400 <span class=\"caps\">BAD
+    REQUEST</span> message:</p>\n\n\n\t<p>svn: <span class=\"caps\">REPORT</span>
+    request failed on ’/projects/!svn/vcc/default’\nsvn: <span class=\"caps\">REPORT</span>
+    of ’/projects/!svn/vcc/default’: 400 Bad Request (http://svn.jamisbuck.org)</p>\n\n\n\t<p>If
+    I try to use the svn:// scheme, it just hangs.</p>"
+- date: 2007-10-15
+  author: Jamis
+  content: "<p>@Jason, very odd, it works here. The svn:// scheme is not supported
+    with my svn configuration, only http:. I wonder if you just hit it at a bad time
+    or something?</p>"
+- date: 2007-10-16
+  author: namelessjon
+  content: "<p>The code from the <span class=\"caps\">FAQ</span> ‘How do I request
+    that a login shell be started?’ shows problem I’m having (or perhaps just a misunderstanding.)</p>\n\n\n\t<p>After
+    the output from the ls command (or whichever) is displayed, the script will then
+    just wait, with the only way to exit being to press ^C. (It needs to be a login
+    shell to set the enviroment right for certain commands I would like to run)</p>\n\n\n\t<p>What
+    I would like to be able to do is send some command, act on the results and then
+    send another etc and then have it exit cleanly at the end …</p>"
+- date: 2007-10-16
+  author: Jamis
+  content: "<p>@namelessjon, which <span class=\"caps\">FAQ</span> is that? Can you
+    show me the <span class=\"caps\">URL</span> where that <span class=\"caps\">FAQ</span>
+    exists?</p>\n\n\n\t<p>Note that when you are interacting with a login shell, you
+    are no longer able to use the “exec” method to invoke commands, since there is
+    already a command running: the login shell. Instead, you need to implement an
+    “expect”-like event loop, that watches the output from the shell (via the on_data
+    and on_extended_data channel callbacks) and responds by sending data to the channel
+    (via Channel#send_data). Working programmatically with a login shell is non-trivial,
+    for the general case. :(</p>"
+- date: 2007-10-16
+  author: Jason
+  content: <p>I think it’s the version of <span class="caps">SVN I</span> have running
+    on this PowerBook.  I tried it again, and I still receive the same message.  But
+    it works from a Gentoo Linux machine with an older version.  Go figure…</p>
+- date: 2007-10-16
+  author: Mike Timm
+  content: "<p>Hi Jamis,</p>\n\n\n\t<p>I’m running into the following error:</p>\n\n\n\t<p>NoMethodError:
+    undefined method ‘join’ for <a href=\"String\">10.10.10.10</a></p>\n\n\n\t<p>method
+    process_cache_miss    in strict.rb at line 43\nmethod verify    in strict.rb at
+    line 37\nmethod verify    in lenient.rb at line 15\nmethod verify_server_key    in
+    diffie_hellman_group1_sha1.rb at line 165\nmethod exchange_keys    in diffie_hellman_group1_sha1.rb
+    at line 68\nmethod exchange_keys    in algorithms.rb at line 331\nmethod proceed!
+    \   in algorithms.rb at line 172\nmethod send_kexinit    in algorithms.rb at line
+    163\nmethod accept_kexinit    in algorithms.rb at line 118\nmethod poll_message
+    \   in session.rb at line 168\nmethod poll_message    in session.rb at line 146\nmethod
+    wait    in session.rb at line 183\nmethod wait    in session.rb at line 181\nmethod
+    initialize    in session.rb at line 74\nmethod start    in ssh.rb at line 55\nat
+    top level    in untitled document at line 3</p>\n\n\n\t<p>I think, host is always
+    a String in process_cache_miss, so the join can be removed from:</p>\n\n\n\t<pre><code>exception
+    = HostKeyMismatch.new(\"fingerprint #{args[:fingerprint]} does not match for #{host.join(',')}\")</code></pre>\n\n\n\t<p>If
+    I remove it, I get the expected error.</p>\n\n\n\t<p>Thanks!</p>"
+- date: 2007-10-16
+  author: Jamis
+  content: "<p>Good catch, thanks Mike!</p>"
+- date: 2007-10-17
+  author: namelessjon
+  content: "<p>Nothing online. The <span class=\"caps\">FAQ I</span> was refering
+    to is the one that is built in the doc directory for the 1.99.0 gem. (on my system:
+    ${GEMS_DIR}/net-ssh-1.99.0/doc/out/faq/login_shell.html ) Generally I’ve found
+    it pretty useful.</p>\n\n\n\t<p>Anyway, thank you for the pointers about the ‘expect’
+    loop. Now to implement it … :)</p>"
+- date: 2007-10-24
+  author: Mike Timm
+  content: "<p>Hi again Jamis,</p>\n\n\n\t<p>I am apparently working with a <span
+    class=\"caps\">SSH</span> server that is a little buggy.  In tearing down the
+    ssh session it sends a channel request for exit-status, then a channel end of
+    file and  then a channel close.  The problem is that immediately after that, in
+    some cases, it sends another channel request for exit status on the channel that
+    is already closed.  This causes your new version of net-ssh to throw an exception
+    (the old version seemed to ignore this):</p>\n\n\n\t<pre><code>NoMethodError:
+    undefined method ‘do_request’ for nil:NilClass</code></pre>\n\n\n\t<pre><code>method
+    channel_request    in session.rb at line 375\nmethod dispatch_incoming_packets
+    \   in session.rb at line 280\nmethod process    in session.rb at line 104\nmethod
+    loop    in session.rb at line 87\nmethod loop    in session.rb at line 87\nat
+    top level    in untitled document at line 11</code></pre>\n\n\n\t<p>The script
+    I’m working with is pretty simple:</p>\n\n\n\t<pre><code>Net::SSH.start(HOST,
+    USER, :password =&gt; PASS, :verbose =&gt; 0) do |ssh|\n  ssh.exec \"somecommand\"
+    \n  ssh.loop\nend</code></pre>\n\n\n\t<p>I get the following debugs during session
+    teardown:</p>\n\n\n\t<pre><code>D, [2007-10-24T14:22:02.186328 #9902] DEBUG --
+    tcpsocket: received packet nr 13 type 98 len 44\nD, [2007-10-24T14:22:02.188425
+    #9902] DEBUG -- net.ssh.connection.session: channel_request: 0 exit-status false\nD,
+    [2007-10-24T14:22:02.190217 #9902] DEBUG -- tcpsocket: read 104 bytes\nD, [2007-10-24T14:22:02.191999
+    #9902] DEBUG -- tcpsocket: received packet nr 14 type 96 len 12\nD, [2007-10-24T14:22:02.193853
+    #9902] DEBUG -- net.ssh.connection.session: channel_eof: 0\nD, [2007-10-24T14:22:02.195517
+    #9902] DEBUG -- tcpsocket: read 0 bytes\nD, [2007-10-24T14:22:02.197579 #9902]
+    DEBUG -- tcpsocket: received packet nr 15 type 97 len 12\nD, [2007-10-24T14:22:02.199219
+    #9902] DEBUG -- net.ssh.connection.session: channel_close: 0\nD, [2007-10-24T14:22:02.201070
+    #9902] DEBUG -- tcpsocket: queueing packet nr 8 type 97 len 28\nD, [2007-10-24T14:22:02.203193
+    #9902] DEBUG -- tcpsocket: read 0 bytes\nD, [2007-10-24T14:22:02.205044 #9902]
+    DEBUG -- tcpsocket: received packet nr 16 type 98 len 44\nD, [2007-10-24T14:22:02.206771
+    #9902] DEBUG -- net.ssh.connection.session: channel_request: 0 exit-status false</code></pre>\n\n\n\t<p>I
+    see this same behavior when using an OpenSSH client as well (however, it simply
+    ignores the extra channel request) so I’m pretty sure it’s the ssh server that
+    is at fault here.  I’m going to work at getting the ssh server fixed because I
+    don’t think it should be sending anything on the channel after both sides have
+    declared the channel closed.  However, it might be worthwhile for Net::SSH v2
+    to simply ignore packets for channels that don’t exist.</p>\n\n\n\t<p>Thanks,</p>\n\n\n\t<p>Mike</p>\n\n\n\t<p>P.S.
+    If there is a more appropriate place to report this stuff please let me know.</p>"
+- date: 2007-10-24
+  author: Mike Timm
+  content: "<p>Hi Jamis,</p>\n\n\n\t<p>Reposting since I didn’t see my last attempt
+    get posted.</p>\n\n\n\t<p>I am apparently working with a buggy <span class=\"caps\">SSH</span>
+    server which on occasion sends a channel_request for exit-status after both sides
+    have declared the channel closed.  This causes Net::SSH v2 to throw an exception
+    for:  </p>\n\n\n\t<pre><code>NoMethodError: undefined method ‘do_request’ for
+    nil:NilClass</code></pre>\n\n\n\t<p>The old version of Net::SSH doesn’t seem to
+    get tripped up like this.  The script I’m working with is pretty simple:</p>\n\n\n\t<pre><code>Net::SSH.start(HOST,
+    USER, :password =&gt; PASS, :verbose =&gt; 0) do |ssh|\n  ssh.exec \"somecomnand\"
+    \n  ssh.loop\nend</code></pre>\n\n\n\t<p>Here are debugs showing the errant behavior
+    of the server:</p>\n\n\n\t<pre><code>DEBUG -- tcpsocket: received packet nr 13
+    type 98 len 44\nDEBUG -- net.ssh.connection.session: channel_request: 0 exit-status
+    false\nDEBUG -- tcpsocket: read 104 bytes\nDEBUG -- tcpsocket: received packet
+    nr 14 type 96 len 12\nDEBUG -- net.ssh.connection.session: channel_eof: 0\nDEBUG
+    -- tcpsocket: read 0 bytes\nDEBUG -- tcpsocket: received packet nr 15 type 97
+    len 12\nDEBUG -- net.ssh.connection.session: channel_close: 0\nDEBUG -- tcpsocket:
+    queueing packet nr 8 type 97 len 28\nDEBUG -- tcpsocket: read 0 bytes\nDEBUG --
+    tcpsocket: received packet nr 16 type 98 len 44\nDEBUG -- net.ssh.connection.session:
+    channel_request: 0 exit-status false</code></pre>\n\n\n\t<p>I’m working to get
+    the bug corrected in the server, but it might be worthwhile to simply ignore packets
+    for channels that don’t exist.</p>\n\n\n\t<p>Thanks!</p>\n\n\n\t<p>Mike</p>"
+- date: 2007-10-25
+  author: Mike Timm
+  content: "<p>Hi again Jamis,</p>\n\n\n\t<p>I am working with a <span class=\"caps\">SSH</span>
+    server that is buggy.  The server sends a channel end of file then a channel close.
+    \ Net::SSH version 2 sends it’s own channel close, but then the server incorrectly
+    sends a channel request for exit-status after the channel is already considered
+    closed by Net::SSH version 2.  This results in an exception in Net::SSH version
+    2 when trying to dispatch the packet from a channel that no longer exists.  </p>\n\n\n\t<pre><code>NoMethodError:
+    undefined method ‘do_request’ for nil:NilClass</code></pre>\n\n\n\t<p>Obviously
+    I need to get the server fixed, but other clients (including Net::SSH version
+    1) just ignore this extra packet and some print out a warning or debug message
+    about it.</p>\n\n\n\t<p>Thanks!</p>"
+- date: 2007-10-26
+  author: Mike Timm
+  content: "<p>Ack.  Sorry for the duplicate comments.  Seems the comment system had
+    a huge (three day) lag for posting the original comment(s).</p>"

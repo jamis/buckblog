@@ -1,0 +1,52 @@
+---
+layout: post
+title: 'Step Three: HTML Mockups'
+post_id: 232
+categories:
+- Projects
+date: 2005-02-20 07:31:00.000000000 -07:00
+author: Jamis
+permalink: 2005/02/20/step-three-html-mockups.html
+---
+
+<p>It’s taken me longer than I had expected to get to this next step, but certainly not because it was difficult. Too many other distractions! A word of advice: don’t get sick. It’s a big time suck.</p>
+<p>So, in <a href="http://jamis.jamisbuck.org/blog.cgi/programming/Step%20Two:%20Paper%20Sketches_20050202153638.tx">Step Two: Paper Sketches</a> I shared some paper sketches I made of the intro pages of BudgetWise, my as-yet-unimplemented financial app. In this article, I’ll share the <span class="caps">HTML</span> mockups of those screens, talk about why they don’t look exactly like the paper sketches, and summarize some of what I learned from this process.</p>
+<h2>Login Screen</h2>
+<p>The login screen was mocked up by the following pages:</p>
+<ul>
+	<li><a href="http://jamis.jamisbuck.org/mocks1/login.html">Ideal state</a></li>
+		<li><a href="http://jamis.jamisbuck.org/mocks1/login-error.html">Error state</a></li>
+	</ul>
+<p>If you’ll <a href="http://jamis.jamisbuck.org/blog.cgi/programming/Step%20Two:%20Paper%20Sketches_20050202153638.tx">remember</a>, the original idea was to have the login box off to the side, slightly overlapping the “BUDGETWISE” logo across the top.</p>
+<p>I mocked up that up, and showed it to my wife. She promptly brought me back to reality by pointing out that it looked like there was something wrong with the page. It also just didn’t look good. So the version that emerged in the mockup was a centered login box, just below the logo line.</p>
+<p>The error state, though, is pretty much how I envisioned it.</p>
+<p>I had originally intended the “forgot my password” option to link to a completely separate page, but after some thinking, it worked more smoothly to use some Javascript magic to put that in the same page. Just click the link to ask for your password, and a new form appears, in-place. <em>Voilà!</em></p>
+<p>For the “forgot my password” option, I also mocked up the following pages:</p>
+<ul>
+	<li>
+<a href="http://jamis.jamisbuck.org/mocks1/email-sent.html">Ideal state</a> (the user’s email was found and their login information was sent)</li>
+		<li>
+<a href="http://jamis.jamisbuck.org/mocks1/email-not-found.html">Error state</a> (the given email address was not found)</li>
+	</ul>
+<p>I decided in these states to only display the action items that are relevant to the task at hand. I originally had both of these showing the “forgot password” and “signup” links, but it just doesn’t make sense to show that information here. If the user has said “tell me what my information is”, then they obviously aren’t interested in clicking the “forgot password” link again, or in signing up.</p>
+<h2>Other states</h2>
+<p>Other states I mocked up include:</p>
+<ul>
+	<li><a href="http://jamis.jamisbuck.org/mocks1/timeout.html">Session timeout</a></li>
+		<li><a href="http://jamis.jamisbuck.org/mocks1/logout.html">Logout</a></li>
+	</ul>
+<p>Nothing exceptional to report on these-<del>they pretty much turned out like the paper sketches (excepting the overall layout, of course). Note that the logout screen is very simplified compared to the others; like the “forgot password” screens, it only makes sense to show the login box here</del>-if the user just logged out, they aren’t likely to wonder what their login information is, or to want to sign up anew.</p>
+<h2>Sign up</h2>
+<p>The signup screen was one that I sketched after the last article, and it is so simple that I’m not going to bother scanning and posting the sketches. Instead, I’ll show you the mockups, which are pretty much what I sketched in the first place.</p>
+<ul>
+	<li><a href="http://jamis.jamisbuck.org/mocks1/signup.html">Ideal state</a></li>
+		<li><a href="http://jamis.jamisbuck.org/mocks1/signup-failed.html">Error state</a></li>
+	</ul>
+<p>On a successful sign up, the user will be automatically logged in and taken to the front page of their account (yet to be prototyped).</p>
+<h2>Conclusions</h2>
+<p>The most important thing that I learned is that I ought to show my paper sketches to my wife before I mock them up. :) She’s got a pretty good eye for design, and is great at balancing my experiments with a dash of realism.</p>
+<p>Another thing I learned is that mocking up pages can be a lot of fun. This was a more interesting stage than I had anticipated. Part of that can be explained by the fact that I’m not a designer, and so have never spent much time learning about all that you can do with <span class="caps">HTML</span> and <span class="caps">CSS</span>. Needless to say, I learned more with every page I mocked up.</p>
+<p>One last thing, I learned that the paper sketches can only take you so far. Unless you are using colored pencils, you can’t really show the color of the font, or the color of the borders you want to use. However, next time I do paper sketches, I’m certainly going to think about these aspects of design, and (if nothing else) annotate my ideas in the margins of the drawings. I think the <span class="caps">HTML</span> mock ups would have gone more smoothly if I’d had some idea of the colors and fonts I wanted to use, ahead of time.</p>
+<p>The most frustrating realization I had during this stage was how limiting <span class="caps">HTML</span> and <span class="caps">CSS</span> is as a UI environment. Even more frustrating—the richness of the environment is limited by which platform you are on. You could draw a <a href="http://www.sdcoe.k12.ca.us/score/actbank/tvenn.htm">Venn diagram</a>, with one circle for each browser representing the feature set of that browser, and the intersection is the area that web designers have to code for. Quite a pain. I really grew to hate IE more than ever at this point.</p>
+<p>Moving forward, I <em>could</em> drop down into code-monkey mode and start wiring these screens together with <a href="http://www.rubyonrails.com">Rails</a>, but I think I’ll hold off on that. Instead, I’ll start sketching the pages for the application itself—the transaction listing, budgeting pages, and so forth. These will be much more challenging to design than these trivial pages I started with. I’m looking forward to it!</p>
+<p><strong>21 Feb 2004 Update:</strong> Jarkko Laine recommended that I use a non-red color for information messages instead of the same red color that I use for the errors. I totally agree—it makes much more sense to differentiate between the two states. I’ve changed the <a href="http://jamis.jamisbuck.org/mocks1/email-sent.html">sent email</a> and <a href="http://jamis.jamisbuck.org/mocks1/logout.html">logout</a> mocks accordingly.</p>

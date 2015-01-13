@@ -1,0 +1,27 @@
+---
+layout: post
+title: Design Forces in Ekawada, Part 4
+post_id: 25
+categories:
+- Projects
+- Under the Hood
+date: 2010-11-03 08:17:00.000000000 -06:00
+author: Jamis
+permalink: 2010/11/03/design-forces-in-ekawada-part-4.html
+---
+
+<p>For many people, string figures are games that they learned as children, and haven’t touched since. The years are rarely kind to memory, so what this means is there are a lot of people who remember doing figures, but can’t remember what they were called, or how they were done.</p>
+<p>I knew, back in April, that Ekawada needed to address this somehow.</p>
+<p><img src="http://jamisbuck.org/images/ekawada-filter-select.png" width="320" height="480" alt="The list of available criteria groups" title="Filter criteria are grouped into subcategories for easier navigation" align="right" style="border: 2px solid black; margin: 0 0 1em 1em;"></p>
+<p>The solution I came up with is based on filtering figures by their attributes. For example, suppose you remember, way back when, doing a figure that had a bunch of diamond shapes in it. You don’t remember what it was called, or how it went, just vaguely what it looked like.</p>
+<p>You’d go to Ekawada’s index list, and tap the magnifying glass icon, which would take you to the <em>filter criteria selection</em> page (pictured on right). From here you could drill down further into the specific criteria you want to filter on.</p>
+<p><img src="http://jamisbuck.org/images/ekawada-criteria-list.png" width="320" height="480" alt="The list of available appearance criteria" title="The appearance criteria describe how the figure looks" align="right" style="border: 2px solid black; margin: 0 0 1em 1em;"></p>
+<p>In our case, we’d choose “appearance” (since we only remember that the figure looked like diamond shapes), which would take us to the list of appearance criteria.</p>
+<p>(Note that with an initial set of only eight figures, most people won’t see much to select here. Then again, they wouldn’t really need to use the filters, either, since eight figures are trivial to scan. But with the other 98 figures installed from the five available packs, the available filter criteria are pretty extensive.)</p>
+<p>There’s “diamond”. We’d select it (and any other criteria we want to filter on), and return to the index view.</p>
+<p><img src="http://jamisbuck.org/images/ekawada-filtered-index.png" width="320" height="480" alt="The index view, filtered to show only diamond figures" title="The filtered index view shows only the figures matching the criteria you selected" align="right" style="border: 2px solid black; margin: 0 0 1em 1em;"></p>
+<p>The resulting list is still longish (diamonds are a very common theme in string figures), but it’s much better than trying to scan all 100+ rows.</p>
+<p>Now, I’m not 100% pleased with this filtering system. It’s functional, but the flow isn’t quite right. I intend to revisit this in later versions, possibly ripping out the current incarnation and replacing it with something more flexible. I’d like to add the ability to search by name, for one thing, as well as the ability to combine filters together. (Currently, selecting more than one filter returns all figures that match any of them: an “or” condition, rather than an “and”.)</p>
+<p>In spite of that, the system works as it is and it does let you answer the question, “what was that figure I used to know?”</p>
+<p>Ekawada itself is nearly done; I’m wondering if I could possibly have it available to download by RubyConf, though the bottleneck is going to be the App-Store review process. I also still need to flesh out the website and help pages (and a few other marketing-related things), but I’m almost there! It feels like I’ve run a marathon.</p>
+<p>I’ll do a few more posts before Ekawada launches; the next one will talk about how Ekawada answers the question: “I’m new to all this—where do I start?”</p>

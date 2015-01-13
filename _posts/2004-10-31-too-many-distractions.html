@@ -1,0 +1,20 @@
+---
+layout: post
+title: Too Many Distractions
+post_id: 330
+categories:
+- Projects
+date: 2004-10-31 04:33:00.000000000 -07:00
+author: Jamis
+permalink: 2004/10/31/too-many-distractions.html
+---
+
+<p><a href="http://net-ssh.rubyforge.org">Net::SSH</a> took a backseat this last week to <a href="http://needle.rubyforge.org">Needle</a> (which saw a 0.9 release on Thursday), <a href="http://sqlite-ruby.rubyforge.org">SQLite/Ruby</a> (which saw a 2.2.0 release on Wednesday) and an as-yet-unreleased personal finance manager that I’m writing using <a href="http://www.rubyonrails.org">Rails</a>. I’ve also been tinkering with reverse engineering the Oracle network protocols (to allow for a pure-ruby Oracle driver), and with Ruby/DL.</p>
+<h2>Make Me Rich</h2>
+<p>The personal finance manager (which I’m currently code-naming “Make Me Rich”, or <span class="caps">MMR</span>) has been the most fun. I’ve been putting off learning Rails for some time now, and <span class="caps">MMR</span> is something I’ve been tinkering with off-and-on for over a year. Thus, it seemed like a good opportunity to marry the two and actually try to accomplish something!</p>
+<p><span class="caps">MMR</span> is a budget-centric <span class="caps">PFM</span>. Every transaction you record must specify which “budget category” it belongs to. This means that when you deposit money into an account, you must specify which budget category (or categories—you can split the transaction into multiple items) receives the funds. In this way, you effectively spend money from your budget categories, so (if you keep your finances up to date) you’ll always know how much money you have available to spend from any particular budget category. If you find one budget category running low, you can transfer funds from another budget category to make up the difference.</p>
+<p>I’ve never seen a <span class="caps">PFM</span> that works like this, but I think it will fit nicely with how my wife and I manage our family finances.</p>
+<p>Rails has helped me implement of lot of the functionality in very few lines of code, which has been encouraging. <span class="caps">MMR</span> is still not usable, but maybe by the end of the year…</p>
+<h2>Needle</h2>
+<p>On #ruby-lang this morning <a href="http://kronavita.de/chris/">Christian Neukirchen</a> mentioned that he is writing a new blogging system (called <a href="http://kronavita.de/chris/blog/2004/10/18-nukumi2-roadmap.html#x-20041018-161215">Nukumi2</a>), and he’s using <a href="http://needle.rubyforge.org">Needle</a>! He may actually beat me to the release of the first Needle-powered application.</p>
+<p>My Needle-powered flagship app will be <a href="http://net-ssh.rubyforge.org">Net::SSH</a>, if I can stop getting distracted long enough to finish the refactoring. To that end, I sat down this morning and started work on the user authorization subsystem. Perhaps by the time Needle 1.0 is released (on Thursday, if all goes well), I’ll have some more to blog about regarding Net::SSH.</p>

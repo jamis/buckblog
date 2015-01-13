@@ -1,0 +1,144 @@
+---
+layout: post
+title: 'Under the hood: ActiveRecord::Base.find, Part 3'
+post_id: 169
+categories:
+- Under the Hood
+date: 2006-11-30 22:39:00.000000000 -07:00
+author: Jamis
+permalink: 2006/11/30/under-the-hood-activerecord-base-find-part-3.html
+---
+
+<p>Dynamic finders are one of my favorite bits of syntactic sugar in Rails. Suppose you have a form that people can use to log into your application. It submits the username and a password, and you then need to take those data and find the corresponding user.</p>
+<p>Although there are several ways to do this, the <em>best</em> way is to use a dynamic finder, like so:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">user = <span class="co">User</span>.find_by_username_and_password(params[<span class="sy">:username</span>], params[<span class="sy">:password</span>])<tt>
+</tt><span class="r">if</span> user.nil?<tt>
+</tt>  <span class="c"># no such user, let them retry</span><tt>
+</tt><span class="r">else</span><tt>
+</tt>  <span class="c"># log them in</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>In this next installment of “Under the Hood: ActiveRecord::Base.find”, we’ll explore the implementation of dynamic finders.</p>
+<p>The magic, as with most <span class="caps">DSL</span>’s, occurs in a method_missing hook. However, you’ll find that there are actually <em>two</em> method_missing hooks on ActiveRecord::Base. The first is for the <em>class</em>, the second is for <em>instances of the class</em>. For dynamic finders, the class-level hook is used, since we are sending the <code>find_by_username_and_password</code> message to the class, not to an instance of the class.</p>
+<p>A quick review for those unfamiliar with method_missing: any time you invoke a method on an object, and the object does not have (or “respond to”) that method, Ruby will invoke a method called <code>method_missing</code> on that object. The default method_missing implementation just raises a NoMethodError exception, but you can implement your own method_missing method to do some clever tricks, like ActiveRecord does to handle dynamic finders.</p>
+<p>As of <a href="http://dev.rubyonrails.org/browser/trunk/activerecord/lib/active_record/base.rb?rev=5593">revision 5593</a>, the class-level method_missing hook is on line 1191 of base.rb. It starts out something like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">method_missing</span>(method_id, *arguments)<tt>
+</tt>  <span class="r">if</span> match = <span class="rx"><span class="dl">/</span><span class="k">find_(all_by|by)_([_a-zA-Z]</span><span class="ch">\w</span><span class="k">*)</span><span class="dl">/</span></span>.match(method_id.to_s)<tt>
+</tt>    finder, deprecated_finder = determine_finder(match), determine_deprecated_finder(match)<tt>
+</tt><tt>
+</tt>    attribute_names = extract_attribute_names_from_match(match)<tt>
+</tt>    <span class="r">super</span> <span class="r">unless</span> all_attributes_exists?(attribute_names)<tt>
+</tt><tt>
+</tt>    attributes = construct_attributes_from_arguments(attribute_names, arguments)<tt>
+</tt><tt>
+</tt>    <span class="c">#...</span></pre></td>
+</tr></table>
+<p>Any time an ActiveRecord class receives message (method) it does not recognize, it first tries to match that method against the regular expression you see above. Note the two captures in that regex: the first captures the “all_by” or “by” text, and the second captures the “<em>and</em>“-delimited list of attributes to search by.</p>
+<p>If the method name matches, we next try to determine which <em>finder</em> to use. The finder says whether we should find all matches (“find_all_by_xyz”) or only the first match (“find_by_xyz”). I’m going to ignore that whole “deprecated” finder part, since those will go away eventually and will no longer be relevant. But let’s look at the definition for determine_finder:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">determine_finder</span>(match)<tt>
+</tt>  match.captures.first == <span class="s"><span class="dl">'</span><span class="k">all_by</span><span class="dl">'</span></span> ? <span class="sy">:find_every</span> : <span class="sy">:find_initial</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>It just looks at the first capture in the match, and returns the name of the method we need to call to satisfy the query. We’ll use that later.</p>
+<p>Next, the method_missing hook tries to determine the names of the attributes that we are going to query by. It does that by passing the match to extract_attribute_names_from_match, which looks like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">extract_attribute_names_from_match</span>(match)<tt>
+</tt>  match.captures.last.split(<span class="s"><span class="dl">'</span><span class="k">_and_</span><span class="dl">'</span></span>)<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Basically, it just takes the last capture in the match, and splits it on the text “<em>and</em>”. This returns an array of strings, naming the attributes in our query.</p>
+<p>We don’t want to allow just any attribute names, though. We need to make sure they really exist in the table in question, and we do that by calling the all_attributes_exist? method, passing in that array we just built:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">all_attributes_exists?</span>(attribute_names)<tt>
+</tt>  attribute_names.all? { |name| column_methods_hash.include?(name.to_sym) }<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>The Array#all? method returns true if the associated block returns true for every element of the array. In this case, we’re testing to see if every element of the array is included in the column_methods_hash.</p>
+<p>If that’s all good, we then create a hash that maps attribute names to attribute values, merging the list of attribute names with the list of arguments to the method. This is done via construct_attributes_from_arguments:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">construct_attributes_from_arguments</span>(attribute_names, arguments)<tt>
+</tt>  attributes = {}<tt>
+</tt>  attribute_names.each_with_index { |name, idx| attributes[name] = arguments[idx] }<tt>
+</tt>  attributes<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>This looks like it could be done with Array#zip to save a few lines, but alas, it cannot. The reason is that the arguments list may have one element more than the attributes list—an options hash, such as you could pass to ActiveRecord#find. (Such little details inevitably complicate what you would think should be a trivial solution.)</p>
+<p><em>So</em>. At this point we now have a hash that maps attribute names (username and password, in our case) to values (params[:username] and params[:password]).</p>
+<p>Before we go querying the database, we need to consider any extra options that the caller may have passed in. Those extra options will be in the argument slot immediately following the one corresponding to the last named attribute:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">case</span> extra_options = arguments[attribute_names.size]<tt>
+</tt>  <span class="r">when</span> <span class="pc">nil</span><tt>
+</tt>    <span class="c"># ...</span><tt>
+</tt><tt>
+</tt>  <span class="r">when</span> <span class="co">Hash</span><tt>
+</tt>    <span class="c"># ...</span><tt>
+</tt><tt>
+</tt>  <span class="r">else</span><tt>
+</tt>    <span class="c"># ...</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>In our case, no extra options were passed in, so we’ll take the <code>nil</code> branch. If an option <em>hash</em> was passed in, the second branch would be taken, and if anything else was given, the last branch (using deprecated finders) would be taken. We get off easy with our example, though:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">when</span> <span class="pc">nil</span><tt>
+</tt>  options = { <span class="sy">:conditions</span> =&gt; attributes }<tt>
+</tt>  set_readonly_option!(options)<tt>
+</tt>  <span class="co">ActiveSupport</span>::<span class="co">Deprecation</span>.silence { send(finder, options) }</pre></td>
+</tr></table>
+<p>We build the options hash trivially, just setting the :conditions key to the attributes hash we constructed, setting the readonly option based on the current scope settings, and then invoking the appropriate finder (either find_initial or find_every, depending on what the name of the method was—in our specific case, it will be find_initial). Don’t ask me why Deprecation.silence is being used there…I have no clue.</p>
+<p>The finder call will then come back with the record (or records) that matched our query. In our example at the start of this article, either the user matching the given username and password will be returned, or nil will be returned, and we can test and branch accordingly.</p>
+<p>Pretty straight-forward! Alas, this is about the last of the “simple” aspects of ActiveRecord#Base.find that we can investigate. Future articles will delve into more complex aspects, like eager-loading and scoping.</p>

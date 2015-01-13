@@ -1,0 +1,59 @@
+---
+layout: post
+title: Dereferencing fixtures
+post_id: 108
+categories:
+- Tips & Tricks
+date: 2007-02-26 11:58:00.000000000 -07:00
+author: Jamis
+permalink: 2007/02/26/dereferencing-fixtures.html
+---
+
+<p>I frequently find myself writing a lot of helper methods for my tests. (I think I picked up that habit from Marcel Molina, Jr., actually.) These helper methods encapsulate tasks that I wind up doing all over the place, things like logging in a user, or uploading a file.</p>
+<p>However, sometimes I want to pass in a symbol identifying the fixture that should be used in the helper, and sometimes I want to pass a record in directly. To accommodate this, I’ve been using the following idiom in my helpers:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">login!</span>(user)<tt>
+</tt>  user = users(user) <span class="r">if</span> <span class="co">Symbol</span> === user<tt>
+</tt>  ...<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>It just checks the argument, and if it is a Symbol, it dereferences it using the “users” method provided by the fixtures.</p>
+<p>To make this idiom reusable, I’ve got this little gem in my test_helper.rb file:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">dereference</span>(argument, collection)<tt>
+</tt>  <span class="r">if</span> <span class="co">Symbol</span> === argument<tt>
+</tt>    <span class="r">return</span> send(collection, argument)<tt>
+</tt>  <span class="r">else</span><tt>
+</tt>    <span class="r">return</span> argument<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The login! method would then be written like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">login!</span>(user)<tt>
+</tt>  user = dereference(user, <span class="sy">:users</span>)<tt>
+</tt>  ...<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>It’s a little thing, but it sure makes those test helpers a lot more flexible!</p>

@@ -1,0 +1,36 @@
+---
+layout: post
+title: Confessions
+post_id: 217
+categories:
+- Projects
+date: 2005-05-15 13:43:00.000000000 -06:00
+author: Jamis
+permalink: 2005/05/15/confessions.html
+---
+
+<p><em>Don’t write software you don’t need.</em></p>
+<p>I mean it. Don’t do it. If you don’t need it <em>right now</em>, don’t write it. Don’t waste your time.</p>
+<p><a href="http://www.loudthinking.com">David</a> is going to get a good laugh out of this article, because I’m only going to be parroting a lot of what he has been preaching for so long, about “frameworks are extractions.” I finally realized that <em>he’s been talking to me</em>. Every time he or <a href="http://37signals.com/svn">Jason</a> shouts “LESS <span class="caps">SOFTWARE</span>”, it’s been at me. I just didn’t realize it at the time.</p>
+<p>If you write software you don’t need, <em>you write software you won’t use.</em></p>
+<p>If you write software you won’t use, <em>you don’t know how the software will ultimately</em> be <em>used.</em> You might think you have some idea. You might even have some concept of one or two practical use cases. But really all you’re doing is playing a “this might be a cool feature” game, and it’s not until the feature requests come rolling in that you realize you’ve missed the point.</p>
+<p>And, if you’re anything like me, you’ve now got a sense of obligation to make your creation useful, despite your rapidly decreasing interest in the project. And at <em>that</em> point, the project ceases to be fun, and becomes a burden.</p>
+<p>I’m guilty of this. Very, despicably guilty. Consider the following list of projects, and see if you can figure out what they have in common:</p>
+<ul>
+	<li><a href="http://net-ssh.rubyforge.org/api">Net::SSH</a></li>
+		<li><a href="http://net-ssh.rubyforge.org/sftp/api">Net::SFTP</a></li>
+		<li><a href="http://sqlite-ruby.rubyforge.org">SQLite/Ruby</a></li>
+		<li><a href="http://sqlite-ruby.rubyforge.org/sqlite3">SQLite3/Ruby</a></li>
+		<li><a href="http://copland.rubyforge.org">Copland</a></li>
+		<li><a href="http://needle.rubyforge.org">Needle</a></li>
+		<li><a href="http://captcha.rubyforge.org">Ruby/CAPTCHA</a></li>
+	</ul>
+<p>What? <em>I</em> wrote them? Well, yes, I did, but that wasn’t necessarily the commonality I was fishing for.</p>
+<p>The common feature of all of them is that <em>I didn’t need them when I wrote them</em>. In fact, for most of them, I haven’t hardly used them <em>since</em> I wrote them. I don’t think I ever actually used Copland at all, nor the <span class="caps">CAPTCHA</span>. Net::SFTP was more a “logical next step” after Net::SSH. I wrote SQLite/Ruby because it seemed like a fun project at the time. I wrote SQLite3/Ruby because I wanted to experiment with <a href="http://www.swig.org"><span class="caps">SWIG</span></a>.</p>
+<p>Net::SSH, though, takes the cake. I wrote it because I <em>thought</em> that I <em>might someday</em> want to write a <a href="http://maven.apache.org">maven</a> workalike for Ruby, and one of the features it sports is the ability to deploy libraries via ssh. Logically, I would need an <span class="caps">SSH</span> library in Ruby. It seemed like a good place to start at the time…</p>
+<p>And Copland and Needle… well, suffice it to say that I’m not as convinced of the necessity of dependency injection in Ruby as I once was. A guy is entitled to change his opinions every once in while, right?</p>
+<p>At any rate, I now have a few projects that I <em>need</em>, but due to this overpowering sense of obligation about the above list, I feel guilty every time I try to work on them. Instead, all I can focus on is how I <em>ought</em> to be documenting Net::SFTP, or addressing the bug and feature requests for both of the SQLite/Ruby projects. Or fixing a security concern about Ruby/CAPTCHA that was brought to my attention <em>months</em> ago.</p>
+<p><em>Sigh.</em></p>
+<p>So, I come to the point of this article: I’m looking for individuals that would be willing to adopt one or more of the projects listed above. I need to divest myself of them, and leave them in the hands of people that actually <em>need</em> them. This would benefit both the Ruby community (because there would be new life breathed into these projects) and myself (because I could focus on the software I <em>need</em>, again).</p>
+<p>If you’re interested, let me know.</p>
+<p><strong>Update:</strong> Justin Dossey has volunteered for Ruby/CAPTCHA, so that’s one down. Thanks, Justin!</p>

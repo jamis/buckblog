@@ -1,0 +1,32 @@
+---
+- date: 2011-02-22
+  author: catwell
+  content: "<p>Interesting poll. Lua is not, however, an object-oriented language.
+    It is a multi-paradigm language which is often used with a procedural or functional
+    style. Python is multi-paradigm too but it is often used as an object-oriented
+    language and it has specific features to support that style.</p>\n\n\n\t<p>I would
+    say the reason Ruby-ists want to learn Python might be the same than why they
+    want to learn R: it is widely used in the scientific community and has top-of-the-class
+    libraries for numerical programming, data mining, language processing, plots…</p>"
+- date: 2011-02-22
+  author: Jamis
+  content: "<p>@catwell, for the purposes of my post, Lua is object-oriented “enough”.
+    The term “multi-paradigm”, on the other hand, is meaningless. It really just means
+    the language has features that the language designer believes fall into multiple
+    different categories.</p>\n\n\n\t<p>Good point about Python, though. That makes
+    a lot of sense.</p>"
+- date: 2011-05-11
+  author: renan
+  content: "<p>I didn’t know coffeescript is considered a programming language. In
+    case it just returns a js script.</p>"
+- date: 2011-05-12
+  author: Jamis
+  content: "<p>@renan, well, Java just compiles to bytecode, and C just compiles to
+    machine code. Ruby 1.8 doesn’t even compile to anything, its just converted to
+    a parse tree and interpreted. You could probably even write a parser to convert
+    Ruby (maybe even just a subset) to Javascript, but that doesn’t make Ruby not
+    a programming language.</p>\n\n\n\t<p>The target environment where the code will
+    be executed doesn’t define what is a language and what isn’t. If it has a syntax,
+    it’s a language, and CoffeeScript definitely fits that bill.</p>\n\n\n\t<p>Theoretically,
+    CoffeeScript could be compiled to any other environment; right now, it’s target
+    is just Javascript.</p>"

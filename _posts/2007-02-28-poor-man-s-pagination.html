@@ -1,0 +1,34 @@
+---
+layout: post
+title: Poor-man's pagination
+post_id: 106
+categories:
+- Tips & Tricks
+date: 2007-02-28 13:34:00.000000000 -07:00
+author: Jamis
+permalink: 2007/02/28/poor-man-s-pagination.html
+---
+
+<p>Here’s a really simple little tip, related to displaying paginated results. Using offset/limit, it’s pretty trivial to pull back just the page of data you want, as long as you know what the last offset/limit values were:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">rows = <span class="co">Person</span>.find(<span class="sy">:all</span>, <span class="sy">:conditions</span> =&gt; { ...},<tt>
+</tt>  <span class="sy">:limit</span> =&gt; page_size, <span class="sy">:offset</span> =&gt; last_offset + page_size)<tt>
+</tt>more_results = (last_offset + page_size + rows.length) &lt; <span class="co">Person</span>.count<tt>
+</tt></pre></td>
+</tr></table>
+<p>However, it’d be nice to do this in a single query, especially since Person.count can get spendy if there are a lot of rows in the database. Here’s a simple way to do it:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">rows = <span class="co">Person</span>.find(<span class="sy">:all</span>, <span class="sy">:conditions</span> =&gt; { ...},<tt>
+</tt>  <span class="sy">:limit</span> =&gt; page_size<span class="i">+1</span>, <span class="sy">:offset</span> =&gt; last_offset + page_size)<tt>
+</tt>more_results, rows = rows.length &gt; page_size, rows[<span class="i">0</span>,page_size]<tt>
+</tt></pre></td>
+</tr></table>
+<p>You query the database for one more row than you actually want (<code>page_size+1</code>). If you get that many rows back, then you know there is at least one more page of data after the current page.</p>

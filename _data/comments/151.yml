@@ -1,0 +1,105 @@
+---
+- date: 2006-09-22
+  author: Kent
+  content: This is very cool! I didn't know that gdb is so powerful.
+- date: 2006-09-22
+  author: _why
+  content: Well done, Jamis!  Very adept.  I wonder if this could be wrapped up into
+    an extension.  Does libgdb work?
+- date: 2006-09-22
+  author: Jamis
+  content: Now that'd be slick--a ruby interface to GDB. I'm not even certain what
+    libgdb exposes, but it'd be a fun exercise. Any takers? Shall we see what we can
+    come up with?
+- date: 2006-09-22
+  author: Thomas
+  content: Damn, that was enough to make me go download the manual for gdb. I have
+    to give a big "hell, yeah!" to _why's suggestion about seeing if this could be
+    wrapped up in an extension. I'm not even doing much ruby programming lately, but
+    this would be very sweet to have for when I get back on track.
+- date: 2006-09-22
+  author: Jamis
+  content: Well, I (for one) am having some trouble locating libgdb anywhere...all
+    the docs I can find for it are ancient (like 10+ years old). Anyone know if it
+    is still alive, and if so, how to get it?
+- date: 2006-09-22
+  author: Dominic Mitchell
+  content: "Wow -- that's really neat!  In the past, when I've come up against similar
+    troubles in my Perl app, I've resorted to installing a signal handler that spits
+    out a stack trace to the error log.\r\n\r\n<blockquote><tt>$SIG{USR2} = sub {
+    Carp::cluck(\"Got SIGUSR2 in $$\") };</tt></blockquote>\r\n\r\nI've now ensured
+    that's standard in all Perl apps I deploy.  SIGUSR2 is a good choice, as it's
+    not usually in use (unlike SIGUSR1, which Apache uses).  I'm sure that writing
+    something similar for ruby wouldn't be too hard.\r\n\r\nOf course, the bonus of
+    using gdb against the live process is that it doesn't require any code changes
+    up front."
+- date: 2006-09-22
+  author: _why
+  content: "So, I started poking around with ddd, the graphical cover for gdb.  It's
+    a gnu tool itself.  And it looks like it opens a gdb process and drives everything
+    through the prompt.  kdbg does the same.\r\n\r\nOn the other hand, the tcl/tk
+    insight seems to bundle a modified gdb with its distribution."
+- date: 2006-09-22
+  author: Joe Ruby
+  content: Good stuff! I get those cpu-hogging Ruby processes once in a while too.
+- date: 2006-09-22
+  author: Jamis
+  content: Thanks for the tip, Dominic. That's another useful technique. I've done
+    the same in the past, but I didn't want to have to redeploy Backpack just to get
+    some debugging info--that quickly turns into a "dang, I need more info, let me
+    tweak and redeploy AGAIN" kind of cycle (at least for me). The gdb approach was
+    nice because it didn't require any code changes to do.
+- date: 2006-09-22
+  author: Dominic Mitchell
+  content: "Looking at environ(7), it's pretty easy to get out the environment as
+    well.\r\n\r\n<tt>(gdb) set $index = 0<br>\r\n(gdb) while environ[$index]<br>\r\n
+    &gt;p environ[$index]<br>\r\n &gt;set $index = $index + 1<br>\r\n &gt;end</tt>\r\n\r\nYou'll
+    always be surprised at the cruft that builds up in there.  Hence, one of my more
+    used shell scripts:\r\n\r\n<tt>exec env - \\<br>\r\n    LOGNAME=\"$LOGNAME\" \\<br>\r\n
+    \   HOME=\"$HOME\" \\<br>\r\n    PATH=\"/bin:/usr/bin:/usr/local/bin\" \\<br>\r\n
+    \   SHELL=\"$SHELL\" \\<br>\r\n    \"$@\"</tt>\r\n"
+- date: 2006-09-22
+  author: Jamis
+  content: _why, if such venerable apps as ddd are using pipes to communicate with
+    gdb, perhaps it's not such a bad strategy. We could do the same from ruby, no?
+    I might try and play with that a bit tonight, unless someone beats me to it.
+- date: 2006-09-22
+  author: _why
+  content: "Yeah, it looks like there are a few Perl modules that do this.  The closest
+    I can find to what we're looking for is Devel::GDB -- http://search.cpan.org/src/JEZRA/Devel-GDB-1.23/GDB.pm.
+    \r\n\r\n\r\nAlso, a Pythonista has done a similiar thing and shows how to wrap
+    it in a gdb function.  So, alternatively, we could come up with a set of gdb functions
+    for Ruby.  http://www.python.org/~jeremy/weblog/031003.html"
+- date: 2006-09-22
+  author: Jamis
+  content: "Well, I've got the following working--it's been a fun exercise:\r\n\r\n<table
+    class=\"CodeRay\"><tr>\n  <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt>5<tt>\n</tt>6<tt>\n</tt>7<tt>\n</tt>8<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre>gdb = <span class=\"co\">GDB</span>::<span class=\"co\">Ruby</span>.new(<span
+    class=\"pc\">ARGV</span>.shift)<tt>\n</tt><tt>\n</tt>gdb.backtrace.each <span
+    class=\"r\">do</span> |line|<tt>\n</tt>  puts line<tt>\n</tt><span class=\"r\">end</span><tt>\n</tt><tt>\n</tt>gdb.raise
+    <span class=\"co\">Exception</span>, <span class=\"s\"><span class=\"dl\">\"</span><span
+    class=\"k\">go boom!</span><span class=\"dl\">\"</span></span><tt>\n</tt>gdb.quit<tt>\n</tt></pre></td>\n</tr></table>\n\r\n\r\nMy
+    focus isn't a general interface for GDB, though--it's a way of interacting with
+    Ruby processes via GDB, via Ruby. Anyway, as I said, a fun exercise. I'll play
+    with it some more this weekend."
+- date: 2006-09-23
+  author: mfp
+  content: "Using the C API is way too much work :-)\r\nI have an eval command that
+    allows\r\n<pre>\r\n<code>\r\n(gdb) eval \"caller\"\r\n...\r\n(gdb) rb_locals\r\na
+    = 1\r\nfoo = \"dsfsf\"\r\n...\r\n</code>\r\n</pre>\r\n\r\nOnce you have #eval,
+    you pretty much get everything else for free.\r\n<p>\r\nI blogged about this at
+    <a href=\"http://eigenclass.org/hiki.rb?ruby+live+process+introspection%20\">eigenclass.org</a>.</p>"
+- date: 2006-09-23
+  author: mfp
+  content: 'I forgot to say that #eval allows arbitrary Ruby expressions and tries
+    to protect you from typos and other errors (so that you don''t kill your process
+    with a NameError/NoMethodError).'
+- date: 2006-09-23
+  author: Jamis
+  content: Oh, that's brilliant! Thanks for sharing that. That's a lot cleaner than
+    mucking about with the pointer offsets and stuff.
+- date: 2006-09-23
+  author: Nils
+  content: "Don't quite sure if this tip exactly fits the bill, but you can do some
+    nifty Objective-C introspection using nlist.\r\n\r\nhttp://unixjunkie.blogspot.com/2006/08/tracing-objective-c-messages.html\r\n\r\nAnd
+    maybe something similar could be done for Ruby by using  libffi ???\r\n\r\nhttp://chopine.be/lrz/diary/2006-09-15_RubyCocoa-and-libffi.html"

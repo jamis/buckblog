@@ -1,0 +1,128 @@
+---
+- date: 2006-04-20
+  author: Justin
+  content: "Jamis,\n\nNice article. That list of the four different 'types' of encapsulation
+    is pretty good. I wonder how long it is before someone turns that into Ruby code?
+    :)\n\nI've only written one 'DSL', as part of my day job, but I learned a lot
+    from it. I have two comments for you:\n\n1) Develop the  DSL directly in unit
+    tests. You can build your syntax as you go, and the bonus is you have a history
+    of functionality tests for your DSL. \n\n2) One very important tool you left out
+    was \"method_missing\" - almost no DSL is created without it. Of almost as much
+    importance, but much harder to understand the semantics of, is const_missing.\n\nThanks
+    for the post!\n\n "
+- date: 2006-04-20
+  author: Jeremy Voorhis
+  content: |-
+    I've had quite a lot of success with Ruby DSLs without ever resorting to *_missing, but I appreciate the breakdown of Ruby DSL techniques into those four categories.
+
+    There is one sentence I tend to disagree with:
+
+    bq. "A DSL can be thought of as (and many cases, really is) an API for your application."
+
+    This is one application for your DSL. Things like ActiveRecord macros and Rake can make developers productive. There is another class of DSL, however, that allows you to achieve this same productivity when communicating with non-technical domain experts. I will be writing more about this later.
+- date: 2006-04-20
+  author: Jamis
+  content: |-
+    Justin, good point about method_missing and const_missing. Thanks for mentioning those.
+
+    Jeremy, I'm kind of confused why you took issue with that sentence... maybe we're just using different definitions of API? There is nothing wrong, IMO, with an API that is accessible to non-technical domain experts.
+
+    At any rate, I look forward to your writeup.
+- date: 2006-04-20
+  author: Jeremy Voorhis
+  content: I suppose in the end it is all just an API, but I wanted to make a distinction
+    between DSLs for developers and DSLs for collaboration. They are both powerful
+    tools, but I find they lend themselves to different experiences.
+- date: 2006-04-20
+  author: Caleb Buxton
+  content: "At Canada On Rails I bumped into the proprietor of theserverside and he
+    asked me what the craziest thing I've done with Rails was.\r\n\r\nWe had just
+    seen topfunky's presentation on Gruff, and considering that that had demonstrated
+    the volume of code that ActiveRecord contains in relation to the rest of rails
+    -- I thought it would have been \"pretty crazy\" to talk about a project that
+    didn't use ActiveRecord.\r\n\r\nSo I described to him this project that basically
+    used an extended version of Scott Raymond's ruby library for the Flickr api. It
+    allowed an artist friend of mine to create a dynamic website, through the use
+    of notes and tags on the flickr end.\r\n\r\nSimple \"commands\" like\r\n\r\nopen
+    photoset The Name of her Photoset\r\n\r\nFloyd seemed pretty impressed and piped
+    up with \"oh, so you made her a DSL\"\r\n\r\nI considered for a minute and agreed
+    with him. However that wasn't my intention. I wanted her to be able to make and
+    modify her website at will.\r\n\r\nSo, I agree with you're first point Jamis,
+    I think DSL's are largely incidental if you're following a non-tech driven development
+    process.\r\n\r\nAnd I think Jeremy is spot on as well.\r\n\r\nKeep up the good
+    work."
+- date: 2006-04-20
+  author: Hans
+  content: Great post. I had no idea how to start on my first DSL (and had done precious
+    little metaprogramming), and then I listened to Jim Wierich's Rubyconf 05 talk
+    on the subject and within a week I had written one, and have been on the path
+    to metaprogramming zen ever since. I highly recommend that talk to anyone wanting
+    to get started with DSLs.
+- date: 2006-04-20
+  author: James Britt
+  content: |
+    Folks here might also want to scope out Jim Freeze's article over at Ruby Code &amp; Style, "Creating DSLs with Ruby"
+
+    http://www.artima.com/rubycs/articles/ruby_as_dsl.html
+- date: 2006-04-20
+  author: anon
+  content: |
+    No mention of yaml?  The "PBJ Sandwich" recipe shown is basically yaml formatted.  Yaml can be combined with ruby syntax to make flexible DSLs.
+- date: 2006-04-20
+  author: Arto Bendiken
+  content: |-
+    Learning to grok and utilize DSLs is something for which "a bit of Lisp experience":http://www.gigamonkeys.com/book/ comes very useful - virtually any Lisp program is simply built as layer upon higher-abstraction layer of DSLs, this being part of the very essence of Lisp coding.
+
+    Much of that experience and knowledge will translate into Ruby very naturally, so per "Eric Raymond's advice":http://lispers.org/, familiarizing yourself with Lisp is something that could _"make you a better programmer for the rest of your days, even if you never actually use Lisp itself a lot."_
+- date: 2006-04-21
+  author: Pat
+  content: |-
+    Hans,
+
+    Do you still have the MP3 for Jim's talk, or have a link for it?  The only thing I found is supposedly at http://yhrhosting.com:7000/files/rc12-sat-aftnoon-jim_weirich.mp3, but that's down.  I'd definitely like to listen to the talk he gave.
+- date: 2006-04-23
+  author: Elo
+  content: "It also depends on the domain per se, and at what granularity you define
+    it at. I've always associated DSL's with domains defined at a high level. \n\nThe
+    problem domain for a PBJ sandwich is really \"description\" of a process, not
+    execution of it. \n\nOne issue with non-dictionary (wordlist) based systems is
+    that there is a logical distinction between execution actors and parameters thereof.
+    In some languages, each token in the stream can potentially be an execution path,
+    and there is no barriers on abstraction. This can result in very expressive DSL's
+    like:\n\nEAT PBJ IF HUNGRY OTHERWISE SLEEP 6\n\nWAKEUP\n\nIF BORED WATCH :TELEVISION\n\n\nor
+    from communications:\n\n\nDEFINE_PORT INPORT  GETPORT 8\n\nDEFINE_PORT OUTPORT
+    GETPORT 9\n\nOPEN PORT OUTPORT\n\nHANDSHAKE\n\nSEND PACKET\n\nPROCESS_PORT ASYNC
+    INPORT\n\nROUTE PACKET TO FILE\n\nSometimes it helps to have tokens with no execution
+    value at all. For example, you could define \"TO\", but it doesn't really do anything
+    except act as syntactic sugar."
+- date: 2006-04-24
+  author: Jon Egil
+  content: |-
+    Jims talk (and others of RubyConf 2005)
+
+    http://brainspl.at/articles/2005/12/01/rubyconf-files-resurrected
+- date: 2006-05-05
+  author: Mike Smullin
+  content: |+
+    Nice post. Ruby, Rails &amp; Friends are too cool!
+
+
+
+- date: 2006-05-24
+  author: Greg Houston
+  content: "\r\nReading your suggestion, I tried to implement attr_accessor.  I posted
+    my adventures on http://ghouston.blogspot.com/2006/05/attraccessor-meta-programming.html\r\n\r\n"
+- date: 2006-06-08
+  author: hyperstruct
+  content: |-
+    What is it with you metaprogramming guys and examples about cooking?  It gets harder and harder to follow you.  Look here:
+
+    http://liquiddevelopment.blogspot.com/2006/03/way-of-meta.html
+
+    ...epecially the fourth installment.  Overall it's a quite in-depth exploration/tutorial.  And it's got more, well, food for thought.  (Now excuse me while I go make me a sandwich.)
+- date: 2006-10-03
+  author: Chris Parsons
+  content: "Great post. Inspired by your suggestions, I've started my own DSL for
+    invoicing. It's mostly an experiment, but it did allow me to get my invoices for
+    this month done in about five minutes!\r\n\r\nCheck it out if you're interested
+    at: \r\n\r\nhttp://blog.edendevelopment.co.uk/articles/2006/10/03/domain-specific-language-for-invoices"

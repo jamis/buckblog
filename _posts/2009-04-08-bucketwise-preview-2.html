@@ -1,0 +1,70 @@
+---
+layout: post
+title: 'BucketWise: Preview #2'
+post_id: 36
+categories:
+- Projects
+date: 2009-04-08 18:46:00.000000000 -06:00
+author: Jamis
+permalink: 2009/04/08/bucketwise-preview-2.html
+---
+
+<p>“Buckets” is now “BucketWise”. The name was more unique, easier to identify as an application, and just felt better than “Buckets”.</p>
+<p>To celebrate the new name, I’ve also made another screencast, this one demonstrating BucketWise’s anti-debt features. It’s a bit more long-winded than the first one: five and a half minutes of me talk-talk-talking:</p>
+<p><a href="http://buckblog.s3.amazonaws.com/videos/bucketwise-02.mov">BucketWise Preview #2</a> (QuickTime, 5:30, 10MB)</p>
+<p>I’m slowly working my way through the list of things that I want done before I release the code. For the curious, here’s what I’m wanting done before I open it up:</p>
+<p>Existing bugs:</p>
+<ul>
+	<li>after saving a reallocation event, the line items don’t reset</li>
+		<li>green “your transaction has been recorded” notice doesn’t disappear when starting a new event</li>
+		<li>date column for event row is squashed in safari</li>
+		<li>“Add a new bucket” should set focus on new bucket line</li>
+		<li>check number and “select repayment options” links are out of whack when editing an event</li>
+		<li>deleting event from account perma results in ajax error (maybe only when there is only a single event in the account?)</li>
+		<li>Reallocating a bucket doesn’t change the updated_at field for the bucket?</li>
+		<li>“move in” and “move out” links on dashboard don’t use existing form—they go to events/new</li>
+		<li>make all autocompleting fields refresh their source array after event creation</li>
+	</ul>
+<p>Remaining features:</p>
+<ul>
+	<li>tag delete (optionally move transactions to different tag, e.g. “tag merge”)</li>
+		<li>tag rename</li>
+		<li><span class="caps">API</span></li>
+		<li>validations</li>
+		<li>rake tasks for user and subscription creation</li>
+		<li>change style for event detail view: “window shade” style isn’t really working</li>
+		<li>attr_protected everywhere (perhaps implement an update_override method or something for places where it would be useful to do mass updates despite protected attrs?)</li>
+		<li>spinner for ajax actions</li>
+		<li>user info page (for password change)</li>
+		<li>password reset from login page</li>
+		<li>cache balances on events (?)</li>
+		<li>
+<span class="caps">README</span> with installation instructions</li>
+		<li><span class="caps">CHANGELOG</span></li>
+	</ul>
+<p>Those lists are straight from my <span class="caps">TODO</span> file. But for those who think I’m waiting for too much to be finished, never fear. I’ve got plenty that I want to implement, but which I’m willing to wait until post-release to work on:</p>
+<ul>
+	<li>signup process</li>
+		<li>exception notifier (?)</li>
+		<li>/subscriptions index</li>
+		<li>autocomplete actor field in event form</li>
+		<li>better 404 and 500 error pages</li>
+		<li>searching &amp; reporting</li>
+		<li>account reconciliation</li>
+		<li>transaction templates (“saved” or “memorized” transactions)</li>
+		<li>scheduled transactions (occur automatically at specified intervals)</li>
+		<li>show check numbers in event detail view</li>
+		<li>add a memo field for events</li>
+		<li>print stylesheet</li>
+		<li>oauth authentication for <span class="caps">API</span>
+</li>
+		<li>filter event views to show only events with a non-zero balance for the account in question</li>
+		<li>filter event views to show only deposits, or only expenses</li>
+		<li>normalize ‘actor’ so we can do actor-centric queries more efficiently</li>
+		<li>full-text searching on the memo field</li>
+		<li>show bucket and account balances next to names in drop-downs</li>
+		<li>make bucket reallocation work from bucket perma</li>
+	</ul>
+<p>Depending on how soon my bank sends the next statement for my checking account, I may or may not need to have “account reconciliation” done before launch, too.</p>
+<p>As before, let me state: I’m writing this application for myself, and really only for myself. If other people like it, that’s cool. I’m more than happy to share and let other people hack on it. I may even release it into the public domain (I haven’t yet decided what license I’ll use). But BucketWise will <em>always</em> be very opinionated. If you prefer having your finance app download your transactions from your bank, you’ll be disappointed by BucketWise. If you need currencies other than the US dollar, you’ll be disappointed by BucketWise. If you need pretty charts and graphs to analyze your cash flow, or if you want to track investments, or any number of other things, you’ll be disappointed by BucketWise.</p>
+<p>Just <span class="caps">FYI</span>. :)</p>

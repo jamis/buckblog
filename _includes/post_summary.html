@@ -1,0 +1,5 @@
+<div class="summary">
+  <span class="date">{{ post.date | date: "%-d %B %Y" }}</span> &mdash;
+  {% if post.summary.size > 0 %}{{ post.summary }} &mdash;{% endif %}
+  {{ post.content | minutes_to_read }}-minute read
+</div>

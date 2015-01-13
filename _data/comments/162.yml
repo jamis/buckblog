@@ -1,0 +1,202 @@
+---
+- date: 2006-03-05
+  author: Caleb Buxton
+  content: |-
+    +1 Capistrano for the sophisticated/pleasant reasons
+
+    +1 Reploy for nerd/related to function and environment reasons (Reploy: Ruby Deploy / Re-Deploy)
+- date: 2006-03-05
+  author: Mr. Kahn
+  content: The first time I ever took a train was from San Juan Capistrano to Los
+    Angeles.
+- date: 2006-03-05
+  author: Luke
+  content: Aw, you should have waited to reveal the new name on March 19th. :-)
+- date: 2006-03-05
+  author: Mike Zornek
+  content: Capistrano - sounds like a coffee drink to me. Oh well, RIP "Switchtower."
+- date: 2006-03-05
+  author: Ryan
+  content: |-
+    "I’m sure I’ll get bombarded by complaints, no matter what I call it"
+
+    Yep.  Honestly, I'm disappointed you caved so soon and so fast, and I don't think I like the new name, but at least the tool itself rocks -- that's what is most important anyway.
+
+    Here's my problem with the name.  When I have a conversation (while away from a computer) with someone about this great tool for handling deployments, I'll tell them the name is "Capistrano."  The next day, they won't remember the name.  "SwitchTower" was easier to remember.
+- date: 2006-03-05
+  author: Jamis
+  content: |-
+    Ryan, regarding "caving so soon and so fast," it wasn't a casual decision. We consulted an attorney, and their professional opinion was that we not fight it. True, we could have looked for a second opinion, but given that the prospect was not exactly sunny, it would have just been (IMO) wasting money and time that could be better spent elsewhere. Maybe we had a chance to fight it. Me, I'd rather be writing software than battling in court, and as the Bard said so eloquently, "What's in a name? that which we call a rose/By any other name would smell as sweet". I maintain that "so [SwitchTower] would, were [it] not [SwitchTower] call'd,/Retain that dear perfection which [it] owes/Without that title..." Capistrano is as SwitchTower does.
+
+    I agree, Capistrano isn't the name SwitchTower was, but I like it, and just as "Firefox" eventually stopped sounding awkward, I'm sure Capistrano will stop sounding odd as well.
+
+    Change is not comfortable, but we had no choice in this case. We're moving ahead with the new name, and we'll be back to business-as-usual in a few days.
+- date: 2006-03-05
+  author: Phil
+  content: |-
+    When I read this article, the first thing that came to mind was "Some place warm, a place where the beer flows like wine, where beautiful women instinctively flock like the salmon of Capistrano."
+
+    I'm talking about Aspen of course =)
+- date: 2006-03-05
+  author: Hans
+  content: I like it, although not as much as reploy, and more importantly I like
+    that "cap" is only three easy-to-type letters.
+- date: 2006-03-05
+  author: hangon
+  content: makes me want a meat sandwhich also...  :)
+- date: 2006-03-06
+  author: ste
+  content: |-
+    FWIW, I don't like "Capistrano" at all... for an Italian, it just sounds ridiculous.
+    The 3-letter command is nice though :-)
+- date: 2006-03-06
+  author: Neil Wilson
+  content: "Obviously the next 37S productivity tool needs to be something that does
+    an automatic sweep of the trademark, patent, business name and domain registration
+    databases across the globe. That way you can check during those intense sessions
+    around the Campfire.\r\n\r\nP.S. Is it as well to trademark Capistrano before
+    somebody else does?"
+- date: 2006-03-06
+  author: Neil Wilson
+  content: "I think the name will work. Just as we say 'Rails' rather than 'Ruby on
+    Rails' I reckon we'll all start calling it 'cap' before too long.\r\n\r\nI can
+    see the line now: OK we're ready to go. Let's \"Cap It\"."
+- date: 2006-03-06
+  author: darkliquid
+  content: |-
+    I couldn't help but tell you about this: http://www.sanjuancapistrano.net/dining/rubys/
+
+    I want a RubyBurger!
+- date: 2006-03-06
+  author: Gnana
+  content: "Jamis, I thought you might want to change the reference to \"SwitchTower\"
+    to \"Capistrano\" under the Manuals section of the RubyOnRails website: \nhttp://www.rubyonrails.org/docs\n\nhth\n-gnana\n"
+- date: 2006-03-06
+  author: Jamis
+  content: Gnana, thanks for the heads-up. I'll get that taken care of.
+- date: 2006-03-06
+  author: Bill Barnes
+  content: |-
+    Good choice. And you have my deepest empathy, because three years ago I went through this exact thing with my comic strip. It was called "Overdue", but a Large Media Corporation had some compelling prior art. We actually held a contest and one of our readers chose the new one, "Unshelved". Now it's hard to remember it was ever called anything else.
+
+    And now I'm porting our site over to RoR and am excited to use Capistrano to deploy it!
+- date: 2006-03-06
+  author: Bob
+  content: IANAL.  Just because a word/term is already a registered trademark doesn't
+    mean you couldn't have used it.  If the existing trademark(s) had nothing to do
+    with software, then I think you'd have been pretty safe.  Did your your attorney
+    give you any specific instructions on this?
+- date: 2006-03-06
+  author: Daniel Berger
+  content: "Now that the name has been changed, the burning question on everyone's
+    mind is will the swallows, er, programmers return to Capistrano?\r\n\r\nHey, at
+    least you've Leon Rene's song for some theme music!\r\n\r\n- Dan"
+- date: 2006-03-06
+  author: Carl
+  content: |-
+    Terrible new name. Same great product.
+
+    Thats the best you guys could come up with?
+
+    It sounds like something you would pull working out... "Ouch.. I think I just pulled my capistrano..."
+- date: 2006-03-06
+  author: Alex
+  content: |
+    That was quite the naming challenge you've just experienced.  Looks like you guys had a really good, solid, and "un-meeting-ish" meeting to get the issue sorted quickly.  Your decision making process is very *unlike* that which I experienced while in the Navy just a few months ago.. :)
+
+    Jamis, you've had a rough few days, so I've updated the wiki for you: http://wiki.rubyonrails.com/rails/pages/Capistrano
+
+    I look forward to deploying my first "Capistrano on Rails" real soon. :)
+- date: 2006-03-06
+  author: Jamis
+  content: |-
+    Alex, you're awesome. Thanks a ton for fixing the wiki page for me. I'm still mired in trying to get the Capistrano gem ready for release.
+
+    Your comment was a breath of fresh air. Thank-you!
+- date: 2006-03-06
+  author: Alex
+  content: Had a hunch it was a crunch time of sorts.  Thanks Jamis. :)
+- date: 2006-03-06
+  author: Darin
+  content: Even though you changed the name to prevent legal issues, did you write
+    the company which holds "Switchtower" a nastygram for being rude morons and causing
+    you guys a bunch of work? Maybe bill them for your time? ;-P
+- date: 2006-03-06
+  author: jim
+  content: should have been called switchbladegeoforceX.  I'll settle for Capistrano
+    though, especially on rye.  Its super tasty.
+- date: 2006-03-06
+  author: Tim Buchheim
+  content: "&lt;notextile&gt;#2:&lt;/notextile&gt;  And my first train ride was from
+    San Juan Capistrano to San Diego. :-)\r\n"
+- date: 2006-03-06
+  author: Carl Youngblood
+  content: |-
+    I'm surprised nobody has focused on the deeper issue here, that anybody could trademark the name Capistrano or the name of any other open source project without the resources to worry about trademarks and then start sending cease and desist letters to the project owners.  I really think that the idea of at least contacting the FSF about this was a good idea.
+
+    On a side topic, I'm curious, Jamis, has 37Signals registered trademarks for all of its products?  Could you guys get a C&amp;D for Campfire or Tada lists or something like that?
+- date: 2006-03-06
+  author: Jamis
+  content: Carl, that's not how trademarks work. You don't have to register a trademark
+    to own it. Basically, as long as you can show that you've been using first, you've
+    got a right to it. Registering a trademark does bring some benefits, like the
+    ability to send cease and desist letters and the like, but you can't register
+    a trademark that is already in use by someone else.
+- date: 2006-03-06
+  author: Carl Youngblood
+  content: Thanks for educating me Jamis.  I guess I'm just frustrated that you made
+    some useful tool without realizing you had chosen a name that was the same as
+    some other pretty much unrelated product, and suddenly when your project becomes
+    very successful, they sick their lawyers on you.  It doesn't seem fair at all.  But
+    I can understand and appreciate the position you are in, and your decision makes
+    sense.
+- date: 2006-03-07
+  author: shootTheMessenger
+  content: Can I get a Capistrano on rye, hold the mayo?
+- date: 2006-03-07
+  author: Cristiano Dias
+  content: I'm glad you didn't go with Pemba... You don't want to know what that means
+    in Brazilian Portuguese... 8-)
+- date: 2006-03-07
+  author: joe
+  content: 'Here''s my issue with the name: it''s not a commonly known object or proper
+    noun that I already know and can quickly bind to.  I''m looking at my desktop
+    and development environment right now and where''s what I see: fire, fox, windows,
+    eclipse, explorer, toolbar, ruby, rails, and now formerly switch and tower.  Capistrano
+    is not a word I already know or even a mash-up of words I know (subversion), or
+    even a silly pun I can identify with.  It''s just a random word to me, Catholic
+    mission reference notwithstanding.  Heck, "Deploystrano" would have at least clued
+    me in.  '
+- date: 2006-03-08
+  author: Peter M.
+  content: Maybe Raindance was pissed that a Google on "switchtower" puts Jamis' work
+    on top. lol. raindance clearly does business in a very corporate space, where
+    a lot of the money and a minimum of the buzz is found...
+- date: 2006-03-09
+  author: Will
+  content: "+1 Reploy!"
+- date: 2006-03-10
+  author: Preston
+  content: "Did you know there is a Ruby's resturant (with a rails/trains theme) in
+    Capistrano next to the train station?  \n\nhttp://www.sanjuancapistrano.net/dining/rubys/\n\nAlso
+    the train station is a rather pleasant open-air sort of place (rather than closed-in
+    and musty).\n\nhttp://www.sanjuancapistrano.net/depot/index.html\n\nHow many metaphors
+    can you make with that?   :)"
+- date: 2006-03-23
+  author: Peter Merel
+  content: "I frankly hate this name. It's long, unevocative, and meaningless. It
+    sounds like a release of Windows.\n\nOf course it's too late but I'd have used
+    the (.com free) \"railmux\". Or raility, railsonrails, railator, railismo, railist,
+    conducktor ... they're all .com free. I don't usually think you guys suck. But
+    in this case ... \n\nHey, railsucker is .com free as well!\n\n"
+- date: 2006-03-23
+  author: Jamis
+  content: |-
+    Peter, you must feel passionately because you chimed in _18 days_ after the announcement to tell me you think the name  sucks, as well as anyone that had anything to do with choosing the name??
+
+    Whatever, man. The name's Capistrano.
+- date: 2007-02-11
+  author: Robertson Freitas
+  content: "<p>It sounds funny to me: Capistrano is the name of the city where my
+    parents live (Capistrano, Ceará, Brazil), and Capistrano de Abreu is the name
+    of an important Brazilian historian.</p>"

@@ -1,0 +1,41 @@
+---
+- date: 2011-02-03
+  author: Martijn
+  content: "<p>Funny, it looks really cool and the implementation is easy but it’s
+    not really useful. Your posts are a cool read, though :)</p>"
+- date: 2011-02-04
+  author: Macuyiko
+  content: "<p>Interesting post, as always. This page<sup><a href=\"#fn1\">1</a></sup>
+    suggests the name comes from the fact that ‘Like binary tree, a sidewinder Maze
+    can be solved deterministically without error from bottom to top, because at each
+    row, there will always be exactly one passage leading up. A solution to a sidewinder
+    Maze will never double back on itself or visit a row more than once, although
+    it will “wind from side to side”.’ So as you traverse the rows, you’ll ‘wave’
+    from side to side.</p>\n\n\n\t<p>You’re right however that there also exists an
+    integer programming-based routing pattern approach called Sidewinder. The relevant
+    paper is available online<sup><a href=\"#fn2\">2</a></sup>, together with slides<sup><a
+    href=\"#fn3\">3</a></sup>. There is no direct link between the two algorithms,
+    at least not as far as I can tell after a quick read through the otherwise interesting
+    paper, although it can be noted that the routing problem as described in the paper
+    also tends to require looking for maze-like patterns :).</p>\n\n\n\t<p>I’m looking
+    forward to more posts in this style, be it about mazes or other topics. Your code
+    samples in particular are a nice contribution to anyone wanting to explore maze
+    generation.</p>\n\n\n\t<pre><code>http://www.astrolog.org/labyrnth/algrithm.htm\nhttp://www.eecs.umich.edu/~imarkov/pubs/conf/slip08-side.pdf\nhttp://www.sliponline.org/SLIP08/presentations/5b.ppt</code></pre>"
+- date: 2011-02-04
+  author: Jamis
+  content: "<p>@Macuyiko, the “Think Labyrinth” site inspired all of these maze articles
+    I’ve written, and yet I managed to overlook that bit about a solution to a Sidewinder
+    maze winding “from side to side”! Thank-you for pointing that out; that makes
+    a lot of sense.</p>\n\n\n\t<p>Thanks also for researching the other, routing-based
+    algorithm. I had thought there was a chance of a connection there, because as
+    you said, routing problems relate to mazes (both being associated with spanning
+    trees).</p>\n\n\n\t<p>And thank-you, especially, for the kind words!</p>"
+- date: 2011-02-06
+  author: Tim
+  content: "<p>I stumbled upon your posts awhile ago and just decided to start implementing
+    them in flash and adding in some ui to generate mazes from 3×3 cells to 100×100
+    cells. Very informative, I had no idea how mazes could be generated prior.</p>\n\n\n\t<p>http://tim.ibocreative.com/flash/mazeGen/</p>"
+- date: 2011-02-06
+  author: Jamis
+  content: "<p>@Tim, thanks for the link to your maze implementations! I’m glad you’ve
+    been inspired to work on these, it’s a lot of fun. :)</p>"

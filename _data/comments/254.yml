@@ -1,0 +1,106 @@
+---
+- date: 2005-10-11
+  author: topfunky
+  content: |-
+    Basecamp + Writeboard? Wow, that's the last big gaping hole that will make Basecamp much more useful. Hopefully this is the new feature being pushed at 10 pm tonight...
+
+    In the meantime, it would be great if there was some kind of gem hook-in so Rails plugins could be easily updated with the gems system. Maybe doing a require or include in init.rb that refers to an installed gem? Or is that too awkward?
+- date: 2005-10-11
+  author: PJ Hyett
+  content: Very nice!
+- date: 2005-10-11
+  author: rick
+  content: |-
+    topfunky: i had the same thought about gems.  Though, I'm not sure that's up to the plugins to decide.  One idea I had was distributing a gem that sets up a generator.  Type script/generate plugin acts_as_chunky_bacon, and it writes the default files to vendor/plugin/ (init.rb, default templates, etc).
+
+    On the other hand, storing all the files in vendor/plugin is handy for those with restrictive web hosts...
+- date: 2005-10-11
+  author: Jamis
+  content: |-
+    Rick, I've been leaning towards the plugin-installer generator, too. Perhaps it would just install an init.rb stub in vendor/plugins/whatever that loaded the gem-installed plugin.
+
+    Having plugins in vendor/plugins is handy, though, because it allows your application to be distributable without requiring a bunch of dependencies. For 37signals, we use svn:externals to depend on our in-house plugins, which is quite convenient.
+- date: 2005-10-11
+  author: topfunky
+  content: |-
+    It IS Writeboards!
+
+    Thank you, Jamis. I will name my first child after you.
+- date: 2005-10-12
+  author: Ladislav Martincik
+  content: Really good, keep going! Good job!
+- date: 2005-10-12
+  author: James Adam
+  content: |-
+    Hey Jamis - hopefully you'll get a chance to read the email I've just sent - I think the Rails team I work in might have developed a superset of this functionality which you guys might be interested in absorbing into Rails...
+
+    Essentially, we can drop in vertical appliation slices (or 'frameworks' as we call them), complete with models, views, controllers - all overridable by the users own code - and manage them as svn:externals for swift and efficient bugfixing.
+
+    Let me know what you think!
+- date: 2005-10-12
+  author: Tyler Weir
+  content: |-
+    Jamis, you're a stud!
+
+    Fantastic.
+- date: 2005-10-12
+  author: süleyman topdemir
+  content: jamis, very nice.
+- date: 2005-10-13
+  author: Robert Brook
+  content: "A tiny tweak: how about letting plugins just be installed as zips, and
+    let Rails do the rest?\r\n\r\nOne less step, one more customer?"
+- date: 2005-10-13
+  author: Jon Tirsen
+  content: |-
+    What about supporting plugins as RubyGems?
+
+    I want to be able to do:
+    gem install chunk-bacon-1.1
+    echo chunk-bacon-1.1 &gt;&gt; environment/plugins
+
+    Or something like that.
+- date: 2005-10-13
+  author: Jon Tirsen
+  content: |+
+    Hmm... Formatting didn't work. Lets try again:
+
+    gem install chunk-bacon-1.1
+
+    echo chunk-bacon-1.1 &gt;&gt; environment/plugins
+
+- date: 2005-10-13
+  author: Seth
+  content: Oh yeah! Good work guys
+- date: 2005-10-13
+  author: Jamis
+  content: |-
+    Robert Brook--zipped plugins would be nifty. A patch would be lovely. :)
+
+    Jon Tirsen: ditto :)
+
+    Seriously, there is plenty of room for improvement in the current implementation. And as ever, the fastest way to see your wishes fulfilled, is to fulfill them yourself and submit a patch.
+- date: 2005-10-20
+  author: Brian
+  content: "Nice work. \n\nYou mentioned subscriptions work at 37Signals. I'm looking
+    for the ability to have people subscribe to a Typo blog so that they can receive
+    email when the site is updated, preferably batched at the end of the day.\n\nKnow
+    of any code that can be used as a base to get that functionality added to Typo?"
+- date: 2005-10-20
+  author: Jamis
+  content: |-
+    Brian, not off-hand. However, RSS-feeds are what are typically used these days for that kind of notification. People can easily subscribe to the RSS feeds and be notified with each new article.
+
+    If you really want email notification, you could manage that as a separate daemon that runs nightly. It just reads the RSS feed, determines if anything new has been added since the last run, and if so, fires off an email to the subscribers.
+- date: 2005-10-25
+  author: ctran
+  content: Any plan for a repository yet?
+- date: 2005-10-25
+  author: Jamis
+  content: ctran, only thinking. We've been so focused on getting 1.0 ready that we
+    haven't been doing any work at all on peripherals. That said, if some third party
+    wanted to start organizing a central location for people to distribute their plugins
+    from, that'd be cool.
+- date: 2005-10-26
+  author: Ramin
+  content: Why not just use RubyForge to host the plugins?

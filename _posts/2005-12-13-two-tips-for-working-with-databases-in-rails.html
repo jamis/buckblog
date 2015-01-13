@@ -1,0 +1,47 @@
+---
+layout: post
+title: Two tips for working with databases in Rails
+post_id: 242
+categories:
+- Tips & Tricks
+date: 2005-12-13 19:13:00.000000000 -07:00
+author: Jamis
+permalink: 2005/12/13/two-tips-for-working-with-databases-in-rails.html
+---
+
+<p>First tip: I’ve found recently that if I have a boolean field in the database that is being used to mark whether some event occurred (<code>referrals.pending</code>, or <code>feeds.subscribed</code>) it is often more effective to make the field a <code>datetime</code> and record the moment that the event occurred. Then, a <code>NULL</code> can be used to indicate that the event has not yet occurred. Thus, you have <code>referrals.applied_at</code> with a method on <code>Referral</code> like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">pending?</span><tt>
+</tt>  applied_at.nil?<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>This gives you the capability down the road to not only report whether the event occurred, but how frequently over various periods of time.</p>
+<p>The second tip is handy when you’re working on a <a href="http://api.rubyonrails.com/classes/ActiveRecord/Migration.html">migration</a>. I find that the process (for me) works like this:</p>
+<ul>
+	<li>Create the migration and run it.</li>
+		<li>Discover I forgot something.</li>
+		<li>Migrate down to the previous schema version.</li>
+		<li>Change the migration and run it again.</li>
+	</ul>
+<p>(Repeat as necessary.) However, being the imperfect programmer that I am, I find that I often implement the <code>#down</code> method incorrectly, forgetting to drop a table or remove a column. Thus, when I try to run the migration again, it fails saying that the table/column already exists.</p>
+<p>Using <code>script/console</code> and <a href="http://api.rubyonrails.com/classes/ActiveRecord/Schema.html">ActiveRecord::Schema</a>, it becomes a cinch to clean up the artifacts:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">ActiveRecord</span>::<span class="co">Schema</span>.define <span class="r">do</span><tt>
+</tt>  drop_table <span class="sy">:foos</span><tt>
+</tt>  remove_column <span class="sy">:bars</span>, <span class="sy">:blitz</span><tt>
+</tt>  remove_column <span class="sy">:bars</span>, <span class="sy">:things</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>And if you have the <a href="http://svn.jamisbuck.org/rails-plugins/verbose_migrations">verbose_migrations</a> plugin installed, you can also get some very useful output describing what was done and how long it all took.</p>

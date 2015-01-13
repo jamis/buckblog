@@ -1,0 +1,61 @@
+---
+layout: post
+title: More inline RJS
+post_id: 141
+categories:
+- Tips & Tricks
+date: 2007-01-12 13:02:00.000000000 -07:00
+author: Jamis
+permalink: 2007/01/12/more-inline-rjs.html
+---
+
+<p>In <a href="http://weblog.jamisbuck.org/2007/1/10/inline-rjs">Inline <span class="caps">RJS</span></a> I talked about invoking simple <span class="caps">RJS</span> actions right there in your controller. Did you know you can do the same in your views, with (among other helpers) <code>link_to_function</code>?</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"># before<tt>
+</tt><span class="il"><span class="dl">&lt;%=</span> link_to_function <span class="s"><span class="dl">"</span><span class="k">Close</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">$('some_div').down('form').reset(); $('some_div').hide()</span><span class="dl">"</span></span> <span class="dl">%&gt;</span></span><tt>
+</tt><tt>
+</tt># after<tt>
+</tt><span class="il"><span class="dl">&lt;%=</span> link_to_function <span class="s"><span class="dl">"</span><span class="k">Close</span><span class="dl">"</span></span> <span class="r">do</span> |page|<tt>
+</tt>      page[<span class="sy">:some_div</span>].down(<span class="s"><span class="dl">'</span><span class="k">form</span><span class="dl">'</span></span>).reset<tt>
+</tt>      page[<span class="sy">:some_div</span>].hide<tt>
+</tt>    <span class="r">end</span> <span class="dl">%&gt;</span></span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Furthermore, <a href="http://conio.net/">Sam Stephenson</a> showed me a trick where you can use <span class="caps">RJS</span> in arbitrary helper methods to generate Javascript code. Don’t like inlining <span class="caps">RJS</span> as above? Then refactor it like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">module</span> <span class="cl">SomeHelper</span><tt>
+</tt>  <span class="r">def</span> <span class="fu">hide_and_reset</span>(div)<tt>
+</tt>    update_page <span class="r">do</span> |page|<tt>
+</tt>      page[div].down(<span class="s"><span class="dl">'</span><span class="k">form</span><span class="dl">'</span></span>).reset<tt>
+</tt>      page[div].hide<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Then, in your view:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="il"><span class="dl">&lt;%=</span> link_to_function <span class="s"><span class="dl">"</span><span class="k">Close</span><span class="dl">"</span></span>, hide_and_reset(<span class="sy">:some_div</span>) <span class="dl">%&gt;</span></span><tt>
+</tt></pre></td>
+</tr></table>
+<p>That <code>update_page</code> method is defined in PrototypeHelper, and will return the generated Javascript as a string. Beware, though: whether you use <code>update_page</code> or a block passed to <code>link_to_function</code>, making use of inline <span class="caps">RJS</span> has a price. It’s fine if you only need to do it a few times on a page, but stick to explicit Javascript if you’re emitting lots of bits like that.</p>

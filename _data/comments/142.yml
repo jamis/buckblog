@@ -1,0 +1,206 @@
+---
+- date: 2007-01-11
+  author: Piotr Usewicz
+  content: "<p>Ah, great example. Suits my needs perfectly. Gonna implement it tomorrow
+    ;]</p>"
+- date: 2007-01-11
+  author: Matt Wigham
+  content: "<p>Awesome! Thanks Jamis.</p>\n\n\n\t<p>So does that function the same
+    as the transaction? If the after_create fails does the whole save fail?</p>"
+- date: 2007-01-11
+  author: Jamis
+  content: "<p>Matt, ActiveRecord wraps every #save or #create call in a transaction,
+    if one is not already active, so yah, you get the transaction for free this way,
+    too. :)</p>"
+- date: 2007-01-11
+  author: Eric Hodel
+  content: "<p>How do you keep users from updating fields you they shouldn’t be allowed
+    to change like foreign keys or record versions or audit fields (created/updated_on)?</p>"
+- date: 2007-01-11
+  author: Jamis
+  content: "<p>Eric, in practice, I sanitize the hash before passing it to the create
+    method. I didn’t demonstrate that here, simply to keep the example clearer.</p>"
+- date: 2007-01-11
+  author: Tim
+  content: "<p>I am really enjoying your “tip a day”-series. It’s a great inspiration
+    and the choice of topics is spot-on. Keep up the great work!</p>"
+- date: 2007-01-11
+  author: Rich
+  content: "<p>Maybe it’s the insane purist in me getting out but, with this approach
+    it really looks like you’re teaching your models a bit too much about the view
+    realm. In the original version of the controller, it was very clear how the values
+    were being set. Now it’s not so clear if you’re just running across this code.</p>"
+- date: 2007-01-11
+  author: Chris
+  content: "<p>Eric: You can also use attr_protected to guard against a user setting
+    user_id or somesuch.</p>"
+- date: 2007-01-11
+  author: Jamis
+  content: "<p>Chris, thanks for pointing that out. I always forget about attr_protected.</p>\n\n\n\t<p>Rich,
+    I disagree. The Person model above still has zero knowledge of the view in it.
+    All I’ve done is made it so that if a particular bit of data is given when creating
+    a person, the person record knows how to create it’s associated records simultaneously.
+    It’s a data issue, not a view issue, and belongs (IMO) in the model.</p>\n\n\n\t<p>This
+    is particularly useful with has_many associations, like where a person might have
+    multiple email_addresses, because you can manage the deletion/update/creation
+    transactionally with the creation/update of the associated person.</p>"
+- date: 2007-01-11
+  author: Curtis
+  content: "<p>I haven’t tried this yet, but how will validations work in this case?
+    \ Say the @data[:email_address] contains an invalid email address that will fail
+    a validation inside of the EmailAddress model.  The view may have to go through
+    some hoops to get access to this failed validation.</p>"
+- date: 2007-01-11
+  author: Ryan Allen
+  content: "<p>That looks like code from Sunrise :) I love the syntax highlighting,
+    is that achieved with the Syntax gem?</p>"
+- date: 2007-01-11
+  author: Seth
+  content: "<p>Jamis,</p>\n\n\n\t<p>I’ve thought about doing something like this in
+    the past for Substruct (and other code), but decided against it.</p>\n\n\n\t<p>I
+    didn’t like the idea of models creating instances of other models from within.
+    Seemed “dirty” to me.</p>\n\n\n\t<p>My solution was to create a module which contained
+    all of the logic for <span class=\"caps\">CRUD</span> actions that needed transactions.
+    I just include that module from my controller, and use the methods declared within.</p>\n\n\n\t<p>What’s
+    the general thought on creating AR objects from within  AR objects? Am I over
+    complicating the problem?</p>"
+- date: 2007-01-11
+  author: Jamis
+  content: "<p>Curtis, validations definitely make it tricker, though not impossible.
+    You’d need to use build instead of create, and set up a custom validation callback
+    in which to test whether the associated objects are all valid. If not, you would
+    then need to set up a way to report that back to the client. Not trivial, but
+    not impossible, either. Fortunately, I’ve not had to deal with that particular
+    scenario yet. :)</p>\n\n\n\t<p>Ryan, let’s just say it is <em>inspired</em> by
+    Sunrise. :) The actual code in Sunrise is significantly different, and quite a
+    bit more robust. The syntax highlighting is achieved via a <a href=\"http://mephistoblog.com/\">Mephisto</a>
+    plugin, which uses <a href=\"http://coderay.rubychan.de/\">Coderay</a>.</p>\n\n\n\t<p>Seth,
+    I think having model objects create other model objects is far from dirty, and
+    in fact is one of the reasons for <em>having</em> models. Models are what you
+    use to talk to the database, and creating records is one of the fundamental things
+    you <em>do</em> when you talk to databases.</p>"
+- date: 2007-01-11
+  author: Seth
+  content: "<p>Validation is definitely one reason I went with my method of modularizing
+    the code for order creation…</p>\n\n\n\t<p>Maybe for your next tip of the day
+    you could provide an insight as to just how you’d deal with such a situation :)</p>"
+- date: 2007-01-11
+  author: Sergey K
+  content: "<p>As I know, that is not need\nperson<a href=\"email_address\">data</a>[address],\njust
+    name your field as person<a href=\"address\">email_address</a> and associated
+    object will be created by default</p>\n\n\n\t<p>same for has_many\n&lt;%= text_field_tag(“web_links[][name]”)
+    %&gt;\n&lt;%= text_field_tag(“web_links[][url]”) %&gt;</p>\n\n\n\t<p>I found that
+    it not works only for composed_of, if I want to allow component init itself\nin
+    this case i need\n@event = Event.new(params[:event])\n@event.date = @date = DatePattern.new(params[:date])\nbut
+    thanks for that article, I will try to change that</p>"
+- date: 2007-01-12
+  author: Sandro Paganotti
+  content: "<p>Very intresting ! Thank you Jamis</p>"
+- date: 2007-01-12
+  author: Neil Wilson
+  content: "<p>Is there any particular reason in Rails why your Active Record classes
+    have to be accessed directly from the controller?</p>\n\n\n\t<p>It would seem
+    to me that there is a layer of logic between the controller and the database representation.</p>\n\n\n\t<p>What
+    concerns me is that you have created a data structure container within a class.
+    The @data hash is a classic old fashioned Struct (or Record if you remember pascal),
+    that is only there because your controller is collecting the params as a hash.</p>\n\n\n\t<p>The
+    data hash and the break out procedure look like they ought to be an object/class
+    to me and really shouldn’t belong to Person. It is the transformation linkage
+    between the screen/controller representation and the Person representation.</p>\n\n\n\t<p>Can’t
+    it be decoupled from Person?</p>"
+- date: 2007-01-12
+  author: Jamis
+  content: "<p>Neil, sounds like a whole lot of complexity for very little benefit,
+    if you ask me. The hash going in is simply information about how to construct
+    the object. If you feel strongly about it, you could have a separate object that
+    is solely responsible for building Person instances and their associations, but
+    then you have to add additional code to support the same elegance as “account.people.create(...)”.
+    My recommendation: if you really need that extra layer, go for it. If you don’t,
+    avoid it, because more code equals higher development and maintenance cost.</p>"
+- date: 2007-01-12
+  author: Bill Siggelkow
+  content: "<p>Great tip Jamis … but I wasn’t clear on where (or what) sets @data?
+    Is that in the ActiveRecord’s create method or the Person’s new method?</p>"
+- date: 2007-01-12
+  author: Jamis
+  content: "<p>Bill, when the form gets submitted, the <code>params</code> hash that
+    comes in looks something like this:</p>\n\n\n<pre>\n  { :person =&gt; {\n      :name
+    =&gt; \"...\",\n      :data =&gt; {\n        :email_address =&gt; {\n          :address
+    =&gt; \"...\" \n        },\n        :phone_number =&gt; {\n          :number =&gt;
+    \"...\" \n        }\n      }\n    }\n  }\n</pre>\n\n\t<p>When we pass <code>params[:person]</code>
+    to the create method, ActiveRecord automatically calls the <code>name=</code>
+    and <code>data=</code> methods on Person to set those attributes, Since we defined
+    <code>attr_writer :data</code> on Person, that automatically sets the <code>@data</code>
+    instance variable.</p>\n\n\n\t<p>It’s a bit of magic, but once you get the idea
+    that AR uses the setter methods to assign incoming attributes, you can do a lot
+    of cool tricks with <code>attr_writer</code>.</p>"
+- date: 2007-01-12
+  author: Bill Siggelkow
+  content: "<p>Thanks for the clarification, Jamis … it was the “view” part that I
+    was missing … I see it now in the code snippet. By the way, do you normally use
+    the ”# The corresponding view …” comments in your controllers as you do here?
+    That appears to be quite an excellent practice.</p>"
+- date: 2007-01-12
+  author: Jamis
+  content: "<p>Bill, I don’t normally do that, since it requires a lot of work and
+    attention to make sure it stays in sync. I only did it here to demonstrate the
+    relationship between what the action expects and what the view sends.</p>"
+- date: 2007-01-16
+  author: Sean Cribbs
+  content: "<p>Funny, I had just started using that pattern a little while ago because
+    it makes creating associated objects so easy, it’s criminal.  Nice post!</p>"
+- date: 2007-01-17
+  author: Sergey
+  content: "<p>That is good technique, but standard \ntext_field :object, :method\nf.text_field
+    :method\nDon’t allows create such nested keys</p>"
+- date: 2007-01-17
+  author: Jamis
+  content: <p>Sergey, as of last night, edge rails (NOT 1.2) works for that. You just
+    do form_for(some_object), and then use the yielded form builder to do “f.fields_for(:subobject,
+    some_object.subobject)”, and the fields will be named correctly (e.g. “some_object<a
+    href="name">subobject</a>”, etc.).</p>
+- date: 2007-01-18
+  author: Sergey
+  content: "<p>Thanks, I’m seen that changeset http://dev.rubyonrails.org/changeset/5965</p>"
+- date: 2007-01-19
+  author: Sergey
+  content: |-
+    <p>I’m added following http://pastie.caboo.se/34206
+    may be that can usefull for someone</p>
+- date: 2007-01-24
+  author: Jay Levitt
+  content: "<p>If a person should always be created along with their address and phone
+    number, I’d be more inclined to make create private, and add a new factory-type
+    method that creates the person, address and phone number from its args.  That
+    eliminates the need for stuffing temporary data into the “data” instance variable.</p>\n\n\n\t<p>Alternatively,
+    if AR lets you override create, I’d do that.</p>"
+- date: 2007-02-02
+  author: blog.ardes.com
+  content: "<p>Nice Post Jamis.</p>\n\n\n\t<p>I’ve done something similar, and did
+    need to validate the created objects.  In fact I needed the save to return false
+    (rather that raise an exception) and have some errors (for ActiveResource – you’ll
+    get a nice errors xml rather than 500 Server Error).</p>\n\n\n\t<p>The first step
+    is to validate associated objects, as you point out.</p>\n\n\n\t<p>Then, you need
+    to make sure you use save! to create your objects (to raise invalid exceptions)</p>\n\n\n\t<p>The
+    next step is to catch those exceptions and return false</p>\n\n\n\t<ol>\n\t<li>catch
+    any problems with the after_create\ndef save(<strong>args)\n  super(</strong>args)\nrescue
+    ActiveRecord::RecordInvalid =&gt; invalid\n  false\nend</li>\n\t</ol>\n\n\n\t<p>If
+    you want to transmit those errors, you’d just iterate through invalid.record.errors
+    and add them to the main object.</p>"
+- date: 2007-02-03
+  author: watkyn
+  content: "<p>Jamis or Sergey,</p>\n\n\n\t<p>I am having trouble with the nested
+    form builders mentioned in comment 25.</p>\n\n\n\t<p>Sergey, as of last night,
+    edge rails (NOT 1.2) works for that. You just do form_for(some_object), and then
+    use the yielded form builder to do “f.fields_for(:subobject, some_object.subobject)”,
+    and the fields will be named correctly (e.g. “some_objectsubobject”, etc.).</p>\n\n\n\t<p>Here
+    is a pastie of what I have tried.\nhttp://pastie.caboo.se/37394\nI get an nil
+    object error where it is trying to do nil.merge.</p>"
+- date: 2007-02-03
+  author: Jamis
+  content: "<p>watkyn, are you sure you’re using edge rails? Sounds like maybe not,
+    judging from the error.</p>"
+- date: 2007-02-03
+  author: watkyn
+  content: "<p>Jamis, I guess I was thinking I would not need to use edge rails this
+    early after the release of 1.2.1 :)  Thanks.</p>"

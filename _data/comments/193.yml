@@ -1,0 +1,19 @@
+---
+- date: 2006-10-16
+  author: Phil Ross
+  content: "<p>I think I’ve found a bug in RouteSet#generate.</p>\n\n\n\t<p>The following
+    code is supposed to skip routes that don’t match:</p>\n\n\n\t<p>routes.each do
+    |route|\n  results = route.send(method, options, merged, expire_on)\n  return
+    results if results\nend</p>\n\n\n\t<p>This works with method=:generate since Route#generate
+    either returns a string or nil.</p>\n\n\n\t<p>However, Route#generate_extras and
+    Route#generate_raw always return an array. The elements of this array will be
+    nil if the Route doesn’t match.</p>\n\n\n\t<p>I’ve documented a problem this causes
+    and provided a patch in http://dev.rubyonrails.org/ticket/6300.</p>"
+- date: 2006-10-16
+  author: Jamis
+  content: "<p>Good catch, Phil!</p>"
+- date: 2006-10-30
+  author: Ryan Lowe
+  content: "<p>Jamis, thanks for this series—it’s awesome.  I always wondered how
+    this worked.  Seeing how the language enables it just gives me that much more
+    respect for Ruby.</p>"

@@ -1,0 +1,93 @@
+---
+layout: post
+title: Net::SSH 1.1.0
+post_id: 92
+categories:
+- Announcements
+date: 2007-04-30 23:40:00.000000000 -06:00
+author: Jamis
+permalink: 2007/04/30/net-ssh-1-1-0.html
+---
+
+<p>Net::SSH is a pure-Ruby implementation of an <span class="caps">SSH</span> (v2) client. It can be used to execute tasks on and forward connections to and from remote hosts via <span class="caps">SSH</span>.</p>
+<p>You can grab version 1.1.0 now via RubyGems:</p>
+<pre><code>gem install net-ssh</code></pre>
+<p>Or, you can grab a package via <a href="http://rubyforge.org/projects/net-ssh">the project’s page at RubyForge</a>.</p>
+<p>Version 1.1.0 has three significant changes from the previous release:</p>
+<ul>
+	<li>A script that implements a subset of the ssh-keygen functionality is now provided, called “rb-keygen”. This is probably only going to be useful in environments where there is no command-line ssh client installed.</li>
+	</ul>
+<ul>
+	<li>
+<span class="caps">SSH</span> agent forwarding is now supported. It is disabled by default, but to enable it just pass :forward_agent =&gt; true to the start method:</li>
+	</ul>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">Net</span>::<span class="co">SSH</span>.start(<span class="s"><span class="dl">"</span><span class="k">the.host.com</span><span class="dl">"</span></span>, <span class="sy">:forward_agent</span> =&gt; <span class="pc">true</span>) <span class="r">do</span> |ssh|<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Many thanks to Chris Andrews for implementing this!</p>
+<ul>
+	<li>Server key verification has been implemented. It is enabled by default. The first time a key is encountered for a particular host and port, it is remembered. If that key ever changes, an exception will be raised. If you want the new key to be remembered, you can rescue the exception, call the “remember_host!” on it, and retry the block:</li>
+	</ul>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">begin</span><tt>
+</tt>  <span class="co">Net</span>::<span class="co">SSH</span>.start(...) <span class="r">do</span> |ssh|<tt>
+</tt>    <span class="c"># ...</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">rescue</span> <span class="co">Net</span>::<span class="co">SSH</span>::<span class="co">HostKeyMismatch</span> =&gt; e<tt>
+</tt>  puts <span class="s"><span class="dl">"</span><span class="k">remembering new key: </span><span class="il"><span class="dl">#{</span>e.fingerprint<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt>  e.remember_host!<tt>
+</tt>  <span class="r">retry</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>If, on the other hand, you want to disable server key verification altogether, you can simply pass :paranoid =&gt; false and be done with it:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">Net</span>::<span class="co">SSH</span>.start(..., <span class="sy">:paranoid</span> =&gt; <span class="pc">false</span>) <span class="r">do</span> |ssh|<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Lastly, note that the default setting will not verify server keys if the host is the localhost and the port is something other than 22, since that will typically indicate a connection being made over a forwarded port, and the key will very likely be different on subsequent calls. If, however, you want server key verification in spite of that, you can pass :paranoid =&gt; :very,</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">Net</span>::<span class="co">SSH</span>.start(..., <span class="sy">:paranoid</span> =&gt; <span class="sy">:very</span>) <span class="r">do</span> |ssh|<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>If none of those options suit you, you can implement your own class that implements the #verify method, accepting a single Hash as argument, which should return true if the key is accepted:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">Net</span>::<span class="co">SSH</span>.start(..., <span class="sy">:paranoid</span> =&gt; <span class="co">CustomClass</span>.new) <span class="r">do</span> |ssh|<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Enjoy!</p>

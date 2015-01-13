@@ -1,0 +1,32 @@
+---
+layout: post
+title: 'RubyConf: Day Three'
+post_id: 331
+categories:
+- Reviews
+date: 2004-10-03 13:41:00.000000000 -06:00
+author: Jamis
+permalink: 2004/10/03/rubyconf-day-three.html
+---
+
+<p>Just in time to head home, my body seems to have figured out the time difference. I was actually reasonably refreshed when I awoke this morning, though that could have been because I went to bed earlier than I had the last couple of days.</p>
+<h2>Morning (Final) Panel</h2>
+<h3>John Knight: Rubyx</h3>
+<p>John Knight had originally been scheduled to speak on the first day, but was delayed. David Black gave him about 15 minutes this morning to talk quickly about his topic, which is <a href="http://www.rubyx.org">Rubyx</a>.</p>
+<p>Rubyx is a Linux distribution that uses Ruby for its various script files, instead of Python, Perl, or shell (like many other distributions do). It sounds interesting, and John was certainly passionate about it, saying that this could be a great way to introduce non-Rubyists to Ruby.</p>
+<p>It was too bad he wasn’t able to give his complete presentation.</p>
+<h3>Daniel Berger: Ruby on Windows</h3>
+<p>Dan spoke about his Win32Utils project. He spent most of his presentation on creating (and manipulating) windows services from Ruby, and although I am not a Windows user, I have to admit it was interesting. He spoke about some gotchas when using Ruby-based windows services (error reporting, in particular) and also introduced the windows system for logging events. (Ich…the whole logging infrastructure for Windows seems horrendously overcomplex.)</p>
+<h3>Jamis Buck (me!): Dependency Injection in Ruby</h3>
+<p>Next was, by far, the best and most anticipated presentation of the entire conference. (Okay, okay, I’m kidding…although I do know there were several people who told me earlier that they were looking forward to it.) I spoke about dependency injection in Ruby—specifically, about <a href="http://copland.rubyforge.org">Copland</a>.</p>
+<p>I must admit, I don’t feel like my presentation was entirely successful. I’m looking forward to reading what other conference bloggers have to say about what I presented, because I felt like there was still a lot of confusion regarding what IoC is and how it can really benefit Ruby.</p>
+<p>Rich Kilmer suggested that I might want to add the ability to serialize a loaded registry to Ruby code, to faciliate faster realoading. This is a great idea, and I’ll start investigating this. There are a few difficulties there, though, so it won’t be as trivial a process as I had hoped. In particular, I’ll need to implement a way to (easily, and briefly) define new packages, service points, and configuration points directly from Ruby. This was another requested feature, so I ought to implement it anyway.</p>
+<p>Francis Hwang (of Lafcadio) and Patrick May (of Narf), in particular, were both very curious as to what Copland brings regarding dependency injection, and why a simpler approach would not be more appropriate. I need to do some more thinking about how to present IoC, since in my mind, if people came away from my presentation still wondering about something so fundamental, then I’m still not communicating the concept adequately.</p>
+<h3>Gordon James Miller: Code Generation in Ruby</h3>
+<p>The last speaker was Gordon James Miller.  He discusses his professional work on embedded fail-safe network systems. Although they are implementing those systems in C+<ins>, he is being very successful at applying Ruby as a code generation framework. He (and his team) define the network protocols they are using in (potentially large) <span class="caps">XML</span> documents, and then they generate C</ins>+, Java, and Python code from those documents, using Ruby.  He is using <span class="caps">REXML</span> to parse the <span class="caps">XML</span> documents, and <span class="caps">ERB</span> to manage the actual generation of the code from templates.</p>
+<p>It’s actually a very similar framework to what I’ve got going at work, myself, where we use <span class="caps">YAML</span>-based data files and <span class="caps">ERB</span> templates to generate Java classes. It’s worked very well for us, too.</p>
+<h2>Conclusion</h2>
+<p>And thus the conference concluded. Lunch was served and people began milling about and talking. I spoke with several people afterwards. Austin Ziegler suggested that I might (once I’ve got Ruby-based registry serialization working) consider porting Ruwiki to take advantage of IoC. Hal Fulton wondered if IoC might not be useful in designing a <span class="caps">GUI</span> framework abstraction for rapidly designing simple interfaces. Jim Wierich was interested in some of the <span class="caps">AOP</span> aspects of Copland.</p>
+<p>I was pretty disappointed at having to leave before the “self-organizing activities” got underway—I think there would have been a few people willing to help me prototype a Ruby-based way of defining registry elements for Copland. But, my plane was scheduled to leave at 3 pm, and by the time lunch was over it was nearly 1.</p>
+<p>Thus, I bid farewell to RubyConf 2004, boarded the airport shuttle, and headed west.</p>
+<p>It is good to be home.</p>

@@ -1,0 +1,167 @@
+---
+layout: post
+title: 'Monkey-patching Rails: Extending Routes #1'
+post_id: 189
+categories:
+- Under the Hood
+date: 2006-10-20 08:00:00.000000000 -06:00
+author: Jamis
+permalink: 2006/10/20/monkey-patching-rails-extending-routes-1.html
+---
+
+<p>Assuming you’ve been reading this blog for the last couple of weeks, you’ve followed as we’ve explored Rails’ <a href="http://weblog.jamisbuck.org/2006/10/2/under-the-hood-rails-routing-dsl">routing <span class="caps">DSL</span> implementation</a>, peeked into the nooks and crannies of the <a href="http://weblog.jamisbuck.org/2006/10/4/under-the-hood-route-recognition-in-rails">route recognition code</a>, and (most recently) went spelunking into the very bowels of <a href="http://weblog.jamisbuck.org/2006/10/16/under-the-hood-route-generation-in-rails">route generation</a>.</p>
+<p>It’s time to begin putting all that reading to some practical, hands-on use.</p>
+<p>We’ll start with something almost trivial: adding a “redirect” feature to routing, such that you can have any request to a particular route automatically respond with a 302 that sends the caller to another route.</p>
+<p>Why would we want this? Well, besides the obvious pedagogical application, consider the situation of RESTful routes:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">ActionController</span>::<span class="co">Routing</span>::<span class="co">Routes</span>.draw <span class="r">do</span> |map|<tt>
+</tt>  map.resources <span class="sy">:people</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>The <code>map.resources</code> command installs a whole slew of routes for you. However, it does not do anything with the root <span class="caps">URI</span> (the one that’s just a slash, ”/”). For most RESTful applications, you typically want that ”/” <span class="caps">URI</span> to map to one of your primary resources, like ”/people” in the above example. Normally, you’d just add another route like:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">map.connect <span class="s"><span class="dl">"</span><span class="k">/</span><span class="dl">"</span></span>, <span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">people</span><span class="dl">"</span></span>, <span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">index</span><span class="dl">"</span></span></pre></td>
+</tr></table>
+<p>That feels a little less-than-DRY. It would be nicer to just say something like:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">map.redirect <span class="s"><span class="dl">"</span><span class="k">/</span><span class="dl">"</span></span>, <span class="sy">:people</span></pre></td>
+</tr></table>
+<p>Here’s how we’ll do it.</p>
+<h2>map.redirect</h2>
+<p>This trick actually requires something of a hack, because of the way routes work. As you may (or may not) recall from the <a href="http://weblog.jamisbuck.org/2006/10/4/under-the-hood-route-recognition-in-rails">recognition overview</a>, when a route is recognized (via <code>RouteSet#recognize</code>), the actual controller class is returned. The <code>#process</code> method is immediately invoked on that class, which will instantiate the class and call down into the action that was requested. Thus, you can’t just have a route do a redirect, because it still has to return a controller, and specify an action to be performed.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># excerpted from railties/lib/dispatcher.rb, Dispatcher#dispatch</span><tt>
+</tt>controller = <span class="co">ActionController</span>::<span class="co">Routing</span>::<span class="co">Routes</span>.recognize(request)<tt>
+</tt>controller.process(request, response).out(output)</pre></td>
+</tr></table>
+<p>So, whatever our implementation, it must return a controller, and specify an action to invoke, even if all we want to do is redirect. (You’ll frequently find yourself having to work around issues like this when you try to monkey-patch routes.)</p>
+<p>In this case, we will work our magic by creating a simple “tricks” controller. It will have a single action, <code>do_redirect</code>, which expects the requested route to be in the <code>params</code> hash (as <code>:destination</code>) and emits a redirect to send the client to it:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">module</span> <span class="cl">JamisBuck</span><tt>
+</tt><span class="r">module</span> <span class="cl">Routing</span><tt>
+</tt><tt>
+</tt>  <span class="c"># A custom controller that we'll use for routing trickiness.</span><tt>
+</tt>  <span class="r">class</span> <span class="cl">TricksController</span> &lt; <span class="co">ActionController</span>::<span class="co">Base</span><tt>
+</tt><tt>
+</tt>    <span class="c"># A simple action that simple accepts a destination route, and emits a</span><tt>
+</tt>    <span class="c"># redirect to it.</span><tt>
+</tt>    <span class="r">def</span> <span class="fu">do_redirect</span><tt>
+</tt>      params.delete(<span class="sy">:controller</span>)<tt>
+</tt>      params.delete(<span class="sy">:action</span>)<tt>
+</tt>      route = params.delete(<span class="sy">:destination</span>)<tt>
+</tt><tt>
+</tt>      redirect_to send(<span class="sy"><span class="sy">:</span><span class="dl">"</span><span class="il"><span class="dl">#{</span>route<span class="dl">}</span></span><span class="k">_url</span><span class="dl">"</span></span>, params)<tt>
+</tt>    <span class="r">end</span><tt>
+</tt><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Then, we define a module that we’ll mix into the Mapper class (<code>ActionController::Routing::RouteSet::Mapper</code>) which (as the <a href="http://weblog.jamisbuck.org/2006/10/2/under-the-hood-rails-routing-dsl"><span class="caps">DSL</span> article</a> described) is where the routing <span class="caps">DSL</span> is defined:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">module</span> <span class="cl">JamisBuck</span><tt>
+</tt><span class="r">module</span> <span class="cl">Routing</span><tt>
+</tt><tt>
+</tt>  <span class="r">module</span> <span class="cl">DSL</span><tt>
+</tt>    <span class="r">module</span> <span class="cl">MapperExtensions</span><tt>
+</tt><tt>
+</tt>      <span class="c"># The implementation of the "redirect" DSL syntax. It takes a path</span><tt>
+</tt>      <span class="c"># string, and a destination symbol naming the route to redirect to.</span><tt>
+</tt>      <span class="c"># Any additional options are merged into the route definition and will</span><tt>
+</tt>      <span class="c"># be passed to the destination route.</span><tt>
+</tt>      <span class="r">def</span> <span class="fu">redirect</span>(path, destination, options={})<tt>
+</tt>        options = options.merge(<span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">jamis_buck/routing/tricks</span><span class="dl">"</span></span>,<tt>
+</tt>          <span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">do_redirect</span><span class="dl">"</span></span>, <span class="sy">:destination</span> =&gt; destination)<tt>
+</tt>        <span class="iv">@set</span>.add_route(path, options)<tt>
+</tt>      <span class="r">end</span><tt>
+</tt><tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>As you can see, calling <code>map.redirect</code> just adds a new route that points to our custom controller and action, and also sets the <code>:destination</code> option to the target route.</p>
+<p>This works, simply because when a route gets recognized, the options associated with that route get merged into the request’s parameters. Thus, the <code>:destination</code> key gets added to the <code>params</code> hash in the controller, and the <code>do_redirect</code> action can then use it to build the target of the redirect.</p>
+<p>There’s an added side-effect to this. Because the options from the recognized route are added to <code>params</code>, you can do something like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">map.redirect <span class="s"><span class="dl">"</span><span class="k">/:id</span><span class="dl">"</span></span>, <span class="sy">:person</span>, <span class="sy">:id</span> =&gt; <span class="rx"><span class="dl">/</span><span class="ch">\d</span><span class="k">+</span><span class="dl">/</span></span></pre></td>
+</tr></table>
+<p>This will make ”/15” redirect to ”/people/15” (<code>person_url(id)</code>). The <code>:id</code> parameter gets “transferred” from the first route to the second, because of that <code>params</code> hash. Pretty slick!</p>
+<p>So, now that it is all implemented, it’s just a matter of installing everything, via <code>init.rb</code> for our plugin:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">require <span class="s"><span class="dl">'</span><span class="k">jamis_buck/routing/dsl</span><span class="dl">'</span></span><tt>
+</tt>require <span class="s"><span class="dl">'</span><span class="k">action_controller/routing</span><span class="dl">'</span></span><tt>
+</tt><tt>
+</tt><span class="co">ActionController</span>::<span class="co">Routing</span>::<span class="co">RouteSet</span>::<span class="co">Mapper</span>.send <span class="sy">:include</span>,<tt>
+</tt>  <span class="co">JamisBuck</span>::<span class="co">Routing</span>::<span class="co">DSL</span>::<span class="co">MapperExtensions</span></pre></td>
+</tr></table>
+<p>Voila! As I said, almost trivial, but it’s a good reinforcement of the basics. You can check out the entire plugin <a href="http://svn.jamisbuck.org/rails-plugins/routing_tricks">from my svn repository</a>.</p>
+<p>I’ve got more planned for this, to take us further into techniques for monkey-patching routes, so stay tuned!</p>
+<div class="tail">
+<strong>Lastly and leastly</strong>, did you find this article helpful? These take a fair bit of time and effort to compose, and while I do enjoy doing it, any encouragement at all is appreciated. You are (of course) never under any obligation to do so, but if you wish to, a few dollars <a href="http://www.paypal.com" onclick="$('paypal-form').submit(); return false">via PayPal</a> (to jamis@jamisbuck.org) would be wonderful. Thank-you!
+</div>

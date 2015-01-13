@@ -1,0 +1,76 @@
+---
+- date: 2007-01-18
+  author: Dave Hoover
+  content: "<p>Thanks for this flurry of recent posts, Jamis.  Nice and brief and
+    packed with goodness!</p>"
+- date: 2007-01-18
+  author: Daniel Morrison
+  content: "<p>When you aren’t fetching an association, you can find yourself passing
+    orders into find() all over your code.</p>\n\n\n\t<p>In that case, I’ve found
+    it handy to create a class method on the Model to return the order so that you
+    can call:</p>\n\n\n<code>Thing.find(:all, :order =&gt; Thing.default_order)</code>\n\n\t<p>That
+    lets you change it in one place.</p>"
+- date: 2007-01-18
+  author: Jamis
+  content: |-
+    <p>Daniel, another nice way to handle that is with_scope in a class method:</p>
+
+
+    <table class="CodeRay"><tr>
+      <td title="click to toggle" class="line_numbers"><pre>1<tt>
+    </tt>2<tt>
+    </tt>3<tt>
+    </tt>4<tt>
+    </tt><strong>5</strong><tt>
+    </tt>6<tt>
+    </tt>7<tt>
+    </tt>8<tt>
+    </tt>9<tt>
+    </tt></pre></td>
+      <td class="code"><pre><span class="r">class</span> <span class="cl">Thing</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+    </tt>  <span class="r">def</span> <span class="pc">self</span>.find_with_order(*args)<tt>
+    </tt>    with_scope(<span class="sy">:find</span> =&gt; { <span class="sy">:order</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">name</span><span class="dl">"</span></span> }) <span class="r">do</span><tt>
+    </tt>      find(*args)<tt>
+    </tt>    <span class="r">end</span><tt>
+    </tt>  <span class="r">end</span><tt>
+    </tt><span class="r">end</span><tt>
+    </tt><tt>
+    </tt>things = <span class="co">Thing</span>.find_with_order(<span class="sy">:all</span>, <span class="sy">:conditions</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">...</span><span class="dl">"</span></span>)<tt>
+    </tt></pre></td>
+    </tr></table>
+- date: 2007-01-18
+  author: Pat Maddox
+  content: "<p>Something to point out to others (I’m pretty sure I learned this from
+    you, Jamis), you can call class methods through the association proxy:</p>\n\n\n<table
+    class=\"CodeRay\"><tr>\n  <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt><strong>5</strong><tt>\n</tt>6<tt>\n</tt>7<tt>\n</tt>8<tt>\n</tt>9<tt>\n</tt><strong>10</strong><tt>\n</tt>11<tt>\n</tt>12<tt>\n</tt>13<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre><tt>\n</tt><span class=\"r\">class</span> <span class=\"cl\">Person</span>
+    &lt; <span class=\"co\">ActiveRecord</span>::<span class=\"co\">Base</span><tt>\n</tt>
+    \ <span class=\"r\">def</span> <span class=\"pc\">self</span>.by_name<tt>\n</tt>
+    \   find <span class=\"sy\">:all</span>, <span class=\"sy\">:order</span> =&gt;
+    <span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">name</span><span
+    class=\"dl\">\"</span></span><tt>\n</tt>  <span class=\"r\">end</span><tt>\n</tt><span
+    class=\"r\">end</span><tt>\n</tt><tt>\n</tt><span class=\"r\">class</span> <span
+    class=\"cl\">Account</span> &lt; <span class=\"co\">ActiveRecord</span>::<span
+    class=\"co\">Base</span><tt>\n</tt>  has_many <span class=\"sy\">:people</span><tt>\n</tt><span
+    class=\"r\">end</span><tt>\n</tt><tt>\n</tt>a = <span class=\"co\">Account</span>.find
+    <span class=\"i\">1</span><tt>\n</tt>a.people.by_name<tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>This
+    lets any class with a has_many :people declaration get sorted people.  You can
+    also use with_scope to allow more arguments if you want.</p>"
+- date: 2007-01-18
+  author: zerohalo
+  content: "<p>More goodness! I must say that of all the Ruby/Rails blogs out there,
+    I learn the most from yours, Jamis. Thanks!</p>"
+- date: 2007-01-18
+  author: Jamis
+  content: "<p>Good point, Pat. Thanks for pointing that out.</p>\n\n\n\t<p>And zerohalo,
+    thanks for the kind words!</p>"
+- date: 2007-01-19
+  author: Andreas
+  content: "<p>Very nice :) I use a mixture of the collection-extension and scopes.
+    I have a extra module for most frequently used scopes, usually defined within
+    the model they belong to. Then I can use i.e. with_scope(Scopes::SomeOptions)
+    or from controllers with_scope(Model::Scope::SomeScope). Zerohalo is right. And
+    someone should start a project like the “Rails Documentation Blog Links Protal
+    Thing..” that collects all the links to thos kind of articles. Hehe. Btw. The
+    line-hight of your text is kinda hard on the eyes. Would be killer if you could
+    increase it a notch or two.</p>"

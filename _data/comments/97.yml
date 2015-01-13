@@ -1,0 +1,54 @@
+---
+- date: 2007-03-05
+  author: dm
+  content: "<p>oooh, nice. Handy for things like mod_xsendfile<sup><a href=\"#fn1\">1</a></sup>,
+    too.</p>\n\n\n\t<p>[1] http://celebnamer.celebworld.ws/stuff/mod_xsendfile/</p>"
+- date: 2007-03-05
+  author: Danger
+  content: "<blockquote>\n\t<p>There, isn’t that beautiful?</p>\n\n</blockquote>\n\n\n\n\n\t<p>Yes.
+    \ Yes, it sure is :-)</p>"
+- date: 2007-03-05
+  author: Tim Connor
+  content: "<p>Very nice, but…. Are the symbols for the status codes listed anywhere?
+    \ I found a ticket discussing them: http://dev.rubyonrails.org/ticket/2649 but
+    not any indication anywhere I could think to look for what the authoritative list
+    of symbols is.</p>"
+- date: 2007-03-05
+  author: Tim Connor
+  content: "<p>I guess it looks like it’s these just underscored and lowercased, right?</p>\n\n\n\t<p>http://www.iana.org/assignments/http-status-codes</p>"
+- date: 2007-03-05
+  author: Adam Sanderson
+  content: "<p>Only in ruby can we claim that two lines are unbearably verbose :)</p>"
+- date: 2007-03-05
+  author: Jamis
+  content: "<p>Tim, the list of codes that Rails understands is in <a href=\"http://dev.rubyonrails.org/browser/trunk/actionpack/lib/action_controller/status_codes.rb\">action_controller/status_codes.rb</a>.
+    It’s just those codes underscored and lowercased, as you said.</p>\n\n\n\t<p>Also,
+    you can use those same codes in tests, in assert_response. So you can say “assert_response
+    :created”, etc. Probably only in edge rails, though.</p>"
+- date: 2007-03-05
+  author: Chris
+  content: "<p>Beautiful indeed.</p>"
+- date: 2007-03-07
+  author: John Bledsoe
+  content: <p>The <span class="caps">HTTP</span> status code symbols work for assert_response
+    in 1.2.1 as well.</p>
+- date: 2007-03-07
+  author: John Bledsoe
+  content: "<p>I’ve noticed that using the head method still sets the Content-Type
+    header to ‘text/html’.  Is there anyway to override this default without specifying
+    :content_type to head every time?</p>"
+- date: 2007-03-07
+  author: Jim Kane
+  content: "<p>The list of codes Jamis linked to is useful, but a nice companion can
+    be found on the <span class=\"caps\">W3C</span> site<sup><a href=\"#fn1\">1</a></sup>.</p>\n\n\n\t<p><sup>1</sup>
+    http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html</p>"
+- date: 2007-03-21
+  author: Dmitri Colebatch
+  content: "<p>An OT question, but why do you return 201 instead of 202 (Accepted).
+    \ I assume you’re talking about one-way <span class=\"caps\">SOAP</span> messages.</p>\n\n\n\t<p>More
+    out of curiosity than anything else.</p>\n\n\n\t<p>cheers,\ndim</p>"
+- date: 2007-03-21
+  author: Jamis
+  content: "<p>Dmitri, primarily because we’ve opted to follow how the atompub spec
+    does this, and it requires that “201 Created” be used to indicate that a new resource
+    has been created.</p>"

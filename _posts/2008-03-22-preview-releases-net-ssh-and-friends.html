@@ -1,0 +1,37 @@
+---
+layout: post
+title: 'Preview Releases: Net::SSH and friends'
+post_id: 62
+categories:
+- Announcements
+date: 2008-03-22 22:31:00.000000000 -06:00
+author: Jamis
+permalink: 2008/03/22/preview-releases-net-ssh-and-friends.html
+---
+
+<p>After far, far too long, I’m extremely pleased to announce the next preview release of Net::SSH v2 (preview release #2, actual version 1.99.1), as well as the first ever preview releases of Net::SFTP v2 (preview release #1, actual version 1.99.0) and Net::SCP v1 (preview release #1, actual version 0.99.0). You can grab them from my gem server:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">$ sudo gem install --source http://gems.jamisbuck.org net-ssh<tt>
+</tt>$ sudo gem install --source http://gems.jamisbuck.org net-sftp<tt>
+</tt>$ sudo gem install --source http://gems.jamisbuck.org net-scp<tt>
+</tt></pre></td>
+</tr></table>
+<p>I’ve taken Eric Hodel’s advice this time around and ditched the pretty documentation I had started for Net::SSH; I’m going to see how far I can get with ri and rdoc alone, this time. Give it a try after installing the above: “ri Net::SSH”, for instance.</p>
+<p>There are several caveats about this release:</p>
+<p>1. The new Net::SSH and Net::SFTP are <strong>not</strong> backwards compatible with the previous 1.x releases, so make sure any existing scripts are explicitly depending on versions less than 1.99.0 of these libraries. (The latest Capistrano already has that explicit dependency in it, so you should be safe installing these preview releases even if you are using Capistrano).</p>
+<p>2. The “shell”, “open3” and “sync-shell” services are gone from Net::SSH. (There may be others, too, which aren’t coming to mind at the moment.) I do not intend to bring them back. If you used those services, I strongly encourage you to reimplement them for the new Net::SSH, and release them as third-party extensions.</p>
+<p>3. These libraries are <em>reentrant</em> (or ought to be), but are not <em>thread-safe</em>. That is to say, if you are accessing the same Net::SSH connection from multiple threads, you’re definitely going to want to do something to protect that resource (mutexes, etc.).</p>
+<p>That said, let me know what you think, what issues you have, what suggestions you have, and so forth. I’m <em>so</em> happy to have this release done, though. I can see the light at the end of the tunnel finally!</p>
+<p>Oh, and lastly, if you happen to be drinking the git kool-aid, you can follow along via <a href="http://github.com">github</a>:</p>
+<ul>
+	<li>Net::SSH: <a href="http://github.com/jamis/net-ssh/tree/master">http://github.com/jamis/net-ssh/tree/master</a>
+</li>
+		<li>Net::SFTP: <a href="http://github.com/jamis/net-sftp/tree/master">http://github.com/jamis/net-sftp/tree/master</a>
+</li>
+		<li>Net::SCP: <a href="http://github.com/jamis/net-scp/tree/master">http://github.com/jamis/net-scp/tree/master</a>
+</li>
+	</ul>

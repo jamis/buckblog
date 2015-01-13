@@ -1,0 +1,139 @@
+---
+- date: 2006-03-27
+  author: Mike
+  content: "Wow, how nifty! \n\nI am, admittedly, still learning the stack, but how
+    might this work with authentication for web service clients that (probably) won't
+    be implementing session cookies like a browser?  "
+- date: 2006-03-27
+  author: Jamis
+  content: Mike, I'd recommend using HTTP authentication with this web services model.
+    In fact, that's how Basecamp does it. You can google for "http authentication
+    rails" and find at least a few examples of how to set this up.
+- date: 2006-03-27
+  author: Mike
+  content: "Thanks Jamis.  Basic auth makes me shiver, sending a clear password on
+    each request.  \n\nHowever, I suppose higher-level approaches like an expiring
+    api key would be more along the lines of a plugin, as it would have heavy assumptions
+    regarding a pre-existing authentication/acl scheme.\n\nAnd even then, I suppose
+    security couldn't truly be expected unless behind https.\n\nWill the existing
+    activewebservice sub-framework be deprecated?  \n\nKeep up the great work! "
+- date: 2006-03-27
+  author: Alex
+  content: "Jamis, can this REST support (as well as ActionWebService::Client::XmlRpc
+    as documented http://api.rubyonrails.com/classes/ActionWebService/Client/XmlRpc.html)
+    be used for outbound client apps, such as allowing my Rails app to interact with
+    other web services (like eBay, Amazon, Google, etc.)?\n\nI was under the impression
+    I might need to use Ruby's XMLRPC::Client library to do what I needed, but if
+    an interface is built into the Rails framework I would love to use it.  \n\nIf
+    you can point me in the right direction I would be very greatful.  Thanks so much!"
+- date: 2006-03-27
+  author: Jamis
+  content: |-
+    Mike, yah, Basic auth is definitely not secure, but it's got more going for it than a username/password form in a browser that submits via http.
+
+    The best solution is to protect it all via https, but if that isn't an option you can always implement your own authentication scheme.
+- date: 2006-03-27
+  author: Jamis
+  content: Alex, the REST support in Rails 1.1 is only targetted at providing services,
+    not consuming services. If you want your Rails app to consume external services,
+    Rails won't necessarily help you there.
+- date: 2006-03-27
+  author: Charlie
+  content: |-
+    Hi Jamis,
+
+    Thanks for posting this.  If you have a second, take a look at the approach I took to this problem - see http://cfis.savagexi.com/articles/2006/03/23/content-negotiation-and-rails
+
+    It works by adding HTTP content negotiation into ActiveView.  The advantage is that you don't have to add any code to your controller.  Thus, I think its a cleaner solution than what is provided in Rails 1.1.  Be interested in hearing your thoughts on it.
+
+    Either way, glad to see this added to Rails.
+- date: 2006-03-27
+  author: Jamis
+  content: |-
+    Charlie,
+
+    The thing I like about Rails' approach is that it handles things like redirects (which don't use a template, and would only be used when text/html was desired), and also lets you generate the xml programmatically (without a template). In fact, when writing the Basecamp API, there were many instances when I didn't want to render a template in response, but just wanted to specify a status code and return. The "respond_to" approach in Rails 1.1 also lets you cleanly specify behavior that ought to only exist in one kind of response.
+
+    Moving the magic to the view definitely has some plusses, though. Perhaps it would be possible to collect the best of both worlds into one implementation?
+- date: 2006-03-27
+  author: Joe Martinez
+  content: Sweet. Just hopped on the Edge - looking forward to trying this along w/
+    RJS!
+- date: 2006-03-28
+  author: Neil Wilson
+  content: "Is there a mechanism baked into Rails to do this sort of stuff in reverse
+    and manage the request response cycle out towards another web service?\n\nMy head
+    says that the view rendering and controller dispatch systems should really be
+    managing the outbound initiated links as well as the inbound initiated ones. \n\nWhat
+    do you think?\n\nNeilW\n\n\n"
+- date: 2006-03-28
+  author: Jamis
+  content: Neil, nothing in Rails right now for handling outbound REST requests. I
+    don't think that belongs on Rails itself, although it would make a great library,
+    or plugin.
+- date: 2006-03-29
+  author: BillSaysThis
+  content: |-
+    Jamis,
+
+    "Neil, nothing in Rails right now for handling outbound REST requests. I don’t think that belongs on Rails itself, although it would make a great library, or plugin."
+
+    Why do you say this? From my perspective, making API consumption easier is pretty important--don't you want to make it simple for me to consume Backpack API in my API (which it would actually fit) and therefore perhaps generate new paying accounts for 37S?
+- date: 2006-03-29
+  author: Jamis
+  content: |-
+    Bill, sure, making API consumption easier would be wonderful. I just happen to believe it is beyond the scope of Rails. Is it so wrong to have to install a 3rd party lib to do the external API thing?
+
+    Rails is about building web apps. Not about consuming web apps. That doesn't make consuming web apps an unworthy goal. Just a goal that Rails won't likely pursue.
+- date: 2006-03-30
+  author: BillSaysThis
+  content: No, using a different component isn't a terrible hardship and something
+    I'm willing to do. I definitely am aware of the 'opinionated' nature of Rails
+    decisionmaking but this just seems like a matching pair and therefore conceptually
+    within the scope.
+- date: 2006-03-31
+  author: Charlie
+  content: |-
+    Hi Jamis,
+
+    I agree.  Content negotation could be used for default cases while resond_to could be used to override the default.  Thus, it would mirror how Rails picks a default template but you can override that via render(:template =&gt; 'some_template')
+
+    I've posted some more ideas about it on my blog if you're interested.  See http://cfis.savagexi.com/articles/2006/03/31/rails-and-content-negotiation-revisited
+
+    Thanks - Charlie
+- date: 2006-03-31
+  author: Ryan Lowe
+  content: |-
+    It's not really clear how the "wants" variable gets its value.  Are you parsing the header in a before filter somewhere, or is there some other magic going on?
+
+    David's examples use a variable "type", so I'm guessing the variable name isn't magic.  Could someone make it explicit?
+- date: 2006-03-31
+  author: Ryan Lowe
+  content: |-
+    Sorry about that, I misunderstood the Ruby code.  A look at the Rails API cleared things up.  Hope this helps other people:
+
+    http://api.rubyonrails.org/classes/ActionController/MimeResponds/InstanceMethods.html#M000061
+- date: 2006-04-07
+  author: Alex
+  content: |
+    Just wondering, but for wants.js requests would "to_json" be a good bet?
+- date: 2006-04-07
+  author: Jamis
+  content: Alex, when a request "wants.js", it means it wants "text/javascript" back.
+    This means you need to send actual Javascript code, and not marshalled data. By
+    default, rails will render an RJS template for "wants.js".
+- date: 2006-04-22
+  author: jerry
+  content: "By the way, the order in which you check each 'want' is important.  IE6[1]
+    appears to ask for text/javascript before text/html even for a normal (address
+    bar) URL.\r\n\r\nSo if you have a setup which degrades gracefully (e.g. wants.js
+    modifies the page while wants.html sends the whole page via the usual template)
+    you must have wants.html before wants.js so that the first page load gets the
+    right response.  Thereafter, everything works as expected (in the background).\r\n\r\nNice
+    job though.  Makes AJAX real easy.\r\n\r\n[1] I saw it with v6.0.2900.2180.etc.etc"
+- date: 2006-09-13
+  author: etienne.durand@woa.hu
+  content: |-
+    I am just trying to figure out how to map this with the api definition.
+    I wrote a question on http://www.ruby-forum.com/topic/80882#new
+    but without any answer. Can anybodyhelp me?

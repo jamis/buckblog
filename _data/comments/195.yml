@@ -1,0 +1,51 @@
+---
+- date: 2006-01-28
+  author: Ruy
+  content: |-
+    I have a feeling that this sort of approach is why so many bits of RoR and Ruby in general are so wonky on Windows. I don't think anybody on the dev team uses Windows, so they don't ever really Feel The Pain.
+
+    Oh well - the ibook should get here sometime next week and then I too will join the "not my problem, who cares" camp.
+- date: 2006-01-28
+  author: Lance Carlson
+  content: Must the devs wait til they feel the pain before resolving the problem?
+    I don't know, I foresee problems with waiting til it becomes personal:-/
+- date: 2006-01-28
+  author: Jamis
+  content: Note that I'm not saying you have to actually experience the problem in
+    order to feel the pain. Pain can be felt by a super-abundance of problem tickets,
+    too. If I had been overwhelmed by people reporting the "corrupt mac" error, I
+    might have responded to it sooner. As it was, it was reported seldomly, and I'd
+    never been able to duplicate it, so there was no pain being felt.
+- date: 2006-01-29
+  author: Jamis
+  content: This isn't a science. There's no formula that says "pain increases asymptotically
+    as the number of tickets _t_ approaches _n_". I can tell you this, though--three
+    or four reports (which is about how many I got on the "corrupted mac" thing) does
+    not result in pain.
+- date: 2006-01-29
+  author: Lance Carlson
+  content: So if you had the idle time or extra resources to fix something like that,
+    you wouldn't? I mean I guess you pick and choose your customers, but avoiding
+    problems that could potentially cause you even more problems along the road is
+    disagreeable. Again, it's all about priorities.. if you have bigger problems to
+    deal with then so be it. However, waiting until a wound becomes infected may not
+    be the best idea.
+- date: 2006-01-30
+  author: Jamis
+  content: |-
+    Lance, of course it is all about priorities. I say as much in this article. "We all have lots of things vying for our time, and no one likes it when they have to make something a priority." For me, I've got a day job, a family, responsibilities at church, books I'm reading, and side projects that I want to work on. Frankly, a bug that I can't reproduce and which only a handful of people have reported isn't going to make it very high on my list of priorities. If I were to go out and make every reported bug my #1 priority, I would burn out in a hurry and would begin to _hate_ working on Net::SSH. Pain is a great rearranger of priorities, and it cuts both ways. If working on Net::SSH becomes too painful, I'll stop working on Net::SSH.
+
+    Always use common sense. If something is critical, work on it. If it isn't, don't. And many times, you can use pain as an indicator of criticality.
+
+    That's all I'm saying.
+- date: 2006-02-10
+  author: Jeff
+  content: "I agree with the concept, but kind of in the same way that I agree with
+    the concept of socialism..the practice can only taint the principle.  I moved
+    away from PHP because I felt that certain groups were pushing pain killers more
+    than cures.  \n\nAll I'm saying is that wait-until-it-hurts only works if you're
+    disciplined enough to cure the cause of the pain rather than the symptoms."
+- date: 2006-02-10
+  author: Jamis
+  content: A very good point, Jeff. Applying bandaids instead of solving the underlying
+    problem is ultimately self-defeating.

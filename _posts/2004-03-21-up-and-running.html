@@ -1,0 +1,29 @@
+---
+layout: post
+title: Up and Running
+post_id: 294
+categories:
+- Tips & Tricks
+date: 2004-03-21 02:54:00.000000000 -07:00
+author: Jamis
+permalink: 2004/03/21/up-and-running.html
+---
+
+<p>I finally got the <a href="http://ndiswrapper.sf.net">ndiswrapper</a> to work, and I’m up and running on my new laptop (which I’ve decided to call “serling”) with a wireless connection.  Sound works, too.  Here’s what I had to do to get it working on my Dell Latitude <span class="caps">D800</span>, running Gentoo 2004.0:</p>
+<p>First, make sure you have the wireless-tools package installed (<code>emerge wireless-tools</code>).  This will give you the <code>iwconfig</code> utility, for example.  Also, <em>be sure to turn on your wireless card’s radio by pressing <code>fn-f2</code>!</em>  You can also enable it in the bios.</p>
+<ol>
+	<li>Download the latest version of <a href="http://ndiswrapper.sf.net">ndiswrapper</a>.  Untar it somewhere, and cd to the directory the tar-ball creates.</li>
+		<li>As root, type <code>make install</code>. <em>(Just a side note: you’ll need to rebuild this everytime you rebuild your kernel, since it installs a kernel module.)</em>
+</li>
+		<li>Get the windows driver for your card’s chipset. <a href="http://downloads.emachines.com/network/Broadcom_80211g_3_20_23_0.zip">This driver</a> worked for me—just download it and unzip it into its own directory.</li>
+		<li>Find the <code>.inf</code> file for the driver you want. (The one I used was called bcmwl5.)  Then, type <code>ndiswrapper -i &lt;inf-file&gt;</code>, specifying the path to the <code>.inf</code> file for the driver you want.</li>
+		<li>Typing <code>ndiswrapper -l</code> should show that a device exists for that driver (it’ll say that the driver is ‘present’).</li>
+		<li>Now, type <code>modprobe ndiswrapper</code> to load the kernel module.  (You’ll want to have <code>ndiswrapper</code> autoloaded, btw—just add it to the <code>/etc/modules.autoload.d/kernel-2.6</code> file.)</li>
+		<li>Typing <code>iwconfig</code> should show a wireless device, now (mine was called <code>wlan0</code>; reinterpret what follows according to what yours is displayed as).</li>
+		<li>Configure the mode and security stuff first, by typing <code>iwconfig wlan0 mode managed key open</code> (that’s if you don’t use <span class="caps">WEP</span>).  If you use <span class="caps">WEP</span>, you’ll do <code>iwconfig wlan0 mode managed key restricted &lt;WEP-KEY&gt;</code> (where <span class="caps">WEP</span>-KEY is the key to use).</li>
+		<li>Wait a couple seconds, and then type <code>iwconfig wlan0 essid any</code>. (You can supposedly specify the essid explicitly, when when I tried that it never found my network.)</li>
+		<li>Wait about five more seconds, and then type <code>iwconfig</code>.  It should show that your <code>wlan0</code> device has found a network (the <span class="caps">ESSID</span> field should show the name of it).</li>
+		<li>Then, if it did indeed find a wireless network, (and assuming you’re using dhcp), type <code>dhcpcd wlan0</code>.</li>
+	</ol>
+<p>If all went well, you should have an active wireless connection—try pinging something.  I’ve created a slightly modified init script for net.wlan0, and it seems to do the trick.  If you’d like a copy, email me.</p>
+<p>To get the sound working, I had to merge the latest (unstable) alsa-lib and alsa-utils, and then edit my /etc/conf.d/alsa file to specify the correct information.  It’s all thoroughly documented on the Gentoo site, under the “configuring your desktop” document.  The one trick, for me, though, was that I had to turn up not only the master volume, but also the <span class="caps">PCM</span> volume before I could hear anything.</p>

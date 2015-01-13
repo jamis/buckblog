@@ -1,0 +1,43 @@
+---
+- date: 2011-06-07
+  author: Matt Jones
+  content: <p>This is even <span class="caps">MOAR</span> fun when it’s libraries
+    hooking into inherited on ActiveRecord::Base – some really bizarro things happen
+    (notably because AR loses track of its subclasses).</p>
+- date: 2011-06-07
+  author: trans
+  content: "<p>In some cases:</p>\n\n\n\t<pre><code>super if defined?(super)</code></pre>\n\n\n\t<p>And
+    thank you! You reminded me that I have to fix this in one of my projects too.
+    Now if I could just remember where it was…</p>"
+- date: 2011-06-08
+  author: David Chelimsky
+  content: "<p>You could just use RSpec :)</p>\n\n\n\t<p>But, in case you don’t: https://github.com/seattlerb/minitest/pull/21</p>"
+- date: 2011-06-08
+  author: Jamis
+  content: "<p>David, point taken: thanks for doing what I ought to have done first!
+    I really didn’t mean to complain about about minitest (well okay, maybe I did
+    a little, two hours of lost time was a bit frustrating), mostly I just wanted
+    to “raise awareness” of the anti-pattern. But my point would have been stronger
+    if I’d included a patch. Thanks for fixing that for me. ;)</p>"
+- date: 2011-06-08
+  author: Erich Timkar
+  content: "<p>I’m guessing he contractually prevented from using Rspec :).</p>"
+- date: 2011-06-10
+  author: Hemant
+  content: "<p>But since write_inheritable_attribute and read_inheritable_attribute
+    has been deprecated in favour of class_attribute methods, prolly you are better
+    off, not using them at all? :P</p>"
+- date: 2011-06-11
+  author: Jamis
+  content: "<p>@Hemant, that’s probably true, but is beside the point. The point is
+    summarized in the last paragraph of this article.</p>"
+- date: 2011-07-12
+  author: Babil
+  content: |-
+    <p>Ehm, I am very sorry about the OT but I can’t find a proper section to post this message in your blog…
+    Due to an hardware failure in my computer, I lost your wonderful dungeon generator program.
+    The web page to download it seems to be broken.
+    I have seen that your dungeon generator is nicely implemented in another website, but I would like to have an off-site version to carry around with my laptop.
+    There is any place where can I download your dungeon generator?
+    I would be happy even with the old third edition version…
+    Thank you very much</p>

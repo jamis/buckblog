@@ -1,0 +1,36 @@
+---
+layout: post
+title: SwitchTower progress
+post_id: 238
+categories:
+- Projects
+date: 2005-12-26 08:41:00.000000000 -07:00
+author: Jamis
+permalink: 2005/12/26/switchtower-progress.html
+---
+
+<p>Well, I didn’t get nearly as far on SwitchTower over the weekend as I would have liked, but here’s what’s currently residing in the repository:</p>
+<ul>
+	<li>Custom <span class="caps">SSH</span> connection options (so you can specify the port, and other things)</li>
+		<li>The Rails rake tasks for SwitchTower now load ST directly, instead of invoking it via <code>system</code>. This should clear up issues with using the rake tasks on Windows.</li>
+		<li>You can set the <code>:checkout</code> variable to <code>"export"</code>, to use export instead of checkout when deploying. (Only supported by the subversion module, currently.)</li>
+	</ul>
+<p>I’m still planning on implementing the following features (which should all be available by the next release of SwitchTower):</p>
+<ul>
+	<li>Verbosity settings in deploy.rb</li>
+		<li>Deploy via copy instead of checkout/export</li>
+		<li>Handle the <span class="caps">SSH</span> auth error that occurs when you don’t have the remote hosts in your .ssh/known_hosts yet</li>
+		<li>Add a setting for run vs. sudo in the <code>restart</code> task</li>
+		<li>Clean up old deployment directories</li>
+	</ul>
+<p>Lastly, I’m still considering what to do about the following requests. These may or may not find their way into the next release of ST. Some of them may never see the light of day in an official ST release.</p>
+<ul>
+	<li>Optionally leave the failed deployment on the server if it fails (instead of deleting it, as currently happens.)</li>
+		<li>Subclassing roles, so you can (for instance) have a specialized “app” role.</li>
+		<li>Built-in support for staging servers</li>
+		<li>Notification emails</li>
+		<li>Allow different user/pass for <span class="caps">SVN</span> access than for <span class="caps">SSH</span> access</li>
+		<li>Per-server deployment credentials/settings</li>
+	</ul>
+<p>I may try to come up with a plugin architecture (minimalistic, like Rails’ plugins) so that some of these can be addressed by third-parties in a modular fashion, but we’ll see how it all falls out.</p>
+<p>Thanks for the suggestions, everyone!</p>

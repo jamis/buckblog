@@ -1,0 +1,109 @@
+---
+- date: 2008-06-13
+  author: Geoff
+  content: "<p>Hoorah, thank you so much for all your hard work.</p>"
+- date: 2008-06-13
+  author: Colin
+  content: "<p>Looks like a great release! Thanks to you and the entire community
+    for all your work.</p>"
+- date: 2008-06-13
+  author: Jim
+  content: "<p>“Prior to this release, if you defined a before hook using a block,
+    the block would be executed within the same server scope as the original task
+    that invoked task that this hook was attached to.”</p>\n\n\n\t<p>That needs refactoring.</p>"
+- date: 2008-06-13
+  author: web design company
+  content: "<p>Soooo…does this thing have documentation at all? How can it be on 2.4.0
+    and have no link to even a syntax specification from its webpage?</p>"
+- date: 2008-06-13
+  author: Jamis
+  content: '<p>@web design company: it’s actually remarkably <span class="caps">EASY</span>
+    for it to be at 2.4.0 and have no documentation. The hard thing is to document
+    something. That’s why there isn’t any. Yet. It’s a work in progress. If a lack
+    of documentation is too much of a hurdle (and it definitely is, for some) then
+    Capistrano probably isn’t something you’ll want to investigate at this point.
+    If that’s the case, feel free to look elsewhere. My feelings won’t be hurt.</p>'
+- date: 2008-06-13
+  author: Dan
+  content: <p>Awesome!  I can’t wait to use some of these features.  Capistrano has
+    been really great for deploying my rails app, but I also use it to set up and
+    start 2-machine debugging for my <span class="caps">OS X</span> kernel extensions!</p>
+- date: 2008-06-13
+  author: Ben W
+  content: "<p>It would be handy if there was a super short upgrade guide (and perhaps
+    I missed this between 2.1 -&gt; 2.4).</p>\n\n\n\t<p>All my scripts started failing
+    when I upgraded; just simple things like</p>\n\n\n\t<p>set :user, ‘other-user’\nbecomes\nssh_options[:user]
+    = ‘other-user’</p>\n\n\n\t<p>put_file \nbecomes \nupload</p>\n\n\n\t<p>Just the
+    little stuff.</p>\n\n\n\t<p>Cheers,</p>\n\n\n\t<p>Ben</p>"
+- date: 2008-06-13
+  author: Ryan McGeary
+  content: "<p>Thanks Jamis.  I’ll try to find the time to continue improving the
+    test coverage.</p>"
+- date: 2008-06-13
+  author: Mark
+  content: "<p>@webdesigncompany: http://cfcl.com/twiki/bin/view/Projects/Arti/Patterns/Capistrano_H2\nis
+    a good place to start for some documentation</p>\n\n\n\t<p>Also, wasn’t there
+    someone who was going to take on an official documentation role?</p>"
+- date: 2008-06-13
+  author: Jamis
+  content: "<p>@Ben, set(:user, ‘other-user’) should be working—we’re using it at
+    37signals. If it isn’t, please report it as a bug on the capistrano bug tracker,
+    along with steps to duplicate it.</p>\n\n\n\t<p>@Mark, yeah, Tyler Bird is heading
+    up the documentation effort. It’s a slow and thankless task, unfortunately. I
+    want this to be documented, but at the moment, it’s all I can do to keep myself
+    motivated to apply bug fixes and such. I certainly appreciate Tyler’s efforts.</p>"
+- date: 2008-06-13
+  author: matt
+  content: "<p>Great release, Jamis and contributers!</p>\n\n\n\t<p>A note to @web
+    design company:  Capistrano has an example configuration that is well documented,
+    and there are a lot of examples floating around the internet.  It’s really very
+    easy to get up and running.</p>"
+- date: 2008-06-16
+  author: Paul
+  content: "<p>Thanks so much for this Jamis. Your hard work is much appreciated.</p>"
+- date: 2008-06-19
+  author: Tair
+  content: "<p>Thanks so much! death to “git fetch—tags“ is really what i was searching
+    for!</p>\n\n\n\t<p>Cheers</p>"
+- date: 2008-06-21
+  author: Mark
+  content: "<p>After I upgraded, the git checkout step fails:</p>\n\n\n\t<pre><code>git
+    checkout -q -b deploy 64250d7dda85f9bcf18f138e48fa257b08e96525</code></pre>\n\n\n\t<p>produces:</p>\n\n\n\t<p>Usage:
+    /usr/bin/git-checkout <a href=\"-b%20&lt;new_branch&gt;\">-f</a> <a href=\"&lt;branch&gt;\">-m</a>
+    [&lt;paths&gt;...]</p>"
+- date: 2008-06-22
+  author: Jamis
+  content: "<p>@Mark, it sounds like you’ve got an old version of git installed, which
+    doesn’t like the -q switch. You can either upgrade git on your servers, or you
+    can set :scm_verbose to false, which will suppress the -q switch.</p>"
+- date: 2008-06-22
+  author: Jamis
+  content: <p>er, I meant, set :scm_verbose to <em>true</em>, not false. The default
+    is false, which means “be quiet”, which implies the -q switch. Setting that variable
+    to true will prevent Capistrano from emitting the -q switch with the <span class="caps">SCM</span>
+    commands.</p>
+- date: 2008-06-23
+  author: Harm
+  content: "<p>@Mark @Jamis, great! I was having the same problem and setting :scm_verbose
+    to tru totally fixed it. Thanks a lot!</p>"
+- date: 2008-06-28
+  author: Ron
+  content: "<p>I’m having trouble getting Capistrano to install with a gem, it seems
+    to require the exact release of the net libs (*.0.0) instead of whatever the latest
+    release actually is. If I tell gem to install the exact version it works, but
+    I want all the latest geegaws and bells and whistles.</p>"
+- date: 2008-06-28
+  author: Jamis
+  content: "<p>@Ron, yeah, that was my bad. Please try installing Capistrano 2.4.3—it
+    should fix that problem.</p>"
+- date: 2008-07-24
+  author: Me
+  content: "<p>It would be great if you could add more examples (instead of only that
+    5 liner in the examples directory)</p>"
+- date: 2008-07-25
+  author: Brian Hutchison
+  content: "<p>Does “set :deploy_via, :copy” use scp or sftp?  I know I can set a
+    switch on upload using via =&gt; :Scp, but is there a switch on deploy_via for
+    this too?</p>\n\n\n\t<p>Love how Capistrano is maturing.  I’ve finally found that
+    the best docs on Capistrano are the blog posts here. I greatly appreciate them.
+    :)</p>"

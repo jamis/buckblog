@@ -1,0 +1,421 @@
+---
+layout: post
+title: Integration Testing in Rails 1.1
+post_id: 160
+categories:
+- Spotlight
+date: 2006-03-08 22:36:00.000000000 -07:00
+author: Jamis
+permalink: 2006/03/08/integration-testing-in-rails-1-1.html
+summary: >
+  Introducing and demonstrating the new integration tests feature in Rails 1.1
+---
+
+<p>Integration tests are a new feature of Rails 1.1 that take testing your applications to a new level. They are the next logical progression in the existing series of available tests:</p>
+<ul>
+	<li>Unit tests are very narrowly focused on testing a single model</li>
+		<li>Functional tests are very narrowly focused on testing a single constroller and the interactions between the models it employs</li>
+		<li>Integration tests are broad story-level tests that verify the interactions between the various actions supported by the application, across all controllers</li>
+	</ul>
+<p>This makes it easier to duplicate (in tests) bugs with session management and routing. Consider: what if you had a bug that was triggered by certain cruft accumulating in a user’s session? Hard to mimic that with functional tests.</p>
+<p>For an example, consider a fictional financial application. We have a set of “stories” that describe how the application ought to function:</p>
+<ul>
+	<li>Bob wants to sign up for access. He goes to the login page, clicks the “signup” link, and fills out the form. After submitting the form, a new ledger is created for him, and he is automatically logged in and taken to the overview page.</li>
+		<li>Jim, an experienced user, has received a new credit card and wants to set up a new account for it. He logs in, selects the ledger he wants to add the account to, and adds the account. He is then forwarded to the register for that account.</li>
+		<li>Stacey is a disgruntled user. She has decided to cancel her account. Logging in, she goes to the “account preferences” page and cancels her account. Her data is all deleted and she is forwarded to a “sorry to see you go” page.</li>
+	</ul>
+<p>Starting with the first one, we might write something like the following. We’ll create this file (“stories_test.rb”) in the <code>test/integration</code> directory:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">require <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">File</span>.dirname(<span class="pc">__FILE__</span>)<span class="dl">}</span></span><span class="k">/../test_helper</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt><span class="r">class</span> <span class="cl">StoriesTest</span> &lt; <span class="co">ActionController</span>::<span class="co">IntegrationTest</span><tt>
+</tt>  fixtures <span class="sy">:accounts</span>, <span class="sy">:ledgers</span>, <span class="sy">:registers</span>, <span class="sy">:people</span><tt>
+</tt><tt>
+</tt>  <span class="r">def</span> <span class="fu">test_signup_new_person</span><tt>
+</tt>    get <span class="s"><span class="dl">"</span><span class="k">/login</span><span class="dl">"</span></span><tt>
+</tt>    assert_response <span class="sy">:success</span><tt>
+</tt>    assert_template <span class="s"><span class="dl">"</span><span class="k">login/index</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>    get <span class="s"><span class="dl">"</span><span class="k">/signup</span><span class="dl">"</span></span><tt>
+</tt>    assert_response <span class="sy">:success</span><tt>
+</tt>    assert_template <span class="s"><span class="dl">"</span><span class="k">signup/index</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>    post <span class="s"><span class="dl">"</span><span class="k">/signup</span><span class="dl">"</span></span>, <span class="sy">:name</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">Bob</span><span class="dl">"</span></span>, <span class="sy">:user_name</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">bob</span><span class="dl">"</span></span>,<tt>
+</tt>      <span class="sy">:password</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">secret</span><span class="dl">"</span></span><tt>
+</tt>    assert_response <span class="sy">:redirect</span><tt>
+</tt>    follow_redirect!<tt>
+</tt>    assert_response <span class="sy">:success</span><tt>
+</tt>    assert_template <span class="s"><span class="dl">"</span><span class="k">ledger/index</span><span class="dl">"</span></span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>We can run this by typing <code>rake test:integration</code>, or by invoking the file directly via <code>ruby</code>.</p>
+<p>The code is pretty straightforward: first, we get the ”/login” url and assert that the response is what we expect. Then we get the ”/signup” url, then post the data to it, and then follow the redirect through to the ledger.</p>
+<p>However, one of the best parts of the integration framework is the ability to extract a testing <span class="caps">DSL</span> out of your actions, making it really easy to tell stories like this. At the simplest, we can do that by adding some methods to the test:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt>23<tt>
+</tt>24<tt>
+</tt><strong>25</strong><tt>
+</tt>26<tt>
+</tt>27<tt>
+</tt>28<tt>
+</tt>29<tt>
+</tt><strong>30</strong><tt>
+</tt>31<tt>
+</tt>32<tt>
+</tt>33<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">require <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">File</span>.dirname(<span class="pc">__FILE__</span>)<span class="dl">}</span></span><span class="k">/../test_helper</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt><span class="r">class</span> <span class="cl">StoriesTest</span> &lt; <span class="co">ActionController</span>::<span class="co">IntegrationTest</span><tt>
+</tt>  fixtures <span class="sy">:accounts</span>, <span class="sy">:ledgers</span>, <span class="sy">:registers</span>, <span class="sy">:people</span><tt>
+</tt><tt>
+</tt>  <span class="r">def</span> <span class="fu">test_signup_new_person</span><tt>
+</tt>    go_to_login<tt>
+</tt>    go_to_signup<tt>
+</tt>    signup <span class="sy">:name</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">Bob</span><span class="dl">"</span></span>, <span class="sy">:user_name</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">bob</span><span class="dl">"</span></span>, <span class="sy">:password</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">secret</span><span class="dl">"</span></span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  private<tt>
+</tt><tt>
+</tt>    <span class="r">def</span> <span class="fu">go_to_login</span><tt>
+</tt>      get <span class="s"><span class="dl">"</span><span class="k">/login</span><span class="dl">"</span></span><tt>
+</tt>      assert_response <span class="sy">:success</span><tt>
+</tt>      assert_template <span class="s"><span class="dl">"</span><span class="k">login/index</span><span class="dl">"</span></span><tt>
+</tt>    <span class="r">end</span><tt>
+</tt><tt>
+</tt>    <span class="r">def</span> <span class="fu">go_to_signup</span><tt>
+</tt>      get <span class="s"><span class="dl">"</span><span class="k">/signup</span><span class="dl">"</span></span><tt>
+</tt>      assert_response <span class="sy">:success</span><tt>
+</tt>      assert_template <span class="s"><span class="dl">"</span><span class="k">signup/index</span><span class="dl">"</span></span><tt>
+</tt>    <span class="r">end</span><tt>
+</tt><tt>
+</tt>    <span class="r">def</span> <span class="fu">signup</span>(options)<tt>
+</tt>      post <span class="s"><span class="dl">"</span><span class="k">/signup</span><span class="dl">"</span></span>, options<tt>
+</tt>      assert_response <span class="sy">:redirect</span><tt>
+</tt>      follow_redirect!<tt>
+</tt>      assert_response <span class="sy">:success</span><tt>
+</tt>      assert_template <span class="s"><span class="dl">"</span><span class="k">ledger/index</span><span class="dl">"</span></span><tt>
+</tt>    <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Now, you can reuse those actions in other tests, making your tests very readable and easy to build. But it can be even neater! Taking advantage of the provided <code>open_session</code> method, you can create your own session instances and decorate them with custom methods. Consider this example:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt>23<tt>
+</tt>24<tt>
+</tt><strong>25</strong><tt>
+</tt>26<tt>
+</tt>27<tt>
+</tt>28<tt>
+</tt>29<tt>
+</tt><strong>30</strong><tt>
+</tt>31<tt>
+</tt>32<tt>
+</tt>33<tt>
+</tt>34<tt>
+</tt><strong>35</strong><tt>
+</tt>36<tt>
+</tt>37<tt>
+</tt>38<tt>
+</tt>39<tt>
+</tt><strong>40</strong><tt>
+</tt>41<tt>
+</tt>42<tt>
+</tt>43<tt>
+</tt>44<tt>
+</tt><strong>45</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">require <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">File</span>.dirname(<span class="pc">__FILE__</span>)<span class="dl">}</span></span><span class="k">/../test_helper</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt><span class="r">class</span> <span class="cl">StoriesTest</span> &lt; <span class="co">ActionController</span>::<span class="co">IntegrationTest</span><tt>
+</tt>  fixtures <span class="sy">:accounts</span>, <span class="sy">:ledgers</span>, <span class="sy">:registers</span>, <span class="sy">:people</span><tt>
+</tt><tt>
+</tt>  <span class="r">def</span> <span class="fu">test_signup_new_person</span><tt>
+</tt>    new_session <span class="r">do</span> |bob|<tt>
+</tt>      bob.goes_to_login<tt>
+</tt>      bob.goes_to_signup<tt>
+</tt>      bob.signs_up_with <span class="sy">:name</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">Bob</span><span class="dl">"</span></span>, <span class="sy">:user_name</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">bob</span><span class="dl">"</span></span>,<tt>
+</tt>        <span class="sy">:password</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">secret</span><span class="dl">"</span></span><tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  private<tt>
+</tt><tt>
+</tt>    <span class="r">module</span> <span class="cl">MyTestingDSL</span><tt>
+</tt>      <span class="r">def</span> <span class="fu">goes_to_login</span><tt>
+</tt>        get <span class="s"><span class="dl">"</span><span class="k">/login</span><span class="dl">"</span></span><tt>
+</tt>        assert_response <span class="sy">:success</span><tt>
+</tt>        assert_template <span class="s"><span class="dl">"</span><span class="k">login/index</span><span class="dl">"</span></span><tt>
+</tt>      <span class="r">end</span><tt>
+</tt><tt>
+</tt>      <span class="r">def</span> <span class="fu">goes_to_signup</span><tt>
+</tt>        get <span class="s"><span class="dl">"</span><span class="k">/signup</span><span class="dl">"</span></span><tt>
+</tt>        assert_response <span class="sy">:success</span><tt>
+</tt>        assert_template <span class="s"><span class="dl">"</span><span class="k">signup/index</span><span class="dl">"</span></span><tt>
+</tt>      <span class="r">end</span><tt>
+</tt><tt>
+</tt>      <span class="r">def</span> <span class="fu">signs_up_with</span>(options)<tt>
+</tt>        post <span class="s"><span class="dl">"</span><span class="k">/signup</span><span class="dl">"</span></span>, options<tt>
+</tt>        assert_response <span class="sy">:redirect</span><tt>
+</tt>        follow_redirect!<tt>
+</tt>        assert_response <span class="sy">:success</span><tt>
+</tt>        assert_template <span class="s"><span class="dl">"</span><span class="k">ledger/index</span><span class="dl">"</span></span><tt>
+</tt>      <span class="r">end</span><tt>
+</tt>    <span class="r">end</span><tt>
+</tt><tt>
+</tt>    <span class="r">def</span> <span class="fu">new_session</span><tt>
+</tt>      open_session <span class="r">do</span> |sess|<tt>
+</tt>        sess.extend(<span class="co">MyTestingDSL</span>)<tt>
+</tt>        <span class="r">yield</span> sess <span class="r">if</span> block_given?<tt>
+</tt>      <span class="r">end</span><tt>
+</tt>    <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The <code>new_session</code> method at the bottom simply uses <code>open_session</code> to create a new session and decorate it by mixing in our <span class="caps">DSL</span> module. By adding more methods to the <code>MyTestingDSL</code> module, you build up your <span class="caps">DSL</span> and make your tests richer and more expressive. You can even use named routes in your tests to ensure consistency between what your application is expecting and what your tests are asserting!</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">goes_to_login</span><tt>
+</tt>  get login_url<tt>
+</tt>  ...<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Note that the <code>new_session</code> method will actually return the new session as well. This means you could define a test that mimicked the behavior of two or more users interacting with your system at the same time:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt>23<tt>
+</tt>24<tt>
+</tt><strong>25</strong><tt>
+</tt>26<tt>
+</tt>27<tt>
+</tt>28<tt>
+</tt>29<tt>
+</tt><strong>30</strong><tt>
+</tt>31<tt>
+</tt>32<tt>
+</tt>33<tt>
+</tt>34<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">test_multiple_users</span><tt>
+</tt>  jim = new_session_as(<span class="sy">:jim</span>)<tt>
+</tt>  bob = new_session_as(<span class="sy">:bob</span>)<tt>
+</tt>  stacey = new_session_as(<span class="sy">:stacey</span>)<tt>
+</tt><tt>
+</tt>  jim.adds_account(...)<tt>
+</tt>  bob.goes_to_preferences<tt>
+</tt>  stacey.cancels_account<tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>private<tt>
+</tt><tt>
+</tt>  <span class="r">module</span> <span class="cl">MyTestingDSL</span><tt>
+</tt>    ...<tt>
+</tt>    <tt>
+</tt>    attr_reader <span class="sy">:person</span><tt>
+</tt><tt>
+</tt>    <span class="r">def</span> <span class="fu">logs_in_as</span>(person)<tt>
+</tt>      <span class="iv">@person</span> = people(person)<tt>
+</tt>      post authenticate_url, <span class="sy">:user_name</span> =&gt; <span class="iv">@person</span>.user_name,<tt>
+</tt>        <span class="sy">:password</span> =&gt; <span class="iv">@person</span>.password<tt>
+</tt>      is_redirected_to <span class="s"><span class="dl">"</span><span class="k">ledger/list</span><span class="dl">"</span></span><tt>
+</tt>    <span class="r">end</span><tt>
+</tt>    <tt>
+</tt>    ...<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  <span class="r">def</span> <span class="fu">new_session_as</span>(person)<tt>
+</tt>    new_session <span class="r">do</span> |sess|<tt>
+</tt>      sess.goes_to_login<tt>
+</tt>      sess.logs_in_as(person)<tt>
+</tt>      <span class="r">yield</span> sess <span class="r">if</span> block_given?<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Just to further demonstrate how these <span class="caps">DSL</span>’s can be built, let’s implement the second of the three stories described at the beginning of this article: Jim adding a credit-card account.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt>23<tt>
+</tt>24<tt>
+</tt><strong>25</strong><tt>
+</tt>26<tt>
+</tt>27<tt>
+</tt>28<tt>
+</tt>29<tt>
+</tt><strong>30</strong><tt>
+</tt>31<tt>
+</tt>32<tt>
+</tt>33<tt>
+</tt>34<tt>
+</tt><strong>35</strong><tt>
+</tt>36<tt>
+</tt>37<tt>
+</tt>38<tt>
+</tt>39<tt>
+</tt><strong>40</strong><tt>
+</tt>41<tt>
+</tt>42<tt>
+</tt>43<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">require <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">File</span>.dirname(<span class="pc">__FILE__</span>)<span class="dl">}</span></span><span class="k">/../test_helper</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt><span class="r">class</span> <span class="cl">StoriesTest</span> &lt; <span class="co">ActionController</span>::<span class="co">IntegrationTest</span><tt>
+</tt>  fixtures <span class="sy">:accounts</span>, <span class="sy">:ledgers</span>, <span class="sy">:registers</span>, <span class="sy">:people</span><tt>
+</tt><tt>
+</tt>  ...<tt>
+</tt><tt>
+</tt>  <span class="r">def</span> <span class="fu">test_add_new_account</span><tt>
+</tt>    new_session_as(<span class="sy">:jim</span>) <span class="r">do</span> |jim|<tt>
+</tt>      jim.selects_ledger(<span class="sy">:jims</span>)<tt>
+</tt>      jim.adds_account(<span class="sy">:name</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">credit card</span><span class="dl">"</span></span>)<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  private<tt>
+</tt><tt>
+</tt>    <span class="r">module</span> <span class="cl">MyTestingDSL</span><tt>
+</tt>      ...<tt>
+</tt><tt>
+</tt>      attr_accessor <span class="sy">:ledger</span><tt>
+</tt><tt>
+</tt>      <span class="r">def</span> <span class="fu">is_redirected_to</span>(template)<tt>
+</tt>        assert_response <span class="sy">:redirect</span><tt>
+</tt>        follow_redirect!<tt>
+</tt>        assert_response <span class="sy">:success</span><tt>
+</tt>        assert_template(template)<tt>
+</tt>      <span class="r">end</span><tt>
+</tt><tt>
+</tt>      <span class="r">def</span> <span class="fu">selects_ledger</span>(ledger)<tt>
+</tt>        <span class="iv">@ledger</span> = ledgers(ledger)<tt>
+</tt>        get ledger_url(<span class="sy">:id</span> =&gt; <span class="iv">@ledger</span>.id)<tt>
+</tt>        assert_response <span class="sy">:success</span><tt>
+</tt>        assert_template <span class="s"><span class="dl">"</span><span class="k">ledger/index</span><span class="dl">"</span></span><tt>
+</tt>      <span class="r">end</span><tt>
+</tt><tt>
+</tt>      <span class="r">def</span> <span class="fu">adds_account</span>(options)<tt>
+</tt>        post new_account_url(<span class="sy">:id</span> =&gt; <span class="iv">@ledger</span>.id), options<tt>
+</tt>        is_redirected_to <span class="s"><span class="dl">"</span><span class="k">register/index</span><span class="dl">"</span></span><tt>
+</tt>      <span class="r">end</span><tt>
+</tt>    <span class="r">end</span><tt>
+</tt><tt>
+</tt>    ...<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Note individual integration tests run slower than individual unit or functional tests, but that’s because they test so much more. Note that each of the tests shown above test multiple requests. Most functional tests only test one. Also, integration tests run through the entire stack, from the dispatcher, through the routes, into the controller and back. Functional tests skip straight to the controller.</p>

@@ -1,0 +1,71 @@
+---
+layout: post
+title: 'Capistrano 2.1 Preview #1'
+post_id: 78
+categories:
+- Announcements
+date: 2007-09-01 18:22:00.000000000 -06:00
+author: Jamis
+permalink: 2007/09/01/capistrano-2-1-preview-1.html
+---
+
+<p>I had intended to wait until Net::SSH v2 (and friends) were done before making another Capistrano release, but the list of pending tickets was growing and there is still a good-sized pile of work to be done on Net::SFTP v2 before it can be released. So, I sat down this weekend and worked through the tickets, and I’m happy to present Capistrano 2.1 Preview Release #1.</p>
+<p>Grab it via RubyGems from the Rails beta gem repository:</p>
+<pre><code>gem install -s http://gems.rubyonrails.com capistrano</code></pre>
+<p>It will install as Capistrano 2.0.100.</p>
+<p>Why a preview release? Well, there are a few changes in this release that might have far-reaching consequences, and I wanted to give people a chance to kick the tires and explore what the ramifications are without giving the impression that this is a generally-recommended production release. (<em>I’m</em> using it, but then, I might be a tad mentally unstable. Who knows?)</p>
+<p>So, what are these new features and changes that have me so uncertain?</p>
+<p><strong>Feature</strong>: By default, Capistrano no longer requests that a pty be allocated for each command. This means that <em>your default profile settings will be loaded automatically for every command</em>. Yes! Yes! Your <span class="caps">PATH</span> tweaks and other environment variables will all be set as expected! However, because I did not ever document <em>why</em> I was requesting a pty in the first place, I do not know if there was a compelling reason why I was doing so. Thus, there may be unexpected side effects of this change. (I’ve not seen any such side-effects myself, but that doesn’t mean there won’t be.) If, for whatever reason, you do want a pty to be allocated for a particular command, just pass <code>:pty =&gt; true</code> to the run or sudo command. You can also use the <code>default_run_options</code> hash as described below to set it globally.</p>
+<p><strong>Feature</strong>: The subversion <span class="caps">SCM</span> module no longer uses the <code>--password</code> option to authenticate. Instead, it waits until the server prompts for the subversion password and send it that way. This is more secure (“ps” won’t show the password anymore), but I’m not entirely sure what the side-effects of this might be, so please report any subversion authentication anomalies.</p>
+<p><strong>Feature</strong>: If you are embedding Capistrano (in a Rails app or whatever), and you need to instantiate a Capistrano configuration more than once and use “require” to load a third-party recipe file, it <em>should</em> work now for every time you require the file. Please report any wonkiness with loading recipes via require.</p>
+<p><strong>Feature</strong>: The sudo password prompt is now detected much more reliably, thanks to the “-p” switch. My only concern is that somewhere out there (<strong>cough</strong> Solaris <strong>cough</strong>) there might be a sudo implementation that does not implement the -p switch for sudo. In that case, sudo via Capistrano will be utterly broken. Please let me know if you encounter a sudo that is broken this way.</p>
+<p>Aside from the above, the following changes have also been made in this release:</p>
+<p><strong>Feature</strong>: If you use the “capify” script to generate your Capfile, it will now include a line that autoloads any recipe in vendor/plugins/*/recipes/*.rb. If you want this functionality, just delete your Capfile and rerun capify on your project directory.</p>
+<p><strong>Feature</strong>: If you’re on a shared host that does not let you spawn new shells, you can tell Capistrano to execute all commands directly, rather than via a spawned shell. Just pass <code>:shell =&gt; false</code> to the run command, or use the new <code>default_run_options</code> hash to set it globally:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">default_run_options[<span class="sy">:shell</span>] = <span class="pc">false</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Note that if you use that setting, your default shell <em>must</em> be <span class="caps">POSIX</span>-compatible (and csh and tcsh, among others, are <em>not</em> POSIX-compatible).</p>
+<p><strong>Feature</strong>: There is a new “match” remote dependency method:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">depend <span class="sy">:remote</span>, <span class="sy">:match</span>, <span class="s"><span class="dl">"</span><span class="k">rake -V</span><span class="dl">"</span></span>, <span class="rx"><span class="dl">/</span><span class="k">version 0</span><span class="ch">\.</span><span class="k">7</span><span class="dl">/</span></span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The given command will be executed on all hosts, and if the output does not match the given regular expression, the dependency will fail.</p>
+<p><strong>Feature</strong>: If you are using Subversion and you want your authorization credentials to be cached on the remote host, set <code>:scm_auth_cache</code> to true. (By default, authorization credentials are <em>not</em> cached on the remote hosts.)</p>
+<p><strong>Feature</strong>: There are now <code>:version_dir</code>, <code>:current_dir</code>, and <code>:shared_dir</code> variables in the deployment system that let you customize exactly what those deployment directories are called.</p>
+<p><strong>Feature</strong>: Reads now all open files in windows-safe (binary “rb”) mode.</p>
+<p><strong>Feature</strong>: Support for the Accurev <span class="caps">SCM</span> is now bundled with Capistrano.</p>
+<p><strong>Feature</strong>: The deploy:restart task honors the <code>:runner</code> variable when it uses sudo.</p>
+<p><strong>Feature</strong>: There is now a Namespace#top method for accessing the top-level namespace. This is useful when you want to execute a task in another namespace but you have an namespace between you and the top level that is interfering:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">load <span class="s"><span class="dl">'</span><span class="k">deploy</span><span class="dl">'</span></span><tt>
+</tt><tt>
+</tt>namespace <span class="sy">:custom</span> <span class="r">do</span><tt>
+</tt>  namespace <span class="sy">:deploy</span> <span class="r">do</span><tt>
+</tt>    task <span class="sy">:something</span> <span class="r">do</span><tt>
+</tt>      <span class="c"># Have to do "top." because otherwise the bare reference to "deploy"</span><tt>
+</tt>      <span class="c"># would find the current namespace.</span><tt>
+</tt>      top.deploy.restart<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>

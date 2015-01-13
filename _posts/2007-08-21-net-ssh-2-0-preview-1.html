@@ -1,0 +1,80 @@
+---
+layout: post
+title: 'Net::SSH 2.0 preview #1'
+post_id: 80
+categories:
+- Announcements
+- Projects
+date: 2007-08-21 11:54:00.000000000 -06:00
+author: Jamis
+permalink: 2007/08/21/net-ssh-2-0-preview-1.html
+---
+
+<p>I’m really pleased with how Net::SSH v2 is turning out. I’ve actually got it to a point where it’s about ready for a first preview release! If you’re an adventurous soul, you can grab the preview release gem (version 1.99.0) here:</p>
+<ul>
+	<li><a href="http://weblog.jamisbuck.org/assets/2007/8/21/net-ssh-1.99.0.gem">Net::SSH 2.0 preview #1 (1.99.0) gem</a></li>
+	</ul>
+<p>Note that Net::SSH v2 is <em>not</em> going to be 100% backwards compatible with 1.x. Many things will work mostly the same, but here are a few of the most significant gotchas:</p>
+<ul>
+	<li>
+<code>Net::SSH.start</code> now uses a fixed parameter list, instead of the polymorphic monster it was. This makes it much easier to document, and use. The first parameter is always the host you are connecting to, and the second is always the username you’re connecting as. Options always come last.</li>
+		<li>The shell, sync-shell, and open3 services have been dropped. You won’t find them in Net::SSH 2.0. If you want them, I strongly encourage you to write them and release them as third-party extensions to Net::SSH.</li>
+	</ul>
+<p>There are also a couple of (much needed!) short cuts for executing commands:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">Net</span>::<span class="co">SSH</span>.start(<span class="s"><span class="dl">"</span><span class="k">localhost</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">jamis</span><span class="dl">"</span></span>) <span class="r">do</span> |ssh|<tt>
+</tt>  puts ssh.exec!(<span class="s"><span class="dl">"</span><span class="k">echo hello world!</span><span class="dl">"</span></span>)<tt>
+</tt><tt>
+</tt>  ssh.exec(<span class="s"><span class="dl">"</span><span class="k">hello world</span><span class="dl">"</span></span>)<tt>
+</tt>  ssh.loop<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The first, <code>#exec!</code>, will block until the command finishes, and will return the output. The second will return immediately, before executing the command, and will run when the event loop does, writing output to the terminal.</p>
+<p>The documentation is pretty much done, too. To see it, just install the gem, change to the net-ssh-1.99.0 gem directory, and run “rake manual”. Then open “doc/out/index.html” in a browser. It includes a brief tutorial, a quick-reference, and an <span class="caps">FAQ</span>-style “how do I do X” interface.</p>
+<p>So! Give it a try. Remember that the current release of Net::SFTP won’t work with this new version (at all), and neither will Capistrano. But the lovely thing about RubyGems is that you can easily install and uninstall, on demand.</p>
+<p>Oh, and before I forget, a couple of little teasers about what’s coming up:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">require <span class="s"><span class="dl">'</span><span class="k">net/scp</span><span class="dl">'</span></span><tt>
+</tt><span class="co">Net</span>::<span class="co">SCP</span>.download(<span class="s"><span class="dl">"</span><span class="k">localhost</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">jamis</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">/Users/jamis/.bashrc</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">./my-bash-rc</span><span class="dl">"</span></span>) <span class="r">do</span> |name, sent, total|<tt>
+</tt>  <span class="r">if</span> sent == <span class="i">0</span><tt>
+</tt>     print <span class="s"><span class="dl">"</span><span class="k">downloading </span><span class="il"><span class="dl">#{</span>name<span class="dl">}</span></span><span class="k"> (</span><span class="il"><span class="dl">#{</span>total<span class="dl">}</span></span><span class="k">b): </span><span class="dl">"</span></span><tt>
+</tt>  <span class="r">elsif</span> sent == total<tt>
+</tt>     puts<tt>
+</tt>  <span class="r">else</span><tt>
+</tt>     print <span class="s"><span class="dl">"</span><span class="k">.</span><span class="dl">"</span></span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>and…</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">require <span class="s"><span class="dl">'</span><span class="k">uri/open-scp</span><span class="dl">'</span></span><tt>
+</tt>open(<span class="s"><span class="dl">"</span><span class="k">scp://jamis@localhost/Users/jamis/.bashrc</span><span class="dl">"</span></span>) <span class="r">do</span> |io| <tt>
+</tt>  puts io.read <tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>

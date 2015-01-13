@@ -1,0 +1,60 @@
+---
+- date: 2007-02-09
+  author: Alex
+  content: "<p>Thanks for all your posts over the last few weeks – they’ve been a
+    great read!</p>"
+- date: 2007-02-09
+  author: Don
+  content: "<p>Thanks for all the great posts, I’ve learned something new and useful
+    every day!</p>"
+- date: 2007-02-09
+  author: Michael Houghton
+  content: "<p>Thank <em>you</em> for giving me the necessary little mental kick to
+    pull me out of a seasonal malaise and back into my project.</p>"
+- date: 2007-02-09
+  author: Jason Stewart
+  content: "<p>I know it’s hard work, but it’s much appreciated. I’ve picked up a
+    few nice tips from your blog. Thanks!</p>"
+- date: 2007-02-09
+  author: Tom
+  content: "<p>I can honestly say that your recent posts have made me think more about
+    my Rails (and Ruby) development practices/knowledge than any of the books (or
+    blogs, pdf’s, screencasts, etc) that I have seen or purchased (and I think I have
+    all of the books to date….). I hope you can maintain the quality of the posts….even
+    if the quantity decreases.</p>\n\n\n\t<p>As a very ‘part-time’ blogger, I can’t
+    imagine coming up with the quality of content as often as you do. Keep up the
+    good work (as often as possible ;-))</p>"
+- date: 2007-02-10
+  author: Tekin
+  content: "<p>Enjoy the break, hope your batteries are suitably recharged!!</p>"
+- date: 2007-02-10
+  author: jeroen@supercool.nl
+  content: "<p>Enjoy your travels and keep up the good work!</p>"
+- date: 2007-02-10
+  author: Jason Seifer
+  content: "<p>Enjoy your vacation, thanks so much for the great posts and  content.</p>"
+- date: 2007-02-10
+  author: Dave South
+  content: "<p>Thanks for your informative posts. I’ve had to flag nearly every one
+    to go review again and again. I look forward to your return.</p>"
+- date: 2007-02-10
+  author: keeran
+  content: "<p>You’re a true posting hero Jamis – many thanks for sharing your knowledge.
+    Have a great holiday!</p>"
+- date: 2007-02-10
+  author: Silvio Gissi
+  content: "<p>Have a nice rest Jamis, you deserve it ;-)</p>\n\n\n\t<p>When you get
+    back, maybe you could talk a little about using Rails components outside Rails,
+    I have read an article from Richard Dale about using ActiveRecord on RubyQt at
+    http://www.kdedevelopers.org/node/2670 and found it very interesting and useful.</p>"
+- date: 2007-02-11
+  author: Ryan Lowe
+  content: "<p>Your blog posts have been excellent Jamis, enjoy the break!</p>"
+- date: 2007-02-12
+  author: Raymond Brigleb
+  content: "<p>Jamis, can’t tell you how interesting and helpful your posts have been.
+    If some good publisher were to encourage you to put together all of your insights
+    into a book, I’d be first in line. Thank you so much for all of the great writing.</p>"
+- date: 2007-02-13
+  author: David Backeus
+  content: "<p>Thanks for all your helpful posts. Enjoy your time off!</p>"

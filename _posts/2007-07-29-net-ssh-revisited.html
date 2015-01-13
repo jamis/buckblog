@@ -1,0 +1,31 @@
+---
+layout: post
+title: Net::SSH revisited
+post_id: 81
+categories:
+- Projects
+date: 2007-07-29 14:59:00.000000000 -06:00
+author: Jamis
+permalink: 2007/07/29/net-ssh-revisited.html
+---
+
+<p>I cringe whenever I remember those days, three years ago, when I was in the middle of a big Java project at <a href="http://www.byu.edu"><span class="caps">BYU</span></a> and was learning the ins-and-outs of <a href="http://www.martinfowler.com/articles/injection.html">dependency injection</a>. For Java (and similarly constrained languages), DI is a technique that allows you to write modular code without tightly coupling the components. It seemed like a neat idea. So why do I cringe now?</p>
+<p>Because I tried to bring that idea to Ruby, in the form of (first) <a href="http://copland.rubyforge.org/">Copland</a>, and (later) <a href="http://needle.rubyforge.org/">Needle</a>.</p>
+<p>But hey, we’re all newbies at some time, right? I’ve since learned my lesson and have come to understand that although DI is a nifty technique that works well in some environments, it is wholly unnecessary in Ruby. Ruby sports an agility that Java will never know, and can get by without such crutches.</p>
+<p>My conscience is salved somewhat by the knowledge that neither Copland nor Needle ever caught on. The only notable exception is the <a href="http://net-ssh.rubyforge.org">Net::SSH</a> library, which I rewrote after RubyConf 2004 to take advantage of Needle, and which I originally held up as a shining example of how DI can help make code “more modular”. So, I cringe yet again, now, realizing that any time someone has installed <a href="http://www.capify.org">Capistrano</a> (which has become quite popular), they’ve also had to install Net::SSH, which carries the DI baggage along with it.</p>
+<p>My shame has finally reached the pain point, though. I’m rewriting Net::SSH, taking advantage of many of the best-practices I’ve learned in the intervening years. It’s a lot slimmer now. Faster. Cleaner. Better. Even ignoring the ssh.shell and ssh.process services (which I’m not immediately porting to the new version), the code is less than half the size of the bloated DI-based version. It’s actually possible now to read and understand how the library works. And I’ve killed the use of threads to do polling and am doing it right, now, via IO.select. I’m really quite pleased about how it is turning out.</p>
+<p>I’ve also managed to write a Net::SCP client library, which works quite well, especially considering that the <span class="caps">SCP</span> protocol (which is based on <span class="caps">RCP</span>) is apparently completely undocumented, and the canonical implementation from OpenSSH is…well…bad. Effective, but bad.</p>
+<p>I’m going to be rewriting Net::SFTP next, which is another beast with its blatant abuses of metaprogramming. Once it is “done”, I’ll be packaging them all up as “version 2”, and releasing them aside a small update to Capistrano (tweaked as necessary to work with the minor <span class="caps">API</span> changes). I haven’t enjoyed working on Net::SSH this much in a couple of years! It really has been fun to gut it and rethink the architecture.</p>
+<p>If you’re interested in following along at all, you can check out the Subversion repository:</p>
+<ul>
+	<li>Net::SSH v2: <a href="http://svn.jamisbuck.org/net-ssh/branches/v2">http://svn.jamisbuck.org/net-ssh/branches/v2</a>
+</li>
+		<li>Net::SCP: <a href="http://svn.jamisbuck.org/projects/net-scp/trunk">http://svn.jamisbuck.org/projects/net-scp/trunk</a>
+</li>
+	</ul>
+<p>And, after I start on the Net::SFTP rewrite, you’ll be able to follow it here:</p>
+<ul>
+	<li>Net::SFTP v2: <a href="http://svn.jamisbuck.org/net-sftp/branches/v2">http://svn.jamisbuck.org/net-sftp/branches/v2</a>
+</li>
+	</ul>
+<p>The code is entirely undocumented, is lacking any tests at all, and there are a few small <span class="caps">API</span> changes that might bite you. Also, as I mentioned, ssh.shell and ssh.process are missing (they may be rereleased eventually as separate libraries). But, if you’re feeling brave and want to peek, I’d appreciate any feedback you might have.</p>

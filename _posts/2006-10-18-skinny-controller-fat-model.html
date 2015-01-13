@@ -1,0 +1,242 @@
+---
+layout: post
+title: Skinny Controller, Fat Model
+post_id: 192
+categories:
+- Essays and Rants
+date: 2006-10-18 07:50:00.000000000 -06:00
+author: Jamis
+permalink: 2006/10/18/skinny-controller-fat-model.html
+summary: >
+  The "Fat Controller" anti-pattern is shown and dissected, and the reader
+  is taken through the process of refactoring it into a more readable,
+  maintainable, and testable solution
+---
+
+<p>When first getting started with Rails, it is tempting to shove lots of logic in the view. I’ll admit that I was guilty of writing more than one template like the following during my Rails novitiate:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c">&lt;!-- app/views/people/index.rhtml --&gt;</span><tt>
+</tt><span class="il"><span class="dl">&lt;%</span> people = <span class="co">Person</span>.find(<tt>
+</tt>      <span class="sy">:conditions</span> =&gt; [<span class="s"><span class="dl">"</span><span class="k">added_at &gt; ? and deleted = ?</span><span class="dl">"</span></span>, <span class="co">Time</span>.now.utc, <span class="pc">false</span>],<tt>
+</tt>      <span class="sy">:order</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">last_name, first_name</span><span class="dl">"</span></span>) <span class="dl">%&gt;</span></span><tt>
+</tt><span class="il"><span class="dl">&lt;%</span> people.reject { |p| p.address.nil? }.each <span class="r">do</span> |person| <span class="dl">%&gt;</span></span><tt>
+</tt>  <span class="ta">&lt;div</span> <span class="an">id</span>=<span class="s"><span class="dl">"</span><span class="k">person-</span><span class="il"><span class="dl">&lt;%=</span> person.new_record? ? <span class="s"><span class="dl">"</span><span class="k">new</span><span class="dl">"</span></span> : person.id <span class="dl">%&gt;</span></span><span class="dl">"</span></span><span class="ta">&gt;</span><tt>
+</tt>    <span class="ta">&lt;span</span> <span class="an">class</span>=<span class="s"><span class="dl">"</span><span class="k">name</span><span class="dl">"</span></span><span class="ta">&gt;</span><tt>
+</tt>      <span class="il"><span class="dl">&lt;%=</span> person.last_name <span class="dl">%&gt;</span></span>, <span class="il"><span class="dl">&lt;%=</span> person.first_name <span class="dl">%&gt;</span></span><tt>
+</tt>    <span class="ta">&lt;/span&gt;</span><tt>
+</tt>    <span class="ta">&lt;span</span> <span class="an">class</span>=<span class="s"><span class="dl">"</span><span class="k">age</span><span class="dl">"</span></span><span class="ta">&gt;</span><tt>
+</tt>      <span class="il"><span class="dl">&lt;%=</span> (<span class="co">Date</span>.today - person.birthdate) / <span class="i">365</span> <span class="dl">%&gt;</span></span><tt>
+</tt>    <span class="ta">&lt;/span&gt;</span><tt>
+</tt>  <span class="ta">&lt;/div&gt;</span><tt>
+</tt><span class="il"><span class="dl">&lt;%</span> <span class="r">end</span> <span class="dl">%&gt;</span></span></pre></td>
+</tr></table>
+<p>Not only is the above difficult to read (just you <em>try</em> and find the <span class="caps">HTML</span> elements in it), it also completely bypasses the “C” in “MVC”. Consider the controller and model implementations that support that view:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># app/controllers/people_controller.rb</span><tt>
+</tt><span class="r">class</span> <span class="cl">PeopleController</span> &lt; <span class="co">ActionController</span>::<span class="co">Base</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="c"># app/models/person.rb</span><tt>
+</tt><span class="r">class</span> <span class="cl">Person</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+</tt>  has_one <span class="sy">:address</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Just look at that! Is it really any wonder that it is so tempting for novices to take this approach? They’ve got all their code in one place, and they don’t have to go switching between files to follow the logic of their program. Also, they can pretend that they haven’t actually written any Ruby code; I mean, look, it’s just the template, right?</p>
+<p>For various reasons, though, this is a very, very bad idea. <span class="caps">MVC</span> has been successful for many reasons, and some of those reasons are “readability”, “maintainability”, “modularity”, and “separation of concerns”. You’d like your code to have those properties, right?</p>
+<p>A better way is to move as much of the logic as possible into the controller. Seriously, isn’t that what the controller is for? It is supposed to mediate between the view and the model. Let’s make it earn its right to occupy a position in our source tree:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c">&lt;!-- app/views/people/index.rhtml --&gt;</span><tt>
+</tt><span class="il"><span class="dl">&lt;%</span> <span class="iv">@people</span>.each <span class="r">do</span> |person| <span class="dl">%&gt;</span></span><tt>
+</tt>  <span class="ta">&lt;div</span> <span class="an">id</span>=<span class="s"><span class="dl">"</span><span class="k">person-</span><span class="il"><span class="dl">&lt;%=</span> person.new_record? ? <span class="s"><span class="dl">"</span><span class="k">new</span><span class="dl">"</span></span> : person.id <span class="dl">%&gt;</span></span><span class="dl">"</span></span><span class="ta">&gt;</span><tt>
+</tt>    <span class="ta">&lt;span</span> <span class="an">class</span>=<span class="s"><span class="dl">"</span><span class="k">name</span><span class="dl">"</span></span><span class="ta">&gt;</span><tt>
+</tt>      <span class="il"><span class="dl">&lt;%=</span> person.last_name <span class="dl">%&gt;</span></span>, <span class="il"><span class="dl">&lt;%=</span> person.first_name <span class="dl">%&gt;</span></span><tt>
+</tt>    <span class="ta">&lt;/span&gt;</span><tt>
+</tt>    <span class="ta">&lt;span</span> <span class="an">class</span>=<span class="s"><span class="dl">"</span><span class="k">age</span><span class="dl">"</span></span><span class="ta">&gt;</span><tt>
+</tt>      <span class="il"><span class="dl">&lt;%=</span> (<span class="co">Date</span>.today - person.birthdate) / <span class="i">365</span> <span class="dl">%&gt;</span></span><tt>
+</tt>    <span class="ta">&lt;/span&gt;</span><tt>
+</tt>  <span class="ta">&lt;/div&gt;</span><tt>
+</tt><span class="il"><span class="dl">&lt;%</span> <span class="r">end</span> <span class="dl">%&gt;</span></span></pre></td>
+</tr></table>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># app/controllers/people_controller.rb</span><tt>
+</tt><span class="r">class</span> <span class="cl">PeopleController</span> &lt; <span class="co">ActionController</span>::<span class="co">Base</span><tt>
+</tt>  <span class="r">def</span> <span class="fu">index</span><tt>
+</tt>    <span class="iv">@people</span> = <span class="co">Person</span>.find(<tt>
+</tt>      <span class="sy">:conditions</span> =&gt; [<span class="s"><span class="dl">"</span><span class="k">added_at &gt; ? and deleted = ?</span><span class="dl">"</span></span>, <span class="co">Time</span>.now.utc, <span class="pc">false</span>],<tt>
+</tt>      <span class="sy">:order</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">last_name, first_name</span><span class="dl">"</span></span>)<tt>
+</tt>    <span class="iv">@people</span> = <span class="iv">@people</span>.reject { |p| p.address.nil? }<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Better! Definitely better. We dropped that big noisy chunk at the top of the template, and it’s more immediately obvious what the structure of the <span class="caps">HTML</span> file is. Also, you can see by reading the controller code roughly what kind of data is going to be displayed.</p>
+<p>However, we can do better. There’s still a lot of noise in the view, mostly related to conditions and computations on the model objects. Let’s pull some of that into the model:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># app/models/person.rb</span><tt>
+</tt><span class="r">class</span> <span class="cl">Person</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><tt>
+</tt>  <span class="r">def</span> <span class="fu">name</span><tt>
+</tt>    <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span>last_name<span class="dl">}</span></span><span class="k">, </span><span class="il"><span class="dl">#{</span>first_name<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  <span class="r">def</span> <span class="fu">age</span><tt>
+</tt>    (<span class="co">Date</span>.today - person.birthdate) / <span class="i">365</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  <span class="r">def</span> <span class="fu">pseudo_id</span><tt>
+</tt>    new_record? ? <span class="s"><span class="dl">"</span><span class="k">new</span><span class="dl">"</span></span> : id<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c">&lt;!-- app/views/people/index.rhtml --&gt;</span><tt>
+</tt><span class="il"><span class="dl">&lt;%</span> <span class="iv">@people</span>.each <span class="r">do</span> |person| <span class="dl">%&gt;</span></span><tt>
+</tt>  <span class="ta">&lt;div</span> <span class="an">id</span>=<span class="s"><span class="dl">"</span><span class="k">person-</span><span class="il"><span class="dl">&lt;%=</span> person.pseudo_id <span class="dl">%&gt;</span></span><span class="dl">"</span></span><span class="ta">&gt;</span><tt>
+</tt>    <span class="ta">&lt;span</span> <span class="an">class</span>=<span class="s"><span class="dl">"</span><span class="k">name</span><span class="dl">"</span></span><span class="ta">&gt;</span><span class="il"><span class="dl">&lt;%=</span> person.name <span class="dl">%&gt;</span></span><span class="ta">&lt;/span&gt;</span><tt>
+</tt>    <span class="ta">&lt;span</span> <span class="an">class</span>=<span class="s"><span class="dl">"</span><span class="k">age</span><span class="dl">"</span></span><span class="ta">&gt;</span><span class="il"><span class="dl">&lt;%=</span> person.age <span class="dl">%&gt;</span></span><span class="ta">&lt;/span&gt;</span><tt>
+</tt>  <span class="ta">&lt;/div&gt;</span><tt>
+</tt><span class="il"><span class="dl">&lt;%</span> <span class="r">end</span> <span class="dl">%&gt;</span></span></pre></td>
+</tr></table>
+<p>Wow. Stunning, isn’t it? The template is reduced to almost pure <span class="caps">HTML</span>, with only a loop and some simple insertions sprinkled about. Note, though, that this is not just a cosmetic refactoring: by moving <code>name</code>, <code>age</code> and <code>pseudo_id</code> into the model, we’ve made it much easier to be consistent between our views, since any time we need to display a person’s name or age we can simply call those methods and have them computed identically every time. Even better, if we should change our minds and decide that (e.g.) <code>age</code> needs to be computed differently, there is now only one place in our code that needs to change.</p>
+<p>However, there’s still a fair bit of noise in the controller. I mean, look at that <code>index</code> action. If you were new to the application, coming in to add a new feature or fix a bug, that’s a lot of line noise to parse just to figure out what is going on. If we abstract that code into the model, we can not only slim the controller down, but we can effectively document the operation we’re doing by naming the method in the model appropriately. Behold:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># app/models/person.rb</span><tt>
+</tt><span class="r">class</span> <span class="cl">Person</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+</tt>  <span class="r">def</span> <span class="pc">self</span>.find_recent<tt>
+</tt>    people = find(<tt>
+</tt>      <span class="sy">:conditions</span> =&gt; [<span class="s"><span class="dl">"</span><span class="k">added_at &gt; ? and deleted = ?</span><span class="dl">"</span></span>, <span class="co">Time</span>.now.utc, <span class="pc">false</span>],<tt>
+</tt>      <span class="sy">:order</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">last_name, first_name</span><span class="dl">"</span></span>)<tt>
+</tt>    people.reject { |p| p.address.nil? }<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="c"># app/controllers/people_controller.rb</span><tt>
+</tt><span class="r">class</span> <span class="cl">PeopleController</span> &lt; <span class="co">ActionController</span>::<span class="co">Base</span><tt>
+</tt>  <span class="r">def</span> <span class="fu">index</span><tt>
+</tt>    <span class="iv">@people</span> = <span class="co">Person</span>.find_recent<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Voila! Looking at <code>PeopleController#index</code>, you can now see immediately what is going on. Furthermore, in the model, that query is now self-documenting, because we gave the method a descriptive name, <code>find_recent</code>. (If you wanted, you could even take this a step further and override the <code>find</code> method itself, as I described in <a href="/2006/10/7/helping-activerecord-finders-help-you">Helping ActiveRecord finders help you</a>. Then you could do something like <code>Person.find(:recent)</code> instead of <code>Person.find_recent</code>. There’s not a big advantage in that approach in this example, so it mostly depends on what you prefer, esthetically.)</p>
+<p>Be aggressive! Try to keep your controller actions and views as slim as possible. A one-line action is a thing of wonder, as is a template that is mostly <span class="caps">HTML</span>. It is also <em>much</em> more maintainable than a view that is full of assignment statements and chained method calls.</p>
+<p>Another (lesser) nice side-effect of lean controllers: it allows <code>respond_to</code> to stand out that much more, making it simple to see at a glace what the possible output types are:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># app/controllers/people_controller.rb</span><tt>
+</tt><span class="r">class</span> <span class="cl">PeopleController</span> &lt; <span class="co">ActionController</span>::<span class="co">Base</span><tt>
+</tt>  <span class="r">def</span> <span class="fu">index</span><tt>
+</tt>    <span class="iv">@people</span> = <span class="co">Person</span>.find_recent<tt>
+</tt><tt>
+</tt>    respond_to <span class="r">do</span> |format|<tt>
+</tt>      format.html<tt>
+</tt>      format.xml { render <span class="sy">:xml</span> =&gt; <span class="iv">@people</span>.to_xml(<span class="sy">:root</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">people</span><span class="dl">"</span></span>) }<tt>
+</tt>      format.rss { render <span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">index.rxml</span><span class="dl">"</span></span> }<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Give all this a try in your next project. Like adopting RESTful practices, it may take some time to wrap your mind around the refactoring process, especially if you’re still accustomed to throwing lots of logic in the view. Just be careful not to go too far; don’t go putting actual view logic in your model. If you find your model rendering templates or returning <span class="caps">HTML</span> or Javascript, you’ve refactored further than you should. In that case, you should make use of the helper modules that <code>script/generate</code> so kindly stubs out for you in <code>app/helpers</code>. Alternatively, you could look into using a <a href="http://jayfields.blogspot.com/2006/09/rails-model-view-controller-presenter.html">presenter object</a>.</p>

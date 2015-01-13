@@ -1,0 +1,18 @@
+---
+layout: post
+title: SwitchTower on OSX
+post_id: 200
+categories:
+- Tips & Tricks
+date: 2005-09-24 07:40:00.000000000 -06:00
+author: Jamis
+permalink: 2005/09/24/switchtower-on-osx.html
+---
+
+<p>Some people have been reporting some problems running <a href="http://manuals.rubyonrails.com/read/book/17">SwitchTower</a> on the Mac. The problem lies with the fact that, once again, Apple seems to have messed something up with their default install of Ruby.</p>
+<p>If you encounter problems with SwitchTower hanging on the Mac, please try installing Ruby either manually, or using one of the port systems for <span class="caps">OSX</span> (<a href="http://www.darwinports.org">darwinports</a> or <a href="http://fink.sourceforge.net">fink</a>).</p>
+<p>Note that if you do reinstall Ruby this way, you’ll need to do a few things afterwards:</p>
+<ol>
+	<li>backup and then delete the ruby, irb, and ri in <code>/usr/bin</code>.</li>
+		<li>reinstall any extension libs and gems (like SwitchTower and its dependencies, Net::SSH and Needle).</li>
+	</ol>

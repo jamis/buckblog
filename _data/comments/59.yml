@@ -1,0 +1,30 @@
+---
+- date: 2008-04-11
+  author: Scott Raymond
+  content: "<p>Hey Jamis, that’s cool stuff. I like the idea of using Rake tasks for
+    doing stuff remotely. For the sake of my curiosity, could you explain the benefits/differences
+    between this and the way that Vlad does it? Is there some benefit that Net::SSH::Multi
+    provides that just wrapping the “ssh” command doesn’t? Thanks!</p>"
+- date: 2008-04-11
+  author: Jamis
+  content: "<p>@Scott, I’ve never done more than glance at vlad, so I’m probably the
+    wrong person to ask. Doesn’t shelling out to ssh mean you have to reconnect for
+    every command you want to execute? Net::SSH::Multi opens the connection and caches
+    it, so if you are executing lots of commands in a row you might see better performance.
+    Also, I don’t think vlad works on windows yet…? (As I said, I’m way out of the
+    loop regarding vlad, so that might not be true any more). Net::SSH::Multi is platform
+    independent, as long as OpenSSL and the OpenSSL ruby bindings are installed. At
+    any rate, this isn’t out to replace vlad, or cap. It’s another tool for people
+    to use, is all.</p>"
+- date: 2008-04-11
+  author: Scott Raymond
+  content: "<p>I’m not terribly familiar with Vlad’s internals either, so I don’t
+    know about the connection-caching question. Anyhow, thanks again for the great
+    work on this stuff.</p>"
+- date: 2008-04-11
+  author: Erlend Simonsen
+  content: "<p>Seems like a perfect match for glTail as well. Guess I should start
+    preparing for the next release.</p>"
+- date: 2008-04-12
+  author: Sebastian
+  content: "<p>Nice post, I will try this solution.</p>"

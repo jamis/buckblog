@@ -1,0 +1,5 @@
+---
+- date: 2006-11-06
+  author: Seth Ladd
+  content: <p>Nice work!  Would be interesting to hook this up to ActiveRDF and implement
+    some <span class="caps">RDFS</span> and <span class="caps">OWL</span> rules.</p>

@@ -1,0 +1,30 @@
+---
+layout: post
+title: Rendering empty responses
+post_id: 97
+categories:
+- Tips & Tricks
+date: 2007-03-05 11:41:00.000000000 -07:00
+author: Jamis
+permalink: 2007/03/05/rendering-empty-responses.html
+---
+
+<p>Sometimes (and especially once you start dealing with writing web services) you’ll find yourself wanting to return an empty response, with only a status code and (possibly) a few headers set.</p>
+<p>You can do this easily enough using the <code>render</code> method:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">headers[<span class="s"><span class="dl">'</span><span class="k">Location</span><span class="dl">'</span></span>] = person_url(<span class="iv">@person</span>)<tt>
+</tt>render <span class="sy">:nothing</span> =&gt; <span class="pc">true</span>, <span class="sy">:status</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">201 Created</span><span class="dl">"</span></span><tt>
+</tt></pre></td>
+</tr></table>
+<p>That, however, is unbearably verbose, especially when you find yourself needing to do it in multiple places.</p>
+<p>Enter the <code>head</code> method:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">head <span class="sy">:created</span>, <span class="sy">:location</span> =&gt; person_url(<span class="iv">@person</span>)<tt>
+</tt></pre></td>
+</tr></table>
+<p>There, isn’t that beautiful?</p>

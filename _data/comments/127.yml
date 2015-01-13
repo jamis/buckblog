@@ -1,0 +1,173 @@
+---
+- date: 2007-01-25
+  author: Neeraj Kumar
+  content: "<p>Jamis,</p>\n\n\n\t<p>I can’t help but wonder you mentioned everything
+    but e-commerce. It’s my assumption that this book is not for newbies. If you are
+    a newbie then you want to first learn Rails and for that you should buy a book
+    similar to <span class=\"caps\">AWDWR</span>. Then your second book should be
+    to help you in your vertical domain (in this case e-commerce).</p>\n\n\n\t<p>With
+    that assumption the first book should cover <span class=\"caps\">RJS</span>, migrations,
+    h name, internationalzation, localization, caching, capistrano, sql injection
+    etc.</p>\n\n\n\t<p>Looking at the <span class=\"caps\">TOC</span> of the book
+    and your review, it seems like it’s another book on RoR with 20% time devoted
+    on e-commerce.  If that’s true then I find the title of the book intentionally
+    misleading.</p>"
+- date: 2007-01-25
+  author: Jamis
+  content: "<p>Neeraj, perhaps we’re laboring under different definitions of e-commerce…
+    building an e-commerce app is a lot more than just shopping carts and communicating
+    with a payment gateway. This books does talk about payment gateways, and credit
+    card security, and shopping carts, but it also talks about the stuff you need
+    to <em>do</em> those things.</p>\n\n\n\t<p>Frankly, I hate the term e-commerce,
+    because (like “web 2.0”) it means something different to everybody.</p>"
+- date: 2007-01-25
+  author: Larry Myers
+  content: "<p>Jamis,</p>\n\n\n\t<p>I bought this book when it came out several months
+    ago, and I still think the most valuable parts are towards the end where they
+    cover things like using ActiveMerchant, order tracking, and security (especially
+    <span class=\"caps\">SSL</span> w/ Lighttpd). </p>\n\n\n\t<pre><code>A lot of
+    the frontend things they cover are an added bonus, but can be found elsewhere.</code></pre>"
+- date: 2007-01-25
+  author: Mr. Kahn
+  content: "<p>I am most interested in this book for handling payment gateways, order
+    tracking and security.  Those are areas I am inexperienced in.  So given those
+    topics, would you recommend this book?</p>"
+- date: 2007-01-25
+  author: Jamis
+  content: "<p>This is not a book about payment gateways, order tracking, or security.
+    It is about building a web application in Rails that depends on some of those
+    things, and thus talks about them and points you in the right direction, and helps
+    you get started, but it does not go into any depth on any of them.</p>\n\n\n\t<p>If
+    you are new to building online shops and want something to show you the lay of
+    the land, and to give you pointers of where to look next, this book is great.
+    If you want to really dig in and understand how payment gateways and internationalization
+    and all of that really <em>work</em>, then this book will disappoint.</p>"
+- date: 2007-01-25
+  author: Guy Naor
+  content: "<p>I just got this book two days ago and was going to write a review today,
+    only to find you did it already. And I agree with most of your points.</p>\n\n\n\t<p>It’s
+    a book I now recommend to many people. I mentor Java programmers on switching
+    to rails, and I think this book is one of the best to help someone get the whole
+    picture of rails development.</p>\n\n\n\t<p>But I must confess that I bought it
+    specificaly because of the <span class=\"caps\">TDD</span> part. And they go with
+    it into much greater detail than any other book I looked at, really making it
+    clear how to practice it.</p>\n\n\n\t<p>This book is now third in line for learning
+    Rails as far as my recommendations go:</p>\n\n\n\t<p>1) Programming Ruby – I truly
+    believe you need to know ruby well to be   good as a rails developer. No shortcuts
+    here!</p>\n\n\n\t<p>2) <span class=\"caps\">AWDR</span></p>\n\n\n\t<p>3) Beginning
+    Ruby on Rails E-Commerce</p>"
+- date: 2007-01-25
+  author: August Lilleaas
+  content: "<p>I agree with you list, Guy, except from 1). In my opinion, Ruby for
+    Rails is a much better book for newcomers than the pickaxe. Pickaxe requires you
+    to have done some programming before, while the Ruby for Rails book is more of
+    a ground-up tutorial – which is more suitable for most cases of RoR-noobs (the
+    RoR noob being a none-programmer).</p>"
+- date: 2007-01-25
+  author: Jarkko Laine
+  content: "<p>Thanks for the kind interview, Jamis.</p>\n\n\n\t<p>Good point about
+    the response.xhr? vs. respond_to. The chapter was originally written before respond_to
+    was included in Rails and missed escaped the axe later on. However, I think there
+    is a place for it, too, not just in this case. When you want to do things like
+    deleting an object on the site the “right way” (http://jlaine.net/2005/8/25/using-rails-ajax-helpers-to-create-safe-state-changing-links),
+    respond_to doesn’t help because it can’t be used to determine whether a request
+    was using <span class=\"caps\">POST</span> or <span class=\"caps\">GET</span>.
+    At least that’s my understanding.</p>\n\n\n\t<p>I agree about scaffolding but
+    it was just something we had to introduce there. It also doesn’t play well together
+    with <span class=\"caps\">TDD</span> (too much magic happening at once), that’s
+    why we keep it to one chapter.</p>\n\n\n\t<p>I’m going to fix the things changed
+    in Rails 1.2 (there aren’t actually that many, like you said) for the next printing.
+    But like you said, Rails goes forward like a … errr… <span class=\"caps\">TGV</span>
+    train, so a book buyer can never trust that everything said in a book will be
+    100% current in half a year anyway.</p>\n\n\n\t<p>Cheers,\n//jarkko</p>"
+- date: 2007-01-26
+  author: Nick Coyne
+  content: "<p>I’ve bought all of the Rails and Ruby books, and this one definitely
+    features high up on my list.</p>\n\n\n\t<p>Most tutorial work-through style books
+    conveniently leave out one or more important real-world issues just to keep things
+    simple. This book tackles the difficult area of <span class=\"caps\">TDD</span>
+    (and does it pretty well, <span class=\"caps\">IMHO</span>) and shows how to practically
+    use it in your projects.</p>\n\n\n\t<p>Nice one.</p>"
+- date: 2007-01-26
+  author: Jamis
+  content: "<p>Jarkko, thanks for the great book. :) Regarding request.get? and request.post?,
+    those are completely different animals from request.xhr?, and thus I have no beef
+    with them. In fact, I use get? and post? myself to differentiate between the method
+    used in the request. request.xhr?, on the other hand, I haven’t touched in months,
+    if not a year.</p>"
+- date: 2007-01-26
+  author: joe
+  content: "<p>Yep, I agree… this is a great book.  The heavy emphasis on <span class=\"caps\">TDD</span>
+    is worth the price of admission.  However, the authors delve into much more such
+    as working with various plugins, deployment and payment authorization.  And though
+    the book is information heavy, it is far from boring.  The user stories and down-to-earth
+    writing style keep things moving along quite nicely.</p>\n\n\n\t<p>The authors
+    have a google mailing list dedicated to this book and are very responsive in answering
+    questions about the tutorial.</p>\n\n\n\t<p>Great job guys!</p>"
+- date: 2007-01-28
+  author: Shane
+  content: "<p>Cool, I’ve never heard of this book before. I’ll check it out. Although,
+    the rails 1.1 bit scares me… So much has changed since then it seems like. I bought
+    the first edition of the Ruby on Rails book, and it’s pretty unusable now(although
+    the edition solves that problem). Rails changes so often, it’s hard for authors
+    to keep up.</p>\n\n\n\t<p>If any of you have read it, you should rank it on:</p>\n\n\n\t<p>http://www.programmingbooks.org</p>\n\n\n\t<p>(my
+    rails-based programming book ranking site)</p>"
+- date: 2007-01-30
+  author: Christian Hellsten
+  content: "<p>Thanks for writing a fair review of our book Jamis. Sadly, George is
+    not a real person :)</p>\n\n\n\t<p>You’re definitely right about the deprecated
+    stuff. It’s difficult to keep up with all the changes in Rails and all the plugins
+    we cover in the book.</p>\n\n\n\t<p>As Joe pointed out, there’s a mailing list
+    where we provide support and answer questions about the book: http://groups.google.com/group/railsecommerce</p>"
+- date: 2007-02-07
+  author: hemant
+  content: "<p>Jamis, how does request.xhr? and respond_to are equivalent?</p>\n\n\n\t<p>respond_to
+    would always return some Javascript as you have demonstrated when using with <span
+    class=\"caps\">RJS</span>.</p>\n\n\nHowever, if one has code like this:\n<pre>\n
+    \   elsif request.xhr?\n      category = params[:fav_category][:category]\n      #
+    generate errors\n      if category == 'None'\n        flash[:error] = \"Invalid
+    category\" \n        render :update do |page|\n          page.redirect_to :action
+    =&gt; \"preferred_messages\" \n        end\n        return\n      end\n    end\n</pre>\nI
+    mean, here a <span class=\"caps\">HTML</span> page fragment would be returned.
+    So, how would respond_to handle this case.\n\n\t<p>May be I am missing something.</p>"
+- date: 2007-02-07
+  author: Jamis
+  content: "<p>hemant:</p>\n\n\n<table class=\"CodeRay\"><tr>\n  <td title=\"click
+    to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt><strong>5</strong><tt>\n</tt>6<tt>\n</tt>7<tt>\n</tt>8<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre>respond_to <span class=\"r\">do</span> |format|<tt>\n</tt>
+    \ format.js <span class=\"r\">do</span><tt>\n</tt>    category = params[<span
+    class=\"sy\">:fav_category</span>][<span class=\"sy\">:category</span>]<tt>\n</tt>
+    \   <span class=\"r\">if</span> category == <span class=\"s\"><span class=\"dl\">'</span><span
+    class=\"k\">None</span><span class=\"dl\">'</span></span><tt>\n</tt>      render(<span
+    class=\"sy\">:update</span>) { |pg| pg.redirect_to <span class=\"sy\">:action</span>
+    =&gt; <span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">..</span><span
+    class=\"dl\">\"</span></span> }<tt>\n</tt>    <span class=\"r\">end</span><tt>\n</tt>
+    \ <span class=\"r\">end</span><tt>\n</tt><span class=\"r\">end</span><tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>Basically,
+    the respond_to replaces the if/elsif/else condition clause. One of the problems
+    with request.xhr? is that it relies on a custom <span class=\"caps\">HTTP</span>
+    header, rather than on the existing infrastructure of the <span class=\"caps\">HTTP</span>
+    protocol. respond_to, on the other hand, relies on the <span class=\"caps\">HTTP</span>
+    Accept header to determine how to respond, and is therefore more compliant with
+    existing standards.</p>"
+- date: 2007-02-08
+  author: hemant
+  content: "<p>Jamis, thanks for clarifying things up.</p>"
+- date: 2007-02-08
+  author: mGee
+  content: "<p>You overlooked the fact this book’s code is <span class=\"caps\">RIDDLED</span>
+    with errors.</p>\n\n\n\t<p>The book is an utter failure.</p>"
+- date: 2007-02-08
+  author: Jamis
+  content: "<p>mGee, wow, you obviously have strong feelings about this. Errors or
+    not, I’d definitely would <em>not</em> call the book an utter failure. For the
+    most part, it preaches practices that I agree with, and it encourages test-driven-development,
+    which many books do not. I’d say it’s doing great.</p>\n\n\n\t<p><span class=\"caps\">FWIW</span>,
+    I didn’t notice any glaring errors. I hope you’ve emailed the authors with any
+    errors you’ve found, though.</p>"
+- date: 2007-02-18
+  author: Jarkko Laine
+  content: "<p>mGee: I think the amount of errors is a very subjective matter. I don’t
+    think any technical book (at least in its first printing) can really be without
+    any errors (although I do admire the Pragmatic Programmers’ beta book process).
+    We’re only humans, after all. If you have any problems with the book, don’t hesitate
+    to ask for help in the mailing list mentioned above in the comments.</p>"

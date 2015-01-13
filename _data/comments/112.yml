@@ -1,0 +1,55 @@
+---
+- date: 2007-02-19
+  author: Adam Greene
+  content: |-
+    <p>Hi Jamis,
+    welcome back, and thank you for the tip!
+    Adam</p>
+- date: 2007-02-19
+  author: Patrick Reagan
+  content: "<p>Wow – you must have read my mind.  I was wrestling a bit last night
+    getting some routes to work (ended up being an obvious ordering problem), and
+    was looking for something like this.  I’ll tuck this away for later.</p>\n\n\n\t<p>Thanks.</p>"
+- date: 2007-02-20
+  author: Jay Fields
+  content: "<p>This works well also: \nputs ActionController::Routing::Routes.routes</p>"
+- date: 2007-02-20
+  author: Sascha Brink
+  content: "<p>How about sorting the routes first?</p>\n\n\n\t<p>ActionController::Routing::Routes.named_routes.routes.sort_by(&amp;:to_s)</p>"
+- date: 2007-02-20
+  author: Jamis
+  content: "<p>Sascha, although sorting the routes might have some value, generally
+    I’ve wanted to see them in the order they were defined, since that’s the order
+    that the routing engine will try to apply them. If you’re having problems with
+    a route not being recognized like you expect, it’s usually because you need to
+    define it further toward the top of the file, and showing them in their natural
+    order will reveal that dependency.</p>"
+- date: 2007-02-21
+  author: Justin Mazzi
+  content: "<p>What are you using for your syntax highlighting on your blog?</p>"
+- date: 2007-02-21
+  author: Jamis
+  content: <p>Mephisto comes with a syntax highlighting module. It uses <a href="http://coderay.rubychan.de/">CodeRay</a>
+    under the covers.</p>
+- date: 2007-02-21
+  author: Justin Mazzi
+  content: "<p>Did you do any hacking/editing to get it to work? I saw it says its
+    built in, but it doesn’t seem to highlight it. Are you using custom css or something?</p>"
+- date: 2007-02-21
+  author: Jamis
+  content: <p>Justin, yes, you’ll need to style it up. CodeRay has a couple of different
+    <span class="caps">CSS</span> stylesheets you can drop into your mephisto theme.</p>
+- date: 2007-02-23
+  author: Jeff Dean
+  content: "<p>Sweet!  This solved another problem I was wrestling with – I noticed
+    that when you view the output of the routes, the default routes (:controller/:action/:id)
+    were listed as <span class=\"caps\">ANY</span>.</p>\n\n\n\t<p>I often find that
+    I want to add an action to a mapped resource that can accept both get and post,
+    and now I can just do:</p>\n\n\n<pre><code>map.resources :some_resource, :collection=&gt;{:some_action=&gt;:any}</code></pre>\n\n\t<p>This
+    will oddly show up as a <span class=\"caps\">GET</span> route when showing the
+    routes, but it allows for the get or post action in the browser.</p>"
+- date: 2007-03-08
+  author: gritmonkey
+  content: <p>The plugin routing_navigator generates an <span class="caps">AJAX</span>
+    toolbar to view/fool around with your routes.  I have found it handy to understand
+    what is going on.</p>

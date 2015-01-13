@@ -1,0 +1,54 @@
+---
+- date: 2007-10-24
+  author: meeep!
+  content: "<p>“Default to 0664 instead of 0660 on upload.”</p>\n\n\n\t<p>Ouch!</p>"
+- date: 2007-10-24
+  author: Will Sargent
+  content: <p>It looks like you need default_run_options[:pty] = true for <span class="caps">SVN</span>
+    to work on Windows.  Otherwise, it simply asks for the password and never gets
+    anywhere.</p>
+- date: 2007-10-25
+  author: Jamis
+  content: "<p>the :pty =&gt; true thing is actually immaterial to the OS you are
+    deploying from. It depends on a variety of factors, including the remote OS version,
+    whether the program doing the prompting supports interactive mode without a pty,
+    and so forth.</p>\n\n\n\t<p>I’ll be releasing an update soon in which :pty =&gt;
+    true is the default, and you have to opt-out of the pty if you decide you don’t
+    want it.</p>"
+- date: 2007-10-28
+  author: Aaron H.
+  content: "<p>Good idea.  I would suggest that (:pty =&gt; true) as a default for
+    a dot release makes good sense since that is the previous and expected behavior.</p>\n\n\n\t<p>I
+    had to reinstall Capistrano after my Leopard upgrade and got version 2.1.  My
+    first push to a shared host resulted in many cryptic errors as a result of the
+    :pty change.  Luckily, the solution was easy.  However, since I have to update
+    a bunch of Capfiles and will surely be re-mystified in a few months when I work
+    again on an old project I missed.</p>\n\n\n\t<p>(BTW, great blog.  Just found
+    this the other day for the first time and have stumbled upon it twice more lately
+    while searching for esoteric Rails stuff.)</p>"
+- date: 2007-10-31
+  author: Jen
+  content: "<p>Hi,</p>\n\n\n\t<p>I’m using the multistage module. It has worked great
+    except one problem: I can’t use test as name for one of the stages</p>\n\n\n\t<p>set
+    :stages, %w(development production test localtest)</p>\n\n\n\t<p>throws error:\n/usr/lib/ruby/gems/1.8/gems/capistrano-2.1.0/lib/capistrano/configuration/namespaces.rb:97:in
+    `task’: defining a task named `test’ would shadow an existing method with that
+    name (ArgumentError)</p>\n\n\n\t<p>The reason I’d like to use test so it is consistent
+    with rest of rails  naming convention: database.yml, environment.rb. Is there
+    a way to get around this problem?</p>\n\n\n\t<p>Thanks a lot,</p>\n\n\n\t<p>Jen</p>"
+- date: 2007-11-14
+  author: theJareCare
+  content: "<p>Jamis,</p>\n\n\n\t<p>Awesome work can’t wait to upgrade to cap 2.1!</p>\n\n\n\t<p>Stop
+    by</p>\n\n\n\t<p>http://giantrobots.thoughtbot.com/2007/11/13/the-contest</p>\n\n\n\t<p>when
+    you got some free time.  We’re giving away free copies</p>\n\n\n\t<p>of our new
+    book!</p>\n\n\n\t<p>free stuff!</p>\n\n\n\t<p>- jc</p>"
+- date: 2007-11-14
+  author: Jacob
+  content: <p>This <span class="caps">PTY</span> change caused problems for my calls
+    to etc/init.d scripts/commands (they would hang after being run).  So I had to
+    do the ‘default_run_options[:pty]’ thing. Just thought I’d put that out there
+    for google.</p>
+- date: 2007-12-04
+  author: Chris Hartjes
+  content: "<p>I’m getting the same error as Jen when using the recipe I found at
+    http://devthatweb.com/view/deploy-any-project-using-capistrano-2.  Sadly, no documentation
+    exists out there to tell me what’s causing the problem. :(</p>"

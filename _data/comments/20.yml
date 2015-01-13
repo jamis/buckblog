@@ -1,0 +1,333 @@
+---
+- date: 2010-12-29
+  author: Jim Menard
+  content: "<p>All the mazes you’ve generated in these articles have no start/end
+    openings. Is it true that no matter where you poke two holes in the outer wall,
+    they will be connected? It seems like each of the algorithms produces a single
+    non-disjoint “tiling” of the maze, but do these algorithms guarantee that?</p>"
+- date: 2010-12-29
+  author: Jamis
+  content: "<p>@Jim, each algorithm I’ve presented (or will present) generates “perfect”
+    mazes, which means they are acyclic undirected graphs. Thus, there is exactly
+    one path that connects any two points in the maze, and this means you can poke
+    two holes in the outer wall anywhere you like, and there is guaranteed to be a
+    path between them.</p>\n\n\n\t<p>Now, that doesn’t guarantee it will be an interesting
+    or challenging path. To do that you’d want to find two points on the boundary
+    of the maze that have the longest path between them, which is an interesting problem
+    on its own. However, it’s not directly related to maze generation, so I probably
+    won’t go into it.</p>"
+- date: 2010-12-29
+  author: HiMY SYeD
+  content: "<p>Can this be tweaked to generate uni-cursal mazes, in other words, Labyrinths
+    instead of mazes?</p>\n\n\n\t<p>I have been designing labyrinths manually and
+    this would certainly be a great help.</p>\n\n\n\t<p>Thanks.</p>"
+- date: 2010-12-29
+  author: Jamis
+  content: "<p>@HiMY, unicursal mazes can be generated from virtually any perfect
+    orthogonal (rectangular) maze. My Theseus library (<a href=\"https://github.com/jamis/theseus\">https://github.com/jamis/theseus</a>)
+    can do this, actually. The idea is to generate a maze first, remove the exit so
+    only the entrance remains, and then bisect each passage with a wall. This makes
+    dead-ends into u-turns, and will give you a unicursal labyrinth that is twice
+    the size of the original maze.</p>\n\n\n\t<p>If you have Ruby 1.9 installed, you
+    can “gem install theseus”, and then “theseus -w 5 -u” to see a randomly generated
+    10×10 unicursal maze.</p>"
+- date: 2010-12-29
+  author: Jamis
+  content: '<p>For the curious, here is an example of a 40×18 unicursal maze, created
+    with Theseus. It was generated from a 20×9 orthogonal maze: <a href="http://jamisbuck.org/images/labyrinth.png">http://jamisbuck.org/images/labyrinth.png</a></p>'
+- date: 2010-12-29
+  author: David Millar
+  content: "<p>Very good read. I’ve come across this algorithm before and didn’t fully
+    understand it, but your walkthrough makes much more sense to me now.</p>\n\n\n\t<p>A
+    while back when bored I was able to implement a modified/misinterpreted Eller’s
+    algorithm using only formulas and conditional formatting in Excel or OpenOffice.</p>\n\n\n\t<p>Every
+    row’s leftmost cell contained a 1. For every other row in the grid, a random function
+    determines whether the next cell was 1+Previous (same set) or reset to 1 (new
+    set). (You can add vertical bias by favoring the reset option, or horizontal bias
+    by favoring the 1+Previous option.)</p>\n\n\n\t<p>Every row also had a random
+    digit generated between 2 and the maximum number used in that row to determine
+    where a vertical connection was made upward (call it X).</p>\n\n\n\t<p>Conditional
+    formatting worked like this:\n- Add a left-side wall if the cell contains a 1.\n-
+    Add a top-side wall if:\n... the cell contains a digit higher than X\n... the
+    cell contains a digit lower than <span class=\"caps\">X AND</span> the cell immediately
+    to it’s right does <span class=\"caps\">NOT</span> contain 1. (This rule is used
+    for when a set’s width is smaller than X to ensure that a vertical path is available.)</p>\n\n\n\t<p>I’m
+    not sure my explanation entirely makes sense, so you can grab this OpenOffice
+    spreadsheet if you’re interested in seeing what I mean:</p>\n\n\n\t<p>http://www.thegriddle.net/maze/other/eller.ods</p>\n\n\n\t<p>Thanks
+    for the great read/explanation on how the algorithm works. :)</p>"
+- date: 2010-12-29
+  author: Jamis
+  content: "<p>@David, your spreadsheet/maze sounds super clever. I’m downloading
+    OO now to check it out. :)</p>\n\n\n\t<p>I’m glad my write-up was useful! Thanks
+    for letting me know.</p>"
+- date: 2010-12-29
+  author: Xalem
+  content: "<p>Is there a date for Eller’s Algorithm? I ask this because, I remember
+    coming up with this exact solution in high school in 1984-5 or 1986 at the latest,
+    and implementing it in Applesoft Basic on an Apple ][.  Sadly, back then, awesome
+    programming skills did not attract the attention of girls.  I know it is different
+    today with all girls checking over the elegance of your haskell code.</p>"
+- date: 2010-12-29
+  author: Nick
+  content: "<p>Amazingly, your unicursal maze exactly corresponds to the floor plan
+    of my local Ikea store.</p>"
+- date: 2010-12-29
+  author: Jamis
+  content: "<p>@Xalem, I honestly don’t know anything more about the origin of the
+    algorithm, than its name. Googling shows that pretty much every other mention
+    that cites a reference, refers to the “Think Labyrinth” site (<a href=\"http://www.astrolog.org/labyrnth/algrithm.htm\">http://www.astrolog.org/labyrnth/algrithm.htm#perfect</a>),
+    which is also where I was introduced to it. (Maybe the author of that site has
+    more information?) Google Books has only a single mention, and that book is from
+    2005.</p>\n\n\n\t<p>If anyone has any info on the origin of Eller’s algorithm,
+    please share! It would be pretty cool if Xalem’s discovery of it predated any
+    other published source. :)</p>"
+- date: 2010-12-30
+  author: Eric TF Bat
+  content: <p>I encountered a program written in <span class="caps">BASIC</span> in
+    around about 1983 or so, that must have been implementing this algorithm or one
+    like it.  I could never understand how it did it, and sadly I lost the listing
+    when I upgraded from my Commodore <span class="caps">CBM</span>-8032 to a more
+    modern MS-DOS compatible 8086 computer.  It’s only taken 27 years, but thanks
+    for finally explaining the mystery for me!</p>
+- date: 2010-12-30
+  author: ar
+  content: "<p>excellent article, very good illustrations!</p>"
+- date: 2010-12-30
+  author: William
+  content: "<p>That’s incredible.</p>"
+- date: 2010-12-30
+  author: dave
+  content: "<p>I attended a programming competition in high school, years ago, where
+    we were challenged to write a program that drew random, solvable mazes. We had
+    to complete the task in 1 hour.  The implementation we came up with was naive
+    at best, and didn’t meet the requirements.  Had we been aware of such an algorithm,
+    we would have definitely had a solution.  However, our high school never taught
+    algorithms, only simple programming languages: unfortunately, Turing.  The focus
+    was on how to write in some language, but not actually get into algorithms.</p>\n\n\n\t<p>This
+    was a pleasant read.</p>"
+- date: 2010-12-30
+  author: Johnicholas
+  content: |-
+    <p>Also see John Tromp’s <span class="caps">IOCCC</span> winner, described at http://homepages.cwi.nl/~tromp/maze.html, and Carl Shapiro’s <span class="caps">IOCCC</span> winner before that.</p>
+
+
+    <table class="CodeRay"><tr>
+      <td title="click to toggle" class="line_numbers"><pre>1<tt>
+    </tt>2<tt>
+    </tt>3<tt>
+    </tt>4<tt>
+    </tt><strong>5</strong><tt>
+    </tt>6<tt>
+    </tt>7<tt>
+    </tt></pre></td>
+      <td class="code"><pre><span class="pt">char</span>*M,A,Z,E=<span class="i">40</span>,J[<span class="i">40</span>],T[<span class="i">40</span>];main(C){<span class="r">for</span>(*J=A=scanf(M=<span class="s"><span class="dl">"</span><span class="k">%d</span><span class="dl">"</span></span>,&amp;C);<tt>
+    </tt>--            E;             J[              E]             =T<tt>
+    </tt>[E   ]=  E)   printf(<span class="s"><span class="dl">"</span><span class="k">._</span><span class="dl">"</span></span>);  <span class="r">for</span>(;(A-=Z=!Z)  ||  (printf(<span class="s"><span class="dl">"</span><span class="ch">\n</span><span class="k">|</span><span class="dl">"</span></span><tt>
+    </tt>)    ,   A    =              <span class="i">39</span>              ,C             --<tt>
+    </tt>)    ;   Z    ||    printf   (M   ))M[Z]=Z[A-(E   =A[J-Z])&amp;&amp;!C<tt>
+    </tt>&amp;    A   ==             T[                                  A]<tt>
+    </tt>|<span class="i">6</span>&lt;&lt;<span class="i">27</span>&lt;rand()||!C&amp;!Z?J[T[E]=T[A]]=E,J[T[A]=A-Z]=A,<span class="s"><span class="dl">"</span><span class="k">_.</span><span class="dl">"</span></span>:<span class="s"><span class="dl">"</span><span class="k"> |</span><span class="dl">"</span></span>];}<tt>
+    </tt></pre></td>
+    </tr></table>
+- date: 2011-01-03
+  author: Jeffrey Winter
+  content: "<p>I asked the maintainer of “Think Labyrinth” about the origin of Eller’s
+    algorithm and here was his response:</p>\n\n\n\t<p>“Eller’s algorithm is named
+    after computer programmer Marlin Eller, <span class=\"caps\">CEO</span> of sunhawk.com.
+    He invented this algorithm in 1982, which is the earliest use of it I know of.
+    He never published it, but he did tell me about it, so I chose to name the algorithm
+    after him.”</p>"
+- date: 2011-01-03
+  author: Jamis
+  content: "<p>@Jeffrey, thanks for the follow-up. That’s great information, and straight
+    from the horse’s mouth, as it were.</p>"
+- date: 2011-02-24
+  author: chaered
+  content: "<p>What would you call a maze that is “perfect” w.r.t. the solution path,
+    i.e. there is only a single path from start to finish, but the non-solution areas
+    can have loops? In other words, something between perfect and braid. To see what
+    I mean, download Amaze from qtamaze.sf.net, run it, and slide the “Cuts” value
+    to a non-zero value. B.t.w. the biggest single improvement in maze quality for
+    that program’s algorithm comes from cutting short any loops in the naive solution
+    path, where the path passes by itself one cell over; this tends to cut the path
+    length by 70-90%.</p>"
+- date: 2011-02-25
+  author: Jamis
+  content: "<p>@chaered, the instant you add a loop anywhere in the maze, you have
+    multiple solutions. This is because the solution can go around the loop and retrace
+    its steps, and then go to the end. I think what you’re referring to is a shortest
+    path being “the” solution, and that’s going to be the ideal case regardless of
+    how many loops a maze has. In other words, what you’re describing is just a special
+    case of the multiply-connected graph. I don’t believe there is any special term
+    for it.</p>"
+- date: 2011-02-25
+  author: chaered
+  content: "<p>@Jamis, I think it depends on where the loop occurs. Analogously (topologically
+    equivalent) you can think of the solution path as a long corridor with doors going
+    off into different rooms, which may contain further walls. In a perfect maze,
+    the rooms are not interconnected, except through that corridor. My question concerns
+    the case where the rooms themselves may have free-standing walls inside them,
+    so you can circle around inside a room, but any such loop will never take you
+    between two points on the corridor; you can only enter/exit a room through the
+    same door. The definition of “perfect” seems to preclude free-standing walls even
+    if they never lead to connections between the rooms, i.e. never cause alternate
+    solution paths to exist.</p>"
+- date: 2011-02-25
+  author: Jamis
+  content: "<p>@chaered, I understand what you’re suggesting, but I don’t agree that
+    it is substantially different from the general multiply-connected case. Imagine
+    if you were placed in this maze. All you know is that there is a path from point
+    A to point B. The existence of a shortest path does not guarantee that you won’t
+    wander from it—you may very well find yourself in one of those side passages,
+    and wander around that free-standing wall. The solution you then find for the
+    maze would include that loop around the wall. The maze would have multiple solutions,
+    even though some of those involve retracing your steps. Remember that any shortest
+    path through a multiply-connected maze will avoid the loops anyway—from the perspective
+    of someone following the shortest path, the loops will always appear to be in
+    the “side-passages”.</p>\n\n\n\t<p>Thus, a perfect maze cannot be multiply-connected
+    in any way; as soon as it is, it ceases to be perfect. What you’re describing
+    is simply a multiply-connected maze, where all but one of the solutions involve
+    retracing your steps.</p>"
+- date: 2011-02-25
+  author: chaered
+  content: |-
+    <p>@Jamis, one source of confusion may be how you enter the maze: you say “placed inside the maze”, whereas I assume the maze has a single defined entrance. My earlier comment only applies to mazes with a single defined entrance and exit point. I think retracing steps would not count as a loop, otherwise a loop-free maze cannot exits: imagine a T-shaped, 4-cell maze, enter on top left, exit top right; you can walk either straight from the entrance to the exit, or take a one-step detour into the dangling single cell below. The second path, where you go off the path and then retrace through the <strong>same</strong> cell, should not, I think, be counted as an alternative path. What do you think?
+    (PS: This is a fascinating topic, thanks for taking the time to reply!)</p>
+- date: 2011-02-25
+  author: Jamis
+  content: "<p>@chaered, it actually does not matter how you define “placed in the
+    maze.” By definition, every cell in the maze must be reachable by every other
+    cell, so regardless of where you are placed, there will be a shortest path to
+    any other cell you designate. And since a shortest path will never include loops
+    (since loops can be trivially removed from the path), any path between two cells
+    will be “direct” (in the sense that the path will never intersect itself).</p>\n\n\n\t<p>Also,
+    when I’ve said “retrace steps”, I’m not talking about encountering a dead-end
+    and doing an about-face. To reuse your T-shaped maze, imagine a loop at the bottom,
+    making something like a lowercase b with a crossbar at the top. You could start
+    at the top-left, turn right, walk all the way down, around the loop, back up,
+    turn right, and exit at the top-right. All without encountering a dead-end, and
+    yet for part of that you’d be retracing your steps. More technically, your solution
+    path would intersect itself. This doesn’t invalidate the solution, but it does
+    mean it can’t be the shortest path through the maze.</p>\n\n\n\t<p>Maybe what
+    I need to do is define “solution”. When I say solution, I mean any (absolutely
+    any) path through the maze. If you place a mouse in the maze and record its progress,
+    it will eventually get from the beginning to the end. Retracing its steps will
+    take you through the maze. However, that path may consist of hitting dead-ends,
+    turning around, etc.</p>\n\n\n\t<p>The “shortest path” through the maze is the
+    solution you’re referring to. And what I’m saying is that even with that definition,
+    there will always be a shortest path between any two points in the maze. For multiply-connected
+    mazes, there may even be multiple shortest paths. But any shortest path will never
+    contain any loops (or self intersections), because those can be removed trivially,
+    resulting in a shorter path.</p>\n\n\n\t<p>Regardless of whether the maze is perfect
+    or multiply-connected in any degree, to a viewer walking only the shortest path,
+    the maze would appear to be perfect. Any path not on the shortest path would be
+    a “side passage”, and whether there were loops there or not would be irrelevant.
+    I think this is the point you’ve been making. However, my point is that to someone
+    entering the maze, the “shortest path” is simply a hypothetical nicety. They don’t
+    know the shortest path, and their own path through the maze will almost certainly
+    deviate from the shortest path. As a result, they may encounter loops, dead-ends,
+    and other features of the maze that complicate the solution they discover.</p>\n\n\n\t<p>I
+    guess what I’m saying is that, if the entity traversing the maze already knows
+    the solution, then the concept of perfect versus multiply-connected is moot. But
+    in that case, there is little interesting about the traversal of the maze. In
+    practice, the maze is an unknown to the one traversing the maze, and whether their
+    path finds loops or deadends, the end result is the same: a self-intersecting
+    path which nonetheless results in a valid (if long) solution.</p>\n\n\n\t<p>(Thanks
+    to you, too, for the discussion!)</p>"
+- date: 2011-02-25
+  author: chaered
+  content: "<p>@Jamis, thanks for the definitions of terms, it clear up confusion
+    a lot; what I though of as a “path” corresponds to what you define as “shortest
+    path”. So using your definition, if you have a 2-cell maze with cells 1 and 2,
+    and start/end S and E, then S-&gt;1-&gt;2-&gt;E is the shortest path and a path,
+    but S-&gt;1-&gt;2-&gt;1-&gt;2-&gt;E is just a path, right? Any path containing
+    two visits to the same cell is non-shortest, and the subpath between those two
+    visits is a “loop”. A dead-end is a special case of a loop, where the first half
+    mirrors the second. \nAnd a “perfect maze” is a maze where there is <strong>exactly
+    1</strong> shortest-path between any two cells. And a braid is a maze where there
+    is <strong>at least 1</strong> shortest-path between any two cells.</p>\n\n\n\t<p>In
+    that case, the class of mazes I was talking about could be defined as having exactly
+    1 shortest-path between the entrance and exit cell, and at least 1 shortest-path
+    between any two cells in the maze. In other words, the non-self-intersecting traversal
+    path from start to end is unique, but the same for any other pair of cells may
+    not be.</p>"
+- date: 2011-02-25
+  author: chaered
+  content: "<p>@Jamis, btw. sorry if I seem to be harping on about the specific cases.
+    Just wanted to clarify that in order for a maze (as a puzzle) to have a single
+    valid “answer”/”solution” (non-self-intersecting path from start to end), it is
+    not required to be a “perfect maze”.</p>"
+- date: 2011-02-25
+  author: Jamis
+  content: "<p>@chaered, the definition of perfect vs. braid is actually purely based
+    on the absence or presence of loops in the graph. A maze is perfect if there are
+    no loops anywhere in the maze. It is braided otherwise. A side-effect of that
+    is that a perfect maze always has exactly one (and only one) path between any
+    two cells. (Routes that include dead-ends are not usually counted as solutions.)</p>\n\n\n\t<p>Now,
+    given the class of maze that you were describing (which I still assert is simply
+    a multiply-connected, or braided, maze), let’s assume as you said that there exists
+    some path from the entrance to the exit, which is shortest and non-intersecting.
+    However, a path exists meeting those same criteria between <strong>any two cells
+    in the maze</strong>, whether it is braided or not. There will always be a non-intersecting
+    path between any two cells; but in a braided maze, there may be other solutions
+    that do intersect. However, the shortest path between any two cells in a maze,
+    braided or perfect, will be non-intersecting.</p>\n\n\n\t<p>A corollary to that
+    is that, as you said, a maze can be braided and still have a non-intersecting
+    path from start to end. Because, as I said, this will be true for any maze. As
+    long as there exists a path between two cells (and there must, for it to be a
+    true maze), there must exist a non-intersecting version of that path.</p>\n\n\n\t<p>It’s
+    easy enough to prove: assume that there exists a path between two cells that intersects
+    itself somewhere. You can then “pinch” that loop out of the path entirely, since
+    when the path reaches the intersection, you can just take non-loop route instead
+    of the looped route, and reach the exit. If the path intersects itself, this will
+    always be the case. So you can show that there will always be a non-intersecting
+    path between any two cells in any maze.</p>"
+- date: 2011-02-25
+  author: chaered
+  content: |-
+    <p>@Jamis, I agree with your assertions above. However, the distinction I was making between a braided maze and the (nameless so far) other maze class is a single issue about those non-self-intersecting paths: in a braided maze, there may be multiple non-self-intersecting paths between any two cells (and there will be at least one, as you state); in the “other” kind of maze, for the specific case <strong>only</strong> of the start and end cells, there <strong>cannot</strong> be multiple non-self-intersecting paths.
+    This means that if “solving” a maze is defined as finding any non-self-intersecting path from start to end, then for a braided maze you might come up with multiple valid solutions, but for the other maze kind (just like for a perfect maze) the solution is guaranteed to be unique.</p>
+- date: 2011-02-25
+  author: chaered
+  content: |-
+    <p>Here’s a picture of an example: there is only 1 non-self-intersecting path between the entry and exit (the dotted line), but the right half does contain a loop.
+    Link: https://picasaweb.google.com/lh/photo/qGOcjje4fjjoomfN22gWgXqdrwFdBJ6iIsF9YwO7n70?feat=directlink</p>
+- date: 2011-02-25
+  author: Jamis
+  content: "<p>@chaered, thanks for the picture, that confirms that I was understanding
+    you correctly. :) It seems to me that you’re not describing a class of <strong>maze</strong>,
+    so much as you’re describing a particular constraint on the start and end points
+    of the <strong>solution</strong>. The maze, as I said, is still braided; you’re
+    just selecting start and end points so that the solution meets a particular set
+    of constraints.</p>"
+- date: 2011-02-26
+  author: chaered
+  content: "<p>@Jamis, you’re right, the difference I described is only in the constraints,
+    not the general topology. As a technicality, the selection of the start and end
+    points in this program takes place <strong>before</strong> building the maze,
+    so the constraint is actually a feature of the maze building algorithm. Maybe
+    the classification in my mind was more about maze generation algorithms than the
+    overall topology of the result (comes from spending more time programming mazes
+    than than actually looking at them). In that case, allow me to reformulate: An
+    algorithm that builds a cell-based maze from a given start and end point can fulfill
+    the constraint of producing a fully connected maze with only a single non-self-intersecting
+    path between those two points, without having to produce a perfect maze. Would
+    you agree with this more limited statement?</p>\n\n\n\t<p>(Detail: This algorithm
+    does actually start off producing a perfect maze. It then shortens the solution
+    by short-circuiting near-loops. Then it divides the maze into zones corresponding
+    to interconnected cells from a single side-passage of the solution, and chops
+    up walls inside zones.)</p>"
+- date: 2011-02-28
+  author: Jamis
+  content: "<p>@chaered, well stated! I can agree with that statement. :) Do you have
+    a write-up of the algorithm anywhere? I’d love to know more about it.</p>"
+- date: 2011-02-28
+  author: chaered
+  content: "<p>@Jamis, thanks! There’s no good write-up of the algorithm right now,
+    but I’m adding one to the qtamaze development documentation. I’ll post a link
+    when it’s all done, looking forward to your comments.</p>"
+- date: 2011-03-04
+  author: chaered
+  content: '<p>@jamis, I put a better description of the algorithm into the dev doc,
+    it is parts 4.1 and 4.2, on pages 4 through 7, of this <span class="caps">PDF</span>:
+    http://qtamaze.sourceforge.net/dev.pdf—enjoy!</p>'

@@ -1,0 +1,10 @@
+---
+- date: 2007-01-19
+  author: Martin
+  content: "<p>Why not use piston?</p>\n\n\n\t<p>http://piston.rubyforge.org/</p>"
+- date: 2007-01-19
+  author: Jamis
+  content: "<p>Martin, I’m not sure I understand how piston would help in this scenario.
+    The idea that Mike was pursuing was avoiding putting an entire copy of rails in
+    vendor at all, and using symlinks on the production servers to point to a “shared”
+    Rails checkout.</p>"

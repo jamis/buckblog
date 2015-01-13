@@ -1,0 +1,25 @@
+---
+- date: 2006-09-25
+  author: Matt Todd
+  content: "I did a little hack to trap INT and start up gdb on the current process...
+    Check it out:\r\nhttp://pastie.caboo.se/14613\r\n\r\nM.T."
+- date: 2006-09-25
+  author: Jon Leighton
+  content: "I did the obvious and hooked it into IRB: http://dev.turnipspatch.com/trac/browser/rgdb/trunk\r\n\r\nExample:\r\n\r\n$
+    rgdb 10500\r\nAttaching GDB to process id 10500\r\nirb(main):001:0&gt; @gdb.local_variables\r\n\r\nHowever,
+    I'm not getting any success with you code actually working on my machine :(. Any
+    ideas about this: http://pastie.caboo.se/14829 ?\r\n\r\nCheers"
+- date: 2006-09-25
+  author: Jamis
+  content: "Jon,\r\n\r\nMy implementation of the call function isn't expecting negative
+    integers to be returned. :( My bad. The following patch should make it  happier:\r\n\r\n<table
+    class=\"CodeRay\"><tr>\n  <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt>5<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre><tt>\n</tt>103c103<tt>\n</tt>&lt;           if md =
+    result.first.match(/= (\\d+)/)<tt>\n</tt>---<tt>\n</tt>&gt;           if md =
+    result.first.match(/= (-?\\d+)/)<tt>\n</tt></pre></td>\n</tr></table>\n\r\n\r\nI'll
+    also update the gdb.rb script I'm linking to."
+- date: 2006-09-25
+  author: Jon Leighton
+  content: "<p>Nice one. I've updated the file in my SVN repo and added in a README
+    file.</p>\r\n\r\n<p>If anyone else wants to improve gdb.rb feel free to use my
+    irb stuff too. I'm probably not the guy to do it as I know bugger all about GDB!</p>"

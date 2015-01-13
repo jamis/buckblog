@@ -1,0 +1,29 @@
+---
+layout: post
+title: Generators and Timelines
+post_id: 307
+categories:
+- Projects
+date: 2004-02-08 09:33:00.000000000 -07:00
+author: Jamis
+permalink: 2004/02/08/generators-and-timelines.html
+---
+
+<p>In my rpg/software/NPCGenerator blog entry, I listed seven essential features/aspects of any <span class="caps">NPC</span> generator that would enjoy long-term success and popularity.  In this entry I will mention, at a very high level, one possible implementation that would fulfill (specifically) the second criteria, namely making the generator goal-directed and incremental.</p>
+<h2>Timelines</h2>
+<p>This proposal introduces the concept of a <em>timeline</em>, which is (at its simplest) a sequence of events.  Each event in a timeline is associated with a specific moment in time.</p>
+<p>Events may be anything that the generator (or the user of the generator) wishes to record:</p>
+<ul>
+	<li>the physical location of the character at that point in time</li>
+		<li>the day on which a particular <span class="caps">NPC</span> was encountered by the character</li>
+		<li>the moment at which a new level was gained</li>
+		<li>when a particular curse or blessing was recieved, removed, or expired</li>
+		<li>when a new item was discovered and/or equipped</li>
+	</ul>
+<p>An event may or may not have any direct effect on the “state” of the character (ie, their current hit points, skill set, equipped items, movement rate, etc.).  Those that do not are most likely simple strings that describe the event that took place (ie, the day on which a particular <span class="caps">NPC</span> was encountered).  However, those that do affect the character’s state will consist of all of the new attribute changes (ie, equipment state, total hit points, new skills, to-hit bonuses, etc.).</p>
+<p>What you have, then, is a timeline that describes each point-in-time that a character’s state changed, whether it was due to the gaining of a new level, or the reception of a curse, or the donning of a magical item.</p>
+<h2>Converting a Timeline to a Character</h2>
+<p>Once you have a timeline, it is simply a matter of accumulating the modifiers from each event, sequentially, into a new entity, the character.  If you want a snapshot of what the character was like at a given point in time, you only accumulate the attributes up to that point.</p>
+<p>It’s a little trickier than that, actually, since modifiers granted later may make it as if a modifier granted earlier never existed.  In this case, a two-pass approach may be best: run through the timeline once, copying modifiers into a temporary timeline.  When a modifier eliminates other modifiers, remove them from the temporary one.  Then, accumulate the remaining modifiers in the temporary timeline into the final character.</p>
+<h2>Other Applications</h2>
+<p>The timeline approach works well for generating any sort of entity that may change over time: a treasure hoard, a community (be it a village or a kingdom, or even a world), a character, a history, or even a dungeon. All it takes is to identify the possible modifiers and how they may modify both the entity in question, and other modifiers.  (Of course, saying “all it takes” is deceptively belittling—this would actually be the toughest part of the project.)</p>

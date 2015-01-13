@@ -1,0 +1,67 @@
+---
+layout: post
+title: More on watching ActiveRecord
+post_id: 122
+categories:
+- Tips & Tricks
+date: 2007-01-31 12:50:00.000000000 -07:00
+author: Jamis
+permalink: 2007/01/31/more-on-watching-activerecord.html
+---
+
+<p>Remember <a href="http://weblog.jamisbuck.org/2007/1/8/watching-activerecord-do-it-s-thing">Watching ActiveRecord Do Its Thing</a>, where I talked about redirecting the log to <span class="caps">STDOUT</span> when using the console? I’ve got a new trick based on this that I’ve found quite helpful. Simply put the following snippet in your <code>config/environment.rb</code>:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">log_to</span>(stream)<tt>
+</tt>  <span class="co">ActiveRecord</span>::<span class="co">Base</span>.logger = <span class="co">Logger</span>.new(stream)<tt>
+</tt>  <span class="co">ActiveRecord</span>::<span class="co">Base</span>.clear_active_connections!<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Now, when you’re at the console, you can just do:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">&gt;&gt; log_to <span class="co">STDOUT</span><tt>
+</tt>=&gt; ...<tt>
+</tt>&gt;&gt; <span class="co">Post</span>.find(<span class="sy">:first</span>)<tt>
+</tt>  <span class="co">Post</span> <span class="co">Load</span> (<span class="fl">0.000138</span>)   <span class="co">SELECT</span> * <span class="co">FROM</span> posts <span class="co">LIMIT</span> <span class="i">1</span><tt>
+</tt>=&gt; <span class="c">#&lt;Post:0x1234 ...&gt;</span><tt>
+</tt>&gt;&gt;<tt>
+</tt></pre></td>
+</tr></table>
+<p>The best part is, by clearing the active connections after setting the logger, you can change the logger at any time, even after you’ve made any number of find calls.</p>
+<p><em>And</em>, you can pass your own stream objects into it:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">&gt;&gt; buffer = <span class="co">StringIO</span>.new<tt>
+</tt>=&gt; ...<tt>
+</tt>&gt;&gt; log_to buffer<tt>
+</tt>=&gt; ...<tt>
+</tt>&gt;&gt; <span class="co">Post</span>.find(<span class="sy">:first</span>)<tt>
+</tt>=&gt; <span class="c">#&lt;Post:0x1234 ...&gt;</span><tt>
+</tt>&gt;&gt; p buffer.string<tt>
+</tt>=&gt; <span class="s"><span class="dl">"</span><span class="k">  </span><span class="ch">\e</span><span class="k">[4;35;1mPost Load (0.000138)</span><span class="ch">\e</span><span class="k">[0m   </span><span class="ch">\e</span><span class="k">[0mSELECT * FROM posts LIMIT 1</span><span class="ch">\e</span><span class="k">[0m</span><span class="ch">\n</span><span class="dl">"</span></span><tt>
+</tt>&gt;&gt;<tt>
+</tt></pre></td>
+</tr></table>
+<p>Why would you want to do this? Well, for one thing, you can use log_to in your tests, and make sure that sensitive things like credit card numbers aren’t being written to your logs. Or, you can use this in tests to make sure that your latest optimization really does reduce the number of queries made to the database.</p>
+<p>Good fun!</p>

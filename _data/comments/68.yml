@@ -1,0 +1,141 @@
+---
+- date: 2008-02-16
+  author: Joe Van Dyk
+  content: "<p>Great to hear about capistrano 2.2.  Been waiting for the git-related
+    updates.</p>"
+- date: 2008-02-16
+  author: Joe
+  content: "<p>And yes, I’ve found it’s helpful to (if possible) have set work schedules
+    for your different projects.  8 am to 10 am for open source stuff, 10 am – 5 pm
+    for real work or whatever.</p>"
+- date: 2008-02-17
+  author: Abel
+  content: "<p>The whole Internet is watching you now, Jamis. You better do your homework!</p>"
+- date: 2008-02-17
+  author: Ashley Moran
+  content: "<p>Haha, I share your pain :)  I’ve recently found that all the administration
+    involved in going self employed has sucked all my development time, so I’ve got
+    loads of technical things I’ve wanted to play with for ages that have just sat
+    there.  It’s really frustrating having more things you want to do than time to
+    do them (although it’s actually a good sign – at least shows you’ve got some ideas!).</p>\n\n\n\t<p>Do
+    you follow Getting Things Done?  I find that just writing <span class=\"caps\">EVERYTHING</span>
+    down that needs to be done puts it in perspective.  At least then everything is
+    just an item on a list, and not some nagging, draining worry at the back of your
+    mind.</p>"
+- date: 2008-02-17
+  author: Jim Cropcho
+  content: "<p>I’m having similar problems. It’s a good exercise for me to look at
+    how other people are doing it.</p>"
+- date: 2008-02-17
+  author: Jamis
+  content: "<p>Just a quick update: today has been crazy and tomorrow will be worse,
+    so I may already have to break my resolution. :( I’ll do what I can, though, even
+    if it is just reviewing and applying a single patch to Capistano.</p>"
+- date: 2008-02-19
+  author: Jamis
+  content: '<p>Applied the following Capistrano patches this afternoon: <a href="http://dev.rubyonrails.org/ticket/10918">#10918</a>
+    (Git module for Capistrano should use checkout instead of merge), <a href="http://dev.rubyonrails.org/ticket/10922">#10922</a>
+    ([PATCH] fixes the bzr export functionality), <a href="http://dev.rubyonrails.org/ticket/10928">#10928</a>
+    (bzr module should support next_revision), and <a href="http://dev.rubyonrails.org/ticket/11107">#11107</a>
+    ([PATCH] define roles as blocks). I’m particularly excited about the new dynamic
+    role feature (from #11107)!</p>'
+- date: 2008-02-20
+  author: Jack Danger Canty
+  content: "<p>Congratulations on committing those patches Jamis!  It’s no small accomplishment
+    to get something done in the face of such a massive list you’ve compiled.</p>"
+- date: 2008-02-20
+  author: Jamis
+  content: "<p>Tonight: I reviewed <a href=\"http://dev.rubyonrails.org/ticket/11137\">#11137</a>
+    ([PATCH] Distributed Git support for Capistrano 2.1.0) and wanted to apply it,
+    but due to other git patches I had already applied it would not apply cleanly.
+    I left a note for the author to update the patch. I was able to successfully apply
+    <a href=\"http://dev.rubyonrails.org/ticket/10819\">#10819</a> (<a href=\"DOCS\"><span
+    class=\"caps\">PATCH</span></a>[TINY] capistrano deploy.rb: doc s/cap setup/cap
+    deploy:setup/), and I fixed bug <a href=\"http://dev.rubyonrails.org/ticket/10093\">#10093</a>
+    (cap deploy:stop brings “Couldn’t find any pid file … matching ‘dispatch.spawner.pid)
+    and bug <a href=\"http://dev.rubyonrails.org/ticket/10911\">#10911</a> (capistrano
+    “cap -e” command doesn’t work in an emacs shell buffer).</p>\n\n\n\t<p>At this
+    point, all Capistrano-related tickets in trac have been reviewed and commented
+    on. I’m awaiting some action on a few of them, others are open pending patches
+    from others. I’ll let this stew until next week to give people a chance to respond,
+    and then we’ll start moving forward on a Capistrano 2.2.0 release. In the meantime,
+    I’ll start moving down my todo list!</p>"
+- date: 2008-02-21
+  author: Jamis
+  content: '<p>Today I closed the following tickets, to tidy things up: <a href="http://dev.rubyonrails.org/ticket/10801">#10801</a>
+    (marked wontfix), <a href="http://dev.rubyonrails.org/ticket/10411">#10411</a>
+    (marked invalid), <a href="http://dev.rubyonrails.org/ticket/9999">#9999</a> (marked
+    wontfix), and <a href="http://dev.rubyonrails.org/ticket/9947">#9947</a> (marked
+    incomplete). I also sent an email to Matthew Elder (the maintainer for the Mercurial
+    module in Capistrano) asking him to review <a href="http://dev.rubyonrails.org/ticket/11187">#11187</a>.
+    Lastly, I applied the patches for ”#11137”: http://dev.rubyonrails.org/ticket/11137
+    (Distributed Git support for Capistrano 2.1.0) and <a href="http://dev.rubyonrails.org/ticket/10264">#10264</a>
+    (Throttle capistrano to only run against max_hosts connections at once). The ticket
+    list for Capistrano is now at a much more manageable number: four!</p>'
+- date: 2008-02-22
+  author: Jamis
+  content: <p>I applied <a href="http://dev.rubyonrails.org/ticket/11187">#11187</a>
+    (Capistrano’s Mercurial module doesn’t support prompting for <span class="caps">SCM</span>
+    passwords), as well as a change suggested by James Duncan Davidson regarding an
+    alternative server-centric method to define servers and roles. I then packaged
+    up a preview release of Capistrano 2.2.0—please <a href="http://weblog.jamisbuck.org/2008/2/23/capistrano-2-2-0-preview">check
+    it out and give it a try</a>.</p>
+- date: 2008-02-23
+  author: Jamis
+  content: <p>Applied <a href="http://dev.rubyonrails.org/ticket/11202">#11202</a>,
+    and commented on <a href="http://dev.rubyonrails.org/ticket/11203">#11203</a>.
+    I wanted to try and package up Net::SFTP 1.1.1 tonight, but that’ll have to wait
+    for Monday.</p>
+- date: 2008-02-25
+  author: Jamis
+  content: <p>Tonight, I <a href="http://weblog.jamisbuck.org/2008/2/26/net-sftp-1-1-1">packaged
+    and released Net::SFTP 1.1.1</a>. Feels great to be (finally) making some steady
+    progress on these things!</p>
+- date: 2008-02-26
+  author: Jamis
+  content: "<p>Worked on the tests for Net::SFTP v2. This is where we start hitting
+    some of the slow going. I feel like I’m slogging through, only getting a few lines
+    of code per session. Testing Net::SSH and Net::SFTP is one of the most challenging
+    things I’ve done, and unfortunately I don’t feel like I’m doing it very well.
+    Still, once it is done, it is done. :)</p>"
+- date: 2008-02-27
+  author: Mark
+  content: "<p>Ignore my comment in the other thread, I didn’t see this post before
+    that comment.</p>\n\n\n\t<p>It’s good to hear that things are picking up again
+    in the Net::S** realm.  I realize it’s hard work, but know at least that it is
+    very much appreciated.\n:)</p>"
+- date: 2008-02-27
+  author: Jamis
+  content: <p>Cap 2.2.0 is <a href="http://weblog.jamisbuck.org/2008/2/28/capistrano-2-2-0">alive</a>!</p>
+- date: 2008-02-28
+  author: Jamis
+  content: "<p>More slogging through the tests in Net::SFTP v2. Baby steps, baby steps…</p>"
+- date: 2008-02-29
+  author: Jamis
+  content: "<p>More work on Net::SFTP v2 tests and documentation.</p>"
+- date: 2008-03-01
+  author: Jamis
+  content: "<p>I moved the v2 repositories for Net::SSH and Net::SFTP to git, hosted
+    at <a href=\"http://www.github.com\">github</a>. Links to the repositories themselves
+    can be found on <a href=\"http://github.com/jamis\">my profile page at github</a>.
+    I’m still new to this git thing, but I’m really liking it!</p>\n\n\n\t<p>I also
+    wrote some more Net::SFTP tests and documented a bit more.</p>"
+- date: 2008-03-03
+  author: Jamis
+  content: <p>I worked with @halorgium today to get Capistrano mirrored at github
+    (<a href="http://github.com/jamis/capistrano/tree/master">et voila</a>). I’ve
+    also continued to work on documenting and testing <a href="http://github.com/jamis/net-sftp/tree/master">Net::SFTP
+    v2</a> (also at github).</p>
+- date: 2008-03-10
+  author: Jamis
+  content: <p>So, I guess I kind of stopped updating the comments here. :) I’ve not
+    been idle, though. For further updates on what I’ve been working on, feel free
+    to check out <a href="http://github.com/jamis">my github profile</a>, which includes
+    a stream of all commits to my github-hosted projects (including net-ssh, net-sftp,
+    and net-scp, as well as capistrano, which is currently being mirrored there).</p>
+- date: 2008-05-03
+  author: Paul Dowman
+  content: "<p>Jamis, I’ve always wondered where you find the time to produce so much
+    great stuff. It’s amazing and inspiring! I hope some of it is on 37signals time
+    because you make them look good!</p>\n\n\n\t<p>Anyway, don’t feel bad ignoring
+    us greedy masses for a while, we’re not worth causing you any stress! :-)</p>"

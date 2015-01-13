@@ -1,0 +1,106 @@
+---
+- date: 2007-11-14
+  author: Nathan Sutton
+  content: "<p>Excellent idea, it has been sorely needed for a while and almost all
+    tutorials/examples/docs are out of date.</p>"
+- date: 2007-11-14
+  author: Daniel
+  content: "<p>Great idea. Capistrano is a great tool but 2.0 does have absolutely
+    no documentation.</p>\n\n\n\t<p>I’m myself too swamped currently to be able to
+    take on a leading role in this, but if someone does create a structure of “what
+    chunks need to be documented” I’d be happy to contribute!</p>\n\n\n\t<p>If someone
+    browses this thread looking for volunteers, I can be reached at daniel <i>dot</i>
+    cap <em>at</em> tenner <em>dot_</em> org.</p>\n\n\n\t<p>Daniel</p>"
+- date: 2007-11-14
+  author: Ken
+  content: "<p>Jamis,  Can you point to another project with documentation that fits
+    your vision or at least comes close to what you envision?  Thanks, Ken</p>"
+- date: 2007-11-14
+  author: jc
+  content: "<p>Yeah, this is pretty much the reason we ended up switching to Vlad.
+    About the same amount of documentation, but about 1/10th as much stuff to document.</p>\n\n\n\t<p>What
+    ever happened to that rails deployment book?</p>"
+- date: 2007-11-15
+  author: Garry
+  content: "<p>Flashback: http://weblog.jamisbuck.org/2004/3/11/bitten-by-opensource</p>\n\n\n\t<p>Ironic
+    :)</p>"
+- date: 2007-11-15
+  author: Yaroslav
+  content: "<p>Contrubuting to open source works great for both contributor and user
+    community—contributor gets a bit of attention and experience at least.</p>\n\n\n\t<p>Writing
+    documentation for open source can’t be a real experience and it won’t let you
+    show off.</p>\n\n\n\t<p>There must be a fundraiser for that.</p>"
+- date: 2007-11-15
+  author: Jamis
+  content: "<p>@Garry, that was a low blow, slinging my own words back at me. :) But
+    valid.</p>\n\n\n\t<p>@Yaroslav, money only takes you so far. When the limiting
+    factor is time, no amount of money is going to solve the problem. I’m hoping that
+    by delegating the documentation effort to the community, the time constraint will
+    go away and things will start happening.</p>"
+- date: 2007-11-15
+  author: Michael Hartl
+  content: "<p>I’m pessimistic about this, though I wish you luck.  One problem is
+    that, while there’s glory in code, <strong>there’s no glory in documentation</strong>.
+    \ At events like RailsConf, people see you and say “Holy crap, there’s Jamis Buck,
+    the guy who wrote Capistrano!” (and then subscribe to your blog).  Your best bet
+    is to find a way to reward documenters with some reflected glory, so that people
+    might also say “Holy crap, there’s Joe Blow, the guy who wrote that awesome Capistrano
+    documentation!” (and then subscribe to his blog).  Until that happens, expect
+    most open-source documentation to continue to suck.</p>"
+- date: 2007-11-15
+  author: Robert Pierce
+  content: "<p>I’ll budget some time to help the cause. Lord knows you’ve made my
+    life easier with Capistrano. :)</p>"
+- date: 2007-11-15
+  author: Jamis
+  content: "<p>@Michael, I suppose I have a more optimistic outlook on things. I’ll
+    hope for the best. And of course I’ll do everything I can to reflect “glory” (if
+    you can call it that—it feels more like an immense pressure to perform) to everyone
+    who contributes.</p>"
+- date: 2007-11-16
+  author: Michael Riley
+  content: "<p>I’d be more then happy to assist in any way.  If for nothing else then
+    it would be a great experience documenting Capistrano.</p>"
+- date: 2007-11-21
+  author: mat cucuzella
+  content: "<p>I would like to volunteer to coordinate the documentation effort. When
+    I did my rails applications I used Rake, but I can figure out Capistrano and have
+    written documentation before (although mostly code). Email me if the task has
+    not been started by someone else.</p>\n\n\n\t<p>-mat</p>"
+- date: 2007-11-27
+  author: Sudara
+  content: "<p>How about</p>\n\n\n\t<p>1.) Cheat sheet\n2.) List of variables and
+    options\n3.) Tutorials\n4.) How to troubleshoot common problems</p>\n\n\n\t<p>That
+    is what would help in order of importance from a user of your wonderful set of
+    tools.</p>"
+- date: 2007-11-30
+  author: Eric Duminil
+  content: |-
+    <p>If you ever need newbie questions for a <span class="caps">FAQ</span>, I’m in!
+    By the way, why doesn’t
+    df | grep <a href="0-9">8-9</a>%
+    work in cap shell?</p>
+- date: 2007-12-05
+  author: Andy Goundry
+  content: "<p>I’m up for helping out. Fairly swamped, but it’s a good cause.</p>\n\n\n\t<p>I
+    haven’t used cap for a while but got stuck in a while ago customizing it for my
+    needs, what with my company’s need for hard-linking and no svn on the server –
+    twas a fun time.</p>\n\n\n\t<p>Let me know Jamis.</p>\n\n\n\t<p>Andy</p>"
+- date: 2007-12-10
+  author: Leon Bogaert
+  content: "<p>Hear, hear!</p>\n\n\n\t<p>Especially some good <span class=\"caps\">API</span>
+    documentation! I was trying to create a new scm for Capistrano but is was more
+    guessing than programming due to the lack of good documentation.</p>"
+- date: 2007-12-27
+  author: Mark
+  content: "<p>soon as I finish updating Net::SSH and friends. I have no <span class=\"caps\">ETA</span>
+    on that at this point, though. :([/quote]</p>\n\n\n\t<p>Any word on when this
+    will be available?</p>\n\n\n\t<p>Would it be worthwhile to open up for community
+    involvement?   Maybe a list of what’s left to do?</p>"
+- date: 2008-01-04
+  author: Jamis Buck
+  content: <p>@Mark, if you’re interested in taking a peek, I can post the repository
+    <span class="caps">URL</span>’s again (they’ve been posted here before, but I
+    can’t remember them off the top of my head). I’d welcome patches, but to be honest,
+    about all that’s left is writing tests and documentation, and I’m slogging through
+    that now. Maybe a release by the end of January?</p>

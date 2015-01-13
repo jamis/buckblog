@@ -1,0 +1,73 @@
+---
+- date: 2007-04-25
+  author: Will
+  content: "<p>Awesome!</p>"
+- date: 2007-04-25
+  author: masukomi
+  content: "<p>I agree on the awesome part. The thing i’m really waiting for are some
+    real docs. The ones an the Rails site a) aren’t that great and b) are totally
+    Rails specific. Capistrano’s something that can, and should, be used by everyone,
+    not just Rails people. I’d be pushing it like a crack dealer if I knew there were
+    docs the people i pushed it to could read and apply to their projects.</p>"
+- date: 2007-04-25
+  author: Jamis
+  content: "<p>masukomi, the new capify.org site is being written with the idea that
+    Cap is for more than just deploying rails apps. That said, the lion’s share of
+    people using cap right now are using it to deploy rails apps, so initially the
+    documentation will focus on that. Eventually, things will expand to include non-Rails
+    usage, too. If you have anything specific you’d like documented, feel free to
+    email me, or the cap list, and I’ll add it to my list.</p>"
+- date: 2007-04-25
+  author: jeroen
+  content: "<p>“Lion’s share”, I thought that was a Dutch only thing. Funny when you
+    see an expression literally translated.</p>\n\n\n\t<p>Anyways, great work Jamis!
+    I was pretty happy with 1.x but I’m sure 2.x will bring me some more goodies.
+    Variable passing a la <span class=\"caps\">STAGE</span>=production is very nice.</p>"
+- date: 2007-04-25
+  author: Jeff
+  content: "<p>Speaking of documentation, the server at manuals.rubyonrails.com seems
+    to be down (and has been down for a while). Jamis, do you have any connections
+    to get this back up and running?</p>"
+- date: 2007-04-25
+  author: Jamis
+  content: "<p>Jeff, it won’t be coming back. Those manuals were very out of date,
+    and I had no way to update them (the login mechanism was broken). Thus, they’re
+    gone. http://www.capify.org is going to replace them.</p>"
+- date: 2007-04-25
+  author: Deepak Jois
+  content: "<p>I use the following in my deploy script</p>\n\n\n<h1>====\nbuffer =
+    render(:template =&gt; &lt;&lt;EOF\n#!/bin/sh -e\nrm -f #{current_path}/public/index.html\ncurl
+    http://#{server} &amp;&gt; /dev/null\n<span class=\"caps\">EOF</span>\n)</h1>\n\n\n\t<p>Now,
+    it cant find render. Any ideas how I can fix it?</p>\n\n\n\t<p>Thanks</p>"
+- date: 2007-04-25
+  author: Jamis
+  content: "<p>Deepak, ah, I’d forgotten about that gotcha. I removed “render”, because
+    it is really about as simple as just calling <span class=\"caps\">ERB</span> directly.
+    so, in your case, something like:</p>\n\n\n<table class=\"CodeRay\"><tr>\n  <td
+    title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt><strong>5</strong><tt>\n</tt>6<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre>require <span class=\"s\"><span class=\"dl\">'</span><span
+    class=\"k\">erb</span><span class=\"dl\">'</span></span><tt>\n</tt>buffer = <span
+    class=\"co\">ERB</span>.new(<span class=\"s\"><span class=\"dl\">&lt;&lt;EOF</span></span>).result(binding)<span
+    class=\"s\"><span class=\"k\"><tt>\n</tt>#!/bin/sh -e<tt>\n</tt>rm -f </span><span
+    class=\"il\"><span class=\"dl\">#{</span>current_path<span class=\"dl\">}</span></span><span
+    class=\"k\">/public/index.html<tt>\n</tt>curl http://</span><span class=\"il\"><span
+    class=\"dl\">#{</span>server<span class=\"dl\">}</span></span><span class=\"k\">
+    &amp;&gt; /dev/null</span><span class=\"dl\"><tt>\n</tt>EOF</span></span><tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>However,
+    in your case…you aren’t really using any of the templating features of <span class=\"caps\">ERB</span>,
+    so you might as well just do this:</p>\n\n\n<table class=\"CodeRay\"><tr>\n  <td
+    title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt><strong>5</strong><tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre>buffer = <span class=\"s\"><span class=\"dl\">&lt;&lt;EOF</span></span><span
+    class=\"s\"><span class=\"k\"><tt>\n</tt>#!/bin/sh -e<tt>\n</tt>rm -f </span><span
+    class=\"il\"><span class=\"dl\">#{</span>current_path<span class=\"dl\">}</span></span><span
+    class=\"k\">/public/index.html<tt>\n</tt>curl http://</span><span class=\"il\"><span
+    class=\"dl\">#{</span>server<span class=\"dl\">}</span></span><span class=\"k\">
+    &amp;&gt; /dev/null</span><span class=\"dl\"><tt>\n</tt>EOF</span></span><tt>\n</tt></pre></td>\n</tr></table>"
+- date: 2007-04-26
+  author: Deepak Jois
+  content: "<p>Thanks much!</p>"
+- date: 2007-04-29
+  author: Chris Anderson
+  content: "<p>Jamis,</p>\n\n\n\t<p>Thanks for putting together this whole Cap thing,
+    I enjoy it. I’ve been using the new version to deploy a new project, and one thing
+    that’s not clear to me is why the restart task is not in the application namespace.
+    It seems similar to start and stop, for me. Perhaps there’s more to the story…</p>"

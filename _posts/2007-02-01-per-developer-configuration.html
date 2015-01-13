@@ -1,0 +1,35 @@
+---
+layout: post
+title: Per-developer configuration
+post_id: 113
+categories:
+- Tips & Tricks
+date: 2007-02-01 08:54:00.000000000 -07:00
+author: Jamis
+permalink: 2007/02/01/per-developer-configuration.html
+---
+
+<p>Here’s another trick you can do with your environment.rb file. It’s of dubious value, but if you’re working on a team with conflicting opinions, it might be a handy way to set your own defaults without tyrannically checking them into the team’s source repository.</p>
+<p>Just throw the following bit into the bottom of your environment.rb file:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">if</span> <span class="co">RAILS_ENV</span> != <span class="s"><span class="dl">"</span><span class="k">production</span><span class="dl">"</span></span> <tt>
+</tt>  railsrc = <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">ENV</span>[<span class="s"><span class="dl">'</span><span class="k">HOME</span><span class="dl">'</span></span>]<span class="dl">}</span></span><span class="k">/.railsrc</span><span class="dl">"</span></span> <tt>
+</tt>  load(railsrc) <span class="r">if</span> <span class="co">File</span>.exist?(railsrc)<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Then, if you put a file named ”.railsrc” in your home directory, your application will look for and load it every time the environment.rb file is loaded (unless you’re in production mode). Your .railsrc might look something like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">ActiveRecord</span>::<span class="co">Base</span>.colorize_logging = <span class="pc">false</span><tt>
+</tt><span class="c"># other stuff your apps configure</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>What other stuff would <em>you</em> put in a per-developer configuration file?</p>

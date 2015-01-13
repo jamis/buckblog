@@ -1,0 +1,32 @@
+---
+- date: 2005-10-03
+  author: johan
+  content: ":memory: is pretty nifty, didn't know about that."
+- date: 2005-10-04
+  author: Blair Zajac
+  content: |
+    By the way, using this
+
+    ActiveRecord::Base.establish_connection(
+      :adapter =&gt; "sqlite",
+      :dbfile  =&gt; ":memory:"
+    )
+
+    won't create a memory based sqlite database if you happen to have the
+    full RoR environment loaded because of the following code in
+    activerecord/lib/active_record/connection_adapters/sqlite_adapter.rb
+
+      # Allow database path relative to RAILS_ROOT.
+      if Object.const_defined?(:RAILS_ROOT)
+        config[:dbfile] = File.expand_path(config[:dbfile], RAILS_ROOT)
+      end
+
+    I was wondering for the longest time why I was finding a ':memory:'
+    file in my current working directory :)
+
+    Regards,
+    Blair
+- date: 2007-06-21
+  author: Diwa del Mundo
+  content: "<p>Nice demo.</p>\n\n\n\t<p>Don’t forget to include: require ‘rubygems’
+    at the top.</p>"

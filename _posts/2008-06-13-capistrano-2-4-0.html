@@ -1,0 +1,108 @@
+---
+layout: post
+title: Capistrano 2.4.0
+post_id: 53
+categories:
+- Announcements
+date: 2008-06-13 09:27:00.000000000 -06:00
+author: Jamis
+permalink: 2008/06/13/capistrano-2-4-0.html
+---
+
+<p>Capistrano 2.4.0 is now available.</p>
+<pre><code>gem install capistrano</code></pre>
+<p>Report bugs to <a href="http://capistrano.lighthouseapp.com/projects/8716-capistrano/tickets/new">Capistrano’s Lighthouse project</a>. And if you have some ideas for patches, please patch against the code <a href="http://github.com/jamis/capistrano/tree/master">at Capistrano’s GitHub repository</a>.</p>
+<p>Here’s the skinny on 2.4.0:</p>
+<h2>death to “git fetch --tags“</h2>
+<p>You git users out there will be pleased to learn that this release will no longer do “git fetch --tags”, meaning your git-based deploys will finally work again. Sorry that took so long to fix. It was really ridiculously simple. :(</p>
+<h2>cap -d</h2>
+<p>Mark Imbriaco added a debug switch for enabling conditional execution of commands. This is fantastic for debugging and testing tasks, since you can basically step through your tasks and approve or deny each remote command as it is executed. Just give cap the “-d” switch to enable this.</p>
+<h2>New and improved sudo helper</h2>
+<p>No, really. This time I mean it. I pulled the version of sudo introduced in 2.3.0 (where each sudo command was wrapped in an explicit sh invocation), and put it back almost exactly as it was. However, if you call sudo without a command to execute, it will instead return the sudo command to use. On top of that, if the run() helper detects that you’re using sudo, it will listen for password prompts. So you can now do arbitrarily complex sudo commands like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">run <span class="s"><span class="dl">"</span><span class="k">if [ -d /some/directory ]; then </span><span class="il"><span class="dl">#{</span>sudo<span class="dl">}</span></span><span class="k"> chmod -R g+w /some/directory; fi</span><span class="dl">"</span></span><tt>
+</tt></pre></td>
+</tr></table>
+<p>In other words, just dump the sudo() call into your command as an interpolated value, and the real sudo command gets substituted. You can pass options to it as well:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">run <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span>sudo <span class="sy">:as</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">bob</span><span class="dl">"</span></span><span class="dl">}</span></span><span class="k"> something</span><span class="dl">"</span></span><tt>
+</tt></pre></td>
+</tr></table>
+<p>And, naturally, the original sudo() syntax we all know and love remains as before:</p>
+<pre><code>sudo "something", :as =&gt; "bob" 
+</code></pre>
+<p>The deployment recipes themselves have been updated to use this new syntax, as needed.</p>
+<h2>:runner vs. :admin_runner</h2>
+<p>Some cappers have noted that having deploy:setup and deploy:cleanup run as the :runner user messed up their carefully crafted permissions. I agreed that this was a problem. With this release, deploy:start, deploy:stop, and deploy:restart all continue to use the :runner user when sudoing, but deploy:setup and deploy:cleanup will use the :admin_runner user. The :admin_runner variable is unset, by default, meaning those tasks will sudo as root, but if you want them to run as :runner, just do “set :admin_runner, runner”.</p>
+<h2>deploy:upload with globs</h2>
+<p>You can now specify glob patterns with deploy:upload:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">$ cap deploy:upload FILES="config/apache/*.conf" <tt>
+</tt></pre></td>
+</tr></table>
+<p>As before, you can also specify entire folders to upload, but now the upload is being done via the upload() helper (introduced in 2.3.0) so the behavior is more standardized.</p>
+<h2>before/after hooks use well-defined server scope</h2>
+<p>Prior to this release, if you defined a before hook using a block, the block would be executed within the same server scope as the original task that invoked task that this hook was attached to. (whew!)</p>
+<p>In other words:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">task <span class="sy">:first</span>, <span class="sy">:roles</span> =&gt; <span class="sy">:app</span> <span class="r">do</span> <tt>
+</tt>  <span class="c"># ... </span><tt>
+</tt>  second <tt>
+</tt><span class="r">end</span> <tt>
+</tt><tt>
+</tt>task <span class="sy">:second</span>, <span class="sy">:roles</span> =&gt; <span class="sy">:db</span> <span class="r">do</span> <tt>
+</tt>  <span class="c"># ... </span><tt>
+</tt><span class="r">end</span> <tt>
+</tt><tt>
+</tt>before <span class="sy">:second</span> <span class="r">do</span> <tt>
+</tt>  <span class="c"># ... </span><tt>
+</tt><span class="r">end</span> <tt>
+</tt></pre></td>
+</tr></table>
+<p>Prior to this release, when “first” calls “second”, the before hook at the bottom would get called, but it would get called with the :roles =&gt; :app server constraint active, instead of :roles =&gt; :db. This preview release makes those hooks use the server scope of the task they are attached to.</p>
+<h2>host reported correctly from <span class="caps">SCM</span> output</h2>
+<p>Prior to this release, when any output was processed by the :checkout, :export, or :remote_cache strategies, you’d not be able to tell what host the output was from (it’d just be prefixed [err] or [out]). With this release, that output is correctly tagged with the host that generated it, making it easier to troubleshoot issues with <span class="caps">SCM</span> command execution.</p>
+<h2>Disable asset timestamp normalization</h2>
+<p>Some <span class="caps">SCM</span>’s give you the option of forcing the modification times of files that are being checked out to be the time that they were last modified in the repository. If your <span class="caps">SCM</span> gives you that capability, and if you enable it (however that works in your <span class="caps">SCM</span>), then you don’t need the massive <code>touch</code> command that Capistrano’s default deployment tasks run on each deploy, which is cap’s way of forcing all assets on all of your servers to have the same timestamp.</p>
+<p>To disable Capistrano’s default timestamp normalization step, just set the :normalize_asset_timestamps variable to false:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">set <span class="sy">:normalize_asset_timestamps</span>, <span class="pc">false</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>You could also do this if you are deploying to a single server only. Note, though, that if you do this when deploying to multiple servers, and you haven’t configured your <span class="caps">SCM</span> to set the timestamps on the files on checkout, then Rails may use inconsistent timestamps on the assets, causing caching of your assets to fail and resulting in longer load times for your users.</p>
+<h2>Other lesser fixes, straight from the <span class="caps">CHANGELOG</span>
+</h2>
+<ul>
+	<li>Make git <span class="caps">SCM</span> honor the :scm_verbose option [Jamis Buck] </li>
+		<li>Don’t follow symlinks when using :copy_cache [Jamis Buck] </li>
+		<li>If :mode is given to upload() helper, do a chmod after to set the mode [Jamis Buck] </li>
+		<li>Fix load_from_file method for windows users [Neil Wilson] </li>
+		<li>Display a deprecation error if a remote git branch is specified [Tim Harper] </li>
+		<li>Make set(:default_shell, false) work for not using a shell on a per-command basis [Ryan McGeary] </li>
+		<li>Use upload() instead of put() with the copy strategy [Jamis Buck] </li>
+		<li>Improved test coverage [Ryan McGeary] </li>
+		<li>Fixed “coverage” take task [Ryan McGeary] </li>
+		<li>Fix deploy:pending when using git <span class="caps">SCM</span> [Ryan McGeary] </li>
+		<li>Make sure deploy:check works with :none scm (which has no default command) [Jamis Buck]</li>
+	</ul>

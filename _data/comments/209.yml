@@ -1,0 +1,36 @@
+---
+- date: 2005-12-27
+  author: alexander
+  content: ie is like a huge mystery, I dont even think their developers know what
+    their software do!
+- date: 2006-01-28
+  author: feigh@iprimus.com.au
+  content: "Thank you!\nFor four hours I've been trying to find out why IE was refusing
+    to Print Preview a page that Opera, FireFox and NS4 all found acceptable. The
+    page validated, and so did the css. No javascript. \nI chopped out a few paragraphs
+    because they contained something unique to the page, and the print Preview was
+    OK. I put them back, editing out the unique bit. Print Preview refused the page.
+    So I've been Googling since 5 o'clock. It's 8:15 now, but I think I may have the
+    answer. My troublesome passage had a heading--Tags!\nI am SO grateful to you.
+    I'd never've worked that one out for myself.\nFay Johnston "
+- date: 2006-01-28
+  author: feigh@iprimus.com.au
+  content: |-
+    I thought it was the *word* "tags", which worried me, because that was the subject of the passage. It wasn't quite that bad, though. I'd written
+    <h3><a>Tags</a></h3>
+    Having read your article and fiddled a bit, I changed it to
+    <h3><a>Tags</a></h3> and print preview and all goes well.
+    (Interestingly, if I went straight to Print on the troubled page, IE said I had two javascript errors. Difficult to manage without any javascript! )
+- date: 2006-01-28
+  author: feigh@iprimus.com.au
+  content: |-
+    Sorry. That looks pretty meaningless. Didn't consider html was turned on.
+    The bit that caused trouble was
+
+    &lt;h3&gt;&lt;a name="tags"&gt;Tags&lt;/a&gt;&lt;/h3&gt;
+
+    and the revised version is
+
+    &lt;h3&gt;&lt;a name="maryanne"&gt;Tags&lt;/a&gt;&lt;/h3&gt;
+
+    Now I'll stop scribbling on your pages. Thanks again. Fay

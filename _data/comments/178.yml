@@ -1,0 +1,345 @@
+---
+- date: 2006-11-10
+  author: Pat Eyler
+  content: "<p>A well written plea.  I understand your point of view, and will try
+    to carry it back to the rest of the committee.  Certainly, to me, it’s the education
+    and introduction to the community that are the most important part of the proposed
+    program.</p>\n\n\n\t<p>The bottom line (to me) is that if we can’t come up with
+    something the community likes, we’re better off not doing it.</p>"
+- date: 2006-11-10
+  author: Pat Maddox
+  content: "<p>I think it’s important not only to create something the community likes,
+    but to create something that’s actually beneficial to the community.</p>\n\n\n\t<p>Warranted
+    or not, when an individual or group creates a certification program, they’re implicitly
+    declaring themselves a leader in the community.  I’m not suggesting that Pat and
+    his group couldn’t do a good job.  However, creating a certification program will
+    instantly elevate them to a higher level of credibility in the eyes of the rest
+    of the industry.  Then they’ll be giving the industry as a whole something which
+    it loves, but isn’t necessarily good, and drive the Ruby community in that direction.</p>\n\n\n\t<p>One
+    thing we’ve learned from Ruby and Rails is that it’s important to keep the programmer
+    happy.  From a business standpoint, happy programmers make $$.  Certification
+    doesn’t make happy programmers.</p>\n\n\n\t<p>As Jamis said, certification is
+    orthogonal to education.  There are many Ruby seminars and workshops going on,
+    and I think that’s great.  Please add to the excellent educational base available
+    to Ruby programmers.  Just be very mindful of the grave responsibility and possible
+    consequences of creating certification.</p>"
+- date: 2006-11-10
+  author: Hans
+  content: "<p>Hear, hear! There’s another problem with certification: many good programmers
+    don’t certify. We’re morally against it. And many good programmers don’t certify
+    because they don’t have the money to spare/squander. You stiff people entering
+    the community, you stiff the old hats that will run circles around anybody who
+    gets certified, and you stiff the community itself as Jamis so eloquently put
+    it.</p>"
+- date: 2006-11-11
+  author: Pat Maddox
+  content: "<p>Honestly I think this is all you need to know about Ruby or Rails certification.
+    \ Everybody knows that Jamis is a Ruby all-star hacker.  If he’s against certification…well,
+    that oughta tell you somethin.</p>"
+- date: 2006-11-11
+  author: Andi
+  content: "<p>Software certification is a invention of corporate people. Usually
+    the ones deciding who to hire have zero technical knowledge or even knowledge
+    how reality is ;) They need something to justify a hire (and if it turns out the
+    guy is a sucker, it’s not their fault). I’m against it an resisted it for 15 years
+    now (and it’s hard in good ol’ germany the land where certifications define who
+    you are). I even think that certifications de-value a person in many ways. It’s
+    not about knowlege, creativity, and innovation anymore, it’s about having more
+    certs than the other guy. However, hardware certs are another thing (like Cisco
+    stuff or medical devices, etc.), I think it’s really useful in that area. In the
+    ruby world I’d hate to see a certifications trend. What about giving dedicated
+    classes at college or university? Or giving away a special reward for “most innivative
+    ruby utilization of year X at y college”? I think that’s a much better way of
+    doing things – keeping it in the education domain. In a perfect world we wouln’t
+    need any of this though :)</p>"
+- date: 2006-11-11
+  author: Neil Wilson
+  content: "<p>I just can’t believe that people really want to go around saying that
+    their certified.</p>\n\n\n\t<p>And as anybody who ‘can’ knows the simple word
+    ‘Paper’ in front of any computer qualification reduces it quickly and simply to
+    what it is.</p>\n\n\n\t<p>“He’s a paper <span class=\"caps\">MCSD</span>”.</p>\n\n\n\t<p>NeilW</p>"
+- date: 2006-11-11
+  author: Reg Braithwaite
+  content: "<p>http://weblog.raganwald.com/2005/07/why-you-need-degree-to-work-for-bigco.html</p>"
+- date: 2006-11-11
+  author: John Ford
+  content: "<p>You’re absolutely right, Jamis (and commenter’s). I’ve had a tough
+    time getting this idea across to the businesses I’ve worked for. I’d recommend
+    someone for a position who could program the pants off any other applicant but
+    the applicant would win the fight as a “paper X.”</p>\n\n\n\t<p>Unfortunately,
+    this stretches beyond just the technical world and into areas such as teacher
+    certification, doctor/nurse certification, construction certification, etc. Educational
+    institutes often times train people to take tests instead of giving them valuable
+    real-world skills.</p>"
+- date: 2006-11-11
+  author: Devi LLP
+  content: "<p>Just to play devil’s advocate here:</p>\n\n\n\t<p>If there is a business
+    looking for ruby on rails developers how do they find them? how do they know the
+    developer is as “hot shot” as he or she claims to be? Do they come and ask David
+    or Jamis ??</p>\n\n\n\t<p>Certifications are not a way to separate “rock stars”
+    from “regular joes” , however, they do give a business some sense that a person
+    has at least completed the bare minimum necessary to be at least conversant in
+    the field. It would be nice if the business leaders or hiring managers could hang
+    out in the Ruby/Rails chat rooms and read all the relavant blogs, and some do,
+    but it is unrealistic to expect it from everyone.</p>\n\n\n\t<p>Ruby on Rais,
+    and by extension Ruby language itself, is increasing in popularity, and those
+    who do need to hire need to have a way of separating the wheat from the chaff
+    in the limited time they have to make the decision. It would be unfair to ask
+    them to do it blindly.</p>\n\n\n\t<p>How would <em>you</em> explain to your boss
+    if you picked someone who ends up being a dud. Surely it is not being suggested
+    that whoever touches Rails becomes a super hot genius ;-)</p>\n\n\n\t<p>For every
+    Jamis or Rick or David, there are a hundred scaffold monkeys out there. Would
+    you like to bet your farm on that chance?</p>"
+- date: 2006-11-11
+  author: Devi LLP
+  content: "<p>I must add to this and say that I am, most vehemently opposed to Microsoft
+    style ‘certifications’ which do nothing but encourage rote learning and cargo
+    culting as Jamis has so eloquently described.</p>\n\n\n\t<p>I also oppose the
+    way Microsoft does their business, and their code, and all the other evil stuff
+    that they do. This does not mean however, that Ruby and Ruby On Rails community
+    cannot once again lead the way and show the rest of the world how it is done.</p>\n\n\n\t<p>Let
+    us not make Micro$not as the model of what is being proposed here, as I think
+    there is some merit to some kind of certification (or whatever you may want to
+    call it).</p>\n\n\n\t<p>Maybe a group of the best minds in the community can get
+    together to tackle this dilemma which is definitely going to be faced by hiring
+    managers as RoR and Ruby gain more popularity. Failing to do so may also mean
+    that RoR will become relegated to the backwaters and become the domain of “craftsmen”
+    as is the case with Forth, Smalltalk, Lisp etc.</p>\n\n\n\t<p>My feeling is that
+    Rub on Rails community leadership is leaning towards the “craftsman” (woman) model.
+    Ruby leadership is happy happy joy joy without taking any sides :-)</p>"
+- date: 2006-11-11
+  author: Jamis
+  content: "<p>Devi, I strongly encourage people hiring Ruby or Rails (or any other
+    language/framework) programmers, to look at the projects that the person has participated
+    on. Have they done any open-source work? Do they have any pet side-projects?</p>\n\n\n\t<p>If
+    no, then it really doesn’t matter how good they are at what they do, or how many
+    certifications they can claim, because they are <em>not passionate about what
+    you want them to do</em>. And if you hire people who aren’t passionate, you’re
+    taking a huge risk. Yes, there are competent programmers out there who shoulder
+    responsibility well and do good work, even though programming is just their “day
+    job”. But for every one programmer like that, there are many more who sneak by
+    doing bare minimums, hoping not to be noticed, and living for that 5 o’clock bell.</p>\n\n\n\t<p>Do
+    you want to hire someone you can trust to do good work? Look at the work they’ve
+    done. It’s as simple as that, and no meaningless (and expensive) papers needed.</p>"
+- date: 2006-11-11
+  author: David Vrensk
+  content: "<p>Jamis, I beg to differ regarding #11.</p>\n\n\n\t<p>First of all: it
+    seems to me you are replacing a certificate gained through written tests with
+    the badge of passion that a programmer should earn in the trenches of pet-project
+    or open-source programming.  But just like you observe that “[t]he problem is
+    that you don’t have to be passionate or competent to take and pass these tests,”
+    you don’t have to be passionate or competent to have a half-dozen pet projects
+    in your public repository.  In other words: if a person is willing to go through
+    the motions to pass a test, it doesn’t really matter if the test is a written
+    exam or a pet project.</p>\n\n\n\t<p>Secondly, I’d like to think that I can be
+    passionate about something without having open-source work or pet projects to
+    show for it.  If my day job is interesting enough, and my bosses over-sell me
+    enough, my professional work consumes my entire passion for programming (and I’ll
+    save my free time for non-programming passions).  There would be no point in my
+    engaging in pet projects when I can do an extra hour of paid work and still have
+    fun.  This was my situation for a few years.  I can’t show you what I did, for
+    it all belongs to my employer or our clients, but it was good stuff, and I was
+    passionate about it.</p>\n\n\n\t<p>I won’t go as far as to say that passion and
+    competence are orthogonal, but there’s no one-to-one mapping either.</p>\n\n\n\t<p>Thirdly,
+    and more importantly: there are not enough passionate people around to fill all
+    the jobs in the industry.  Not by far.  And while I too encourage everybody to
+    hire the passionate if you can find them (after all, you can get ten times the
+    productivity for just twice the salary), I don’t think the viable alternative
+    is to put your project on hold until you can get them.  You’ll have to make do
+    with the closest match.</p>\n\n\n\t<p>So in the end, I think we have two imperfect
+    metrics: certification and pet projects/OS work.  Certifications are easy-ish
+    to “forge” (passing tests by reading brain dumps), but convenient for me to check
+    (read diploma, check certifying authority’s database).  PP/OS work require more
+    work if you want to forge them, but it’s a lot more work for me to assess them
+    (how do I know that the applicant wrote this stuff?  It the stuff of good quality
+    anyway?).</p>\n\n\n\t<p>I’ll say “no” to certification, but I’ll say “no” to metrics
+    of passion too.</p>"
+- date: 2006-11-11
+  author: Jamis
+  content: "<p>David, thanks for being willing to debate this point. I have to disagree
+    with your disagreement, though. :)</p>\n\n\n\t<p>If someone has “a half-dozen
+    pet projects in [a] public repository”, that implies quite a bit of passion to
+    me. It does not, however, imply competence. However, by looking through their
+    repositories (or having someone who is competent to do so, do so), you can determine
+    competence.</p>\n\n\n\t<p>I agree, it is more difficult to peruse someone’s pet
+    projects than it is to confirm a certification. But just that’s because it is
+    more meaningful! You want quality hires? You can’t expect to get them just by
+    asking for a certification. I’m glad that you do agree with me on that point.</p>\n\n\n\t<p>You
+    raise a good point, too, about people who were passionate about the proprietary
+    projects they were involved in. In cases like that, you can’t just say “show me
+    your code.” However, you <em>can</em> say “show me some references”, and then
+    follow up with those references to see how the candidate performed at that job.</p>\n\n\n\t<p>I
+    find it hard to believe that any passionate programmer would leave zero publicly
+    accessible artifacts behind them, though… Perhaps we have differing definitions
+    of “passionate.”</p>"
+- date: 2006-11-12
+  author: Devi LLp
+  content: "<p>Jamis, I think you would make a passionate manager as well :)</p>\n\n\n\t<p>I
+    think the methodology you propose would work for those hiring managers who have
+    the spark. The truth is, that most stable (non startup) organizations tend to
+    be more conservative, and the management is more entrenched and a lot less passionate
+    about finding “the best talent” which would involve a detailed look at the candidates
+    and their work.</p>\n\n\n\t<p>Most project/managers don’t want their projects
+    to crash and burn, but they also tend to balance funds available, projects on
+    the go, market rates, probability of landing the deal, rivalries within the management
+    ranks etc. into account while making these decisions.</p>\n\n\n\t<p>While from
+    a developer’s perspective we tend to look at what we would need and how the world
+    should function, those making decisions about a framework, say, are more on the
+    ‘dispassionate’ side of the tools and by extension the developers, that they would
+    pick.</p>\n\n\n\t<p>I have seen that a project manager has to also worry about
+    disaster recovery scenarios in which someone leaves in the middle of the project.
+    It can happen because management is bad, in which case one could say that they
+    deserved it. It can also happen due to other reasons.</p>\n\n\n\t<p>From my limited
+    experience in the consulting and project management world, When you go into a
+    project and you do contingency planning, the choice of tool is ultimately linked
+    with availability of “adequate” resources. I say adequate, because most of the
+    time, you have to walk the fine line of maximizing billability for the longest
+    period of time without pissing the client off. Sorry to sound cynical about it,
+    but all ra-ra aside, this is what is happening in the business world, and everyone’s
+    karma sort of evens itself out in the end :)</p>\n\n\n\t<p>Obviously, the context
+    in which I am placing this discussion is that of widespread use of Ruby and Ruby
+    on Rails. It will happen in the future, but we are already seeing signs which
+    are manifesting themselves in terms of rumblings re: certifications etc.</p>\n\n\n\t<p>From
+    you response, I am assuming that my “craftsperson” theory is correct. This is
+    how you select the best artisan and craftsperson, because you yourself are passionate
+    about it.</p>\n\n\n\t<p>When 10% margins, long running support contracts with
+    large corporations are concerned, corporate climbers really don’t give two hoots
+    about how passionate a developer is. It is disgusting to see how managers/project
+    managers talk of “bodies” that they will take on.</p>\n\n\n\t<p>I can see where
+    you are coming from, but I can also see that it will be a long time before Rails
+    and its creator’s philosophy will permeate the North American corporation to the
+    point that we won’t need to have this discussions :)</p>\n\n\n\t<p>For now, the
+    biggest concern for me, if I was putting a project team together for a 10 million
+    contract, would be to know ahead of time how I would deal with contingencies.
+    Because as you are possibly aware, sometimes you have to pay hefty penalties to
+    the clients if you don’t deliver on time :) and you don’t want to crash and burn
+    and stake your career at a hot-shot programmer or two or the latest framework
+    (no matter how awesome it maybe) if you know full well that you will have to have
+    a hit and miss approach to find resources.</p>\n\n\n\t<p>Sad, but unfortunately
+    given the constraints, a proper certification does give people some peace of mind
+    and it is not just some manegerial bull$hit that businesses believe in just cuz
+    they read it in the latest business book.</p>\n\n\n\t<p>peace!</p>"
+- date: 2006-11-12
+  author: Jamis
+  content: "<p>Excellent counter-argument, Devi, thank-you for taking the time to
+    post it. However, I’m still completely against certifications. :) A certification
+    only guarantees that someone wanted the job bad enough to spend some time and
+    a fair chunk of money to become rudimentarily acquainted with some language or
+    environment. As I argued before, it is in <em>no way</em> a certificate of competence,
+    and I wish more managerial types understood that distinction. I can understand
+    how having some certifying authority tell them that “person X has passed an exam
+    proving they know some minimum requirements” would give a certain element of warm-fuzziness,
+    but that’s only because they have no real idea what the certification means. :)</p>\n\n\n\t<p>At
+    any rate, I agree that there is no perfect solution. In a perfect world, the hiring
+    company could say “we’re working on X and need someone who knows how to do Y”,
+    and a developer would come along with integrity who would honestly say “I can
+    do those things competently”, and the company would just take their word for it.</p>\n\n\n\t<p>In
+    an imperfect world, we have to substitute security for integrity. It’s just too
+    bad that certifications have become an element of that security, because they
+    really are meaningless.</p>"
+- date: 2006-11-12
+  author: Devi LLP
+  content: "<p>Jamis, I concur with your sentiments on the state of certifications
+    in the software world today. What I am proposing is perhaps find a way forward.
+    Not really advocating certifications here because as we have seen, most of the
+    time they are subverted by vendors and by candidates.</p>\n\n\n\t<p>So, I guess
+    we are back to square one. At least we are not in negative territory :)</p>\n\n\n\t<p>Personally,
+    I would like to see good developers, as proud artists and practitioners of their
+    craft, agree to have their past client reviews made public. Kind of like eBay
+    for R/RoR developers. But I think there may be too many issues with the uptake
+    on that one. Businesses don’t want to be liable, and developers don’t want to
+    have negative marks against them be out there in perpetuity.</p>\n\n\n\t<p>I think
+    we agree there is a gap here. I am at a loss as to how that can be filled. Given
+    the braintrust that is the Ruby and Ruby on Rails core, I am sure you guys will
+    sooner or later come up with something which is as elegant a solution as are the
+    products that you so proudly (and rightly so) champion.</p>\n\n\n\t<p>Thanks.</p>"
+- date: 2006-11-13
+  author: Neil Wilson
+  content: "<p>There is a wonderful line in Peopleware (DeMarco and Lister) that I
+    think sums up certification and interview techniques in general:</p>\n\n\n\t<p>If
+    you want to hire a juggler, isn’t it a good idea to watch them juggle first?</p>\n\n\n\t<p>NeilW</p>"
+- date: 2006-11-13
+  author: Sean Cribbs
+  content: "<p>Perhaps the worst part about those certifications is that they test
+    textbook-like knowledge, which can be learned by rote; and then in most of them,
+    you pass if you get 60-70% or better!  Clearly, it’s a situation where the knowledge
+    they’re testing is something that you would look up in a manual or <span class=\"caps\">API</span>,
+    rather than “how would you solve this problem, given access to all the informational
+    resources available?”</p>\n\n\n\t<p>I would have more respect for certifications
+    if they were more like Advanced Placement tests where you write essays.  Except
+    in many cases for tech certs, it would be writing code.  Then your code-essay
+    could be scored on a scale (1-5 or 1-15 on AP tests) by a panel of jurists who
+    can weigh empirical things like “does it work” with subjective things like “how
+    efficient is it” and “can I read and understand it”.</p>\n\n\n\t<p>Even so, it
+    would not solve the corporate mentality to place a stamp on people without evaluating
+    other aspects of their skills.  One reason why I haven’t sought any certifications…
+    I don’t want to be branded!</p>"
+- date: 2006-11-13
+  author: Christian Romney
+  content: "<p>A much better measure of a programmer is the estimation of his or peers.
+    If Jamis and <span class=\"caps\">DHH</span> tip their hats to me, it’s much more
+    valuable than some random cert. Likewise, when making hiring decisions (both now
+    and in the past) I have never given much weight to certifications.</p>\n\n\n\t<p>One
+    idea I find very interesting is that of a guild. Not the cheesy kind with webrings
+    and the like, but a real  artisan-style guild with apprenticeships. Of course,
+    this sort of thing involves serious time commitments but RUGs and Ruby Brigades
+    are the perfect places for this sort of program. I’d love to get your thoughts
+    on this.</p>"
+- date: 2006-11-13
+  author: Jamis
+  content: "<p>Interesting idea, Christian, about apprenticeships. It reminds me of
+    some stuff Chad Fowler talks about in his “My Job Went to India” book. Sounds
+    like you want to make it much more formal and contractual, though. I think it
+    would be great, but it definitely would require a good chunk of time to be invested
+    by both parties. Not something to enter into lightly.</p>\n\n\n\t<p>Regarding
+    using this as a replacement for certifications, it would require that the “master”
+    be a trusted individual, that could be relied upon to give a fair assessment of
+    his apprentice’s competence. I’d be interested to hear more about this.</p>"
+- date: 2006-11-30
+  author: PDS
+  content: "<p>There is a fundamental problem with not having some sort of certification,
+    in that you propose everyone must “expose” themself or their work in order to
+    be known to be competent. It is impossible, in the methods suggested above, to
+    be considered competent without courting favor through blogs or open source projects.
+    In essence, you make it political.</p>\n\n\n\t<p>The point of certifications,
+    like the civil service exams the chinese famously began, is to objectively set
+    a baseline regardless of the political affiliation of the candidate.</p>\n\n\n\t<p>Lest
+    you think I’ve wandered off into the weeds, please keep in mind that any association
+    of more than 2 people is a political society. (See sociology 101) The phrase “office
+    politics” has nothing to do with elections and everything to do with the power
+    structure of that society.</p>\n\n\n\t<p>Now, getting back on point – your system
+    is “elitist”, not in the defensible sense having to do with competence, but in
+    the sense that it requires association with and approval of a person by a known
+    member of the self-appointed elite. It’s an exclusive society that is inherently
+    subjective, and with a self-serving bias to preserve it’s small numbers for egoist
+    and economic reasons.</p>\n\n\n\t<p>Certifications create an objective minimum
+    competence. It may not meet your much loftier (because you are elite…) standards,
+    but it should mean a certified programmer knows the fundamentals.</p>\n\n\n\t<p>None
+    of what I have said addresses the “diploma mill” problems, endemic to the microsoft
+    and cisco certifications, where memorizing brain dumps and learning test-taking
+    strategy are at least as important to success as actual comprehension, but those
+    are flaws in  the implementation, and not flaws in the concept.</p>\n\n\n\t<p>It
+    is conceivable that a rigorous enough exam (ie, one optimized not for profitable
+    administration but for determination of capacity) could be devised that would
+    allow for objective certication. It need not be “meaningless” as you say.</p>\n\n\n\t<p>Perhaps
+    it could be combined with a social website, seeded by <span class=\"caps\">DHH</span>
+    and a dozen or so “rock stars” instantly labelled as “masters” (inlcuding Jamis
+    of course)</p>\n\n\n\t<p>Someone learning on their own, would be considered “novice”,
+    simply by joining the site.</p>\n\n\n\t<p>Once that person took a certification
+    test, they would hold the first rank in the “master” system, that of “apprentice”</p>\n\n\n\t<p>After
+    being certified, any single master could be convinced to promote that person to
+    journeyman status, provided they vouched for their required 2 years work experience.
+    A second master’s vote</p>\n\n\n\t<p>After another year of work experience, two
+    other masters would need to be convinced that this person was fully competent,
+    to vote for their obtaining master status.</p>\n\n\n\t<p>By combining an objective
+    test (to gain apprentice status) with a subjective reference system, accessible
+    to “ignorant” hiring managers as simply a grade of competence, you would do a
+    great service to all parties.</p>\n\n\n\t<p>A single person gain a certification,
+    apprentice status that gets them an entry-level job once confirmed by the non-technical
+    hiring manager (who gets a simple check on how competent someone is)</p>\n\n\n\t<p>Masters
+    get to subjectively control admittance to their own ranks, via two chokepoints,
+    but the less objectively they apply it, by voting in their buddies, the more meaningless
+    they make their own rank.</p>\n\n\n\t<p>Eventually, a “grand master” class would
+    be needed, but your objections to certification comne across as protecting your
+    own acknowledged competence against dilution at the lowest level, not distinction
+    amongst the highest.</p>"

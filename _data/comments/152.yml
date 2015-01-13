@@ -1,0 +1,32 @@
+---
+- date: 2006-09-21
+  author: Daniel Morrison
+  content: "As I moved my business to Rails, there was one big PHP project that I
+    had to support.  Adding Capistrano support made to that project my life so much
+    easier as deploying updates was no longer a chore.\r\n\r\nThen I realized I could
+    use Migrations on the project too, without having the actual code know anything
+    about Ruby.\r\n\r\nThanks for helping me sneak Ruby into the system!"
+- date: 2006-09-21
+  author: Tom
+  content: "I am using Capistrano to deploy Wordpress to my Dreamhost account.  I've
+    detailed how I did that here http://blog.craz8.com/articles/2006/09/02/deploying-wordpress-on-dreamhost-with-capistrano
+    and here http://blog.craz8.com/articles/2006/09/09/wordpress-with-capistrano-and-google-sitemaps-plugin\r\n\r\nIt
+    works great, once you work out the specific app issues for which files to deploy,
+    and which to have shared and symlinked into place during the deployment.\r\n"
+- date: 2006-09-21
+  author: Jon Leighton
+  content: '"Me too" -- I''ve used Capistrano with a PHP app.'
+- date: 2006-09-21
+  author: Jon Maddox
+  content: "I actually had the idea to deploy PHP with Capistrano at RailsConf in
+    Chicago. I didn't really have a project I was working on while I was there and
+    got an email from work saying I needed to redeploy a certain project. So I decided
+    to write a recipe and get cap to do my dirty work.\r\n\r\nAfter using it with
+    all my current rails apps I knew I could never deploy manually again. You think
+    you cringe deploying manually now? Try doing it after _cap deploy_ing all your
+    new stuff."
+- date: 2006-09-22
+  author: Neil Wilson
+  content: "The 'vmbuilder' gem I've put together uses Capistrano to build Xen based
+    Debian VMs from scratch automatically and in parallel. Watching 10 machines build
+    themselves in parallel is remarkably satisfying.\r\n"

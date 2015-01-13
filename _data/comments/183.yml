@@ -1,0 +1,33 @@
+---
+- date: 2006-10-31
+  author: Jon Leighton
+  content: "<p>Heads up: third link in has a typo.</p>"
+- date: 2006-10-31
+  author: Jamis
+  content: "<p>Oops, thanks for the tip. Fixed.</p>"
+- date: 2006-11-01
+  author: jeroen@supercool.nl
+  content: "<p>Okay, this is very interesting. I have pet project I’d like to submit.
+    I’m currently rewriting the project to support more features etc and it be great
+    if I could get some feedback on certain parts. It’s not open source though, so
+    how would we deal with that?</p>\n\n\n\t<p>Jeroen</p>"
+- date: 2006-11-01
+  author: jeroen@supercool.nl
+  content: "<p>Sorry should have just checked the link. So once you’ve received the
+    code you’ll assume you can publish it, okay that’s fair enough of course. I’ll
+    try and extract a few bits that could be reworked and send them in, rather than
+    dumping the whole application.</p>\n\n\n\t<p>Great idea!</p>"
+- date: 2006-11-01
+  author: Jan Wikholm
+  content: "<p>Excellent stuff guys!</p>"
+- date: 2006-11-11
+  author: tabrez
+  content: "<p><em>“we might write about how that code would be better if it were
+    written in Rails.”</em></p>\n\n\n\t<p>Shouldn’t that read as: “how that code <em>might</em>
+    be better if it were written in Rails?”</p>\n\n\n\t<p>Otherwise either you believe
+    that everything can always be done better using Rails technology or you are presuming
+    that whoever will be submitting the code would be a lousy programmer.</p>"
+- date: 2006-11-11
+  author: Jamis
+  content: "<p>tabrez, no, I meant it exactly as I wrote it. It’s called “propoganda.”
+    :)</p>"

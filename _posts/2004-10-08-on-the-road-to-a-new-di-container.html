@@ -1,0 +1,89 @@
+---
+layout: post
+title: On the Road to a New DI Container
+post_id: 328
+categories:
+- Projects
+date: 2004-10-08 03:10:00.000000000 -06:00
+author: Jamis
+permalink: 2004/10/08/on-the-road-to-a-new-di-container.html
+---
+
+<p>I’ve recieved a few requests to log about my journeys through the Dependency Injection universe, especially as regards my usage of <a href="http://copland.rubyforge.org">Copland</a>. However, I’m currently investigating a new approach to DI, as proposed by <a href="http://onestepback.org">Jim Weirich</a> in a <a href="http://onestepback.org/index.cgi/Tech/Ruby/DependencyInjectionInRuby.rdoc">recent blog article</a>.</p>
+<p>So, instead of following my usage of Copland, instead I’m going to log about the process of creating this new container. Part of this will involve taking an existing project (<a href="http://net-ssh.rubyforge.org">Net::SSH</a>, in this case) and making it use DI.</p>
+<h2>In the beginning…</h2>
+<p>I wrote Copland, originally, to teach myself <a href="http://jakarta.apache.org/hivemind">HiveMind</a>. In particular, I was asked, obliquely, to become a HiveMind guru in a short amount of time, and considering that I was completely new to IoC and DI, I chose to write a port (more or less) of HiveMind to help me learn its internals.</p>
+<p>I’m still not a HiveMind guru, incidentally. But I did learn a lot about IoC and DI. Unfortunately, what I learned had a powerful Java spin on it. As was pointed out at <a href="http://www.rubycentral.org/conference">RubyConf 2004</a>, Copland itself reflects its Java heritage:</p>
+<ul>
+	<li>External configuration files. Although I don’t completely buy into the argument that external configuration files go contrary to “the Ruby way”, I can understand that in a dynamic language like Ruby it is often more convenient to just declare things on the fly. You can’t easily do such things in Java.</li>
+		<li>Directory-based namespaces. Although Copland allows multiple packages per package descriptor, it also only allows one package descriptor per directory…something strangely reminiscent of Java.</li>
+		<li>The word “package” itself. Although I chose to use “package” because HiveMind’s use of the term “module” conflicted with Ruby’s own concept of modules, the term “package” was consciously chosen from Java.</li>
+	</ul>
+<p>Anyone at RubyConf can attest that there is some strong anti-Java sentiment in the Ruby community. I admit to harboring some ill-will towards Java myself. I’ve come to realize that Copland’s Java heritage is hurting its adoption in the Ruby community. And since Copland is one of the most visible DI containers for Ruby, by making Copland undesirable, DI itself was being made undesirable to Rubyists by association.</p>
+<h2>A new beginning…</h2>
+<p>At RubyConf, Jim Weirich wondered aloud what a DI container designed with Ruby’s dynamic features in mind would look like. Typical of Jim: he did more than just wonder. He wrote up a wonderful article-<del>complete with a functional implementation of a Ruby DI container</del>-and posted it to his blog (<a href="http://onestepback.org/index.cgi/Tech/Ruby/DependencyInjectionInRuby.rdoc">here</a>). He was kind enough to let me review the article before he posted it, and I was immediately struck by the elegance of it.</p>
+<p>Instead of using reflection to identify and instantiate classes named in a configuration file (the approach of HiveMind and Copland), Jim’s solution took advantage of blocks to define instantiation procedures for services:</p>
+<pre>
+  container = DI::Container.new
+
+  container.register( :foo ) { Foo.new }
+  container.register( :bar ) { |c| Bar.new( c.foo ) }
+  container.register( :baz ) do |c|
+    b = Baz.new
+    b.bar = c.bar
+    b
+  end
+</pre>
+<p>I was smitten, like an adolescent in the throes of infatuation. Jim had shown me “the way,” and he subsequently gave me permission to hack on his solution to add some of Copland’s better features:</p>
+<ul>
+	<li>Interceptors, for supporting <span class="caps">AOP</span>-like hooks into the existing methods of services.</li>
+		<li>Namespaces, to allow hierarchical organization of collections</li>
+	</ul>
+<h2>Syringe</h2>
+<p>I’ve since codenamed my version of Jim’s container, “Syringe.” (It’s a decent working name, but it’s a pain to type and I always misspell it…so I’d like to find a better name eventually.)</p>
+<p>Syringe accomplishes, in just over 1,000 <span class="caps">LOC</span>, what Copland does in approximately three times as many lines. It is also <span class="caps">MUCH</span> faster. Also, it currently supports truly hierarchical namespaces, which Copland only mimics. (Copland supports multiple namespaces, but not hierarchically.)</p>
+<p>I particularly like how Syringe’s syntax came together for adding pre-defined interceptors to services:</p>
+<pre>
+  container.intercept( :foo ).with { container.logging_interceptor }
+</pre>
+<p>You can also create a brand-new interceptor on the fly, something not even dreamed of in Copland:</p>
+<pre>
+  container.intercept( :foo ).doing do |chain, context|
+    do_something
+    result = chain.process_next( context )
+    do_something_else
+    result
+  end
+</pre>
+<h2>Moving forward…</h2>
+<p>Syringe is still far from complete. I don’t really like how namespaces work, right now. On one hand, it works really well and looks fine for most cases.</p>
+<pre>
+  container.namespace( :operations ) do |ns|
+    ns.register( :foo ) { Foo.new }
+    ...
+  end
+</pre>
+<p>But while trying to use Syringe with Net::SSH, I discovered that the current namespace implementation gets in the way, more than it helps. I found myself deep in a hierarchical namespace tree, and needing to access a sibling of the current namespace, and having to do something like:</p>
+<pre>
+  ns.parent.sibling.service.do_something_here
+</pre>
+<p>And it just got worse if I had to go up to a second-cousin of the current namespace:</p>
+<pre>
+  ns.parent.parent.cousin.second_cousin.service.do_something_here
+</pre>
+<p>So, I need to rethink that.</p>
+<h2>Applying Syringe to Net::SSH</h2>
+<p>I actually started refactoring Net::SSH with Copland a few days before RubyConf, and to Copland’s credit, I made good progress. Basically, I followed this procedure:</p>
+<ol>
+	<li>
+<em>Refactor with an eye towards loose coupling.</em> I had actually done a pretty good job of loosely coupling the components in Net::SSH already, so this wasn’t too hard. There were a few places where I had to break a single class into multiple classes, but most of the work involved looking for places where I was explicitly instantiating a class, by name. With a few exceptions, I changed all of those into attribute references, and made the class expect those attributes to be set for it during initialization.</li>
+	</ol>
+<ol>
+	<li>
+<em>Factories don’t need to know the classes they provide.</em> Net::SSH has a lot of factory classes. In refactoring, I caused them to accept as a constructor parameter a map of possible services that should be fronted, rather than hard-coding the availbale services inside the factory.</li>
+	</ol>
+<ol>
+	<li>
+<em>Define the services.</em> With Copland, this involved creating package descriptor files for each namespace. Because Net::SSH is so factory-oriented, I also defined a boat-load of configuration points, one for each factory (i.e., CipherNames, HMACAlgorithms, KeyNames, and so forth). Also, with the reimplementation, I also planned to be able to swap out the OpenSSL backend and plug a different backend in. This way, if another library came along that implemented the necessary algorithms, it could be used in place of OpenSSL. To accomplish this, I actually created <em>factory factories</em>. You tell the “factory factory” which class of factory you want to use, and it returns a factory configured for that. (For instance, by default, Net::SSH will use the “ossl” class of factories.) So, to support that, I also created configuration points for each factory factory: CipherFactories, HMACFactories, KeyFactories, BufferFactories, and so forth.</li>
+	</ol>
+<p>That’s about as far as I got before starting Syringe. Reworking this all to use Syringe has been good, because (as I mentioned with the namespace issues) it has revealed some weaknesses in Syringe’s design. Hopefully by the time I’m done with refactoring Net::SSH, both Net::SSH and Syringe will be solid, dependendable libraries!</p>

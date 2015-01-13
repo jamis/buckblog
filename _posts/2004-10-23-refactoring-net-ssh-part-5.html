@@ -1,0 +1,142 @@
+---
+layout: post
+title: 'Refactoring Net::SSH: Part 5'
+post_id: 333
+categories:
+- Under the Hood
+date: 2004-10-23 08:10:00.000000000 -06:00
+author: Jamis
+permalink: 2004/10/23/refactoring-net-ssh-part-5.html
+---
+
+<p>After nearly a month of refactoring <a href="http://net-ssh.rubyforge.org">Net::SSH</a> to take advantage of dependency injection (via the <a href="http://needle.rubyforge.org">Needle</a> framework) visible progress has been made: the transport layer works!</p>
+<p><em>(A quick review: the transport layer of the <span class="caps">SSH2</span> protocol deals with the low-level workings of <span class="caps">SSH</span>. It manages the algorithm negotiation, key exchange, encryption/compression of packets, and so forth. All other parts of the <span class="caps">SSH</span> protocol are built on top of the abstraction provided by the transport layer.)</em></p>
+<h3>How the Session is Initialized</h3>
+<p>As some of you may recall, the <a href="http://www.jamisbuck.org/jamis/blog.cgi/programming/dependency-injection/Refactoring%20Net::SSH:%20Part%204_20041016230705.tx">last article in this series</a> ended on a question as I debated what approach to take regarding the initialization of the Session class. After all of that, Eivind Eklund suggested that I just pass the container to the Session constructor and let the Session initialize itself <em>a la carte</em>:</p>
+<pre>
+  container.register( :session, :model =&gt; :prototype ) do |c,p|
+    Session.new( c.logs.get(p.fullname), c )
+  end
+</pre>
+<p>At first, I was opposed to this approach, since it didn’t feel like dependency injection to me. The fact is, it isn’t. It’s the <em>service locator</em> pattern, which is closely related.</p>
+<p>However, after some thought I realized that the price of being a purist in this case would mean <em>more</em> work for me. A good programmer should be able to use all of the tools at his disposal, understanding where they make sense and where they don’t. In this case, the service locator was a more efficient approach due to the large number of dependencies that Session had.</p>
+<h3>Further Refactoring, and Lessons Learned</h3>
+<p>The Session class itself was a beast (see <a href="http://rubyforge.org/cgi-bin/viewcvs/cgi/viewcvs.cgi/net-ssh/lib/net/ssh/transport/session.rb?rev=1.16&amp;cvsroot=net-ssh&amp;content-type=text/vnd.viewcvs-markup">the original sources</a>). In order to tame it a bit and make it unit-testable, I moved the version and algorithm negotiation pieces into two different classes. This trimmed it down nicely, although it is still pretty big.</p>
+<p>This most recent refactoring has finally hammered home a lesson that I feel ready to pen (though I’m certain others have already discovered and codified it elsewhere):</p>
+<blockquote>
+		<p><em>If you have a</em> private <em>method of a class that you feel needs unit testing, that method probably belongs in a class of its own.</em></p>
+	</blockquote>
+<p>In other words, suppose you have a private method <code>foo</code> that is called by a public method <code>bar</code>:</p>
+<pre>
+  class Agnathostomata
+    def bar
+      ...
+      foo
+      ...
+    end
+
+    def foo
+      ...
+    end
+    private :foo
+  end
+</pre>
+<p>When it comes time to test the class, you discover that you would like to unit test the <code>foo</code> method directly. Your options in this case are to (a) make <code>foo</code> public, or (b) circumvent the access control via <code>send</code> or <code>instance_eval</code>. Neither are very attractive options.</p>
+<p>What I discovered is that it is probably better, in many cases, to move <code>foo</code> (and any related functionality) into a class of its own, making <code>foo</code> public in the process. Then, the first class delegates that functionality to the new class, like this:</p>
+<pre>
+  class Spiloma
+    def foo
+      ...
+    end
+  end
+
+  class Agnathostomata
+    def initialize
+      @delegate = Spiloma.new
+    end
+
+    def bar
+      ...
+      @delegate.foo
+      ...
+    end
+  end
+</pre>
+<p>This is exactly how the new VersionNegotiator and AlgorithmNegotiator classes came to be.</p>
+<h3>Results</h3>
+<p>I had been unit testing every piece this entire time, so I felt confident that there wouldn’t be any significant bugs. However, the pieces I hadn’t tested so far were the parts that dealt with the dependency injection. Naturally, when it came time to run the integration test, those were the parts that failed first. :)</p>
+<p>The problems weren’t significant, however. Usually only a few typos or scoping issues. There <em>was</em> one place where I had indicated the maximum number of bits in the key should be 8196, when it should have been 8192, and that caused me a bit of grief, but I found and fixed it.</p>
+<p>The integration test was simple: for every combination of cryptography backend, host key, kex algorithm, cipher algorithm, <span class="caps">HMAC</span> algorithm, and compression algorithm, run a test that opened a new connection via the transport Session, sent a message and received a response, and then closed the connection.</p>
+<p><em>Voila!</em></p>
+<pre>
+  backends.each do |backend|
+    keys.each do |key|
+      kexs.each do |kex|
+        encryptions.each do |encryption|
+          hmacs.each do |hmac|
+            compressions.each do |compression|
+              method_name = "test_#{backend}__#{key}__#{kex}__#{encryption}__#{hmac}__#{compression}" 
+              method_name.gsub!( /-/, "_" )
+
+              define_method( method_name ) do
+                @registry.register( :crypto_backend ) { backend }
+                session = @registry.transport.session
+
+                assert_nothing_raised do
+                  session.open "localhost",
+                    :host_key =&gt; key,
+                    :kex =&gt; kex,
+                    :encryption =&gt; encryption,
+                    :hmac =&gt; hmac,
+                    :compression =&gt; compression
+                end
+
+                assert_equal key, session.algorithms.host_key
+                assert_equal kex, session.algorithms.kex
+                assert_equal encryption, session.algorithms.encryption_c2s
+                assert_equal encryption, session.algorithms.encryption_s2c
+                assert_equal hmac, session.algorithms.mac_c2s
+                assert_equal hmac, session.algorithms.mac_s2c
+                assert_equal compression, session.algorithms.compression_c2s
+                assert_equal compression, session.algorithms.compression_s2c
+
+                type = nil
+                assert_nothing_raised do
+                  session.send_message "#{session.class::SERVICE_REQUEST.chr}\0\0\0\14ssh-userauth" 
+                  type, buffer = session.wait_for_message
+                end
+
+                assert_equal session.class::SERVICE_ACCEPT, type 
+                session.close
+              end
+
+            end
+          end
+        end
+      end
+    end
+  end
+</pre>
+<p>The result?</p>
+<pre>
+  $ ruby test_integration.rb
+  Loaded suite test_integration
+  Started
+  .........................................................................
+  .........................................................................
+  ..............
+  Finished in 21.566316 seconds.
+
+  160 tests, 1760 assertions, 0 failures, 0 errors
+</pre>
+<p><em>It’s alive!</em></p>
+<h3>Future Directions</h3>
+<p>Well, as I said earlier, the transport layer is just one piece (albeit a very fundamental one) of the <span class="caps">SSH</span> protocol stack. So, the parts that remain to be done are:</p>
+<ul>
+	<li>User authentication</li>
+		<li>Connection management (channels, etc.)</li>
+		<li>
+<span class="caps">SFTP</span> protocol</li>
+		<li>Various convenience interfaces</li>
+	</ul>
+<p>I figure I <em>might</em> be about half done with the entire refactoring. Regardless, once I’m done I’ll release Net::SSH 0.2.0, and will <em>finally</em> be able to proceed with all the parts that are still missing from it.</p>

@@ -1,0 +1,120 @@
+---
+layout: post
+title: Usage scenarios for BudgetWise
+post_id: 230
+categories:
+- Projects
+date: 2005-02-27 18:36:00.000000000 -07:00
+author: Jamis
+permalink: 2005/02/27/usage-scenarios-for-budgetwise.html
+---
+
+<p>I’m kind of going out on a limb here, with this article. I found myself scribbling some notes on how I thought BudgetWise (my vaporware financial package) will be used (particularly by myself, since that’s who I’m primarily writing it for). I figured that since this jotting-of-notes was part of my development process, and since I’ve promised to share that process with any who might care to read about it, I ought to put these online.</p>
+<p>So, read on!</p>
+<h2>Features</h2>
+<p>The initial implementation of BudgetWise will be limited to a very small set of core features. I’m not going to bother with fancy reporting, savings goals, investment portfolios and the like. I’m only going to implement an interface to manage financial transactions against a set of accounts, organized by the budget categories they correspond to. The only reporting I plan to implement initially will be a simple filter to change which transactions are shown.</p>
+<p>Also, I plan to implement a statement reconciliation process, even though that technically <em>could</em> wait until later. However, since this is for me, and since statement reconciliation is one of my most hated things, this will need to be very easy to do or I won’t use the program—I’ll just keep using my vintage 1995 copy of <a href="http://www.intuit.com">Quicken</a>.</p>
+<p>So, given that limited feature set, I came up with the following high-level usage scenarios:</p>
+<ol>
+	<li>Answer the question, “what is the balance of account <em>X</em>?” </li>
+		<li>Answer the question, “What is the balance of budget category <em>Y</em>?” </li>
+		<li>Add a new account.</li>
+		<li>Add a new budget category.</li>
+		<li>Reconcile data with an account statement.</li>
+		<li>View all transactions matching some criteria.</li>
+		<li>Add a new transaction</li>
+	</ol>
+<p>There are some scenarios I didn’t include in this list (like “delete an account” and “rename a budget category”) because these operations are likely to be infrequently accessed and so are lower on my list of priorities. They will still make it into the final product, but I wanted to keep this list succinct and uncluttered. (Thus, the above list should not be taken to be a full list of planned features!)</p>
+<p>Items 1 through 4 are, if not trivial, certainly very simple. The next two items, 5 and 6, are more complicated. The last one, “add a new transaction”, is the most complex beast of all.</p>
+<p>Entering transactions will be the most frequent use of the application. Because of this, and because it is so complicated, I want to start with this feature and dissect it in detail. In fact, the rest of this article will focus on that single usage scenario, going over several specific instances of it. (Later articles may or may not develop the other features with the same level of detail.)</p>
+<p><em>Note</em>: I am not an accountant. I have never taken an accounting course. I am probably sacrificing all kinds of sacred cows here, and will no doubt cause great pain to any accountant types that read this. Feel free to comment on the parts that you think are overly naive, but keep in mind that I’m implementing this based on my own usage patterns of the program I currently use (Quicken). I want this to be <em>easy to use</em> (even for non-accountants like myself), and <em>easy to learn</em> (so I can write as little documentation as possble).</p>
+<h2>Overview: Accounts and Budgets</h2>
+<p>Okay, timeout. Let’s pause and do a quick overview of how I currently envision accounts and budgets working in BudgetWise, so the rest of this article will make sense:</p>
+<ul>
+	<li>Budgets are like virtual accounts. You deposit money into them and spend money from them, but the funds themselves are always physically located in an account.</li>
+		<li>Not all accounts will be budgeted. If an account is unbudgeted, then you never specify budget categories when dealing with transactions against that account.</li>
+		<li>A single transaction may operate on multiple budget categories and accounts. (A transfer of funds, for instance, may move money from one account to another, while a deposit into your checking account may move money into multiple budget categories.)</li>
+	</ul>
+<p>That should be enough to get you started. Let’s move on.</p>
+<h2>Adding a New Transaction</h2>
+<p>There are many different scenarios within <a href="&lt;/p">adding a transaction</a>&gt;
+
+
+	</p>
+<ol>
+	<li>Record a payment
+	<ol>
+	<li>from an unbudgeted account</li>
+		<li>from a budgeted account, one budget</li>
+		<li>from a budgeted account, multiple budgets</li>
+	</ol>
+	</li>
+		<li>Record a deposit
+	<ol>
+	<li>to an unbudgeted account</li>
+		<li>to a budgeted account, one budget</li>
+		<li>to a budgeted account, multiple budgets</li>
+	</ol>
+	</li>
+		<li>Record a credit card purchase</li>
+		<li>Make a payment on a credit card balance</li>
+		<li>Record a transfer of funds between accounts
+	<ol>
+	<li>unbudgeted to unbudgeted</li>
+		<li>unbudgeted to budgeted</li>
+		<li>budgeted to unbudgeted</li>
+		<li>budgeted to budgeted</li>
+	</ol>
+</li>
+	</ol>
+<p>I’ll talk about each of these in turn.</p>
+<h2>“Record a payment”</h2>
+<p>The “record a payment” scenarios are pretty straightforward:</p>
+<ol>
+	<li>
+<strong>Record a payment from an unbudgeted account.</strong> This is as simple as entering a transaction with a single line item, with date, payee, amount, the source account, and a description of the transaction. (Other information, like the check number or transaction type, may or may not find their way into the initial version of the application.)</li>
+		<li>
+<strong>Record a payment from a budgeted account, from a single budget.</strong> This is very straightforward as well. Again, a single line item, with date, payee, amount, source account, and description, but also including the source budget from which the funds are being paid.</li>
+		<li>
+<strong>Record a payment from a budgeted account, from multiple budgets.</strong> This is a bit more complex. Consider a grocery bill that includes food items, but also some shampoo and deoderant that you’ve been needing, and a new <span class="caps">DVD</span> that you’ve been meaning to buy. You’ve got a grocery budget, but you don’t want to include the shampoo, deoderant, and <span class="caps">DVD</span> purchases in that budget-<del>you want to include those in a “household” budget. Furthermore, you may want to charge the <span class="caps">DVD</span> purchase to an “entertainment” budget. Thus, when entering this transaction you’ll have three line items</del>-but all with the same date, payee, and account.</li>
+	</ol>
+<p>Not a bad start, but these three points raise an interesting issue-<del>if I’m spending money out of a budget category, I need to make sure the funds I’m spending are also physically located within the account I’m spending from. (Otherwise, you could wind up with a budget with a non-negative balance, but an account that you’ve overdrawn!) So, a question to be pondered: should each account have it’s own set of budget categories? Or should budget categories be allowed to contain funds from multiple accounts? If so, how would the constraint described above be enforced? I won’t go into this right now, though</del>-it would derail the focus of this article too much. But I definitely need to spend some thinking time on it.</p>
+<h2>“Record a deposit”</h2>
+<p>The “record a deposit” scenario is virtually identical to the “record a payment” scenario, but with a plus sign on the amounts instead of a minus sign.</p>
+<p>A bit more information here, though: the most common use of a “deposit into multiple budgets” is the paycheck scenario. If I get paid, I want to add that new income to my existing budgets. So what I do is effectively partition the paycheck such that <em>X_ amount of it is available to “groceries”, _Y</em> amount is available to “household”, <em>Z_ amount is available to “gas”, and so forth. The funds are made available to the various budgets by partitioning the deposit transaction into _n</em> line items, one for each budget category, each with the same target account, date, payee, etc.</p>
+<p>The important thing here, from a UI perspective, is to enforce the constraint that the sum of the amounts of the line items must equal the total amount of the transaction. How to do this? Require the total be entered first, perhaps? Again, a full discussion on this topic would derail the article, but it’s another issue that needs to be thought through.</p>
+<h2>“Record a credit card purchase”</h2>
+<p>This is an interesting one, and I have to admit I kind of raced through the two previous sections because I was anxious to deal with this one. (I should state that although this scenario mentions credit card purchases specifically, it actually applies to debts and liability accounts in general. If you have a student loan, for instance, you could just as easily treat that as a single “credit card” purchase for the amount of the loan, and proceed as described below.)</p>
+<p>First, the setup. This scenario assumes the existance of (at least) two accounts: “checking” and “credit”. (A user would actually have one credit account per credit card, but we’ll generalize here.)</p>
+<p>This scenario also assumes that the checking account has, in addition to the regular budget categories (like “groceries” and “household”), a “holding” budget category. The “credit” account is unbudgeted, because what we’ll do is budget our purchases in the checking account and pay our credit card bills in one lump, from the “holding” budget.</p>
+<p>So, assume I go grocery shopping, but also pick up some shampoo and a <span class="caps">DVD</span>. I want the food to be charged to my “groceries” budget, the shampoo to my “household” budget, and the <span class="caps">DVD</span> to my “entertainment” budget. I make the purchase on my credit card.</p>
+<p>Two interesting points to consider about credit cards:</p>
+<ol>
+	<li>My wallet isn’t actually, physically impacted until later, and,</li>
+		<li>When it is, the transaction occurs (effectively) as a transfer of funds <em>from</em> my checking account, <em>to</em> the credit account.</li>
+	</ol>
+<p>So, my purchase turns into a transaction of several line items, where I debit funds from the “groceries”, “household”, and “entertainment” budgets, and credit the “holding” budget. (This is actually a transaction that does nothing more than reallocate the funds in the budget categories—no money is actually transfered, yet!) This “holding” budget is a kind of “aside”, to earmark funds that will be used to pay my credit card bill. (My wife and I firmly believe in not carrying a balance on our credit cards from month to month.)</p>
+<p>However, we also need to debit funds from the “credit” account, to the same tune as the “holding” transaction. This is so that the balance of the “credit” account always reflects the amount of money we owe. (Why not just use the “credit” account directly, instead of having the “holding” budget? Because eventually we’re going to write a check to make a payment to the credit account, and I’d like that check to be taken from earmarked funds. Other users may not have such a stringent constraint.)</p>
+<p>So, it turns out that when making a purchase via credit card, I would need to have a single transaction that:</p>
+<ul>
+	<li>debits all the budget categories in the checking account that I’m spending from,</li>
+		<li>credits the “holding” budget category with that amount, and</li>
+		<li>debits the credit account by the amount I spent.</li>
+	</ul>
+<p>This means that when looking at the balances of the accounts, the checking account is unchanged (because all we did was change how the money in the checking account was partitioned), whereas the credit account has a negative balance. This is what we would expect—we’ve incurred a debt (to the credit account), which we will pay off later (from the checking account).</p>
+<p>This scenario has uncovered the following information for me: the sum of the credits and debits for a specific transaction must sum to the total amount of the transaction, regardless of how many accounts and budgets are involved. Is this really a constraint? Should the program enforce this, or should this be a “convention” that is merely encouraged? I don’t know that I want to require all users of the program to follow the same process I just described when recording purchases made on credit. There may be multiple ways to accomplish the same thing, after all.</p>
+<p>Also, a UI issue: the transaction (from the user’s perspective) consisted of purchasing three categories of things, and yet they have to enter <em>five</em> line items (three to debit the corresponding budgets, one to credit the “holding” budget, and one to debit the credit card). There’s an awful amount of room for error there…I ought to find a way to make this scenario as simple as possible, regardless of how the transaction is actually recorded in the database.</p>
+<h2>“Make a payment on a credit card balance”</h2>
+<p>Continuing the example used above, with the credit card purchase, the time comes when I receive a bill in the mail, demanding payment on the credit account.</p>
+<p>So, I write a check and send it off, making my creditors happy. Or, at least, satisfied.</p>
+<p>When I record this transaction, it is done as two line items:</p>
+<ul>
+	<li>Debit my “holding” budget by the required amount (which should bring the balance of that budget to 0), and</li>
+		<li>Credit my “credit” account by the required amount (which should bring the balance of that account to 0).</li>
+	</ul>
+<p>Again, there is a UI issue here. I’m effectively transferring funds from one account (checking) to another (credit), which is a one-item transaction as far as the user should be concerned. The UI should take this into account.</p>
+<h2>“Record a transfer of funds between accounts”</h2>
+<p>Which leads us nicely into the general question of transferring funds between accounts. When transferring from a budgeted account, the monies may be coming from multiple budgets, and when transferring <em>to</em> a budgeted account, the monies may be deposited into multiple budgets. Not a big deal, but there are certainly some tricky UI issues involved.</p>
+<p>Conceptually, though, a transfer is just an amount on the left with a destination on the right, complicated a bit when budgets are involved. The UI ought to conform as close to the user’s concept of a transfer as possible.</p>
+<h2>Summary</h2>
+<p>This has been a valuable exercise for me, uncovering several issues that I hadn’t considered before, and solidifying many concepts that were previously vague and half-formed. The next step-<del>paper drawings</del>-should help to further solidify these ideas, but just describing the scenarios was a good confirmation for me that I’m on roughly the right track.</p>

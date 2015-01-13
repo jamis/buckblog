@@ -1,0 +1,301 @@
+---
+- date: 2007-01-17
+  author: Lori Olson
+  content: "<p>That multiple inheritance thing is crap.  Ruby’s modules are, as your
+    article points out, extremely powerful, and do a far better job of synthesizing
+    multiple inheritance than, say, Java interfaces.</p>\n\n\n\t<p>Thanks for the
+    tip about “concerns”.  It may prove useful to us.</p>"
+- date: 2007-01-17
+  author: Jon Leighton
+  content: "<p>I like that!</p>"
+- date: 2007-01-17
+  author: Michael Schuerig
+  content: "<p>Jamis, is there any reason to put concerns into /app/concerns? I think
+    they very much belong in /app/models as they implement model functionality. If
+    a concern is reusable, I’d say put it into /lib or even make it into a plugin.
+    But /app/concern? No, that’s focusing on a rather uninteresting aspect of the
+    concerns, it’s a purely technical distinction with no relevant semantics.</p>"
+- date: 2007-01-17
+  author: Jamis
+  content: "<p>Michael, we originally put them in app/models, but found it cluttered
+    that directory and made it hard to tell at a glance which files were true models,
+    and which were modules that extend models. We prefer the app/concerns separation.</p>"
+- date: 2007-01-17
+  author: Eric Anderson
+  content: "<p>I’m not sure I understand what the difference between a “concern” and
+    a mixin is. Seems to be just another term for mixin. For example the Enumerable
+    mixin applies enumerable functionality to a variety of objects. In this case the
+    “Folder” mixin applies folder functionality to a variety of objects.</p>\n\n\n\t<p>My
+    question is why create yet another term. Seems the Rails community is overrun
+    with terms. It’s ok to coin a new term when you have a new idea. But this is just
+    mixins applied to models. Why not just call it that. A mixin applied to a model.</p>\n\n\n\t<p>Maybe
+    I am missing something?</p>"
+- date: 2007-01-17
+  author: Silvio Gissi
+  content: "<p>Jamis, amazing way to tackle the problem, the use of “app/concerns”
+    was very clever as well. Using /app/models or /lib would  be readable until a
+    certain amount of classes but doesn’t scale too far ;)</p>"
+- date: 2007-01-17
+  author: Jamis
+  content: "<p>Eric, it’s not an official Railsism. It’s something David and I have
+    taken to calling mixins that are specific to ActiveRecord objects. Call it whatever
+    you want. My objective in this post was not to offend semantic sensibilities,
+    but to point out a powerful way to use mixins with ActiveRecord. Yes, you are
+    right, “concern” as used in this post refers to a “mixin.” I tried to be up-front
+    about that at the beginning of the post, but I apologize if it wasn’t clear enough.</p>"
+- date: 2007-01-17
+  author: Tony Hillerson
+  content: "<p>Thanks for the tip Jamis.</p>\n\n\n\t<p>The Concern meme is used in
+    Aspect Oriented Programming too (as I’m sure Dave knows). Although this isn’t
+    an aspect oriented problem or solution (strictly), the idea of a concern being
+    a feature that disparate areas of an application share, doesn’t rely on or confuse
+    the fact that at a lower level the feature is implemented across those different
+    areas using a Mixin. I think the term is well applied.</p>\n\n\n\t<p>My only “concern”
+    would be if you wanted to start implementing some <span class=\"caps\">AOP</span>
+    and wanted to organize any aspects using the ‘concern’ namespace things would
+    get confusing, but that’s getting pretty picky. Again, nice tip.</p>"
+- date: 2007-01-17
+  author: Tim
+  content: "<p>How do you avoid naming conflicts – especially between private auxiliary
+    methods in different modules mixed into a class?</p>\n\n\n\t<p>Ruby seems to overwrite
+    those when mixing in a second “concern”. That way the code from the first module
+    breaks, because its private auxiliary methods are replaced.</p>\n\n\n\t<p>For
+    changes to the public interface of a class this overwrite-behavior might be alright,
+    but I always get bad feeling when declaring those private methods – especially
+    because their names tend to be quite simple and recurrent.</p>"
+- date: 2007-01-17
+  author: Jamis
+  content: "<p>Tim, if you are defining private methods in a mixin, you should make
+    sure they are going to be named uniquely. Prefix the method names with the name
+    of the module, or something to that effect:</p>\n\n\n<table class=\"CodeRay\"><tr>\n
+    \ <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt><strong>5</strong><tt>\n</tt>6<tt>\n</tt>7<tt>\n</tt>8<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre><span class=\"r\">module</span> <span class=\"cl\">Folder</span><tt>\n</tt>
+    \ <span class=\"c\">#...</span><tt>\n</tt><tt>\n</tt>  private<tt>\n</tt>    <span
+    class=\"r\">def</span> <span class=\"fu\">folder_something_special</span><tt>\n</tt>
+    \     <span class=\"c\">#...</span><tt>\n</tt>    <span class=\"r\">end</span><tt>\n</tt><span
+    class=\"r\">end</span><tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>That’s my
+    take on it, at any rate.</p>"
+- date: 2007-01-17
+  author: Chris
+  content: "<p>Love it!  We do this too.  Helps a ton.</p>\n\n\n\t<p>The only difference
+    is we have 4 – 5 subdirectories under our models/ directory.  One for cache objects,
+    one for ‘concerns,’ one for tableless models, etc.  Maybe try that out if you
+    don’t like app/concerns/</p>"
+- date: 2007-01-17
+  author: Tim
+  content: "<p>Thanks for the incredibly quick answer :)</p>\n\n\n\t<p>Prefixing might
+    be the best choice, though it’s quite verbose.</p>\n\n\n\t<p>This was the first
+    thing that really annoyed me when learning ruby. It’s the same problem with private
+    methods that a overwritten by private methods in derived classes. It’s just counter
+    intuitive to me…</p>"
+- date: 2007-01-17
+  author: Benjamin Curtis
+  content: "<p>I did this same thing for my e-commerce application (and documented
+    it in my Rails e-commerce book) for the very similar Cart, Sale, and Shipment
+    models.  It worked like a charm!</p>"
+- date: 2007-01-17
+  author: Ron Green
+  content: "<p>Thanks Jamis! I didn’t know about the included hook. Great post.</p>"
+- date: 2007-01-17
+  author: Alan Whitaker
+  content: "<p>Nice approach, thanks Jamis.</p>\n\n\n\t<p>Am I inferring correctly
+    that a File model using something like <code>belongs_to :owner, :polymorphic =&gt;
+    true</code> would be sitting on the “other side” of the association addressed
+    in the concern?</p>\n\n\n\t<p>When I read about extending associations in your
+    09-Jan post, I was thinking about some cases where I might need to declare the
+    same association helper extensions in multiple host classes.  Do you sometimes
+    use the concern as a common place to do this part as well?</p>"
+- date: 2007-01-17
+  author: Jamis
+  content: "<p>Alan, correct, the File model has a polymorphic belongs_to that ties
+    it to the owner.</p>\n\n\n\t<p>And yes, we do the extension thing frequently in
+    these “concerns” mixins. It’s a great way to centralize when you have multiple
+    client classes that share identical associations.</p>"
+- date: 2007-01-17
+  author: Alan Whitaker
+  content: "<p>Makes a lot of sense.  I’m excited to use it, thanks as always.</p>"
+- date: 2007-01-17
+  author: Tim Lucas
+  content: "<p>It’s interesting to watch the same abstractions emerge, though we haven’t
+    really started moving our “concerns” into their own directory. I’m often finding
+    that most <span class=\"caps\">STI</span> designs I come up with have a much better
+    alternative, usually involving “concerns”.</p>\n\n\n\t<p>Something nobody’s mentioned
+    is this is basically your acts_as w/o the convenience macro. acts_as macro’s are
+    convenient when you need per-class configurable options, but the lack of documentation
+    in creating your own acts_as, how to validate config options and storing those
+    config options limits their accessibility.</p>\n\n\n\t<p>It’s great after all
+    this time to hear how the core team uses the framework they created, or helped
+    to create. Thanks Jamis!</p>"
+- date: 2007-01-17
+  author: Michael Schuerig
+  content: "<p>I’m going to be the party pooper. I don’t like the idea of putting
+    mixins into /app/concerns.</p>\n\n\n\t<p>I’m very much in favor of extracting
+    common functionality into mixins. But these mixins don’t belong into a separate
+    folder from other model classes when their only distinction is that these mixins
+    in contrast to those other classes are not subclasses of AR:B. The difference
+    is purely technical, not motivated by anything in the domain.</p>\n\n\n\t<p>Jamis
+    says in #4 that they moved mixins out of /app/models in order to avoid cluttering
+    that folder. In my opinion they’ve chosen the wrong way. Now they’re cluttering
+    two folders instead of one. A better solution would have been to use (to be able
+    to use, that is) a hierarchical structure of subfolders in /app/model. A structure
+    that corresponds in some sensible way to the domain being modeled.</p>\n\n\n\t<p>Regarding
+    the terminology, I don’t like using the term “concern” for this kind of mixins,
+    either. For one thing, there already is the perfectly adequate term “mixin”. More
+    importantly, the concept of a concern belongs squarely in the area of analyzing
+    and formulating problems, whereas in this case it is applied to a technical solution.</p>\n\n\n\t<p>The
+    term “concern” figures prominently in the admonition to separate concerns. It
+    states a problem, is about <strong>what</strong>, not <strong>how</strong>. Please
+    don’t frivolously mess up terminology.</p>\n\n\n\t<p>So, why am I making such
+    a noise instead of simply ignoring the issue? Well, Jamis and David have a lot
+    of weight in the Rails community. Their example is bound to be copied by a lot
+    of others—even in cases such as this where it is ill-advised, as I’ve tried to
+    argue.</p>"
+- date: 2007-01-17
+  author: Jean
+  content: "<p>I Like the idea of extracting common functionnality of models into
+    mixin and have been practicing this too. I haven’t found an organization that
+    I like yet, and I am kind of skeptical of putting the into app/concerns. \nI think
+    I will try and put them in app/models/mixins which seems to make more sense to
+    me.\nThank you though for reminding me that the app and app/models folder are
+    not sacro-saint and that sub folders can be created there, for some reason, I
+    didn’t dare lest it damages the beauty of the original layout :)</p>"
+- date: 2007-01-18
+  author: Juanma
+  content: "<p>Jamis, \nI have found the idea very interesting, I was using <span
+    class=\"caps\">STI</span> for a problem like this and I was having some troubles
+    specially making a RESTful interface for these resources.\nCan you give a clue
+    for the best way to implement nested Restful routes for your sample objects Message,
+    Comment and File.\nIs this possible? :)</p>"
+- date: 2007-01-18
+  author: Manfred Stienstra
+  content: "<p>I would really like to see a followup on how you test the Concerns.</p>"
+- date: 2007-01-18
+  author: James Adam
+  content: "<p>It might be worth pointing out in this specific example that you need
+    to be careful about using the ‘id’ of the actual instance within with the module
+    methods will operate.</p>\n\n\n\t<p>In this case, the attachments for Message
+    #123 and Comment #123 will be stored in the same place (this obviously wouldn’t
+    be the case if using <span class=\"caps\">STI</span>, since you could be guaranteed
+    that there was no Message and Comment that shared an ID).</p>\n\n\n\t<p>It’s just
+    an aside, and doesn’t change in the slightest the usefulness of moving the functionality
+    out into a model. It migh also be worth pointing out that this the basis of how
+    most plugins enhance Rails’ classes. Ain’t Ruby sweet? :-)</p>"
+- date: 2007-01-18
+  author: Neeraj Kumar
+  content: "<p>As Michael pointed out why not have a subdirectory under models to
+    have concerns. I guess that’s a personal take and not a big deal. Thanks for the
+    tip.</p>"
+- date: 2007-01-18
+  author: Martin
+  content: '<p>I’d just like to add my support to Michael Schuerig’s comments: please
+    don’t invent new terminology when it isn’t needed.  What’s wrong just calling
+    them ‘mixin’s and be done with it.  One thing less for people to have to learn…
+    <span class="caps">KIS</span>.</p>'
+- date: 2007-01-18
+  author: Edd Dumbill
+  content: "<p>Just wanted to thank you for your energy in these tips &amp; tricks
+    posts, it’s great to keep learning from them.</p>"
+- date: 2007-01-18
+  author: Matt White
+  content: "<p>Thanks for the great tips! Regardless of the sniping over the details
+    of this tip, the general idea is an excellent one, and is something not usually
+    thought of by newbies to metaprogramming like myself. Thanks!</p>"
+- date: 2007-01-18
+  author: DHH
+  content: "<p>Mixins are the implementation for concerns. But mixins is a much broader
+    concept that’s used for many other things than just concerns. See the partitioning
+    of big classes that we use mixins for in the Rails source for example.</p>\n\n\n\t<p>Concerns,
+    on the other hand, are just about shared business logic concepts that apply to
+    multiple model classes. That’s a more narrow definition and one closer to the
+    surface of the application.</p>\n\n\n\t<p>Naturally, this semantic distinction
+    may or may not be useful to you. But just as the flash could have been called
+    the “one-request session container” or partials could have been called “subtemplates”
+    or Ajax could have gone unnamed, I personally find it helpful to use new labels
+    for certain uses or combinations of general concepts. That keeps us from constantly
+    having to explain their usage and purpose.</p>"
+- date: 2007-01-18
+  author: Michael Schuerig
+  content: "<p>David, I don’t agree with your semantic distinction and your example
+    is a great case in point. The partitioning of ActiveRecord::Base by means of mixins
+    precisely exemplifies separation of concerns such as transaction handling and
+    validation. By your usage of “concern” these later are not concerns as you suggest
+    to reserve the term for “shared business logic”.</p>\n\n\n\t<p>I contend that
+    the common understanding of a concern in software development is very much broader
+    and all the uses of mixins we’re discussing here fall under the umbrella of implementing
+    concerns.</p>\n\n\n\t<p>Also, the separation of models and concerns/mixins seems
+    artificial. Ordinary classes, mixins, persistent classes can and should all be
+    part of the domain model. Segregating them on the basis of technicalities such
+    as classhood or persistence seems artificial. I’d much prefer a principle of organization
+    based on coherence. Consider Uncle Bob’s Common Closure Principle and the Common
+    Reuse Principle to see what I mean.</p>"
+- date: 2007-01-18
+  author: Chris Malek
+  content: "<p>I think I finally understand what a “mixin” is.  Thank you for this
+    example.  I never quite understood by reading other sources.</p>"
+- date: 2007-01-18
+  author: Blake Watters
+  content: "<p>I’ve been using a similar approach to the “Concerns” concept for around
+    a year now. My solution is an abstraction I just plainly call a “Mixin” and it
+    lives in app/mixins. Mixins are loaded declaratively (similar to helpers, etc)
+    into models and/or controllers. It’s an abstraction I use to keep bits of logic
+    in a common place to build features where the model and controller interact.</p>\n\n\n\t<p>For
+    example, in Near-Time (http://www.near-time.net/) we track visits to each content
+    node to present the user with blue stars that indicate new or updated content.
+    There are two bits to the plumbing, a model portion for associating the Visit
+    records with the content models and a set of declarative controller hooks for
+    creating after filters that visit the content node. It is implemented as the ActsAsVisitableMixin,
+    which has nested modules that mix the appropriate methods into the controller
+    or model classes.</p>\n\n\n\t<p>class Article &lt; ActiveRecord::Base\n  mixin
+    :acts_as_visitable\nend</p>\n\n\n\t<p>The model now has visits, visit!, most_recent_visit_for_user,
+    etc. methods added.</p>\n\n\n\t<p>class NewsController &lt; ActionController::Base\n
+    \ mixin :acts_as_visitable\n  track_visits_to :@articles, :only =&gt; [:index,
+    :list], :children =&gt; :comments\nend</p>\n\n\n\t<p>The NewsController now transparently
+    creates the Visit records for articles placed on the @articles instance variable
+    cleanly.</p>\n\n\n\t<p>I find this highly convenient for cases where the model
+    and controller need to work in lock step to implement a feature with maximum reuse.
+    In the mixin test, I can create a mock controller and subclass a known model to
+    test the entire feature in one file. It may rub some the wrong way to see the
+    controller and model logic entwined in such a way, but I think the abstraction
+    and contained test/implementation keeps things very clean.</p>\n\n\n\t<p>Anyway,
+    just thought I’d throw my take on a similar pattern out there. The mixins implementation
+    is available as a plugin from the Near-Time public source code repository for
+    those who are interested: https://secure.near-time.com/svn/plugins/trunk/mixins/</p>\n\n\n\t<p>Cheers,\nBlake</p>"
+- date: 2007-01-18
+  author: carlos
+  content: "<p><span class=\"caps\">DHH</span>, that was a pretty horrible explanation
+    for how you have invented “concerns”.  There is nothing different from a “concern”
+    and a mixin.  Ruby does not support multiple inheritance, instead they use mixins
+    which</p>\n\n\n\t<p>“Concerns, on the other hand, are just about shared business
+    logic concepts that apply to multiple model classes. That’s a more narrow definition
+    and one closer to the surface of the application.”</p>\n\n\n\t<p>I’v read that
+    over and over and I cannot see what the difference between that paragraph and
+    a mixin is.  Are ActiveRecord models not classes?  Are “concerns” not applied
+    to multiple classes?  The only purpose of a mixin us to be used as a place holder
+    of methods  and logic to share between classes.  \nIts really probably not a good
+    idea to be introducing new vocabulary for terms that are already being used.  It
+    confuses the newer members of the community and in general is just not good.</p>\n\n\n\t<p>But
+    besides all that, I admit you did come up with a good folder naming structure.
+    \ For my “concerns”, I put them in lib/ with the naming convention of  &lt;functionality&gt;_shared.lib.
+    \  The folders are getting rather large though, so…......</p>"
+- date: 2007-01-18
+  author: mk
+  content: "<p>“As you start to write bigger and bigger Ruby programs, you’ll naturally
+    find yourself producing chunks of reusable code—-libraries of related routines
+    that are generally applicable. You’ll want to break this code out into separate
+    files so the contents can be shared among different Ruby programs.” —Module</p>"
+- date: 2007-01-18
+  author: Jamis
+  content: "<p>Alright people, time to calm down. Neither I nor <span class=\"caps\">DHH</span>
+    are suggesting that you ought to be calling these things concerns. I only said
+    that <span class=\"caps\">DHH</span> and I are. These won’t find their way into
+    Rails core—they are “just” modules, after all. Thus, nobody needs to worry that
+    we’ll be force feeding yet another term to the world.</p>\n\n\n\t<p>However, I’ll
+    take one last stab at defending our choice of words. Yes, it is a mixin. But so
+    is Enumerable. So is Comparable. What we have here is something specific to ActiveRecord
+    models, something which (very specifically) adds associations to any model that
+    includes it. We’ve chosen to name <em>this specific pattern</em> a “concern”.
+    It’s so much easier to have a short name for something, than to have to call it
+    “a mixin for models that adds an association.” Consider “Ajax”. Isn’t that nicer
+    than “XML <span class=\"caps\">HTTP</span> Request”?</p>\n\n\n\t<p>Don’t like
+    the term yourself? Don’t use it.</p>\n\n\n\t<p>End of discussion, seriously. The
+    point of the article was to demonstrate the pattern, not to bicker over the name.</p>"

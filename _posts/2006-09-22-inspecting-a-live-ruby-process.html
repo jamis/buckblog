@@ -1,0 +1,99 @@
+---
+layout: post
+title: Inspecting a live Ruby process
+post_id: 151
+categories:
+- Tips & Tricks
+date: 2006-09-22 08:43:00.000000000 -06:00
+author: Jamis
+permalink: 2006/09/22/inspecting-a-live-ruby-process.html
+---
+
+<p>So, there are you. Logged into one of your production machines, staring at a rogue Ruby process, and wondering why it has been running away with 90% of the <span class="caps">CPU</span> for the last half hour.</p>
+<p>Sure, you can kill it, but you’d really like to know <em>why</em> it is stuck there. This isn’t the first time you’ve noticed this problem, and you’re getting a little tired of manually patching things up. But how do you figure out where the process is stuck?</p>
+<p>We were faced with this same issue not long ago, periodically noticing a Backpack process hanging there in midair, sucking up as much <span class="caps">CPU</span> as it could. I finally took an hour and learned just enough <a href="http://www.gnu.org/software/gdb/"><span class="caps">GDB</span></a> to eke a Ruby stack-trace from a running Ruby process.</p>
+<p>Here’s what you do. First, get the process id, and attach <span class="caps">GDB</span> to that process:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">sudo gdb /usr/local/bin/ruby &lt;pid&gt;</pre></td>
+</tr></table>
+<p>(Depending on your own setup, you may or may not need to use <code>sudo</code>.)</p>
+<p>That should open up <span class="caps">GDB</span>, spit out a bunch of information, halt the Ruby process, and then tell you what C function the process was halted in:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">Attaching to program: `/opt/local/bin/ruby', process 17090.<tt>
+</tt>...<tt>
+</tt>0x9001aafc in select ()<tt>
+</tt>(gdb) </pre></td>
+</tr></table>
+<p>In the above example, knowing that it was stuck in “select” is only marginally helpful. What was <em>Ruby</em> doing? That’s the question I want answered. To get that, we have to take advantage of a feature of <span class="caps">GDB</span> that lets you invoke C functions from the console. Essentially, we’re going to use the Ruby <span class="caps">C API</span> to get the answers we need:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">(gdb) set $ary = (int)backtrace(-1)<tt>
+</tt>(gdb) set $count = *($ary+8)<tt>
+</tt>(gdb) set $index = 0<tt>
+</tt>(gdb) while $index &lt; $count<tt>
+</tt>&gt;  x/1s *((int)rb_ary_entry($ary, $index)+12)<tt>
+</tt>&gt;  set $index = $index + 1<tt>
+</tt>&gt;end</pre></td>
+</tr></table>
+<p>First, we call Ruby’s <code>backtrace</code> function to get a (ruby) array of strings. Then, we determine how many elements there are in the array, and loop over them in order. We call <code>rb_ary_entry</code> to return the elements at each index, and do some pointer arithmetic to get the actual <code>char*</code> pointer. We display that, increment the index, and go again. The result:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">0x37c0790:       "/opt/local/lib/ruby/gems/1.8/gems/capistrano-1.1.9.5085/lib/capistrano/shell.rb:36:in `readline'"<tt>
+</tt>0x37380f0:       "/opt/local/lib/ruby/gems/1.8/gems/capistrano-1.1.9.5085/lib/capistrano/shell.rb:36:in `run!'"<tt>
+</tt>0x3745e60:       "/opt/local/lib/ruby/gems/1.8/gems/capistrano-1.1.9.5085/lib/capistrano/shell.rb:35:in `run!'"<tt>
+</tt>0x35ed2c0:       "/opt/local/lib/ruby/gems/1.8/gems/capistrano-1.1.9.5085/lib/capistrano/shell.rb:15:in `run!'"<tt>
+</tt>0x37a82d0:       "/opt/local/lib/ruby/gems/1.8/gems/capistrano-1.1.9.5085/lib/capistrano/recipes/standard.rb:269:in `load'"<tt>
+</tt>0x11712c0:       "/opt/local/lib/ruby/gems/1.8/gems/capistrano-1.1.9.5085/lib/capistrano/actor.rb:159:in `shell'"<tt>
+</tt>0x2564230:       "/opt/local/lib/ruby/gems/1.8/gems/capistrano-1.1.9.5085/lib/capistrano/cli.rb:256:in `execute_recipes!'"<tt>
+</tt>0x2f83750:       "/opt/local/lib/ruby/gems/1.8/gems/capistrano-1.1.9.5085/lib/capistrano/cli.rb:256:in `execute_recipes!'"<tt>
+</tt>0x2d1b170:       "/opt/local/lib/ruby/gems/1.8/gems/capistrano-1.1.9.5085/lib/capistrano/cli.rb:233:in `execute!'"<tt>
+</tt>0x2f438a0:       "/opt/local/lib/ruby/gems/1.8/gems/capistrano-1.1.9.5085/lib/capistrano/cli.rb:12:in `execute!'"<tt>
+</tt>0x2f43900:       "/opt/local/lib/ruby/gems/1.8/gems/capistrano-1.1.9.5085/bin/cap:11"<tt>
+</tt>0x37a8340:       "/opt/local/bin/cap:18"<tt>
+</tt>(gdb)</pre></td>
+</tr></table>
+<p>Well, there’s the stack-trace! For this (contrived) example, you can see that I simply had <a href="http://weblog.jamisbuck.org/2006/9/21/introducing-the-capistrano-shell">cap shell</a> running, but this works just as well with a live <span class="caps">FCGI</span> process.</p>
+<p>(<strong>Note</strong>: the above <span class="caps">GDB</span> script assumes a 32-bit architecture. For 64-bit architectures, simply substitute +16 for +8 and +24 for +12.)</p>
+<p>One last tip. The stack-trace we got from the running Backpack process was <em>almost</em> enough to help us (or Sam, rather) to solve the problem. In addition to the stack-trace, we needed to know what the <span class="caps">HTTP</span> environment was that triggered the problem. I <em>could</em> try and do a bit more dumpster diving in the stack and heap of the Ruby process in question, but (in our case) there was an easier way to do it.</p>
+<p>We use the <a href="http://dev.rubyonrails.org/svn/plugins/exception_notification/README">exception notification</a> plugin to track errors that arise in our apps. Fortunately, the emails include the <span class="caps">HTTP</span> environment for each request…all we needed, then, was a way to force an exception to be raised:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">(gdb) call rb_raise(rb_eException, "raising an exception")</pre></td>
+</tr></table>
+<p>Isn’t that lovely? <span class="caps">GDB</span> even knows about the <code>rb_eException</code> constant, so I can simply reference it with the <code>rb_raise</code> function. The result? An exception that bubbles all the way to the top, and fires off an exception email.</p>
+<p>In fact, all we really needed was that last trick, since the exception email includes the stack-trace, but getting the stack-trace can be handy for those situations where the exceptions aren’t emailed to you (like batch processes, perhaps).</p>
+<p>Are there any <span class="caps">GDB</span> gurus out there that could share some other tasty tips? It’d be really nice, for instance, to inspect the current Ruby environment and glean things like environment variables and such, but my <span class="caps">GDB</span>-fu is not quite there.</p>
+<p><strong>Update</strong>: it looks like some versions of <span class="caps">GDB</span> (like on the Mac) require you to be more explicit about types. To make the <code>rb_raise</code> example work on those platforms, try the following variation:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">(gdb) call (void)rb_raise((int)rb_eException, "raising an exception")</pre></td>
+</tr></table>

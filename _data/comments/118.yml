@@ -1,0 +1,46 @@
+---
+- date: 2007-01-08
+  author: Evan
+  content: "<p>I hate to have no comment other than grammar nazism, but it should
+    be “Watching ActiveRecord do Its Thing.”</p>"
+- date: 2007-01-08
+  author: Joachim Bengtsson
+  content: "<blockquote>\n\t<p>Before Rails 1.2, that last line would actually load
+    all of the people in that collection, before creating the new person.\n\tWhy on
+    earth does it do that?</p>\n\n</blockquote>"
+- date: 2007-01-08
+  author: Jamis
+  content: "<p>Evan, thanks. I fixed two of those before I hit publish, but missed
+    the most prominent one of all. :( <strong>sigh</strong></p>\n\n\n\t<p>Joachim,
+    why does any bug do what it does? It was a side-effect of the implementation,
+    and Rails 1.2 fixes it.</p>"
+- date: 2007-01-08
+  author: Adam Sanderson
+  content: "<p>That’s really cool actually.  Saves me having to keep a spare window
+    open for the log.</p>"
+- date: 2007-01-08
+  author: Don
+  content: "<p>That’s a fantastic and useful tip, thanks so much!</p>"
+- date: 2007-01-09
+  author: Luke
+  content: "<p>Thanks for the awesome tip. Is there a way to do this every time you
+    run console? I put it at the end of script/console but it didn’t seem to work.</p>"
+- date: 2007-01-09
+  author: Jamis
+  content: |-
+    <p>Luke, you can put something like this at the end of your config/environment.rb file:</p>
+
+
+    <pre>
+    if "irb" == $0
+      ActiveRecord::Base.logger = Logger.new(STDOUT)
+    end
+    </pre>
+- date: 2007-01-09
+  author: Luke
+  content: "<p>Thank you!</p>"
+- date: 2007-02-05
+  author: Tim Lucas
+  content: <p>Building on this and another snippet you can <a href="http://toolmantim.com/article/2007/2/6/system_wide_script_console_logging">have
+    your ActiveRecords logging through <span class="caps">STDOUT</span> system-wide</a>
+    via your .irbrc. Noice!</p>

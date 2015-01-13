@@ -1,0 +1,59 @@
+---
+- date: 2006-03-06
+  author: Patrice
+  content: |-
+    The GEM installation fails here:
+
+    <pre>$ sudo gem install capistrano
+    Attempting local installation of 'capistrano'
+    Local gem file not found: capistrano*.gem
+    Attempting remote installation of 'capistrano'
+    Updating Gem source index for: http://gems.rubyforge.org
+    ERROR:  While executing gem ... (ArgumentError)
+        invalid date</pre>
+
+    Is this a general problem or am I the only one seeing this?
+- date: 2006-03-06
+  author: Xian
+  content: |-
+    Now instead of displacing some obscure enterprise software's Google rankings, you get to displace an entire cities. :)
+
+    Thanks for not making the upgrade too complex!
+- date: 2006-03-06
+  author: Jamis
+  content: |-
+    Patrice, weird! The upgrade went smoothly for me, and others. I've not heard any other instances of that issue.
+
+    Has anyone else encountered that? Anyone know how to work around it?
+- date: 2006-03-06
+  author: Patrice
+  content: |-
+    It did work now, with the same command line. Strange.
+
+    Should the problem come up on other computers I'm on Mac OS 10.4 with Spanish/German/English language configured in that order (language setting changes date formatting, that's why I mention that).
+- date: 2006-03-10
+  author: Ray
+  content: "Since installing Capistrano, I'm getting errors now whenever I run rake.\n\n$
+    rake\nrake aborted!\nundefined method `namespace' for #&lt;object:0x339b8&gt;\n./rakefile:10
+    \                       \n\nRemoving the capistrano.rake file causes these error
+    to go away, but of course I can't deploy either.\n\n"
+- date: 2006-03-10
+  author: Jamis
+  content: Capistrano 1.1 requires Rake 0.7.0, because it (like the next version of
+    Rails, actually) uses rake namespaces to categorize tasks. Be sure you are using
+    the latest version of Rake.
+- date: 2006-03-10
+  author: Ray
+  content: |+
+    D'oh. I had the correct version of rake inside locomotive, but I was testing outside.
+
+    Thanks, Jamis.
+
+- date: 2006-04-23
+  author: procreate
+  content: |-
+    Rereading the docs in Hieraki [1], I see that the list of supported scm systems is out of sync with .../gems/captistrano-1.1.0/lib/capistrano/scm [2]. Might want to change that so people who are evaluating Capistrano will see that their scm is (most probably) supported already.
+
+    [1] http://manuals.rubyonrails.com/read/chapter/102#page273
+
+    [2] Capistrano 1.1 supports Bazaar, Bazaar-NG, cvs, Darcs, Perforce and Subversion.

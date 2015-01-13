@@ -1,0 +1,185 @@
+---
+- date: 2008-01-07
+  author: Daniel Azuma
+  content: "<p>Amen, brother Jamis! If only I had a dime every time a co-worker told
+    me, “No, I don’t know what that line of code does, but it was in the sample code
+    I downloaded…” I’d be simultaeously rich and insane.</p>"
+- date: 2008-01-07
+  author: Dr Nic
+  content: "<p>Haha “any mortal value of X” – now there’s a type system I’d like to
+    see :)</p>"
+- date: 2008-01-07
+  author: norman
+  content: "<p>I promise I’m never going to cargo-cult now… because Jamis said not
+    to. ;-)</p>"
+- date: 2008-01-07
+  author: FrankLamontagne
+  content: "<p>You’re damn right… I like to remind myself that there are always better
+    ways to achieve something.</p>\n\n\n\t<p>I for one sure do hope that you will
+    find some time to blog this year.</p>\n\n\n\t<p>Take care!</p>"
+- date: 2008-01-07
+  author: Steve
+  content: <p>Amen.  “Why did you do it that way” ... “I’m following the blah blah
+    pattern” ... “Why?” ... “Because <span class="caps">MSDN</span> magazine blah
+    blah blah…”</p>
+- date: 2008-01-07
+  author: b
+  content: "<p>I guess it has a lot to do with “The Rails Way”.  I’ve also seen a
+    lot of talk around town about “code-smell” too. Did you guys coin that?</p>\n\n\n\t<p>When
+    you tell the masses that the best way is yours, you shouldn’t be surprised when
+    kids start using your statements to justify their actions.  Its teacher student
+    stuff.</p>\n\n\n\t<p>The most important lesson that I ever learned about programming
+    is this: nobody knows what’s going on.  Its probably a lesson people learn in
+    every evolving profession at some point.  Its the same lesson you learned as a
+    child when you found out that your parents never had the answers straight themselves.
+    \ Business, life, programming, making a fire in a windstorm.  Everybody is thrashing
+    around like a fish out of its egg.</p>\n\n\n\t<p>Its important as a mentor to
+    teach your students that you are only another thrashing fish.</p>\n\n\n\t<p>Programming
+    really is fun.  One reason for that is it puts you back in your egg to some extent.
+    \ Create a system of your own to swim in.  Its really beautiful. Its really fun!
+    flip-flop be gone!  Swim swim swim!</p>\n\n\n\t<p>But the beauty of a fish bowl
+    only reveals itself when you are its sole swimmer.  Slapping shit together gets
+    boring for anyone.  The folks that are shooting your name around to justify their
+    code are still learning that lesson.  Eventually they will learn that the fun
+    starts from a different angle.  The fun starts in the code. The fun is in their
+    own head. The fun is in the bowl.</p>\n\n\n\t<p>Much respect.\nb</p>"
+- date: 2008-01-07
+  author: Jamis
+  content: <p>@b, “code smell” originated earlier than the Rails Way, though I couldn’t
+    tell you who started it. And yeah, I’m well aware of the impact the Rails Way
+    site has had on those learning the framework, but if all they got out of it was
+    recipes, then I’m really disappointed. Koz and I both tried hard to say “do it
+    this way <span class="caps">BECAUSE</span>…” If people are glossing over the justifications
+    for our recommendations, then I think 80% of the value of that site has been lost.
+    Disappointing, is all.</p>
+- date: 2008-01-07
+  author: Ryan A.
+  content: "<p>The term ‘code smell’ I believe is from Refactoring by Martin Fowler.
+    At least, that’s the oldest book I recall reading using the term. Whether or not
+    he invented it is another thing :)</p>"
+- date: 2008-01-08
+  author: szeryf
+  content: "<p>Cool! I will now cargo-cult your “never ever cargo-cult” rule! And
+    if someone asks why, I will appeal to your authority! :)))</p>"
+- date: 2008-01-08
+  author: Chris Rimmer
+  content: "<p>I have found myself saying “but that’s what X does”, but usually it
+    is when someone suggests what I am doing is completely insane.  If I can point
+    to a well-respected member of the community who thinks the same way then it suggests
+    I’m not <strong>totally</strong> nuts.</p>"
+- date: 2008-01-08
+  author: Alex Young
+  content: "<p>I think a lot of programmers just forget to ask “why?”, preferring
+    familiarity to experimentation.  Copying other approaches is part of avoiding
+    asking why.</p>"
+- date: 2008-01-08
+  author: b
+  content: "<p>Yeah Jamis,\nI meant nothing negative about the Rails Way.  Its consistently
+    one of my favorite reads whenever you guys put new articles out.  And you both
+    do a great job of explaining why you make the decisions you do. And thanks for
+    the code-smell clarification.</p>\n\n\n\t<p>This kind of thing is just bound to
+    pop up though.</p>\n\n\n\t<p>One thing to keep in mind is that most of the folks
+    reading your articles will probably never write a word about them online.  The
+    cargo-culters might be disheartening you but I wouldn’t guess they are any kind
+    of representation of your overall readership.  Its one of those situations where
+    the ones who might not be getting everything they could out of the articles (most
+    likely because they just dont have enough experience yet) are the ones with reason
+    to refer to them (or you) elsewhere.</p>\n\n\n\t<p>And when folks are using the
+    reasoning behind practices you’ve taught them to defend their ideas, well, you
+    probably arent mentioned.</p>\n\n\n\t<p>I dont know.  I wouldn’t worry too much
+    about it.  Call me a helpless optimist but I cant help but think <strong>most</strong>
+    of your readers are thoughtful, competent, programmers who thoroughly enjoy reading
+    and learning from your work and your articles… but probably dont make much fuss
+    about it elsewhere.</p>\n\n\n\t<p>Man, your articles both here and there have
+    been such a great learning tool for me.  Ive been reading them for <span class=\"caps\">YEARS</span>.
+    \ Ive never once referred to them anywhere online though.  I bet there are thousands
+    like me.  And if thats true, I hope there is nothing to be disappointed about.</p>\n\n\n\t<p>b</p>"
+- date: 2008-01-08
+  author: Jamis
+  content: "<p>@Chris Rimmer, I would say that in that case (where someone thinks
+    you are completely insane for doing something a particular way), the “but that’s
+    what X does” argument is especially pointless. That is precisely when you want
+    to be able to argue a case on its own merits. Please, please consider avoiding
+    the appeal-to-authority argument in the future. :)</p>"
+- date: 2008-01-08
+  author: Jamis
+  content: "<p>@b, thanks for the kind words!</p>"
+- date: 2008-01-08
+  author: Alan Carter
+  content: "<p>I argue it’s background stress that biases people away from considering
+    each case in full and towards “heuristics” (as the stress researchers call cargo
+    cult behaviours).</p>\n\n\n\t<p>Things make sense very quickly if we compare recent
+    stress research with practical programming experience. Gory details at: <a href=\"http://www.the-programmers-stone.com/about\">http://www.the-programmers-stone.com/about</a>.</p>"
+- date: 2008-01-08
+  author: steve
+  content: "<p>Wouldn’t “never-ever-cargocult” because Jamis said so be a form of
+    cargo cult?</p>"
+- date: 2008-01-08
+  author: Justin Wick
+  content: "<p>While I think that, in general your advice is very good, I cannot agree
+    with its absolute nature.  There are exceptions to just about every rule, and
+    often there are times when just copying a great programmer, or cut/pasting some
+    code is simply <strong>good enough</strong>.  “Great” is often the enemy of “good”,
+    and “perfect” is almost always the enemy of “finished”.  Indeed, “coding from
+    scratch” or “doing things your own way” is often the surest path towards new and
+    exciting bugs!</p>\n\n\n\t<p>Recently I needed to parse a <span class=\"caps\">CSV</span>
+    file in JavaScript.  I happened to find a nice regex to use with the split() function,
+    so as to properly handle quoted phrases.  I cut and paste it into my code, did
+    some testing, and promptly forgot about it.  Quite frankly I don’t care how it
+    works, or why it works, only that it does.  If it breaks, then I can spend my
+    time figuring out the nuances of their expression, but not before.</p>\n\n\n\t<p>If
+    I were doing this for my day job (defense contracting) this would be unacceptable.
+    \ But, for a simple mashup webapp, the increase in reliability I gain from spending
+    an hour trying to figure out something that works perfectly fine is not worth
+    as much as the useful improvements I could make to the user experience in that
+    same hour.</p>\n\n\n\t<p>So while I do think in general too few programmers actually
+    know what they are doing, sometimes that’s really not a problem.  I once successfully
+    parallelized a Fortran 77 <span class=\"caps\">MHD</span> code to run on 96 processors
+    (instead of one), all without the faintest clue as to how the post-doctorate level
+    <span class=\"caps\">PDE</span> solver actually functioned.  The same goes for
+    “best practices” – if empirical analysis shows that they are suitable for the
+    problem at hand, the details of why may be irrelevant.  I would sooner trust the
+    judgement of those with 20 years of programming experience to my own unless I
+    have direct empirical evidence stating otherwise.</p>\n\n\n\t<p>So if one desires
+    to behave as a rational agent, and  believes in some kind of statistical reasoning
+    like Bayesian or Demptster-Shafer evidence combination, it simply becomes a matter
+    of trust, empirical evidence, and, in the end, whatever gets the job done.  Programming
+    (like all of engineering) is an exercise in finite resource allocation (cost/benefit/risk
+    analysis), and the most precious resource of all is often time.</p>"
+- date: 2008-01-08
+  author: Jamis
+  content: "<p>@steve, yes, it would, so please don’t. :) Instead, understand <span
+    class=\"caps\">WHY I</span>’m saying you shouldn’t cargo-cult!</p>\n\n\n\t<p>@Justin,
+    you make some good points, but I’m not talking about one-liners here. I’m talking
+    about higher-level things, application design or algorithm selection. And I’m
+    not saying people should “code from scratch”—that’s what libraries are for! Learn
+    from others, use libraries, borrow code liberally, etc.</p>\n\n\n\t<p>But if you
+    select a library and someone asks <em>why</em> you chose it, don’t just shrug!
+    Give them a real answer: “because Jamis tested a bunch of them and said it was
+    the fastest” is acceptable. “Because Jamis uses it” is not. All I’m advocating
+    is understanding the forces behind your decisions.</p>"
+- date: 2008-01-08
+  author: Darren
+  content: "<p>Hi Jamis. I see you’ve moved on a lot from the Lux days!</p>"
+- date: 2008-01-08
+  author: Jamis
+  content: "<p>Darren! It has been a long time. Drop me a line sometime, jamis at
+    jamisbuck org!</p>"
+- date: 2008-01-08
+  author: Vasudev Ram
+  content: "<p>Nice post. Cargo-culting is all too common, in all walks of life –
+    the sooner more people realize it the better it’ll be for the world as a whole
+    …</p>\n\n\n\t<p>Keep programming and writing :)</p>\n\n\n\t<p>Cheers,\nVasudev\nDancing
+    Bison Enterprises\nwww.dancingbison.com</p>"
+- date: 2008-01-09
+  author: Esteban
+  content: "<p>Not to nitpick, but cargo cult is not about blind adherence to authority.
+    Cargo cult is about superstition: repeating the rituals that seem to work with
+    no knowledge about why they work. You got the “no knowledge about why” part right,
+    but it’s a “but it used to work when I did it like this” rather than “but that’s
+    what X does/told me to do”. Now am I splitting hairs?</p>"
+- date: 2008-01-11
+  author: JohnB
+  content: |-
+    <p>No cargo culting?
+    Can I quote you on that?  ;-)</p>

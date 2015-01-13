@@ -1,0 +1,103 @@
+---
+- date: 2006-09-19
+  author: Mike Moore
+  content: Congrats.  How was the migration?  I'm curious what went well and what
+    didn't.
+- date: 2006-09-20
+  author: aut0mat
+  content: Why have You migrated to Mephisto? Is it better blog engine? Or beacouse
+    of it's trendy? :)
+- date: 2006-09-20
+  author: Jamis
+  content: "Mike, the migration was pretty painless, actually. The hardest part was
+    whipping up my own custom theme, and that was only hard because I had to actually
+    write some of my own plugins to do what I wanted (like the archive list in the
+    sidebar). The migration itself was very straightforward.\r\n\r\naut0mat, naturally,
+    I'm such a lemming that I only do what others are doing. ;) Seriously, though,
+    I migrated because mephisto is lighter-weight, and because I could seem to keep
+    typo running for more than a few days at a time without crashing."
+- date: 2006-09-20
+  author: rick
+  content: Jamis, you should be able to do the side bar on edge with {{ for month
+    in section.months }}, kinda like "this":http://svn.techno-weenie.net/projects/mephisto/trunk/themes/default/templates/archive.liquid.
+- date: 2006-09-20
+  author: Jamis
+  content: "Rick, correct me if I'm wrong, but it looks like section.months works
+    simply by finding the earliest month and then filling an array of all months since
+    then? Mine works by actually doing a single query to the DB, which tells you which
+    months had posts and how many posts there were. It's less intense than asking
+    the database for the count of posts for each month, esp. when you've got a sparse
+    blog where not every month may have posts.\r\n\r\nAlso, I didn't know about section.months.
+    :) At any rate, it was a good excercise.\r\n\r\n<table class=\"CodeRay\"><tr>\n
+    \ <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt>5<tt>\n</tt>6<tt>\n</tt>7<tt>\n</tt>8<tt>\n</tt>9<tt>\n</tt><strong>10</strong><tt>\n</tt>11<tt>\n</tt>12<tt>\n</tt>13<tt>\n</tt>14<tt>\n</tt>15<tt>\n</tt>16<tt>\n</tt>17<tt>\n</tt>18<tt>\n</tt>19<tt>\n</tt><strong>20</strong><tt>\n</tt>21<tt>\n</tt>22<tt>\n</tt>23<tt>\n</tt>24<tt>\n</tt>25<tt>\n</tt>26<tt>\n</tt>27<tt>\n</tt>28<tt>\n</tt>29<tt>\n</tt><strong>30</strong><tt>\n</tt>31<tt>\n</tt>32<tt>\n</tt>33<tt>\n</tt>34<tt>\n</tt>35<tt>\n</tt>36<tt>\n</tt>37<tt>\n</tt>38<tt>\n</tt>39<tt>\n</tt><strong>40</strong><tt>\n</tt>41<tt>\n</tt>42<tt>\n</tt>43<tt>\n</tt>44<tt>\n</tt>45<tt>\n</tt>46<tt>\n</tt>47<tt>\n</tt>48<tt>\n</tt>49<tt>\n</tt><strong>50</strong><tt>\n</tt>51<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre><span class=\"r\">module</span> <span class=\"cl\">Buckblog</span><tt>\n</tt><span
+    class=\"r\">module</span> <span class=\"cl\">SectionDrop</span><tt>\n</tt>  <span
+    class=\"r\">class</span> <span class=\"cl\">MonthDrop</span> &lt; <span class=\"co\">Liquid</span>::<span
+    class=\"co\">Drop</span><tt>\n</tt>    attr_reader <span class=\"sy\">:section</span>,
+    <span class=\"sy\">:year</span>, <span class=\"sy\">:month</span>, <span class=\"sy\">:count</span><tt>\n</tt><tt>\n</tt>
+    \   <span class=\"r\">def</span> <span class=\"fu\">initialize</span>(section,
+    year, month, count)<tt>\n</tt>      <span class=\"iv\">@section</span> = section<tt>\n</tt>
+    \     <span class=\"iv\">@year</span>, <span class=\"iv\">@month</span>, <span
+    class=\"iv\">@count</span> = year.to_i, month.to_i, count.to_i<tt>\n</tt>    <span
+    class=\"r\">end</span><tt>\n</tt><tt>\n</tt>    <span class=\"r\">def</span> <span
+    class=\"fu\">name</span><tt>\n</tt>      <span class=\"s\"><span class=\"dl\">\"</span><span
+    class=\"il\"><span class=\"dl\">#{</span><span class=\"co\">Date</span>::<span
+    class=\"co\">MONTHNAMES</span>[month]<span class=\"dl\">}</span></span><span class=\"k\">
+    </span><span class=\"il\"><span class=\"dl\">#{</span>year<span class=\"dl\">}</span></span><span
+    class=\"dl\">\"</span></span><tt>\n</tt>    <span class=\"r\">end</span><tt>\n</tt><tt>\n</tt>
+    \   <span class=\"r\">def</span> <span class=\"fu\">url</span><tt>\n</tt>      path
+    = [<span class=\"s\"><span class=\"dl\">\"</span><span class=\"dl\">\"</span></span>]<tt>\n</tt>
+    \     path &lt;&lt; section.path <span class=\"r\">unless</span> section.path.blank?<tt>\n</tt>
+    \     path += [<span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">archives</span><span
+    class=\"dl\">\"</span></span>, year, month]<tt>\n</tt>      path.join(<span class=\"s\"><span
+    class=\"dl\">\"</span><span class=\"k\">/</span><span class=\"dl\">\"</span></span>)<tt>\n</tt>
+    \   <span class=\"r\">end</span><tt>\n</tt>  <span class=\"r\">end</span><tt>\n</tt><tt>\n</tt>
+    \ <span class=\"r\">def</span> <span class=\"fu\">months_with_articles</span><tt>\n</tt>
+    \   <span class=\"iv\">@months_with_articles</span> ||= <span class=\"r\">begin</span><tt>\n</tt>
+    \     <span class=\"r\">case</span> <span class=\"co\">Article</span>.connection.adapter_name<tt>\n</tt>
+    \     <span class=\"r\">when</span> <span class=\"s\"><span class=\"dl\">\"</span><span
+    class=\"k\">SQLite</span><span class=\"dl\">\"</span></span><tt>\n</tt>        month
+    = <span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">strftime('%Y-%m',
+    published_at)</span><span class=\"dl\">\"</span></span><tt>\n</tt>      <span
+    class=\"r\">when</span> <span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">MySQL</span><span
+    class=\"dl\">\"</span></span><tt>\n</tt>        month = <span class=\"s\"><span
+    class=\"dl\">\"</span><span class=\"k\">date_format(published_at, '%Y-%m')</span><span
+    class=\"dl\">\"</span></span><tt>\n</tt>      <span class=\"r\">else</span><tt>\n</tt>
+    \       raise <span class=\"s\"><span class=\"dl\">\"</span><span class=\"il\"><span
+    class=\"dl\">#{</span><span class=\"co\">Article</span>.connection.adapter_name<span
+    class=\"dl\">}</span></span><span class=\"k\"> is not yet supported here</span><span
+    class=\"dl\">\"</span></span><tt>\n</tt>      <span class=\"r\">end</span><tt>\n</tt><tt>\n</tt>
+    \     results = <span class=\"co\">Article</span>.connection.select_all(<span
+    class=\"s\"><span class=\"dl\">&lt;&lt;-SQL</span></span>)<span class=\"s\"><span
+    class=\"k\"><tt>\n</tt>        select </span><span class=\"il\"><span class=\"dl\">#{</span>month<span
+    class=\"dl\">}</span></span><span class=\"k\"> as month, count(c.id) as count_for_month<tt>\n</tt>
+    \         from contents c, assigned_sections a<tt>\n</tt>         where c.type='Article'<tt>\n</tt>
+    \          and a.article_id = c.id<tt>\n</tt>           and a.section_id = </span><span
+    class=\"il\"><span class=\"dl\">#{</span><span class=\"iv\">@source</span>.id<span
+    class=\"dl\">}</span></span><span class=\"k\"><tt>\n</tt>         group by month<tt>\n</tt>
+    \        order by month DESC;</span><span class=\"dl\"><tt>\n</tt>      SQL</span></span><tt>\n</tt><tt>\n</tt>
+    \     results.map <span class=\"r\">do</span> |row|<tt>\n</tt>        year, month
+    = row[<span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">month</span><span
+    class=\"dl\">\"</span></span>].split(<span class=\"rx\"><span class=\"dl\">/</span><span
+    class=\"k\">-</span><span class=\"dl\">/</span></span>, <span class=\"i\">2</span>)<tt>\n</tt>
+    \       <span class=\"co\">MonthDrop</span>.new(<span class=\"iv\">@source</span>,
+    year, month, row[<span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">count_for_month</span><span
+    class=\"dl\">\"</span></span>])<tt>\n</tt>      <span class=\"r\">end</span><tt>\n</tt>
+    \   <span class=\"r\">end</span><tt>\n</tt>  <span class=\"r\">end</span><tt>\n</tt><span
+    class=\"r\">end</span><tt>\n</tt><span class=\"r\">end</span><tt>\n</tt></pre></td>\n</tr></table>\n"
+- date: 2006-09-20
+  author: Jamie
+  content: I notice the theme has changed, I will be creating an official version
+    of the lucid theme soon, in the meantime a chap has created a port, see comments
+    at this post http://thelucid.com/articles/2006/08/22/thelucid-typo-theme-phase-2
+- date: 2006-09-20
+  author: Jamis
+  content: Jamie, the Lucid theme is one of the most beautiful I've seen, but I think
+    I'm going to stick with the minimal theme I've got for now. Thanks!
+- date: 2006-09-20
+  author: rick
+  content: 'Jamis -- That is rad, I think I''ll add that to Mephisto.  '
+- date: 2006-09-21
+  author: Jamie
+  content: "Jamis -- don't make any decisions until you've seen the new release ;)\r\n\r\nAny
+    feedback you have on feature requests/color schemes/enhancements is most welcome."

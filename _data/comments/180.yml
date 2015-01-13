@@ -1,0 +1,132 @@
+---
+- date: 2006-10-07
+  author: Thomas
+  content: <p>maybe… <span class="caps">SELECT</span> id <span class="caps">FROM</span>
+    things <span class="caps">ORDER BY</span> <acronym title="">RAND</acronym> <span
+    class="caps">LIMIT 1</span></p>
+- date: 2006-10-07
+  author: mdaines
+  content: "<p>Or perhaps this? (or imagine it as it would be inside the find method,
+    with “super”)</p>\n\n\n\t<pre><code>Thing.find(:first, :order =&gt; 'RANDOM()')</code></pre>\n\n\n\t<p>I
+    assume that doesn’t work for all the ActiveRecord adapters? Or is <acronym title=\"\">RANDOM</acronym>
+    actually really standard? And maybe the following would be useful?</p>\n\n\n\t<pre><code>Thing.find(:random)\nThing.find(:random,
+    :limit =&gt; 5)</code></pre>\n\n\n\t<p>Has someone made that plugin already?</p>"
+- date: 2006-10-07
+  author: Jamis
+  content: "<p>Alas, neither “rand” nor “random” exist for MySQL 4.1, which is the
+    database we’re using. Same with sqlite, which is the <span class=\"caps\">DB I</span>’ve
+    been using for my test and development environments.</p>\n\n\n\t<p>The point of
+    the article, though, was not to demonstrate a technique for grabbing a random
+    record from the database, it was to demonstrate how you can override find to make
+    your controller actions polymorphic. Sorry I wasn’t clearer about that thesis.</p>"
+- date: 2006-10-07
+  author: Kevin Marsh
+  content: "<p>Nice tip… you could even use this for latest, newest, oldest, etc.
+    It really does expose more of your app to the world as a “resource”. I like it!</p>"
+- date: 2006-10-07
+  author: Jesper Rønn-Jensen
+  content: "<p>I really like the idea to let the model pick the random thing. Also
+    heads up for the elegant way you avoid things that are database specific.</p>\n\n\n\t<p>Recently
+    I ran into this exact thing with an :order =&gt; “rand()” that works with MySQL
+    and <span class=\"caps\">MSSQL</span> but not on Sqlite.</p>\n\n\n\t<p>Your example
+    could be taken further to see if order by rand() could be emulated.</p>"
+- date: 2006-10-07
+  author: Jamis
+  content: "<p>Kevin, your idea of using this technique for returning things like
+    ‘latest’, ‘newest’, ‘oldest’, etc. really made something click for me. What this
+    technique is all about is allowing find to return records for pseudo-ids. To be
+    really useful, you’d need to make sure your implementation takes into account
+    things like the :conditions option and so forth, as well as considering the current
+    query scope, but none of that is particularly hard. Definitely a fun plugin idea,
+    though!</p>"
+- date: 2006-10-07
+  author: Mislav
+  content: "<p>Jamis, <acronym title=\"\">RAND</acronym> function exists even before
+    MySQL 4… In SQLite, however, it does not.</p>\n\n\n\t<p>As Jesper said, we should
+    probably take advantage of the <span class=\"caps\">SQL</span> functions in MySQL,
+    Postgres and <span class=\"caps\">MSSQL</span> and fall back to emulation (your
+    solution) for SQLite (and maybe some other db).</p>"
+- date: 2006-10-07
+  author: Jamis
+  content: "<p>Ah, so it is! I must have mistyped something when I first experimented
+    with that, because I got errors, but I can see it works now.</p>\n\n\n\t<p>Very
+    well. But again, the point was not “how to select a random record from the DB”
+    (which you don’t often need to do) but rather “how to override find to make your
+    actions polymorphic”.</p>"
+- date: 2006-10-08
+  author: jeroen@supercool.nl
+  content: "<p>I must say I don’t really like this. I’m all for the pragmatic approach
+    and I would mind using this in my code, but it seems ugly to have to go through
+    an if statement for all your finders.</p>\n\n\n\t<p>Couldn’t you just do something
+    like this inside your controller:</p>\n\n\n\t<p>def random\n  @things = Thing.find(:first,
+    :limit =&gt; 1, :offset =&gt; rand(Thing.count-1))\n  render :action =&gt; ‘show’\nend</p>\n\n\n\t<p>I’m
+    not sure that render :action will work, I’m not into the RESTful routing etc yet..
+    So maybe this:</p>\n\n\n\t<p>def random\n  redirect_to :action =&gt; ‘show’, :id
+    =&gt; rand(Thing.count)\nend</p>"
+- date: 2006-10-08
+  author: jeroen@supercool.nl
+  content: "<p>Whoops! Typo: .. <strong>wouldn’t</strong> mind using this..</p>"
+- date: 2006-10-08
+  author: Jamis
+  content: "<p>Jeroen, it’s definitely an esthetics issue. Myself, I find adding a
+    specialized “random” action (and, potentially, “latest”, “first”, etc. actions)
+    unappealing (especially in the face of RESTful conventions). The <code>if</code>
+    statement in the find method is a fair tradeoff. Note that you can always refactor
+    the logic into a separate AR method, and have the find simply case it away—much
+    as the base implementation of find does.</p>"
+- date: 2006-10-08
+  author: jeroen@supercool.nl
+  content: "<p>Jamis, I admit haven’t explored <span class=\"caps\">REST</span> all
+    that much, but are you saying a method named “random” in your ThingControler isn’t
+    very <span class=\"caps\">REST</span> compliant?</p>\n\n\n\t<p>Isn’t <span class=\"caps\">REST</span>
+    all about how the outside world interacts with your application and not how the
+    internals (controllers etc) are setup?</p>"
+- date: 2006-10-08
+  author: Jamis
+  content: "<p>Jeroen, <span class=\"caps\">REST</span> is about exposing resources
+    via unique <span class=\"caps\">URL</span>’s, rather than about exposing remote
+    procedure calls. Having a specific action named ‘random’ is not a violation of
+    <span class=\"caps\">REST</span>—the whole RESTful thing is pretty laid back,
+    and doesn’t take offense very easily. :) That said, the implementation of the
+    RESTful helpers in Rails are more opinionated, and although you <span class=\"caps\">CAN</span>
+    have specific <span class=\"caps\">URL</span>’s for specific actions, that’s not
+    the default.</p>\n\n\n\t<p>Also, it’s an esthetics thing. Me, I like having the
+    <code>show</code> method “do the right thing” with pseudo-ids. It “feels” right,
+    whereas multiplying the actions in your controller “feels” wrong. One of these
+    days I’ll analyze my feelings and write something about why I think that, but
+    for you now you’ll just have to take my word for it. :)</p>"
+- date: 2006-10-08
+  author: mdaines
+  content: "<p>Sqlite seems to have ‘random’ but not ‘rand’, at least sqlite3 does.
+    That find statement I quoted above works on my sqlite3 development database. (Using
+    sqlite for test and development databases is hella convenient, I must tell you!)</p>"
+- date: 2006-10-10
+  author: jeroen@supercool.nl
+  content: "<p>Jamis,</p>\n\n\n\t<p>But won’t this mean that over time my controller
+    methods will end up with if statements all over the place. Like:</p>\n\n\n\t<p>def
+    show\n  if ID is really an ID do this\n  if ID is actually a random things, do
+    this\n  if ID is “give me latest entry” do this\nend</p>\n\n\n\t<p>Maybe that’s
+    not all that bad though..</p>\n\n\n\t<p>p.s. when I post this form without a name,
+    my message is lost</p>"
+- date: 2006-10-10
+  author: Jamis
+  content: "<p>Jeroen, something I’m coming to feel very strongly about, and which
+    has changed greatly the way I write Rails apps, is that the controllers should
+    be absolutely minimal, and as much (non-view) logic as possible should be delegated
+    to the models. How that is actually accomplished is up to you; I find that overloading
+    <code>find</code> for lookup-based logic is quite handy, but you may prefer to
+    add a specialized finder method that does the branching logic. My ideal controller
+    action is one or two lines related to finding, creating, updating, or deleting
+    the record (or records) in question, and then a three or four line <code>respond_to</code>
+    block indicating what to render and how. There are, of course, exceptions to every
+    rule, but I find that 80% or more of my actions can be done this way if I refactor
+    stuff into the models themselves (appropriately).</p>\n\n\n\t<p>(Regarding posting
+    without a name, yah, names are required, but the validation logic is buggy right
+    now.)</p>"
+- date: 2006-10-12
+  author: Rob Pitt
+  content: "<p>Pretty much all the databases have some sort of <span class=\"caps\">ORDER
+    BY</span> <acronym title=\"\">RANDOM</acronym> but they are all different, you
+    have to do things like:</p>\n\n\n<pre>\ncase connection\nwhen ActiveRecord::ConnectionAdapters::PostgreSQLAdapter\n...\nend\n&lt;/pre\n\n\t<p>The
+    benefit of Jamis method is it’s cross-compatible with only a small speed penalty
+    on small-medium datasets.</p></pre>"

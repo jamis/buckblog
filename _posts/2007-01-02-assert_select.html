@@ -1,0 +1,32 @@
+---
+layout: post
+title: assert_select
+post_id: 132
+categories:
+- Tips & Tricks
+date: 2007-01-02 14:01:00.000000000 -07:00
+author: Jamis
+permalink: 2007/01/02/assert_select.html
+---
+
+<p>I’m going to be experimenting with a new regular feature called “TADFALAICKIU (EW, AH)”, which is an acronym for “Tip A Day For As Long As I Can Keep It Up (Except Weekends, And Holidays)”. In other words, I’ll be posting short little pointers and suggestions that I’ve found useful, as frequently as I can (hopefully every weekday).</p>
+<p>To start things off, let me just introduce a little nugget of beauty that I discovered today. It’s been in edge Rails for a while, and others have blogged about it before. Stated simply, <code>assert_select</code> is a wonderful thing.</p>
+<p>Consider the following monstrosity, coded using <code>assert_tag</code>:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">  assert_tag <span class="sy">:tag</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">img</span><span class="dl">"</span></span>,<tt>
+</tt>    <span class="sy">:attributes</span> =&gt; { <span class="sy">:src</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">/0000/0001/logo.gif</span><span class="dl">"</span></span>, <span class="sy">:alt</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">My Company</span><span class="dl">"</span></span> },<tt>
+</tt>    <span class="sy">:parent</span> =&gt; { <span class="sy">:tag</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">div</span><span class="dl">"</span></span>, <span class="sy">:attributes</span> =&gt; { <span class="sy">:id</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">logo_box</span><span class="dl">"</span></span> } }</pre></td>
+</tr></table>
+<p>Basically, all it does is search the response for an image tag with the given “src” and “alt” attributes, which happens to be enclosed within a “div” tag with an id of “logo_box”.</p>
+<p>Now, behold it rewritten to use <code>assert_select</code>:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">  assert_select <span class="s"><span class="dl">"</span><span class="k">div#logo_box img[src=/0000/0001/logo.gif][alt=My Company]</span><span class="dl">"</span></span></pre></td>
+</tr></table>
+<p>This is where it’s at people. Forget <code>assert_tag</code>, it’s ancient history. <code>assert_select</code> the future!</p>
+<p>(Although <code>assert_tag</code> is not yet deprecated, it will be eventually, so after upgrading to Rails 1.2, you’ll want to make sure you’re using <code>assert_select</code> instead.)</p>

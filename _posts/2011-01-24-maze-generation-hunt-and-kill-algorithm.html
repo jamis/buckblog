@@ -1,0 +1,900 @@
+---
+layout: post
+title: 'Maze Generation: Hunt-and-Kill algorithm'
+post_id: 14
+categories:
+- Under the Hood
+date: 2011-01-24 07:24:00.000000000 -07:00
+author: Jamis
+permalink: 2011/01/24/maze-generation-hunt-and-kill-algorithm.html
+summary: >
+  The author presents the first maze algorithm he ever learned
+---
+
+<p>(Note: if you’re reading this in a feed reader, you’re going to be missing out on the illustrations and demonstrations.)</p>
+<p>Alright, so the theme last week was “algorithms for generating uniform spanning trees.” If this week has a theme, it might be something like “algorithms that sometimes act like the <a href="http://weblog.jamisbuck.org/2010/12/27/maze-generation-recursive-backtracking">recursive backtracker</a>, but only kind of.”</p>
+<p>Today’s algorithm is the “hunt-and-kill algorithm”. Sounds violent, doesn’t it? It’s actually quite tame. In a nutshell, it works like this:</p>
+<ol>
+	<li>Choose a starting location.</li>
+		<li>Perform a random walk, carving passages to unvisited neighbors, until the current cell has no unvisited neighbors.</li>
+		<li>Enter “hunt” mode, where you scan the grid looking for an unvisited cell that is adjacent to a visited cell. If found, carve a passage between the two and let the formerly unvisited cell be the new starting location.</li>
+		<li>Repeat steps 2 and 3 until the hunt mode scans the entire grid and finds no unvisited cells.</li>
+	</ol>
+<p>Let’s walk through an example.</p>
+<h2>An example</h2>
+<p>I’ll just use a basic 4×4 grid:</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>Now, I’ll give you the walk phase as a sequence of frames here; it’s not that interesting, really, until it reaches a dead-end.</p>
+<table>
+<tr>
+<td>
+  <table class="maze">
+  <tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="n s e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  </table>
+</td>
+<td>
+  <table class="maze">
+  <tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="n e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="s e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  </table>
+</td>
+<td>
+  <table class="maze">
+  <tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="n e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="s e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  </table>
+</td>
+</tr>
+<tr>
+<td>
+  <table class="maze">
+  <tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="n w"></td>
+<td class="n s e"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="s e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  </table>
+</td>
+<td>
+  <table class="maze">
+  <tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="n w"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="e w"></td>
+<td class="s e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="s e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  </table>
+</td>
+<td>
+  <table class="maze">
+  <tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="n w"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="e w"></td>
+<td class="s w"></td>
+<td class="n s e"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="s e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  </table>
+</td>
+</tr>
+<tr>
+<td>
+  <table class="maze">
+  <tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="n w"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="e w"></td>
+<td class="s w"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="s e w"></td>
+<td class="n s e w out"></td>
+<td class="s e w"></td>
+<td class="n s e w out"></td>
+</tr>
+  </table>
+</td>
+<td>
+  <table class="maze">
+  <tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="n w"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="e w"></td>
+<td class="s w"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="s e w"></td>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+  </table>
+</td>
+<td>
+</td>
+</tr>
+</table>
+<p>And there our liesurely inebriated stroll comes to a screeching halt. All possible directions lead either out of bounds, or into an already-visited neighbor. At this point, the recursive backtracker would begin backtracking, looking for a previously visited cell in the stack that had unvisited neighbors. The hunt-and-kill algorithm is not nearly so sophisticated: stuck? Go hunting.</p>
+<p>And so we hunt. Beginning at the first row, we begin scanning each row for an unvisited cell with a visited neighbor. It turns out to be our lucky day: our very first cell is a match: unvisited, with a visited neighbor. We connect the two:</p>
+<table class="maze">
+<tr>
+<td class="n e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="e w"></td>
+<td class="s w"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="s e w"></td>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>And then we start a random walk from our new starting point:</p>
+<table>
+<tr>
+<td>
+  <table class="maze">
+  <tr>
+<td class="n w"></td>
+<td class="n s e"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="w"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="e w"></td>
+<td class="s w"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="s e w"></td>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+  </table>
+</td>
+<td>
+  <table class="maze">
+  <tr>
+<td class="n w"></td>
+<td class="n s"></td>
+<td class="n s e"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="w"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="e w"></td>
+<td class="s w"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="s e w"></td>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+  </table>
+</td>
+<td>
+  <table class="maze">
+  <tr>
+<td class="n w"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="w"></td>
+<td class="n e"></td>
+<td class="s e w"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="e w"></td>
+<td class="s w"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="s e w"></td>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+  </table>
+</td>
+</tr>
+<tr>
+<td>
+  <table class="maze">
+  <tr>
+<td class="n w"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="w"></td>
+<td class="n e"></td>
+<td class="s w"></td>
+<td class="n s e"></td>
+</tr>
+  <tr>
+<td class="e w"></td>
+<td class="s w"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="s e w"></td>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+  </table>
+</td>
+<td>
+  <table class="maze">
+  <tr>
+<td class="n w"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+<td class="n e w"></td>
+</tr>
+  <tr>
+<td class="w"></td>
+<td class="n e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+  <tr>
+<td class="e w"></td>
+<td class="s w"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+</tr>
+  <tr>
+<td class="s e w"></td>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+  </table>
+</td>
+<td>
+</td>
+</tr>
+</table>
+<p>Stuck again, so we go hunting. There are no cells in the first row that match:</p>
+<table class="maze">
+<tr>
+<td class="n w h"></td>
+<td class="n s h"></td>
+<td class="n e h"></td>
+<td class="n e w h"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td class="n e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+<tr>
+<td class="e w"></td>
+<td class="s w"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="s e w"></td>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>And no matches in the second row, either. (Remember, we’re looking for <em>unvisited</em> cells with <em>visited</em> neighbors.)</p>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+<td class="n e w"></td>
+</tr>
+<tr>
+<td class="w h"></td>
+<td class="n e h"></td>
+<td class="s w h"></td>
+<td class="s e h"></td>
+</tr>
+<tr>
+<td class="e w"></td>
+<td class="s w"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="s e w"></td>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>The third row, however, has a match in its last cell:</p>
+<table class="maze">
+<tr>
+<td class="n w"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+<td class="n e w"></td>
+</tr>
+<tr>
+<td class="w"></td>
+<td class="n e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+<tr>
+<td class="e w h"></td>
+<td class="s w h"></td>
+<td class="n e h"></td>
+<td class="n s e w out h"></td>
+</tr>
+<tr>
+<td class="s e w"></td>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>So, we connect that unvisited cell to any one of its visited neighbors (at random), and do our random walk:</p>
+<table><tr>
+<td>
+  <table class="maze">
+  <tr>
+<td class="n w"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+<td class="n e w"></td>
+</tr>
+  <tr>
+<td class="w"></td>
+<td class="n e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+  <tr>
+<td class="e w"></td>
+<td class="s w"></td>
+<td class="n"></td>
+<td class="n s e"></td>
+</tr>
+  <tr>
+<td class="s e w"></td>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+  </table>
+</td>
+<td>
+  <table class="maze">
+  <tr>
+<td class="n w"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+<td class="n e w"></td>
+</tr>
+  <tr>
+<td class="w"></td>
+<td class="n e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+  <tr>
+<td class="e w"></td>
+<td class="s w"></td>
+<td class="n"></td>
+<td class="n e"></td>
+</tr>
+  <tr>
+<td class="s e w"></td>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="s e w"></td>
+</tr>
+  </table>
+</td>
+<td>
+</td>
+</tr></table>
+<p>And we again stub our digital toes (see what I did there?) on another dead-end. We’re stuck, so we go hunting again, looking row-by-row for an unvisited cell.</p>
+<table>
+<tr>
+<td>
+  <table class="maze">
+  <tr>
+<td class="n w h"></td>
+<td class="n s h"></td>
+<td class="n e h"></td>
+<td class="n e w h"></td>
+</tr>
+  <tr>
+<td class="w"></td>
+<td class="n e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+  <tr>
+<td class="e w"></td>
+<td class="s w"></td>
+<td class="n"></td>
+<td class="n e"></td>
+</tr>
+  <tr>
+<td class="s e w"></td>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="s e w"></td>
+</tr>
+  </table>
+</td>
+<td>
+  <table class="maze">
+  <tr>
+<td class="n w"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+<td class="n e w"></td>
+</tr>
+  <tr>
+<td class="w h"></td>
+<td class="n e h"></td>
+<td class="s w h"></td>
+<td class="s e h"></td>
+</tr>
+  <tr>
+<td class="e w"></td>
+<td class="s w"></td>
+<td class="n"></td>
+<td class="n e"></td>
+</tr>
+  <tr>
+<td class="s e w"></td>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="s e w"></td>
+</tr>
+  </table>
+</td>
+<td>
+  <table class="maze">
+  <tr>
+<td class="n w"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+<td class="n e w"></td>
+</tr>
+  <tr>
+<td class="w"></td>
+<td class="n e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+  <tr>
+<td class="e w h"></td>
+<td class="s w h"></td>
+<td class="n h"></td>
+<td class="n e h"></td>
+</tr>
+  <tr>
+<td class="s e w"></td>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="s e w"></td>
+</tr>
+  </table>
+</td>
+</tr>
+<tr>
+<td>
+  <table class="maze">
+  <tr>
+<td class="n w"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+<td class="n e w"></td>
+</tr>
+  <tr>
+<td class="w"></td>
+<td class="n e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+  <tr>
+<td class="e w"></td>
+<td class="s w"></td>
+<td class="n"></td>
+<td class="n e"></td>
+</tr>
+  <tr>
+<td class="s e w h"></td>
+<td class="n s w h"></td>
+<td class="s e h"></td>
+<td class="s e w h"></td>
+</tr>
+  </table>
+</td>
+<td>
+  <table class="maze">
+  <tr>
+<td class="n w"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+<td class="n e w"></td>
+</tr>
+  <tr>
+<td class="w"></td>
+<td class="n e"></td>
+<td class="s w"></td>
+<td class="s e"></td>
+</tr>
+  <tr>
+<td class="e w"></td>
+<td class="s w"></td>
+<td class="n"></td>
+<td class="n e"></td>
+</tr>
+  <tr>
+<td class="s e w"></td>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="s e w"></td>
+</tr>
+  </table>
+</td>
+<td>
+</td>
+</tr>
+</table>
+<p>The scan completed without finding any unvisited cells, so the algorithm terminates and leaves us with our maze.</p>
+<p>Try the following demonstrations to see how the algorithm behaves at larger resolutions:</p>
+<script type="text/javascript" src="/javascripts/maze-minified.js"></script>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("HuntAndKill", 5, 5, { "class": "small" });</script>
+<script type="text/javascript">Maze.createCanvasWidget("HuntAndKill", 15, 15, { "class": "medium", id: "huntkill_medium", interval: 25 });</script>
+</div>
+<h2>Implementation</h2>
+<p>This algorithm is pretty straightforward to implement. It even has a few simple optimizations that you can do, though I won’t touch on those here.</p>
+<p>My implementation begins by choosing a random starting point, and then looping over the two phases, “walk” and “hunt”, until the hunt phase terminates without finding any new location. My walk and hunt implementations both return either a two-element array (indicating the coordinates of the next starting location), or a nil (indicating that the phase in question has terminated).</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">x, y = rand(width), rand(height)<tt>
+</tt><tt>
+</tt>loop <span class="r">do</span><tt>
+</tt>  x, y = walk(grid, x, y)<tt>
+</tt>  x, y = hunt(grid) <span class="r">unless</span> x<tt>
+</tt>  <span class="r">break</span> <span class="r">unless</span> x<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The walk implementation is straightforward. It just iterates over a randomized list of directions, and returns nil if none of the directions are valid:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">walk</span>(grid, x, y)<tt>
+</tt>  [<span class="co">N</span>, <span class="co">S</span>, <span class="co">E</span>, <span class="co">W</span>].shuffle.each <span class="r">do</span> |dir|<tt>
+</tt>    <span class="c"># ...</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  <span class="pc">nil</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>For each direction, it computes the neighbor in that direction, and then tests it to see if it is within the bounds of the maze and unvisited:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">nx, ny = x + <span class="co">DX</span>[dir], y + <span class="co">DY</span>[dir]<tt>
+</tt><span class="r">if</span> nx &gt;= <span class="i">0</span> &amp;&amp; ny &gt;= <span class="i">0</span> &amp;&amp; ny &lt; grid.length &amp;&amp; nx &lt; grid[ny].length &amp;&amp; grid[ny][nx] == <span class="i">0</span><tt>
+</tt>  <span class="c"># ..</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>When a neighbor is found that fits the bill, the neighbor and the current cell are connected, and the neighbor is returned as the new current cell:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">grid[y][x] |= dir<tt>
+</tt>grid[ny][nx] |= <span class="co">OPPOSITE</span>[dir]<tt>
+</tt><span class="r">return</span> [nx, ny]<tt>
+</tt></pre></td>
+</tr></table>
+<p>The hunt phase, on the other hand, is a little more involved (but not much). It iterates over each cell in the grid, row-wise, skipping visited cells, and returning nil if it does not find any unvisited cellls:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">hunt</span>(grid)<tt>
+</tt>  grid.each_with_index <span class="r">do</span> |row, y|<tt>
+</tt>    row.each_with_index <span class="r">do</span> |cell, x|<tt>
+</tt>      <span class="r">next</span> <span class="r">unless</span> cell == <span class="i">0</span><tt>
+</tt><tt>
+</tt>      <span class="c"># ...</span><tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  <span class="pc">nil</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Within that innermost loop, if the cell is unvisited, we compute a list of neighbors that are already part of the maze:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">neighbors = []<tt>
+</tt>neighbors &lt;&lt; <span class="co">N</span> <span class="r">if</span> y &gt; <span class="i">0</span> &amp;&amp; grid[y<span class="i">-1</span>][x] != <span class="i">0</span><tt>
+</tt>neighbors &lt;&lt; <span class="co">W</span> <span class="r">if</span> x &gt; <span class="i">0</span> &amp;&amp; grid[y][x<span class="i">-1</span>] != <span class="i">0</span><tt>
+</tt>neighbors &lt;&lt; <span class="co">E</span> <span class="r">if</span> x<span class="i">+1</span> &lt; grid[y].length &amp;&amp; grid[y][x<span class="i">+1</span>] != <span class="i">0</span><tt>
+</tt>neighbors &lt;&lt; <span class="co">S</span> <span class="r">if</span> y<span class="i">+1</span> &lt; grid.length &amp;&amp; grid[y<span class="i">+1</span>][x] != <span class="i">0</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Then, we randomly choose one of them (skipping to the next cell if there are no neighbors to select):</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">direction = neighbors[rand(neighbors.length)] <span class="r">or</span> <span class="r">next</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Then, we compute the coordinates of the neighbor in the chosen direction, carve a passage to it, and then return the new current coordinates:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">nx, ny = x + <span class="co">DX</span>[direction], y + <span class="co">DY</span>[direction]<tt>
+</tt><tt>
+</tt>grid[y][x] |= direction<tt>
+</tt>grid[ny][nx] |= <span class="co">OPPOSITE</span>[direction]<tt>
+</tt><tt>
+</tt><span class="r">return</span> [x, y]<tt>
+</tt></pre></td>
+</tr></table>
+<p>And there’s your hunt-and-kill algorithm!</p>
+<h2>Conclusion</h2>
+<p>The random walk phase tends to produce long, windy passages that are reminiscent of the recursive backtracking algorithm, so if you like the aesthetic of one, you’ll probably enjoy the other, too. Both algorithms produce mazes with fewer dead-ends than most of the other algorithms.</p>
+<p>The hunt-and-kill algorithm will always have a place in my heart, because it was a variation on it that introduced me to maze generation back in high school. It was first shown to me by <a href="http://twitter.com/#!/stefanomaz">Stefano Mazzocchi</a> when he was an exchange student at my alma mater (Siuslaw High School, in tiny Florence, Oregon). In fact, it was this variation on the hunt-and-kill that I used when I wrote a (somewhat popular) random dungeon generator for D&amp;D back in 2001! (All that remains now is some <a href="https://github.com/jamis/dnd-dungeon">C source code on GitHub</a>, alas.)</p>
+<p>Anyway, enough nostalgic wallowing. Have a go at the hunt-and-kill algorithm, and share links to your creations in the comments. For reference, the complete source for my own implementation is here:</p>
+<script src="https://gist.github.com/760739.js?file=hunt-and-kill.rb"></script>
+<noscript>
+<a href="https://gist.github.com/760739">hunt-and-kill.rb</a> on gist.github.com</noscript>
+<p>Enjoy!</p>

@@ -1,0 +1,37 @@
+---
+- date: 2008-07-10
+  author: carlos@rigital.com
+  content: "<p>Hi,\nI sure hope this goes somewhere, b/c right now due to lack of
+    documentation capistrano is making my life a living hell!</p>\n\n\n\t<p>I no it
+    does great stuff, but it has hardly <span class=\"caps\">EVER</span> worked for
+    me at all.</p>\n\n\n\t<p>At this point <span class=\"caps\">I HATE</span> b/c
+    it does not provide any meaningful error codes or information when there are problems.</p>\n\n\n\t<p>Real
+    documentation would be great.</p>\n\n\n\t<p>I am 2 steps away from writing my
+    own solution I am <span class=\"caps\">SOO</span> angry!</p>"
+- date: 2008-07-10
+  author: Jamis
+  content: "<p>@carlos, if the lack of documentation drives you to write your own
+    capistrano clone, I say go for it! In all seriousness, and sincerity. I’d love
+    for there to be more “competition” in this space.</p>\n\n\n\t<p>On the other hand,
+    anything you could do to contribute to documentation would be great, too. Write
+    a blog article enumerating specific questions you have about capistrano. Make
+    it a long list, even! Lists like that give us a better idea of where (and how!)
+    to start documenting.</p>"
+- date: 2008-07-11
+  author: Christian Vest Hansen
+  content: "<blockquote>\n\t<p>I’d love for there to be more “competition” in this
+    space.</p>\n\n</blockquote>\n\n\n\n\n\t<p>Fabric<sup><a href=\"#fn1\">1</a></sup>
+    is “competition.” And it has fewer features so there’s less stuff to document
+    :P</p>\n\n\n\t<p>Still, I’d say that the  documentation is very lacking aswell,
+    but it is being worked on. :)</p>\n\n\n\t<pre><code>http://www.nongnu.org/fab/</code></pre>"
+- date: 2008-07-13
+  author: Jamis
+  content: "<p>@Christian, cool re: fabric! There are some misleading bits on the
+    front page there, though, e.g. “Unlike Capistrano, Fabric want’s to stay small,
+    light, easy to change and not bound to any specific framework.” I think it’d be
+    silly to say any app “wants” to get “bigger, heavier, and harder to change.” I
+    say “no” to as much as I say “yes”. It just happens that Capistrano is year or
+    more older than Fabric, with corresponding growth rings. Also, Capistrano is not
+    “bound” to Rails. It is merely the default deployment recipes that assume Rails,
+    but you can use cap to deploy anything.</p>\n\n\n\t<p>At any rate, cool to see
+    some competition! Thanks for pointing that out, and best of luck.</p>"

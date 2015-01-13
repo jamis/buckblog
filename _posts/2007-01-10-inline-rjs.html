@@ -1,0 +1,33 @@
+---
+layout: post
+title: Inline RJS
+post_id: 143
+categories:
+- Tips & Tricks
+date: 2007-01-10 13:25:00.000000000 -07:00
+author: Jamis
+permalink: 2007/01/10/inline-rjs.html
+---
+
+<p>We all know and love <span class="caps">RJS</span> templates in Rails. (If you don’t, please do google them and read up—you’re missing out on some of the hottest stuff around.). I honestly believe they are the most significant advance in web development technology since the introduction of XmlHttpRequest.</p>
+<p>Sometimes, though, it seems like a bit of overkill to have to create a new file if all you’re doing is highlighting some element, or removing one. If your action only responds to “text/javascript” requests, it’s often much simpler just to <em>inline</em> the <span class="caps">RJS</span> calls, right there in your controller:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">ItemsController</span> &lt; <span class="co">ApplicationController</span><tt>
+</tt>  <span class="r">def</span> <span class="fu">destroy</span><tt>
+</tt>    <span class="iv">@item</span> = current_account.items.find(params[<span class="sy">:id</span>])<tt>
+</tt>    <span class="iv">@item</span>.destroy<tt>
+</tt>    render(<span class="sy">:update</span>) { |page| page[dom_id(<span class="iv">@item</span>)].remove }<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>(Note that the <code>dom_id</code> helper is courtesy of the <a href="http://www.matthewman.net/articles/2006/09/04/new-rails-feature-simply_helpful">simply_helpful</a> plugin.)</p>
+<p>That call to <code>render(:update)</code> just yields the <span class="caps">RJS</span> page instance to the block. Then, you can do all your <span class="caps">RJS</span> calls in the block, instead of having to create a file for a single line of code.</p>
+<p>When would you <em>not</em> want to do this? Well, if your <span class="caps">RJS</span> stuff is particularly complex, or does more than a handful of things, you might be better off throwing it in its own template. Also, if your action responds to more than just <span class="caps">RJS</span> (e.g., via the <code>respond_to</code> method), you should use a separate <span class="caps">RJS</span> template file as well.</p>

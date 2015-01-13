@@ -1,0 +1,31 @@
+---
+- date: 2005-12-29
+  author: Dan
+  content: "Hi Jamis,\n\nIm a VIM addict as well... \n\nIm mostly having one single
+    terminal open and multiple buffers in the same vim instance, but im looking for
+    the same alternative you are preaching for :)\n\nI know that this is an pretty
+    old post, but what was you result? Are you still using VIM in the terminal or
+    did you come up with another alternative?"
+- date: 2005-12-29
+  author: Jamis
+  content: |-
+    Dan, I have pretty much moved to "TextMate":http://macromates.com (as mentioned "here":http://jamis.jamisbuck.org/articles/2005/10/17/rubyconf-2005), although I still use vim for quick edits, or when I'm not editing locally.
+
+    There are still plenty of things that I miss about vim, but TM is a very nice editor and I found that once I got past the urge to navigate via @hjkl@, things went quite smoothly.
+- date: 2006-03-19
+  author: Alex
+  content: |-
+    I think Vim 7.0 will have a lot of the GUI/Textmate features you'll be looking for including tabbed graphical windows etc.
+
+    I just heard of what 7.0 will have and I can't wait
+- date: 2006-04-14
+  author: hbien@ucsd.edu
+  content: |-
+    Hey Jamis, thanks for the advice on Vim + Ruby on your other post =].
+
+    Alex, I can't wait till Vim 7.0 either =P.
+
+    I really want to make the jump to Textmate.  I just got a Powerbook, probably because of all those videos of Rails.  Ah, I have the trial version, I just can't bring myself to use it.  I think I'm too attached to Vim.
+
+    I really like GVim's appearance on OS X.  I might be the only one, I like the minimalistic style.  Here's a screenshot of my desktop:
+    http://ieng9.ucsd.edu/~hbien/vim.tiff

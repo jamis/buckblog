@@ -1,0 +1,70 @@
+---
+- date: 2009-04-08
+  author: Tim Case
+  content: "<p>I remember you started this project a few years ago right? :)  If I
+    can give you a piece of advice which I gave you a couple of years ago, then recently
+    contradicted myself on by ignoring this advice only to realize later that I should
+    have followed it…  Take a look at Fowler’s accounting patterns.  Whenever I do
+    anything that has things like accounts and transactions in it I find that the
+    accounting patterns really slice and dice those concepts rather well.  You are
+    writing an accounting application, it may be called buckets but those buckets
+    are accounts.  Hope this helps.</p>"
+- date: 2009-04-08
+  author: Felipe Coury
+  content: "<p>Hey Jamis,</p>\n\n\n\t<p>Any idea on whether it will become an open
+    project any time on the future? I really love the concept and would love to translate
+    / work on it!</p>\n\n\n\t<p>Best regards,\nFelipe.</p>"
+- date: 2009-04-09
+  author: Brandon
+  content: "<p>I think you said this resembles the envelope system that many people,
+    including Dave Ramsey, talk about.  Great idea to develop some software for it!</p>"
+- date: 2009-04-09
+  author: Jamis
+  content: "<p>@Tim, thanks for the tip! I actually looked at the accounting patterns
+    stuff a couple years ago, but this time around I realized that its time to just
+    make something work. I’ve been working on this app (in one form or another) for
+    over 6 years now. The current design may be fundamentally flawed—it seems to work
+    okay for me and my wife in practice, but who knows what’ll happen when more people
+    start really pounding it? At any rate, one of my secret hopes for this project
+    is that someone more accounting-savvy than myself will be inspired by some of
+    the ideas in BucketWise and will write something more robust. :)</p>\n\n\n\t<p>@Felipe,
+    there’s no real timeline for release yet, but I do intend to open-source it eventually.</p>"
+- date: 2009-04-09
+  author: Evgeny
+  content: "<p>How weird that Steve wrote an article that touches exactly this same
+    subject, read it here : http://steve-yegge.blogspot.com/2009/04/have-you-ever-legalized-marijuana.html</p>"
+- date: 2009-04-10
+  author: Ron Lambkin
+  content: "<p>I respect your decision to keep BucketWise private for now. But I would
+    really like to read and study your rspec/cucumber files. It would be a great exercise
+    to create the application on my own using your specifications.</p>\n\n\n\t<p>And
+    as to getting some feedback from the <span class=\"caps\">CPA</span> types, that
+    would likely understand specifications better than code.</p>"
+- date: 2009-04-10
+  author: Jamis
+  content: "<p>@Ron, what makes you think I’m using rspec or cucumber? I’m a test/unit
+    man.</p>"
+- date: 2009-04-11
+  author: Jason Z
+  content: "<p>I really like the concept of the “aside” fund and allocating credit
+    card purchases for immediate repayment. Great idea!</p>"
+- date: 2009-04-13
+  author: Melvin R.
+  content: "<p>Looks like a practical app. I think I’ll like it… and so will many
+    others. One suggestion: Consider changing the header color. A forest green would
+    suite it well.</p>"
+- date: 2009-04-13
+  author: Jamis
+  content: "<p>@Melvin, you know, I thought you might be right, so I gave it a try.
+    But a dark header band makes the page feel top-heavy to me. At any rate, when
+    I open up the source code (in the near future) I will certainly invite design
+    patches; my own design-fu is weak, and I’m just doing enough to make it usable
+    for yours truly.</p>"
+- date: 2009-04-17
+  author: Melvin R.
+  content: "<p>Try #ABE8AE . I’ll play with it once you get it on github :D</p>"
+- date: 2009-04-19
+  author: Andrew Roth
+  content: "<p>My friend made a buckets budgeting implementation for his personal
+    use and made it public: http://github.com/twinge/money-buckets/tree/master</p>\n\n\n\t<p>Haven’t
+    used yours or his but maybe some will find it useful.</p>"

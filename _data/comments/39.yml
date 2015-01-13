@@ -1,0 +1,745 @@
+---
+- date: 2009-02-24
+  author: Dr Nic
+  content: "<p>Nothing wrong with starting projects and abandoning them (publicly
+    or otherwise). I hope so anyway. Else I am going to hell.</p>\n\n\n\t<p>Thanks
+    for Capistrano + its underlying dependencies. They make life better.</p>"
+- date: 2009-02-24
+  author: Zack Ham
+  content: "<p>Capistrano is a great tool, most people I work with use it daily without
+    any complaints.  I would say you took it as far as anyone could have hoped.  Thanks
+    for all the work, looking forward to what you decide to work on next.</p>"
+- date: 2009-02-24
+  author: Nathan de Vries
+  content: "<p>Hi Jamis,</p>\n\n\n\t<p>I think it goes without saying that you’ve
+    done a fantastic job on all these projects. For one, Capistrano has been (and
+    will continue to be) a huge part of my every day development process. I’m sure
+    the same can be said for most other Rails developers out there. It’s become one
+    of those rock-solid tools that gets out of your way and is easy to forget – something
+    that not many tools achieve.</p>\n\n\n\t<p>Good luck with the development reboot.
+    Hopefully you can get back to having fun with what you’re good at, without the
+    burden of supporting an entire community.</p>\n\n\n\t<p>Cheers,</p>\n\n\n\t<p>Nathan
+    de Vries</p>"
+- date: 2009-02-24
+  author: Tyler Bird
+  content: "<p>Thank you for all the countless hours of hard work and effort you’ve
+    put into Capistrano and other Ruby libraries.</p>\n\n\n\t<p>I’m looking forward
+    to hearing about what fun stuff you cook up!</p>\n\n\n\t<p>There is no doubt in
+    my mind, the best is yet to come.</p>"
+- date: 2009-02-24
+  author: S. Brent Faulkner
+  content: "<p>So Long, and Thanks for All the Fish</p>\n\n\n\t<p>Seriously, thanks
+    for all you contributions (thus far) and have fun!</p>"
+- date: 2009-02-24
+  author: Mike Sax
+  content: "<p>Jamis, a very heartfelt thank you and good luck.</p>"
+- date: 2009-02-24
+  author: Eric Allam
+  content: "<p>Thank you for capistrano.  When I come across a project that doesn’t
+    use capistrano the first thing I have to do is capify.  It has probably saved
+    me hundreds of hours of headaches and general bad feelings, so instead of worrying
+    about deploying code I could write code, which I actually love to do.  Good luck
+    on your future projects.</p>"
+- date: 2009-02-24
+  author: Radar
+  content: "<p>Thanks for capistrano! Deployment is very, very easy with it and I
+    can’t imagine life without it.</p>"
+- date: 2009-02-24
+  author: Dr Nic
+  content: "<p>Jamis, just to ask about your process of managing the projects up until
+    now – were there ever “core contributors” who could be all added to the rubyforge
+    project’s admin so they can start releasing new versions? Or did you ask all of
+    them and no one said they’d take over the project?</p>"
+- date: 2009-02-24
+  author: Mike Champion
+  content: "<p>I’ve been using Capistrano from back when it was still called Switchtower
+    and it has been a huge help. Looking forward to finding out what catches your
+    (non-woodworking) interest next!</p>"
+- date: 2009-02-24
+  author: Jamis
+  content: "<p>@Nic, no, there are no other core contributors. I tried once to create
+    something like that, but no one else seemed to have the “passion” or “vision”.
+    Lots of people submitting patches (many of them quite good!), but no one demonstrating
+    a real, general desire to dig into the internals. That’s kind of why I left it
+    like I did—there really wasn’t any heir-apparent that the keys could be left to.</p>\n\n\n\t<p>That
+    said, if someone steps forward and seems to be getting community support (for
+    any of the projects) behind them, I’ll be happy to give them admin access to the
+    appropriate rubyforge pages.</p>"
+- date: 2009-02-24
+  author: bendycode
+  content: "<p>Thank you Jamis for Capistrano and Net::SSH</p>\n\n\n\t<p>I’m guessing
+    that the open source killer app that is Github will allow continuing development
+    to proceed as needed, and people will step forward to support the toolkits as
+    well.</p>\n\n\n\t<p>Enjoy your fresh start!</p>"
+- date: 2009-02-24
+  author: Ben Hoskings
+  content: "<p>Thanks for your work on these projects, Jamis, especially Capistrano,
+    which I use a lot. Take care.</p>"
+- date: 2009-02-24
+  author: Danny Burkes
+  content: "<p>Thanks for such a great, reliable tool, Jamis.  I couldn’t imagine
+    my last three years of deploying Rails apps without Capistrano.</p>"
+- date: 2009-02-24
+  author: Cameron Barrie
+  content: "<p>Thanks for an awesome set of tools Jamis. They’ve all become daily
+    tools in my job.\nI don’t at all blame you for wanting to move on, it totally
+    makes sense. \nGood luck in whatever your latest project(s) are.</p>\n\n\n\t<p>Thanks
+    again,\nC</p>"
+- date: 2009-02-24
+  author: phil76
+  content: "<p>Jamis, thanks for all your great work for the Ruby and Rails community,
+    and all the best for your new projects, be they personal or code-related!</p>"
+- date: 2009-02-24
+  author: Steven Hansen
+  content: "<p>Thanks Jamis,</p>\n\n\n\t<p>I’ve been using Capistrano and Net::SSH
+    for years and I really appreciate your work on these tools.</p>"
+- date: 2009-02-24
+  author: Bradly Feeley
+  content: "<p>Thanks for all the hard work you put into these libraries. Rails would
+    not be where it is at today without your work.</p>"
+- date: 2009-02-24
+  author: Kenneth Kalmer
+  content: "<p>Thanks Jamis, your packages have made a big difference to many of us
+    and certainly empowered us in ways we didn’t know possible.</p>\n\n\n\t<p>All
+    the best with the blank slate, hope it turns out to be even more spectacular than
+    the current one.</p>"
+- date: 2009-02-24
+  author: Matt
+  content: "<p>Wow – I’m actually quite shocked about this!</p>\n\n\n\t<p>Thank you
+    for Capistrano, and for turning the dreaded deploy into a pleasurable experience.</p>"
+- date: 2009-02-25
+  author: Raul Murciano
+  content: "<p>Jamis, you’ve worked very hard on Capistrano and Net::SSH family and
+    it ended being an invaluable helper for many sysadmins, thank you very much!!!</p>"
+- date: 2009-02-25
+  author: Gaveen
+  content: "<p>I don’t know what to say. Capistrano is one of the tools I started
+    to love the most after I moved in to the Ruby scene. Thanks you Jamis, for Capistrano
+    and Net::SSH.</p>\n\n\n\t<p>I think I feel the same way I feel about the stepping
+    down of current Sri Lankan Cricket captain: You managed great deeds, we all are
+    grateful and would love to have you remained. But we respect your decision. We
+    know you wouldn’t be doing this unless you really had to.</p>\n\n\n\t<p>Hope to
+    see you with great code and great projects. Good luck!</p>"
+- date: 2009-02-25
+  author: Lakshan
+  content: "<p>@jamis thanks for your awesome work with capistrano and Net::SSH..it
+    saved me from fierce nightmares of sys-admin..hope someone will take the initiative
+    to lead the projects.</p>"
+- date: 2009-02-25
+  author: Chris
+  content: "<p>Thanks for all your hard work on these projects, Jamis. They’ve made
+    my life, and I’m sure that of many other coders, much easier. Good luck!</p>"
+- date: 2009-02-25
+  author: joost
+  content: "<p>Thanks Jamis for all the work you have done. You have really moved
+    the Ruby on Rails field forward, it could not have blossomed so well as it did
+    without you. When one door closes, another opens. Tacky I know, but this might
+    be just the thing for someone else to pick up where you have left. By open source’s
+    nature that is bound to happen some day.</p>"
+- date: 2009-02-25
+  author: Johan
+  content: "<p>I can only join in on the wave of thankfulness. Accepting the fact
+    that these things might be better off in someones elses hands is always a though
+    decision, but it sounds like it’s the right thing to do if you’re feeling the
+    burnout.</p>\n\n\n\t<p>But, I do hope you’ll transfer any (rubyforge etc) project
+    administering rights to whoever steps up for the job. \nThe art of release management
+    seems to be slowly dying in these parts of the Ruby community. There’s still those
+    of us, and our sysadmins, who feel that “just download whatever the latest <span
+    class=\"caps\">HEAD</span> is” isn’t always a proper strategy for production level
+    \ things, despite the fact that we have a certain level of trust in certain authors
+    like yourself.</p>"
+- date: 2009-02-25
+  author: Simone Carletti
+  content: |-
+    <p>Thanks for your awesome contribution to the Rails deployment experience.
+    Good luck Jamis, enjoy your new free time.</p>
+- date: 2009-02-25
+  author: Michael
+  content: |-
+    <p>Hi Jamis,
+    Just wanted to say thank you so much for all the effort. I mainly use Capistrano and it’s a fantastic tool. Hope you feel more relaxed an I’m looking forward to (hopefully) see new tools.</p>
+- date: 2009-02-25
+  author: Rafa
+  content: "<p>I’m surprised about your decision, but it’s your decision. You did
+    great changes in rails world.</p>\n\n\n\t<p>Thanks Jamis!</p>"
+- date: 2009-02-25
+  author: Thijs
+  content: "<p>Thanks, You’ve definitively made my life better with these tools!</p>"
+- date: 2009-02-25
+  author: Chris McGrath
+  content: "<p>Thanks Jamis, don’t know how I’d have survived without Capistrano these
+    last few years!</p>"
+- date: 2009-02-25
+  author: LacKac
+  content: "<p>This was shocking news, but understandable. Thanks Jamis for all the
+    work you’ve done.</p>"
+- date: 2009-02-25
+  author: Martin DeMello
+  content: "<p>thanks for some excellent libraries!</p>"
+- date: 2009-02-25
+  author: Louis Rose
+  content: "<p>Thanks for Net::SSH and Capistrano. I use them often, and they make
+    my job easier!</p>\n\n\n\t<p>Enjoy the peace and quiet :)</p>"
+- date: 2009-02-25
+  author: Jeremy
+  content: "<p>Thanks Jamis for all your effort, Capistrano and net-ssh save my mind
+    every days. Hope to see you later !</p>"
+- date: 2009-02-25
+  author: David Backeus
+  content: "<p>Thanks!</p>"
+- date: 2009-02-25
+  author: Jean-Philippe M.
+  content: "<p>Just a thank you for changing lives of devs and sysadmins.</p>\n\n\n\t<p>I
+    hope you will find another great project to have fun with.</p>"
+- date: 2009-02-25
+  author: Jaime Iniesta
+  content: <p>Jamis, thanks a <span class="caps">LOT</span> for your creations! The
+    community will take good care of them, for sure!</p>
+- date: 2009-02-25
+  author: Anton
+  content: "<p>Thanks for all your hard work on Capistrano. It really is a godsend
+    for the community and makes our lives so much easier.</p>"
+- date: 2009-02-25
+  author: Morgan Roderick
+  content: "<p>Thanks for all the work you have put into making everything easier
+    for everyone :-)</p>"
+- date: 2009-02-25
+  author: Thomas Watson
+  content: "<p>Hi Jamis</p>\n\n\n\t<p>Sad to hear, but very understandable. Capistrano
+    have meant a lot for my business – it makes our life’s so much easier. Good luck
+    in the future and I look forward to see what projects you take on next :)</p>"
+- date: 2009-02-25
+  author: Mark Turner
+  content: "<p>Hey, Jamis. Thank you so much for Capistrano! I use it daily and enjoy
+    it immensely.</p>"
+- date: 2009-02-25
+  author: Raecoo
+  content: "<p>thank you make it :)</p>"
+- date: 2009-02-25
+  author: Josh Miller
+  content: <p><span class="caps">NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO</span>!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</p>
+- date: 2009-02-25
+  author: Dan Pickett
+  content: "<p>Hey, Jamis – I can’t help but echo everyone’s thanks for Cap. It took
+    me a while to get used to the name (I thought  switchtower was a cool name :-)
+    )</p>\n\n\n\t<p>Using it daily I have a high appreciation for how easy it is deploy
+    applications now. You made that happen.</p>\n\n\n\t<p>Thanks again – I’m looking
+    forward to checking out a cool new project from you.</p>"
+- date: 2009-02-25
+  author: John
+  content: "<p>Cap is a huge help to every single person who does serious Rails work.
+    Maybe in the future you’ll be able to monetize it somehow, it’s definitely worth
+    paying for. Either way it’s something you can be extremely proud of.</p>"
+- date: 2009-02-25
+  author: Mora
+  content: "<p>Good luck and thanks very much for all your codes.</p>"
+- date: 2009-02-25
+  author: Abraão Coelho
+  content: "<p>Well… just thanks =) I think nothing can explain better than that how
+    gratefull we all are! Thanks!</p>"
+- date: 2009-02-25
+  author: Larry
+  content: "<p>Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank
+    you. Thank you. Thank you. Thank you. Thank you.</p>"
+- date: 2009-02-25
+  author: David
+  content: "<p>Great  work sir, Cap is one of the core tools that made RoR a joy to
+    work with and the standard that all other deployment tools will be held to – your
+    work is done here, go have a beer ;)</p>"
+- date: 2009-02-25
+  author: Brian
+  content: "<p>Thank you sir, for some of the best and most useful Ruby/Rails code
+    ever written.  The debt of gratitude that the community owes you can never be
+    expressed in words.</p>"
+- date: 2009-02-25
+  author: Phill
+  content: "<p>Thanks for a great set of libraries!</p>"
+- date: 2009-02-25
+  author: Matt White
+  content: "<p>Thanks for building a great set of tools! I can’t really imagine deploying
+    rails apps without them…</p>"
+- date: 2009-02-25
+  author: Davis Zanetti Cabral
+  content: "<p>Thanks for building a great set of tools! I can’t really imagine deploying
+    rails apps without them… (+1)</p>"
+- date: 2009-02-25
+  author: Jamis
+  content: "<p>Thank-you, everyone. I’m really overwhelmed by the comments here and
+    on twitter. I, too, hope someone steps up to maintain these projects, and I’ll
+    be more than happy to give them the keys to the rubyforge projects. Regardless,
+    I hope the projects are still useful to people, whether someone is at the helm
+    or not. Thanks again, all!</p>"
+- date: 2009-02-25
+  author: ook
+  content: "<p>So, just a big big big thank you, Jamis. You achieve so cool and useful
+    piece of code for the community. Be sure that we’ll take good care of your children
+    :)</p>\n\n\n\t<p>I wish you a full bunch of successful stories for your private
+    life as for your (eventually public) projects.</p>"
+- date: 2009-02-25
+  author: Peter Dierx
+  content: "<p>Thanx Jamis for Capistrano.\nStill in use everyday.</p>\n\n\n\t<p>Now
+    take a nice vacation and show off your woodcarving skills.\nHow about a nice Twitter
+    bird?</p>"
+- date: 2009-02-25
+  author: Greg Edwards
+  content: "<p>Jamis,</p>\n\n\n\t<p>Capistrano is so extensively used that I wonder
+    if there would have been a place for you to put a PayPal link on your page and
+    say “Would you be interested in having Capistrano developed and supported? $5
+    (or some other obscenely low amount of money that everyone could pay up)”  I’ve
+    often wondered about open-source projects that are so helpful to people, and to
+    so many people, that could monetize them a bit to try to keep them alive—not sure
+    if it would work in the current environment, but it would be nice for the creators
+    if it did. Heck, if you put a link up for some form of payment I’d pay you $5
+    easily.</p>"
+- date: 2009-02-25
+  author: Jamis
+  content: "<p>@Greg, the thing is, I wasn’t burning out because I was doing this
+    for free. I was burning out because I didn’t have time to work on other projects
+    that were interesting me. Adding money to the mix wouldn’t have helped, it would
+    have made it worse, because it would have <em>increased</em> my sense of obligation,
+    and increased the sense of being “trapped” by Capistrano. I think it’s a common
+    misconception to think that getting paid for something compensates for a lack
+    of passion. Money cannot replace passion; all it does is add a sense of obligation.</p>\n\n\n\t<p>The
+    good news, though, is that I’ve had a few emails from folks interested in carrying
+    the torch. Hopefully they’ll announce their intention somewhere and the community
+    can start organizing around them.</p>"
+- date: 2009-02-25
+  author: Duff OMelia
+  content: "<p>Sounds great to me.  Folks can fork if they’d like to change things.
+    \ I’m excited to see the next things you get passionate about creating, now that
+    some of the millstones are removed.  Well done!</p>"
+- date: 2009-02-25
+  author: Jodi
+  content: "<p>Having read all the above “thank you”s Jamis, I can’t believe I hadn’t
+    said thanks before now.</p>\n\n\n\t<p>Your book was the content for my very first
+    writing job – the Capistrano chapter for The Rails Way. As much as I enjoyed the
+    process of writing, Capistrano was a fabulous product to write about.</p>\n\n\n\t<p>Thank
+    you again for your great and lasting contribution(s). Looking forward to hear
+    what your creative genius will next invest in.</p>"
+- date: 2009-02-25
+  author: Matthew King
+  content: "<p>Good projects will continue to be abandoned, because good coders get
+    bored working on the same thing ad aeternam.  The larger issue to be considered
+    in this context is the centralization encouraged by RubyGems, Rubyforge, and the
+    idea of the canonical incarnation of a project.  Communities like GitHub don’t
+    supply the full solution, because much of the problem is social:  how do I know
+    which incarnation to use?</p>\n\n\n\t<p>Experienced coders can make decent heuristical
+    guesses based on the messages in the commit log, the fork hierarchy, the recency
+    and spacing of commits.  This is not a solution to the immediate problems of people
+    who are just trying to accomplish a task.</p>"
+- date: 2009-02-25
+  author: Robby Colvin
+  content: "<p>I use Capistrano every day and wanted to just thank you for letting
+    the community use such a great tool. Don’t feel bad about letting it go—someone
+    will keep it going.</p>"
+- date: 2009-02-25
+  author: Laser
+  content: "<p>Capistrano sucks anyway.</p>"
+- date: 2009-02-25
+  author: Ryan Sobol
+  content: "<p>@James: Thank you for dedicating your craft to make all of our lives
+    better!</p>"
+- date: 2009-02-25
+  author: Micah
+  content: "<p>Thanks so much for all your hard work.  I’ve been a cap evangelist
+    since the first time I used it.  It just made sense, unlike all the other hair-brained,
+    half-baked solutions I’d used before.</p>\n\n\n\t<p>Oh, and thanks for your random
+    <span class=\"caps\">NPC</span> generator too.  I don’t think I ever said thanks
+    for that. ;)</p>"
+- date: 2009-02-25
+  author: Lee Hambley
+  content: "<p>Hi Jamis,</p>\n\n\n\t<pre><code>Excellent work over the course of the
+    project, Net::SSH and Capistrano are excellent tools, I do fear that inviting
+    people to fork them on GitHub will mean there isn't a definitive version for people
+    to use anymore.</code></pre>\n\n\n\t<p>I look forward to continuing your exceptional
+    work, and will be sad to see your influence on the Capistrano community … having
+    a go-to-guy has been good for people thus far, but I completely understand your
+    need to cut your losses before you fall out with contributing to open source.</p>\n\n\n\t<p>I’m
+    sad to see you go, and many people that rely on Capistrano will be reading this
+    announcement with much trepidation about the future of hassle free deployments!</p>\n\n\n\t<p>-
+    Lee Hambley</p>"
+- date: 2009-02-25
+  author: Peter
+  content: "<p>Jamis, you did a great job with Capistrano and now you’ve come to a
+    point where there’s hardly anything to improve. You can be proud of this and of
+    the fact that you made life easier for probably more people than you can imagine.
+    Good luck with your coming projects and let us hear what’s up next!</p>"
+- date: 2009-02-25
+  author: KIR Maximov
+  content: "<p>Thanks for the great tools, and good luck with your new projects!</p>"
+- date: 2009-02-25
+  author: Justin
+  content: "<p>My quality of life has improved because of Capistrano. Thank you so
+    much!</p>"
+- date: 2009-02-25
+  author: Dave grijalva
+  content: "<p>That decision is completely respectable. Thank you for all of your
+    hard work over the years. These tools have improved the lives of many people,
+    myself included. I can’t wait to see what you come up with next.</p>"
+- date: 2009-02-25
+  author: Sarah Mei
+  content: "<p>Jamis, I hope you start enjoying programming again. Thanks for all
+    the work up to now. As I’ve been diving into the cap internals I’m finding the
+    code immensely more solid and understandable than most of the other third-party
+    code I use. Much appreciated.</p>"
+- date: 2009-02-25
+  author: Emily
+  content: "<p>Just want to say thank you very much. Capistrano makes our life easier.
+    We use it everyday and thank you , thank you , thank you.</p>"
+- date: 2009-02-25
+  author: Ron Evans
+  content: "<p>Thank you for contributions to the community! But please do not forget
+    to appoint a successor, before you begin your retirement.</p>"
+- date: 2009-02-25
+  author: Jack
+  content: "<p>Another thank-you from someone who types “cap deploy” every day and
+    is amazed how smooth capistrano makes things</p>"
+- date: 2009-02-25
+  author: Jamis
+  content: "<p>@Ron, thanks! But I will not be appointing anyone. Either someone will
+    step up and carry the torch (in which case they’ll do it because they’re passionate
+    about it, and not because they were appointed), or no one will, in which case
+    an appointment would have failed too, because there’s no one passionate enough
+    about it.</p>"
+- date: 2009-02-25
+  author: choonkeat
+  content: "<p>Well deserved break. Thank you for Capistrano &amp; friends. Take care!</p>"
+- date: 2009-02-25
+  author: Matthijs Langenberg
+  content: |-
+    <p>So what’s the deployment strategy being used at 37Signals? I always thought about Capistrano as the open sourced 37Signals deployment tool.
+    Why isn’t it supported by the company?</p>
+- date: 2009-02-25
+  author: Jamis
+  content: "<p>@Matthijs, we use Capistrano. It isn’t supported by 37signals for the
+    same reason that Rails isn’t supported by 37signals: these aren’t corporate projects,
+    they’re spinoffs. They live or die by the support the community gives them.</p>"
+- date: 2009-02-25
+  author: Chad Fowler
+  content: "<p>Thank you, Jamis. Good decision if you’re burning out. Can’t wait to
+    see what you release next.</p>"
+- date: 2009-02-25
+  author: Emiel van de Laar
+  content: "<p>Hi Jamis. Thanks for all your work on the great projects. I’ve been
+    reading the source for Net::SSH and it’s a joy. :) Great stuff. Take a break and
+    hope you at least stick with the Ruby community. :)</p>"
+- date: 2009-02-25
+  author: François Montel
+  content: "<p>Thanks, Jamis, for all the work that you put into Capistrano/Net::SSH,
+    etc. You’ve given us a great boon and set a great example.</p>"
+- date: 2009-02-25
+  author: John Topley
+  content: "<p>Hey Jamis. Thanks for making our lives better by writing these tools
+    and good luck with whatever you decide to do next!</p>"
+- date: 2009-02-25
+  author: Joseph Jaramillo
+  content: "<p>Many, many thanks.  Capistrano has made my life much better.  Good
+    luck on your new endeavors.</p>"
+- date: 2009-02-25
+  author: Joe Martinez
+  content: "<p>Thanks much for cap, learned lots from the source :)</p>"
+- date: 2009-02-25
+  author: Kunio
+  content: "<p>A heartfelt thanks for the tools you gave the community, including
+    the Japanese Rubyists!</p>"
+- date: 2009-02-25
+  author: Geoffrey Grosenbach
+  content: "<p>Thank you, Jamis, for your hard work and your gifts to the community.</p>"
+- date: 2009-02-25
+  author: Matt Allen
+  content: "<p>Jamis;</p>\n\n\n\t<p>Well done on making this call.  I have seen too
+    many developers drive themselves into the ground, myself included.</p>\n\n\n\t<p>Life
+    &gt; Work.</p>\n\n\n\t<p>Matta</p>"
+- date: 2009-02-25
+  author: Sam Granieri Jr
+  content: "<p>Thank you Jamis, for the excellent work you’ve put in on Capistrano,
+    NetSSH, and Sqlite3. You’ve been a prolific member of the ruby community and your
+    (temporary) leave of absence will be much deserved.</p>\n\n\n\t<p>I’ve used capistrano
+    daily at work and it’s a wonderful tool. I also like that you got sqlite3 running
+    on ruby 1.9 when you did.</p>\n\n\n\t<p>I’m definitely raising a beer in your
+    honor tonight. If your’e ever in Chicago, i’ll buy you one</p>"
+- date: 2009-02-25
+  author: well done sir
+  content: "<p>Jamis, thanks for the great work on Capistrano.</p>"
+- date: 2009-02-25
+  author: Adam Grant
+  content: "<p>Thank Jamis!</p>\n\n\n\t<p>I have to admit, I found Capistrano a little
+    too bulky, so I went with the Cap spin-off, Vlad. If it wasn’t for all your hard
+    work and great ideas put into Cap though, Vlad wouldn’t exist! But now I wanted
+    to roll my own deployment library for grins and giggles, and I decided to use
+    your awesome Net::SSH library. Full circle baby!</p>\n\n\n\t<p>Good luck!</p>"
+- date: 2009-02-25
+  author: smeade
+  content: "<p>Jamis, \nThanks for tools and community advice that has helped me put
+    food on my family’s table.  Well done.  Now, let’s see more of those wood carving
+    pieces!</p>"
+- date: 2009-02-25
+  author: Walter Smith
+  content: "<p>Thanks Jamis!</p>\n\n\n\t<p>Good to know you’ll still be using Capistrano
+    yourself…until another maintainer is elected by acclamation I guess we just need
+    to know whose repo you’re pulling 37signals’s copy from. :)</p>"
+- date: 2009-02-25
+  author: Jason Amster
+  content: "<p>Definitely thanks, although it seems not enough.  You made my life
+    way better with this!</p>"
+- date: 2009-02-25
+  author: Edward Kim
+  content: "<p>Thanks for capistrano. Its probably saved us countless hours on picwing.com.
+    Good luck!</p>"
+- date: 2009-02-25
+  author: Wyatt Greene
+  content: "<p>Your code has made my life easier.  Thank you!</p>"
+- date: 2009-02-25
+  author: Ryan Waldron
+  content: "<p>If Cap and Net::SSH are what you do when you’re burned out, I can’t
+    <strong>wait</strong> to see what awesomeness is coming when you’re energized
+    again. :)  Thanks for everything so far!</p>"
+- date: 2009-02-25
+  author: Mirko Froehlich
+  content: "<p>Thanks a lot for your hard work on creating Capistrano and related
+    libraries!</p>\n\n\n\t<p>I remember deploying Rails apps before Capistrano (or
+    rather Switchtower back then) came along, and it’s hard to imagine not having
+    Capistrano these days. Much appreciated!</p>"
+- date: 2009-02-25
+  author: Bob Martens
+  content: "<p>Let me echo the thoughts of so many others in saying “thanks” for all
+    of your work in the past, present, and continuing in the future. You’ve been an
+    inspiration for many, and your code has been inspiration in its own right.</p>\n\n\n\t<p>I
+    will continue to use Capistrano as long as I am able, and thank you greatly for
+    all of your efforts.</p>"
+- date: 2009-02-26
+  author: Giles Bowkett
+  content: "<p>Cap’s awesome, you should be proud. Nothing wrong with letting people
+    maintain it for you, likewise the other stuff. Gotta avoid burnout, it’s the devil
+    and then some.</p>"
+- date: 2009-02-26
+  author: Matt Jaynes
+  content: "<p>Cap’s been a life saver – thanks so much for your work! I’m sure that
+    good karma will follow you for a long long time.</p>"
+- date: 2009-02-26
+  author: ikasamt
+  content: "<p>Thanks Jamis++!</p>"
+- date: 2009-02-26
+  author: Jeremy Hinegardner
+  content: "<p>Jamis, your work is awesome, thank you for the time and dedication
+    you have given over the years.</p>"
+- date: 2009-02-26
+  author: Ivan V.
+  content: "<p>So Vlad won!? Heh, just kidding, I use cap every day!</p>\n\n\n\t<p>Your
+    work was awesome and will be missed! (unless you’re planning to release another
+    amazing tool?)</p>\n\n\n\t<p>Thanks Jamis!</p>"
+- date: 2009-02-26
+  author: Conrad Taylor
+  content: <p>Hey Jamis, I would like to wish you all the best because you have done
+    an <span class="caps">AWESOME</span> job as the lead person on these projects.  Finally,
+    here’s another opportunity for someone to give back to the community.  Thanks
+    again.</p>
+- date: 2009-02-26
+  author: Tim Harper
+  content: "<p>I completely understand.  You’re so much more useful to the world if
+    you’re enjoying what you’re working on.</p>\n\n\n\t<p>Capistrano has been a part
+    of every project I’ve ever developed.  It’s been a fantastic tool, with very few
+    bumps along the way.  Net::SFTP has totally helped us in deploying non-versioned
+    large files across our cluster.</p>\n\n\n\t<p>God speed!</p>"
+- date: 2009-02-26
+  author: Grant Hutchins
+  content: "<p>Your work is great, and this was a very classy way to step down.</p>\n\n\n\t<p>All
+    too often projects get abandoned without any indication, and your public announcement
+    definitely helps the community move forward more smoothly.</p>"
+- date: 2009-02-26
+  author: brez
+  content: "<p>Appreciate the work, Jamis – great product, looking forward to seeing
+    what you got next.</p>"
+- date: 2009-02-26
+  author: Loren Olson
+  content: "<p>Jamis, thanks for your excellent work. Best wishes for your future
+    endeavors.</p>"
+- date: 2009-02-26
+  author: Empty
+  content: "<p>Thank you so much Jamis for all of your hard work. I’ve been an admirer
+    for quite a few years. These sort of decisions are very tough.  I also recently
+    had to pull away from some projects and a weekly podcast because it was become
+    too much for me and my family. I wish you the best, and look forward to seeing
+    your future endeavors.</p>"
+- date: 2009-02-26
+  author: Jeff Judge
+  content: "<p>Thanks Jamis, Capistrano has been an immensely useful tool in making
+    all of our lives easier.</p>"
+- date: 2009-02-26
+  author: Ryan Walker
+  content: "<p>Thank you for your hard work on these awesome projects, Jamis. You’ve
+    made an admirable decision to pass the torch to the community, I look forward
+    to what “unleashed” Jamis comes up with next, you’ve set a high bar :)</p>"
+- date: 2009-02-26
+  author: Matt Mitchell
+  content: "<p>Thanks Jamis. I really appreciate all of the help and amazing work
+    you’ve done. You’re awesome, and I wish you the best of luck.</p>"
+- date: 2009-02-27
+  author: Peter Marklund
+  content: "<p>Jamis,\nthanks for your awesome contributions to the Ruby and Rails
+    toolset. I have been using Capistrano happily for several years now without problems.
+    It’s great that you are so honest and clear about your decisions. Good luck with
+    your future projects, whatever they may be.</p>\n\n\n\t<p>Regards</p>\n\n\n\t<p>Peter</p>"
+- date: 2009-02-27
+  author: Jarin Udom
+  content: "<p>Thanks Jamis, Capistrano rocks and you rock. Looking forward to whatever
+    you put out next!</p>"
+- date: 2009-02-27
+  author: Mark Rafter
+  content: "<p>Jamis,</p>\n\n\n\t<p>Thank you for Capistrano, its a wonderful tool.
+    \ \nIt saved me countless hours of pain, and without it\nI am certain that the
+    project I was working on would have failed.</p>\n\n\n\t<p>Many Thanks – Mark Rafter</p>"
+- date: 2009-02-28
+  author: Taylor Carpenter
+  content: "<p>Thank you for all your work on Cap and Net::SSH as well as putting
+    all the time into trying to leave the projects in the best way you felt you could.
+    \ Many people would have not deliberated and worked on a solution for months as
+    you have.</p>\n\n\n\t<p>Both of these projects have made an impact in my work.
+    \ I had one project where Net::SSH worked when nothing else did (include Perl
+    and Python libs) when working with an old Sun box with a proprietary <span class=\"caps\">SSH</span>
+    server.  Thanks again and good luck.</p>"
+- date: 2009-02-28
+  author: Sebastian
+  content: "<p>Wow…don’t think I’ve ever seen so many “thank yous” in the comments
+    for a blog post.</p>\n\n\n\t<p>Thanks a million Jamis for making an awesome tool
+    that has been a huge contribution to the Ruby/release community at large.</p>\n\n\n\t<p>Wishing
+    you all the best in your future efforts—hope you get jazzed about that next big
+    project! :)</p>"
+- date: 2009-02-28
+  author: Brenton Fletcher
+  content: "<p>Just wanted to add my name to the list of people you’ve helped with
+    the development of Capistrano, and I can’t wait to see what comes next!</p>"
+- date: 2009-03-01
+  author: Alex Sharp
+  content: "<p>Capistrano has made the principle of “deploy often and early” accessible
+    to untold numbers of developers, businesses and entrepreneurs. Your contribution
+    is immeasurable. Thanks.</p>"
+- date: 2009-03-02
+  author: Thiago Christof
+  content: "<p>Thank you!</p>"
+- date: 2009-03-02
+  author: Thibaut Barrère
+  content: "<p>Hi Jamie,</p>\n\n\n\t<p>just wanted to say thank you. Capistrano has
+    been helpful almost everyday and has also been very inspiring.</p>\n\n\n\t<p>you
+    are <strong>so</strong> right to move on and avoid burning out :)</p>\n\n\n\t<p>thanks!</p>\n\n\n\t<p>—Thibaut</p>"
+- date: 2009-03-03
+  author: Andrew Brown
+  content: |-
+    <p>Great run Jamis!
+    I’ve seen your hardword in the forums.
+    Your deserving of a long break.</p>
+- date: 2009-03-03
+  author: Harry Bishop
+  content: |-
+    <p>Thanks Jamis,
+      I recently made my first deployment with Capistrano.  With The Rails Way to guide me, the experience was like using a new power tool for the first time.  As a fellow woodworker, I appreciate a reliable tool that produces superior results in the final product.</p>
+- date: 2009-03-03
+  author: yukio
+  content: "<p>Thanks Jamis.</p>\n\n\n\t<p>Seriously, thanks for all you contributions.</p>"
+- date: 2009-03-03
+  author: Ed Allen
+  content: "<p>Thanks so much, Jamis. Capistrano is a great tool. Enjoy your recharge
+    time and next project. I’m looking forward to seeing anything you release.</p>"
+- date: 2009-03-03
+  author: paco
+  content: "<p>arigato!</p>"
+- date: 2009-03-04
+  author: yosuke.hara@Tokyo
+  content: "<p>It was very shocking news for me and Ruby developers.\nThank you for
+    your great works.</p>\n\n\n\t<pre><code>'Doh-mo-Arigato!'</code></pre>"
+- date: 2009-03-04
+  author: MJ
+  content: "<p>Take it easy! You’ve done a lot of good things for us all. Thanks and
+    take care.</p>"
+- date: 2009-03-04
+  author: neerfri
+  content: "<p>Capistrano will continue evolving, as we all can no longer deploy without
+    it ;-)</p>\n\n\n\t<p>Thanks Jamis, for all the time and care you’ve given until
+    now.</p>"
+- date: 2009-03-04
+  author: hiro
+  content: "<p>Thanks Jamis, you’ve earned the break! Our site (one of the top 10
+    in japan) is entirely ruby-free, except for cap – we deploy with it about 5 times
+    a day, so words aren’t really enough to express our appreciation. I was too thoughtless
+    to thank you until i read this news – suffice it to say your efforts were appreciated
+    by 10s of thousands of people from around the globe.</p>\n\n\n\t<p>good luck with
+    wherever the future takes you!</p>"
+- date: 2009-03-04
+  author: Michelangelo
+  content: "<p>Jamis, thank you for your great work and good luck with your new project.</p>"
+- date: 2009-03-04
+  author: jwilkins@bitland.net
+  content: "<p>I just wanted to add my thanks.  Capistrano is an amazingly useful
+    tool and all of your efforts are greatly appreciated.</p>"
+- date: 2009-03-05
+  author: daniel lopes
+  content: "<p>Thanks for capistrano Jamis, a really great tool. Only sad thing about
+    it is we will no take any good new version or patch coded by you.</p>"
+- date: 2009-03-06
+  author: Stanislav Bozhkov
+  content: "<p>10x and from our Rails team . It’s awesome tool and we use it every
+    day.</p>\n\n\n\t<p>I hope you will find your new passions and new interesting
+    projects to invest your time in.</p>"
+- date: 2009-03-06
+  author: BJ Neilsen
+  content: "<p>Thanks Jamis for a great product and service to us all, I value your
+    honesty with the community. Good luck on future projects!</p>"
+- date: 2009-03-06
+  author: Tom Macklin
+  content: "<p>As a father and a programmer, I was always in awe of your ability to
+    raise a family and also code for fun and profit, not to mention deal with the
+    drudgery of managing open source projects that provide neither.</p>\n\n\n\t<p>I
+    use sqlite3-ruby all the time, and I am surprised so few comments mention it.
+    \ Hopefully we can all come tother and give it the <span class=\"caps\">TLC</span>
+    it deserves.</p>\n\n\n\t<p>After all, every ‘parent’ has to kick his ‘babies’
+    out the door some day and let them sink or swim on their own!</p>"
+- date: 2009-03-06
+  author: albemuth
+  content: "<p>At least you didn’t pull a Zed Shaw on us :P</p>"
+- date: 2009-03-06
+  author: Mr. P.C.
+  content: "<p>Hi Jamis,</p>\n\n\n\t<p>Thank you so much for everything you have given
+    to the online community. Aside from any project or product, time is the most valuable
+    commodity in the world, and you have given so much of yours to help the ‘greater
+    good’.</p>\n\n\n\t<p>Your post for me comes to down to ‘balance’ (whether work/life
+    or other personal challenges) and the fact that nothing is forever.</p>\n\n\n\t<p>This
+    message was timely for me as well, as I am going through the situation of closing
+    down a company that I have built over the past few years. While I know in my heart
+    nothing can be forever, the ‘human’ in me has a hard time letting go of something
+    that I have put so much time and energy in to. It is reassuring to hear the perspectives
+    of others who have struggled with similar issues and come out ‘alive’ on the other
+    side.</p>\n\n\n\t<p>Your contributions to Capistrano and other tools have brought
+    success, happiness and profit to many who have used them. Your insights now are
+    thoughtful and heartfelt, and will surely leave an impact on your readers much
+    like Cap has left on it’s users.</p>\n\n\n\t<p>Thanks for everything.</p>"
+- date: 2009-03-09
+  author: burris
+  content: "<p>I’m looking forward to your future open source projects, which I’m
+    sure will be as great as Capistrano and all the others.  Thank you so much.</p>"
+- date: 2009-03-09
+  author: Cristian R. Arroyo
+  content: "<p>Thank you for inspiring a new wave of automated deployment solutions.
+    You’ve made a real difference in the Rails community. My sincere admiration and
+    best wishes for your future projects.</p>\n\n\n\t<p>Greetings from Argentina,
+    home of Tango, Maradona &amp; Dulce de Leche!</p>"
+- date: 2009-03-12
+  author: Jeff
+  content: "<p>Quitter.</p>"
+- date: 2009-03-13
+  author: dubek
+  content: "<p>Thank you very much! I use Capistrano for more than 2 years (and will
+    continue to use it), and it’s been great.</p>\n\n\n\t<p>Good luck on your new
+    projects.</p>"
+- date: 2009-03-14
+  author: George
+  content: "<p>Thank you so much for Capistrano. It is amazing tool for which many,
+    many people are grateful. Good luck with whatever you decide to do next.</p>"
+- date: 2009-03-29
+  author: JohnW
+  content: "<p>Thank you Jamis, Net::SSH has been an invaluable tool for several projects
+    over last few years, and just discovering the joys of capistrano – best of luck
+    with the future.</p>"
+- date: 2009-03-30
+  author: Elisabeth
+  content: "<p>Capistrano made my life easier and saved my sanity. Thank you for everything.
+    I look forward to whatever you come up with next.</p>"

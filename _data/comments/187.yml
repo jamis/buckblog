@@ -1,0 +1,89 @@
+---
+- date: 2006-10-26
+  author: Justin French
+  content: "<p>Thank you so much for these write-ups Jamis.  I’m resisting the urge
+    to say “why isn’t this in rails core?”, but thank you all the same.  My donation
+    to the cause is on it’s way :)</p>"
+- date: 2006-10-27
+  author: jeroen@supercool.nl
+  content: "<p>Cool stuff!</p>\n\n\n\t<p>Probably a bit off topic, but I was doing
+    some routes stuff the other day. I wanted to generate routes depending on certain
+    queries. It look something like:</p>\n\n\n\t<p>if Section.count &gt; 0\n   map.something
+    = \nelse\n # bla\nend</p>\n\n\n\t<p>What suprised me was that when I re-created
+    the DB and did a rake:schema:import rails threw an error saying the table “sections”
+    doesn’t exist. I wonder why rails loads the routes on a schema:load</p>\n\n\n\t<p>I’ll
+    have to look at the rakefile and see if this can be fixed, but probably setting
+    up routes is just part of the same bootstrapping, no matter whether you start
+    a console, server or rake script.</p>\n\n\n\t<p>Anyways, keep up the good work!</p>\n\n\n\t<p>Jeroen</p>"
+- date: 2006-10-27
+  author: Jamis
+  content: "<p>Justin, thank-you! Regarding why this isn’t in core: this is only half
+    of the solution. You’ll notice, if you actually try to use it, that route generate
+    is a little wonky now, unless you use named routes exclusively. Route generation
+    is hard to make work with the host/domain/subdomain thing, because route generation
+    has no access to the request. In fact, route generation does not generate the
+    host portion of the <span class=\"caps\">URL</span>; it generates only the path.
+    It’s a hard problem.</p>\n\n\n\t<p>Jeroen, yah, routing is loaded by <code>Rails::Initializer</code>
+    on bootstrap, so it’ll get loaded by simple rake tasks. Note that you probably
+    don’t want to put queries in the routes.rb itself, though, since that gets loaded
+    (in production) only once. If you want your routes to depend on info in the database,
+    you’ll need to dig in and actually monkeypatch the route recognition/generation
+    routines themselves.</p>"
+- date: 2006-10-28
+  author: jeroen@supercool.nl
+  content: "<p>Thanks for that Jamis. I realised the fact the it only gets loaded
+    once in production, but I kind of found that interesting. Say you developed some
+    commercial blogging service and customers have to pay more to publish under multiple
+    topics. If you only have one topic, you don’t want example.com/defaulttopic/entries
+    – you just want example.com/entries or even just example.com/</p>\n\n\n\t<p>If
+    you know the customer hasn’t paid for multiple topics, you only have to find out
+    once and generate those short routes and never have to query the database again
+    to fetch the topics (there’s only one).</p>\n\n\n\t<p>Downside is you have to
+    restart the app when a customer upgrades his plan.</p>"
+- date: 2006-10-31
+  author: Chuck
+  content: "<p>Wonderful! I was procrastinating on more routing research, and I suppose
+    it was all for a good reason in the end. Thanks for this lovely gem Jamis!</p>"
+- date: 2006-11-13
+  author: ijin
+  content: "<p>Hmm, your plugin gives me the following error and I am not able to
+    start the server. What could cause this? (ruby1.8.4/rails1.1.6)</p>\n\n\n\t<ol>\n\t<li>ruby
+    script/plugin install http://svn.jamisbuck.org/rails-plugins/routing_tricks/\n+
+    ./routing_tricks/README\n+ ./routing_tricks/Rakefile\n+ ./routing_tricks/init.rb\n+
+    ./routing_tricks/lib/jamis_buck/routing/dsl.rb\n+ ./routing_tricks/lib/jamis_buck/routing/route.rb\n+
+    ./routing_tricks/lib/jamis_buck/routing/routeset.rb\n+ ./routing_tricks/test/host_test.rb\n+
+    ./routing_tricks/test/redirect_test.rb\n+ ./routing_tricks/test/test_helper.rb</li>\n\t\t<li>ruby
+    script/server\n=&gt; Booting WEBrick…\n/usr/local/lib/ruby/gems/1.8/gems/activesupport-1.3.1/lib/active_support/dependencies.rb:123:in
+    `const_missing’: uninitialized constant Mapper (NameError)\n        from /usr/local/lib/ruby/gems/1.8/gems/activesupport-1.3.1/lib/active_support/dependencies.rb:133:in
+    `const_missing’\n        from script/../config/../vendor/plugins/routing_tricks/init.rb:6:in
+    `load_plugin’\n        from /usr/local/lib/ruby/gems/1.8/gems/rails-1.1.6/lib/initializer.rb:348:in
+    `load_plugin’\n        from /usr/local/lib/ruby/gems/1.8/gems/activesupport-1.3.1/lib/active_support/core_ext/kernel/reporting.rb:11:in
+    `silence_warnings’\n        from /usr/local/lib/ruby/gems/1.8/gems/rails-1.1.6/lib/initializer.rb:348:in
+    `load_plugin’\n        from /usr/local/lib/ruby/gems/1.8/gems/rails-1.1.6/lib/initializer.rb:158:in
+    `load_plugins’\n        from /usr/local/lib/ruby/gems/1.8/gems/rails-1.1.6/lib/initializer.rb:158:in
+    `load_plugins’\n        from /usr/local/lib/ruby/gems/1.8/gems/rails-1.1.6/lib/initializer.rb:102:in
+    `process’\n         ... 7 levels…\n        from /usr/local/lib/ruby/gems/1.8/gems/rails-1.1.6/lib/commands/server.rb:30\n
+    \       from /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:21:in
+    `require’\n        from /usr/local/lib/ruby/gems/1.8/gems/activesupport-1.3.1/lib/active_support/dependencies.rb:147:in
+    `require’\n        from script/server:3</li>\n\t</ol>"
+- date: 2006-11-13
+  author: Jamis
+  content: "<p>ijin, this plugin (and all the routing stuff I’ve blogged about recently)
+    requires edge rails (or rails 1.2, when it is released). The routing code changed
+    significantly since 1.1.6, which is the primary reason I’ve been writing about
+    it. Sorry I wasn’t clearer about that.</p>"
+- date: 2006-11-13
+  author: ijin
+  content: "<p>Jamis, thanks for the response. I’ll give edge rails a try.</p>"
+- date: 2006-11-16
+  author: Graham
+  content: "<p>Hi Jamis,\nThanks for this write up, it’s very useful.  One question—how
+    would I access the value of the subdomain from the controller that I’ve routed
+    to? For example, let’s say I connected ”/” to the “admin” controller, but I wanted
+    to use the value of the subdomain in a function within that “admin” controller
+    after the connect. Any ideas?</p>\n\n\n\t<p>Thanks,\nGraham</p>"
+- date: 2006-11-16
+  author: Jamis
+  content: "<p>Graham, the request object gives you the subdomains you need. Just
+    do “request.subdomains.first” in your controller or view to get the first subdomain.
+    (There can be multiple, as in “jamis.projects.domain.com”.)</p>"

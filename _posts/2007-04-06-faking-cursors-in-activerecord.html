@@ -1,0 +1,67 @@
+---
+layout: post
+title: Faking cursors in ActiveRecord
+post_id: 93
+categories:
+- Tips & Tricks
+date: 2007-04-06 08:15:00.000000000 -06:00
+author: Jamis
+permalink: 2007/04/06/faking-cursors-in-activerecord.html
+summary: >
+  Though ActiveRecord lacks support for cursors, a method for
+  "faking it" is presented
+---
+
+<p>There are times (like, in a migration, or a cron job) where I want to operate on large numbers of rows in the database, such as for billing, where you want to select all accounts who are due for automatic renewal, or when adding a new column to a table that you need to prepopulate with computed data.</p>
+<p>One way to do that is just to brute force it:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">Account</span>.find(<span class="sy">:all</span>).each <span class="r">do</span> |account|<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The drawback here is obvious: when you’re dealing with hundreds of thousands or even millions of rows, selecting them all into memory at once is brutal. And since ActiveRecord doesn’t support cursor-based operations, you can’t just ask ActiveRecord to return the rows as it reads them.</p>
+<p>Here’s a trick I’ve been using recently to query large result sets while being friendly to the computer:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> &lt;&lt;<span class="cl">ActiveRecord::Base</span><tt>
+</tt>  <span class="r">def</span> <span class="fu">each</span>(limit=<span class="i">1000</span>)<tt>
+</tt>    rows = find(<span class="sy">:all</span>, <span class="sy">:conditions</span> =&gt; [<span class="s"><span class="dl">"</span><span class="k">id &gt; ?</span><span class="dl">"</span></span>, <span class="i">0</span>], <span class="sy">:limit</span> =&gt; limit)<tt>
+</tt>    <span class="r">while</span> rows.any?<tt>
+</tt>      rows.each { |record| <span class="r">yield</span> record }<tt>
+</tt>      rows = find(<span class="sy">:all</span>, <span class="sy">:conditions</span> =&gt; [<span class="s"><span class="dl">"</span><span class="k">id &gt; ?</span><span class="dl">"</span></span>, rows.last.id], <span class="sy">:limit</span> =&gt; limit)<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>    <span class="pc">self</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="co">Account</span>.each <span class="r">do</span> |account|<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Sadly, this won’t work on every <span class="caps">DBMS</span>, or with every query; it exploits several idiosyncrasies of MySQL which might not be present on other DBMSs:</p>
+<ul>
+	<li>MySQL sorts indexes.</li>
+		<li>The primary key is an index.</li>
+		<li>Queries which MySQL determines can be best satisfied by the primary key, then, will be returned in sorted order.</li>
+	</ul>
+<p>This means that if you try to add additional conditions to the query, you’ll also need to add an :order clause to sort by the id…and this will more than likely cause the performance of the query to go down the tubes. But for those queries where you just want to select every row anyway, it works quite well. You <em>could</em> use <span class="caps">OFFSET</span> and <span class="caps">LIMIT</span>, but <span class="caps">OFFSET</span> begins to be really, really slow when the <span class="caps">OFFSET</span> is in the tens of thousands or higher because it has to count through that many rows before finding where to begin returning data. Basing the query on id, like this, has the advantage of speed, because the database can use indexes like it was meant to.</p>

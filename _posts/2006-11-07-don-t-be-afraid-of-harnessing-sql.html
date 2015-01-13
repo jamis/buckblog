@@ -1,0 +1,77 @@
+---
+layout: post
+title: Don't be afraid of harnessing SQL
+post_id: 170
+categories:
+- Essays and Rants
+date: 2006-11-07 13:55:00.000000000 -07:00
+author: Jamis
+permalink: 2006/11/07/don-t-be-afraid-of-harnessing-sql.html
+---
+
+<p>Even after ten years of working with <span class="caps">SQL</span>, I still find myself tickled by how powerful it is, in spite of its warts.</p>
+<p>In <a href="http://www.basecamphq.com">Basecamp</a>, users can create to-do list “templates”. Each template is essentially just a name, an optional description, and a bunch of items. Once defined, users can create new to-do lists based on one of these templates.</p>
+<p>We used to do this entirely via the ActiveRecord helper methods. First, we’d create a new list, and then creating the items for the list one at a time, for each item in the template. It looked something like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">TodoListTemplate</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+</tt>  has_many <span class="sy">:todo_item_templates</span><tt>
+</tt><tt>
+</tt>  <span class="r">def</span> <span class="fu">instantiate</span><tt>
+</tt>    list = <span class="co">TodoList</span>.create(<span class="sy">:name</span> =&gt; name, <span class="sy">:description</span> =&gt; description)<tt>
+</tt>    todo_item_templates.each <span class="r">do</span> |item|<tt>
+</tt>      list.todo_items.create <span class="sy">:content</span> =&gt; item.content<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>    list<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>This worked, but was very inefficient. It results in a <em>lot</em> of <span class="caps">SQL</span> statements being sent down the pipe, mostly because we’ve got some <code>before_create</code> hooks and observers set up that perform work for each new to-do item that is created. As our traffic grew, we started running into deadlock issues. All those hooks and observers, so convenient at the time, were now wreaking havoc on the database.</p>
+<p>The problem was easily solved. First of all, a little thought helped me see that those hooks and observers were either not needed in this case, or could be done slightly differently. Secondly, instead of copying each item template to an item, one at a time, we could do it all in <span class="caps">SQL</span>, as a single statement. Here’s more or less how we rewrote it:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">instantiate</span><tt>
+</tt>  list = <span class="co">TodoList</span>.create(<span class="sy">:name</span> =&gt; name, <span class="sy">:description</span> =&gt; description)<tt>
+</tt><tt>
+</tt>  <span class="co">TodoItem</span>.connection.insert <span class="s"><span class="dl">&lt;&lt;-SQL</span></span>, <span class="s"><span class="dl">"</span><span class="k">Populating items</span><span class="dl">"</span></span><span class="s"><span class="k"><tt>
+</tt>    INSERT INTO todo_items (todo_list_id, content, position, created_at)<tt>
+</tt>      SELECT </span><span class="il"><span class="dl">#{</span>list.id<span class="dl">}</span></span><span class="k">, content, position, UTC_TIMESTAMP()<tt>
+</tt>        FROM todo_item_templates<tt>
+</tt>       WHERE todo_list_template_id = </span><span class="il"><span class="dl">#{</span>id<span class="dl">}</span></span><span class="dl"><tt>
+</tt>  SQL</span></span><tt>
+</tt><tt>
+</tt>  list.todo_items.reset<tt>
+</tt>  list<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Basically, the <code>INSERT</code> takes the associated <code>SELECT</code> statement, and inserts the results of each returned row into the <code>todo_items</code> table. Not only is this blazing fast, but it is <em>much</em> nicer to the database.</p>
+<p>Once everything has been inserted, we call <code>todo_items.reset</code>, to force the <code>todo_items</code> association on the list to be unloaded, and then we return the list.</p>
+<p>Your own situation may require more or less logic than this. You may even be completely fine doing everything via ActiveRecord. But if you find your application beginning to flounder in places where you are doing lots of database queries, consider rethinking those areas to consolidate some of that work.</p>
+<p>Don’t be afraid of harnessing <span class="caps">SQL</span>.</p>
+<div class="tail">
+I’ll probably begin publishing these kinds of “best practices” articles to <a href="http://www.therailsway.com">The Rails Way</a>, instead of to this blog. If you want to follow along, be sure and subscribe to that feed, too.
+</div>

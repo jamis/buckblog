@@ -1,0 +1,28 @@
+---
+- date: 2006-10-20
+  author: Zack Chandler
+  content: "<p>Another great article! I think I can speak for the whole community
+    when I says you are a great teacher of ruby and rails. Thanks.</p>"
+- date: 2006-10-20
+  author: Neil Wilson
+  content: "<p>Jamis,</p>\n\n\n\t<p>Your articles are fabulous and we need more of
+    them from the Rails ‘old guard’ – who all seem to have disappeared off doing things
+    for money nowadays.</p>\n\n\n\t<p>However you might want to consider an index
+    page before too long. Blogs are all very well, but good stuff gets lost in them
+    over time.</p>\n\n\n\t<p>Rgs</p>\n\n\n\t<p>NeilW</p>"
+- date: 2006-10-20
+  author: Jamis
+  content: "<p>Neil, that’s a great suggestion. I’ll start looking into how to set
+    that up with mephisto.</p>"
+- date: 2006-10-20
+  author: Mislav
+  content: "<p>Quote Zack.</p>\n\n\n\t<p>Did this site get an article redesign? I
+    like it!</p>"
+- date: 2006-10-26
+  author: Lewis
+  content: "<p>Jamis, I would just like to thank you for your last few posts about
+    rails routing. Your blog has easily become the best rails blog out there.</p>\n\n\n\t<p>Keep
+    up the good work.</p>"
+- date: 2006-11-01
+  author: Clint Pachl
+  content: "<p>Added to del.icio.us! Everyone should.</p>"

@@ -1,0 +1,212 @@
+---
+- date: 2007-01-26
+  author: mano
+  content: "<p>thanks for your time Jamis, it’s a great source of information</p>"
+- date: 2007-01-26
+  author: Tom
+  content: "<p>Nice sentiment, but this is a pretty naive way of looking at web application
+    development. I’m not a fan of scaffolding either, but in real enterprise applications
+    (vs the usability-oriented tools that 37signals produce) the models are far more
+    complex and important than the UI. If you’re inventing a nice little personal
+    organisation application from scratch then of course it’s fun to sketch out the
+    UI first and use that to brainstorm what concepts should be represented in the
+    model, but an existing business already has things in the real world that need
+    to be modelled directly: customers, products, accounts, credit cards, invoices,
+    subscriptions… This reality is more influential than the design of the user interface.</p>\n\n\n\t<p>Your
+    point is a specific instance of a correct but more general observation: there’s
+    no point in starting with models (in the abstract) because you need to have something
+    concrete to examine in order to decide what models you need. But it’s a mistake
+    to believe that the UI is the only concrete thing to work from, because there
+    are other potential starting points too (e.g. the business reality) that may make
+    more sense depending on the context.</p>"
+- date: 2007-01-26
+  author: Tim Harper
+  content: "<p>I’ve found the scaffold-resource to be a great way to start an application.
+    \ I always go through and refine it, and change the behavior, but it’s a great
+    way to get an application up quickly.  (by the way, the ajax-scaffold plugin is
+    a marvelous way to get a quick admin section up, and is flexible enough to get
+    it to do just about anything you’d like)</p>\n\n\n\t<p>However, I agree – you
+    should never try to scaffold the entire application, and then deliver.  Scaffolding
+    alone is not enough.</p>"
+- date: 2007-01-26
+  author: Jamis
+  content: "<p>Tom, I’m sorry you feel that way. It must be very constraining to have
+    to work in an environment like that. True, if you’ve got an existing corpus of
+    data that you’re writing a new front-end for, you can’t just design your UI without
+    considering the existing data relations. However, that’s a very different problem
+    than I was describing. You’ve already got your schema and your data. Even then,
+    though, scaffolding is the wrong way to go about designing that UI. You can totally
+    design a UI from mocks, and still live within the contraints of an existing set
+    of data. (We’re actually doing that right now at 37signals with the revamp of
+    Backpack that’s in the works.)</p>\n\n\n\t<p>The problem I talked about in this
+    post is specifically about dreaming up your schema and your data before you have
+    any concrete idea of how that data is going to be used in practice. Scaffolding
+    is a very bad way to design a new application.</p>"
+- date: 2007-01-26
+  author: Chris
+  content: "<p>I totally agree with the notion that the UI will, most of the time,
+    uncover a better understanding of where you should go with your models.  As Tom
+    mentioned above, you will sometimes have to take a business-oriented view instead
+    … the business logic is more paramount and must be solid and concrete.  However,
+    I also believe that every application is an opportunity to make something inherently
+    complex seem simple … and that usually starts with your UI.</p>\n\n\n\t<p>Oh,
+    and scaffolding rocks when you’re a beginner but it’s not for the real world.</p>"
+- date: 2007-01-26
+  author: ChilliCoder
+  content: |-
+    <p>I think scaffolding is quite useful, but not strictly required. As many things in life, depends on the context.
+    There will be cases when you can sit with the customer and throw scaffolding to match customer’s mental model with computer’s model. Some other times, you’ll be drawing a big o dynamic model and trying to get it on sync with the computer’s model.
+    It depends.
+    Finito.</p>
+- date: 2007-01-26
+  author: Alex
+  content: "<p>I seem to work on applications that require a <span class=\"caps\">LOT</span>
+    of data entry.</p>\n\n\n\t<p>I find scaffold_resource to be a fantastic time saver
+    to get the basic forms created as a starting point which I will then re-work.</p>\n\n\n\t<p>I
+    still haven’t got in to the whole test first (or even test at all if I’m honest)
+    mentality and perhaps my thoughts will change when I do.</p>"
+- date: 2007-01-26
+  author: Chris
+  content: <p>I’ve been working on an app for two weeks, and I haven’t committed a
+    single controller into <span class="caps">SVN</span>.  All <span class="caps">BDD</span>
+    and models for now.  Scaffolding would just get in the way.  Jamis +1.</p>
+- date: 2007-01-26
+  author: John Topley
+  content: "<p>Applications are designed from the inside-outwards where I work. Unfortunately
+    it’s a fact of life that most organisations are unwilling to invest in the user
+    interface of their internal applications. I head the UI team and it’s an uphill
+    struggle to create a good user experience in an environment where the resources
+    are weighted toward “real enterprise”  things like EJBs and UI is regarded as
+    just making things pretty!</p>"
+- date: 2007-01-26
+  author: Ryan B.
+  content: "<p>I’m surprised there’s no mention of <span class=\"caps\">REST</span>.
+    I would like your opinion on how it fits in with this discussion.</p>\n\n\n\t<p>I
+    definitely agree the UI should be considered before creating the models, but if
+    you are going with a RESTful approach, would you not repeat basically what scaffolding
+    is generating? Scaffolding does tend to add too much crud (pun intended) than
+    necessary. For example, you may not need to present the show/index actions to
+    the interface. But, for the most part it does what a RESTful application would
+    do – create a controller which is the plural name of the model with basic <span
+    class=\"caps\">CRUD</span> operations.</p>\n\n\n\t<p>The way I do it is start
+    with a rough representation of the UI, from this I can see little <span class=\"caps\">REST</span>
+    patterns through the interface. Use these to create the models and the RESTful
+    controllers. It’s okay to base the controllers on the models if the models are
+    based on the UI. Does that make sense? Do you agree?</p>"
+- date: 2007-01-26
+  author: floyd
+  content: "<p>I second Ryan’s question.  Maybe before <span class=\"caps\">REST</span>,
+    scaffold was pretty unnecessary because you were going to immediately go through
+    and invent a myriad of actions anyway.  But when you’re using <span class=\"caps\">CRUD</span>
+    as a guide, there’s not much to complain about in scaffolding—in fact it’s quite
+    helpful, it even writes your migrations for you!</p>\n\n\n\t<p>However, I absolutely
+    agree that the views it generates are generally useless.  On the other hand, if
+    you’re actually dependent on a third party designer, particularly one that is
+    only very slowly working for a client alongside you, sometimes it can be beneficial
+    to speed things along with a little scaffold magic.</p>"
+- date: 2007-01-26
+  author: Jamis
+  content: "<p>Ryan, floyd, my post is orthogonal to how you implement your application.
+    If the scaffold generator just happens to implement the subset of your application
+    that you need, by all means use it. My point is this: if you aren’t designing
+    your UI first, you’re doing it backwards. The problem with scaffolding is that
+    encourages designing your schema and models first, and your UI later. People say,
+    “okay, I want a blog, and I guess that requires posts, so I’ll fire up the scaffold
+    generator and get me a posts model and scaffolded UI.” <em>Wrong.</em> Don’t do
+    that.</p>"
+- date: 2007-01-26
+  author: Frank Quednau
+  content: |-
+    <p>A couple of weeks ago I started a new rails application; Admittedly, I am a newbie in Rails, only had done a delicious clone with limited functionality for a presentation on rails.
+    I am not clear what you mean by starting with the UI first. I did draw up some screen flows and ideas what users will be able to do, but this time I started design and implementation on the domain model. I saw that a couple of Rubyists and Railers are using RSpec for testing, so I got myself the latest version and this time round starting with the model I really could get to grips on thinking what exactly my application will be able to do, writing specs for that and shaping the model to satisfy the specs. The problem domain is in the model. If it is solid and well spec’ed, things move on from here.
+    I just think, don’t be too strict on guidelines to programming. Starting with interfaces (like a UI or an <span class="caps">API</span>) is surely a viable approach that will give you results. I think though, if you have a problem domain that goes beyond e.g. managing content, and the specification of it is fairly clear it is quite legitimate to start with that.
+    I definitely agree though that also for such cases scaffolding imposes way too many restrictions on your intention.</p>
+- date: 2007-01-27
+  author: Simon
+  content: "<p>Scaffolding makes for a good demo, and even conceivably a good management
+    interface sometimes (as long as you modify it a bit).</p>\n\n\n\t<p>My major problem
+    is that it doesn’t really teach newcomers that your controllers should be based
+    around the interactions you want to perform, rather than the model.  People get
+    stuck with the UserController (for example), and it doesn’t necessarily occur
+    to them that it’s actually the interactions that should be driving what controllers
+    you have.</p>\n\n\n\t<p>Which is essentially what you’re saying, I think.  I’m
+    going to sit on the fence a bit about which should be designed first <del>- I
+    think pretty much they should be designed at the same time.  On the understanding
+    that the “user interface” is actually the whole user interface -</del> what all
+    potential users of your system may want to do, not just the admins, or end-users.
+    \ Then it’s obviously an iterative development—interface feeds model feeds interface
+    etc.  Seeing the relationships between objects can sometimes add features to the
+    interface you wouldn’t have thought of.  (Assuming they actually seem necessary.)</p>"
+- date: 2007-01-27
+  author: Michael Schuerig
+  content: "<p>My perspective is mainly from internal, data-centric applications.
+    To a large extend, my views correspond to a single model or an aggregate of a
+    main model with a few appendages.</p>\n\n\n\t<p>For that scenario, I find scaffolding
+    very helpful. My own, custom scaffolding, that is. The out of the box Rails scaffolding
+    would be all but useless.</p>\n\n\n\t<p>What my own scaffolding gives me is, declarative
+    specification and filtering of list views. Declarative auto-completion. Combined
+    with a custom FormBuilder, this slashes away reams of repetitive code. As a result,
+    most of my controllers are all but empty save for a few declarations.</p>"
+- date: 2007-01-28
+  author: Niafron
+  content: "<p>Same thing ;)</p>"
+- date: 2007-01-28
+  author: Sean Cribbs
+  content: <p>You are spot-on, Jamis.  I think there’s also a mistaken conception
+    that there are cases where a good UI is not necessary, and some of the previous
+    comments imply that.  I’ve come to find that even technical users who don’t really
+    care about frills will <span class="caps">STILL</span> appreciate a fluid, well-thought
+    -out and usable interface.  It really makes the difference when you spend your
+    whole day using it, even if only for data-entry!</p>
+- date: 2007-01-29
+  author: Bill Siggelkow
+  content: "<p>Jamis,</p>\n\n\n\t<p>I also agree with you in principle. In terms of
+    Rails evangelism; scaffolding is a two-edged sword. While scaffolding has probably
+    drawn many folks to Rails, it has also tended to alienate some of those who thinks
+    that scaffolding is all that Rails does (standard <span class=\"caps\">FUD</span>).</p>\n\n\n\t<p>In
+    the end, “classic” Rails scaffolding is useful for newcomers; but has limited
+    usefulness and can be a downright anti-pattern.</p>\n\n\n\t<p>As for me, I am
+    glad it’s there, but I constantly find myself having to educate Rails newbies
+    on its purpose and usefulness.</p>"
+- date: 2007-01-29
+  author: Eric
+  content: "<p>Wonderful post.</p>\n\n\n\t<p>I try to follow <span class=\"caps\">TDD</span>.
+    \ Typically I’ll start each sprint with a new acceptance test (using a home grown
+    <span class=\"caps\">DSL</span> that only interacts with forms/links based on
+    the “user perceiveable” content ie no name/ids used to identify controls), followed
+    by a series of View tests, then controller tests (both using Test::Rails), and
+    finally the model tests.</p>\n\n\n\t<p>The point at each stage is to consider
+    what the user interface/API should be to the next layer below.</p>\n\n\n\t<p>Staying
+    away from scaffolding is important, to me, for two reasons.</p>\n\n\n\t<p>1) Its
+    hard to keep it <span class=\"caps\">TDD</span>… I trust the rails core team;
+    I trust that the generated scaffold will work and thus it doesn’t need to be thoroughly
+    included in my own test harness.  (However there should be at least one test that
+    drove the initial typing of the “script/generate scaffold …” command.)  However
+    at some point I’ll have to start customizing the scaffold at which point the lack
+    of an existing harness around it is felt.</p>\n\n\n\t<p>2) Scaffolding encourages
+    the notion that you’ll have exactly one controller per model.  Which is a dangerous
+    thought pattern to fall into.  Often it will be the case, but it shouldn’t be
+    the only thing people expect.</p>"
+- date: 2007-01-30
+  author: Chris Anderson
+  content: "<p>Jamis,</p>\n\n\n\t<p>I’ve written a defense of scaffolding (as part
+    of a well developed toolkit) here:</p>\n\n\n\t<p><a href=\"http://jchris.mfdz.com/code/2007/1/restful_application_design&lt;i&gt;wit&amp;#8221;&amp;gt;RESTful%20Application%20Design%20(with%20Scaffolds!)&lt;/a&gt;&lt;/p&gt;%0A%0A%0A%09&lt;p&gt;We%20just%20had%20a%20lot%20of%20success%20in%20our%20application%20by%20running%20with%20scaffolding%20while%20we%20fleshed%20out%20the%20models%20that%20had%20been%20inspired%20by%20an%20intensive%20UI-first%20approach%20to%20a%20single%20page.&lt;/p&gt;%0A%0A%0A%09&lt;p&gt;In%20case%20comments%20don&amp;#8217;t%20dig%20on%20html,%20here&amp;#8217;s%20the%20&lt;span%20class=\">URL:</a></p>\n\n\n\t<p>http://jchris.mfdz.com/code/2007/1/restful_application_designwit</p>"
+- date: 2007-01-30
+  author: Chris Anderson
+  content: "<p>Excuse the mess… here’s the rest of my comment, uneaten by html.</p>\n\n\n\t<p>We
+    just had a lot of success in our application by running with scaffolding while
+    we fleshed out the models that had been inspired by an intensive UI-first approach
+    to a single page.</p>\n\n\n\t<p><a href=\"http://jchris.mfdz.com/code/2007/1/restful_application_design__wit\"
+    title=\"with Scaffolds!\">RESTful Application Design</a></p>"
+- date: 2007-01-30
+  author: Jamie Orchard-Hays
+  content: "<p>Jamis, you’ve hit on something I always try to keep in the front of
+    my mind: to the users, the interface IS the application. Unless they are programmers,
+    they have no clue what’s behind the interface, nor are they likely to care.</p>"
+- date: 2007-02-13
+  author: Jeff M
+  content: "<p>I agree with this, I think scaffolding is stupid. I never even knew
+    why scaffold forced the create/new/update/save methods when a single “form” method
+    could do the same thing. Although I hear a lot about RESTful working real well,
+    but I still think scaffolding is a waste. I just write out my code, usually pasting
+    from an existing, similar controller to begin with.</p>"

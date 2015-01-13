@@ -1,0 +1,271 @@
+---
+layout: post
+title: 'Maze Generation: Weave mazes'
+post_id: 3
+categories:
+- Under the Hood
+date: 2011-03-04 07:48:00.000000000 -07:00
+author: Jamis
+permalink: 2011/03/04/maze-generation-weave-mazes.html
+summary: >
+  A way to construct mazes in “pseudo-3D” is presented, wherein the
+  passages weave over and under one another
+---
+
+<p>This is a “weave” maze:</p>
+<div style="text-align: center"><img src="http://jamisbuck.org/images/maze7.png" width="204" height="204" alt="weave maze" style="background-color: #ddd;"></div>
+<p>The name does not describe any specific algorithm for generating mazes, but rather simply identifies the class of maze, where some passages weave over or under other passages. It’s a type of 3D maze but it can be rendered nicely in 2D, as long as you conform to the following rules:</p>
+<ul>
+	<li>Passages may only move under or over each other when they are perpendicular to each other.</li>
+		<li>A passage may not terminate (dead-end) either under or over another passage.</li>
+		<li>Passages may not change direction either over or under another passage.</li>
+	</ul>
+<p>If you break any of those rules, you’ll wind up hidden or ambiguous corridors when viewed as a 2D projection, and we don’t want that!</p>
+<p>Let’s take a closer look at how the algorithms need to be adapted to support weave mazes.</p>
+<h2>Weave maze adaptation</h2>
+<p>The key change that needs to be made is that when you determine whether a particular move is valid, you no longer get to ignore a cell if it has already been visited. If the candidate cell has been visited, you need to compare it against the three rules above, and rule it out <em>only</em> if it fails one of them.</p>
+<p>Consider the following scenario:</p>
+<table class="maze">
+<tr>
+<td class="n e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n e w h"></td>
+<td class="e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>The highlighted cell is the current one, the one we need to move from. In a non-weave scenario this would be a deadend, and we’d be done with that cell, but with weaves to consider, we can’t be so hasty.</p>
+<p>So, we slow down and check it out. North? No, because the northern passage is not perpendicular to that direction. We’d wind up with an ambiguous passage if we tried to weave in that direction.</p>
+<p>West? Nope, that takes us out of bounds.</p>
+<p>South? Again, nope, because the passage south is not perpendicular to that direction.</p>
+<p>Alright, so: east, our last and best hope? Ah, this one passes the perpendicular test—the corridor to the east moves north-to-south! The space on the far side of the corridor is empty, so we wouldn’t have to worry about deadending underneath the corridor, so again, we’re okay. And because we plan to just tunnel straight east, there’s no danger of changing direction mid-tunnel, either.</p>
+<p>We have a winner! At this point, the algorithm would indicate that the passage moves under the north-south passage, and joins to the next cell over.</p>
+<p>That’s really the gist of it. As long as the base maze algorithm can be adapted to accomodate this logic, you can implement weave mazes with it.</p>
+<p>Try playing with this interactive demo (using the Growing Tree algorithm) to see how this approach to weave mazes works with different settings:</p>
+<script type="text/javascript" src="/javascripts/maze-minified.js"></script>
+<p style="margin-left: 20px; font-size: 80%">
+Cell selection method: <select id="selection_methods" onchange="$('growtree_medium').mazeReset();">
+<option value="newest">Newest (Recursive Backtracker)</option>
+<option value="random">Random (Prim's)</option>
+<option value="newest:75,random:25">Newest/Random, 75/25 split</option>
+<option value="newest;random">Newest/Random, 50/50 split</option>
+<option value="newest:25,random:75">Newest/Random, 25/75 split</option>
+<option value="oldest">Oldest</option>
+<option value="middle">Middle</option>
+<option value="newest;oldest">Newest/Oldest, 50/50 split</option>
+<option value="oldest;random">Oldest/Random, 50/50 split</option>
+</select>
+</p>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("GrowingTree", 15, 15, { "class": "medium", id: "growtree_medium", "watch": false, "padded": true, "weave": true, interval: 25, input: function() { return $F('selection_methods'); }});</script>
+</div>
+<p>Now, let’s look at an implementation.</p>
+<h2>Implementation</h2>
+<p>I’m going to be sticking with the <a href="http://weblog.jamisbuck.org/2011/1/27/maze-generation-growing-tree-algorithm">Growing Tree algorithm</a>, but it ought to be possible to adapt most of the <a href="http://weblog.jamisbuck.org/2011/2/7/maze-generation-algorithm-recap">maze algorithms I covered</a> to generate weave mazes.</p>
+<p>(I’ve not tried it with all of them, and some, like <a href="http://weblog.jamisbuck.org/2010/12/29/maze-generation-eller-s-algorithm">Eller’s</a>, might be difficult to adapt. Also, while you can probably adapt <a href="http://weblog.jamisbuck.org/2011/1/17/maze-generation-aldous-broder-algorithm">Aldous-Broder</a> or <a href="http://weblog.jamisbuck.org/2011/1/20/maze-generation-wilson-s-algorithm">Wilson’s</a> for this, you’ll probably no longer get a uniform spanning tree out of them, if that’s important to you.)</p>
+<p>Now, what follows is just one way to implement a weave maze. I’m kind of a bit-twiddler at heart, so that’s the approach I took. If a passage moves under the cell, I just set another bit on that cell, indicating the presence of the tunnel.</p>
+<p>The Growing Tree algorithm itself is exactly as I <a href="http://weblog.jamisbuck.org/2011/1/27/maze-generation-growing-tree-algorithm">described before</a>, but we add an else clause to check whether a weave is possible, and if so, to perform it:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">nx, ny = x + <span class="co">DX</span>[dir], y + <span class="co">DY</span>[dir]<tt>
+</tt><span class="r">if</span> nx.between?(<span class="i">0</span>, width<span class="i">-1</span>) &amp;&amp; ny.between?(<span class="i">0</span>, height<span class="i">-1</span>)<tt>
+</tt>  <span class="r">if</span> grid[ny][nx] == <span class="i">0</span><tt>
+</tt>    <span class="c"># here's the original case, carving into an unvisited neighbor</span><tt>
+</tt>    <span class="c"># ...</span><tt>
+</tt><tt>
+</tt>  <span class="r">elsif</span> can_weave?(grid, dir, nx, ny)<tt>
+</tt>    <span class="c"># here's where we perform the weave</span><tt>
+</tt>    <span class="c"># ...</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The “can_weave?” helper method is straight-forward. It just checks whether it is allowable to move from the candidate cell (nx, ny) in the given direction. (Remember that nx and ny are the coordinates of the cell we want to tunnel under!)</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">can_weave?</span>(grid, dir, x, y)<tt>
+</tt>  cell = grid[y][x]<tt>
+</tt>  <span class="r">return</span> <span class="pc">false</span> <span class="r">unless</span> cell == <span class="co">CROSS</span>[dir]<tt>
+</tt><tt>
+</tt>  nx, ny = x + <span class="co">DX</span>[dir], y + <span class="co">DY</span>[dir]<tt>
+</tt>  <span class="r">return</span> ny.between?(<span class="i">0</span>, grid.length<span class="i">-1</span>) &amp;&amp; nx.between?(<span class="i">0</span>, grid[ny].length<span class="i">-1</span>) &amp;&amp; grid[ny][nx] == <span class="i">0</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The first check we do is to see if the passages in the indicated cell are perpendicular to the given direction. (That’s what the <span class="caps">CROSS</span> variable is all about; it’s just a hash returning which directions are perpendicular to one another.)</p>
+<p>If that test passes, we now need to make sure that the next cell over in that direction is both in bounds, and unvisited. If both of those conditions hold, then we have a winner.</p>
+<p>Once we know that a cell can be weaved under, it’s time to perform the weave. At it’s simplest, this is just a matter of setting the “under” bit, and then setting the necessary directions on the origin and target cells:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">grid[y][x] |= dir<tt>
+</tt>grid[ny][nx] |= <span class="co">U</span><tt>
+</tt><tt>
+</tt>nx, ny = nx + <span class="co">DX</span>[dir], ny + <span class="co">DY</span>[dir]<tt>
+</tt>grid[ny][nx] |= <span class="co">OPP</span>[dir]<tt>
+</tt></pre></td>
+</tr></table>
+<p>To clarify: (x,y) is the originating cell, the one we’ve carving away from. The first (nx,ny) is the cell we want to carve under. Then, we compute the target cell, on the far side of the cell we’re carving under; that’s the cell we’re going to end up at, after tunneling.</p>
+<p>That’s really all there is to it. However, for variation, it’s nice to sometimes carve <em>over</em> the cell, instead of under it. This gives you some more interesting patterns, and it’s really not too hard to do. You just need to look at the cell to see which direction the passage is currently heading, and then change it so that the passage is rotated 90 degrees. Then you set the “under” bit. This has the effect of making the perpendicular passage (the one you’re adding) be the “over” passage, and the original passage the “under” passage.</p>
+<p>Here it is in code:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">if</span> rand(<span class="i">2</span>) == <span class="i">0</span><tt>
+</tt>  grid[ny][nx] |= <span class="co">U</span><tt>
+</tt><span class="r">elsif</span> (grid[ny][nx] &amp; <span class="co">N</span>) != <span class="i">0</span><tt>
+</tt>  grid[ny][nx] = <span class="co">E</span>|<span class="co">W</span>|<span class="co">U</span><tt>
+</tt><span class="r">else</span><tt>
+</tt>  grid[ny][nx] = <span class="co">N</span>|<span class="co">S</span>|<span class="co">U</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>That’s really all there is to it! However, there’s one more interesting bit we need to consider, and that is how to render your weave maze.</p>
+<h2>Rendering</h2>
+<p>The display methods I used in my previous maze posts are not sufficient for rendering weave mazes. This is because there is no space between passages, the walls have no width. This makes it impossible to see whether a passage terminates at a given wall, or moves under it.</p>
+<p>To work around this, my program uses unicode characters from the box drawing range (x2500—x257F). The result is still not ideal (in larger mazes, the eye tends to lose track of what is a passage and what is the space between passages), but it lets us do a quick-and-dirty display.</p>
+<p>For best results, we treat each cell as a 3×2 <span class="caps">ASCII</span> grid. For example, a N/S/E/W intersection would be rendered like this:</p>
+<p>┘ └<br>
+┐ ┌</p>
+<p>First, I define the set of tiles for each possible cell configuration:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">EW</span>, <span class="co">NS</span>, <span class="co">SE</span>, <span class="co">SW</span>, <span class="co">NE</span>, <span class="co">NW</span> = [<span class="i">0x80</span>, <span class="i">0x82</span>, <span class="i">0x8C</span>, <span class="i">0x90</span>, <span class="i">0x94</span>, <span class="i">0x98</span>].map { |v| <span class="s"><span class="dl">"</span><span class="ch">\xE2</span><span class="ch">\x94</span><span class="il"><span class="dl">#{</span>v.chr<span class="dl">}</span></span><span class="dl">"</span></span> }<tt>
+</tt><span class="co">NSE</span>, <span class="co">NSW</span>, <span class="co">EWS</span>, <span class="co">EWN</span>     = [<span class="i">0x9C</span>, <span class="i">0xA4</span>, <span class="i">0xAC</span>, <span class="i">0xB4</span>].map { |v| <span class="s"><span class="dl">"</span><span class="ch">\xE2</span><span class="ch">\x94</span><span class="il"><span class="dl">#{</span>v.chr<span class="dl">}</span></span><span class="dl">"</span></span> }<tt>
+</tt><tt>
+</tt><span class="co">TILES</span> = {<tt>
+</tt>  <span class="co">N</span>       =&gt; [<span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">NS</span><span class="dl">}</span></span><span class="k"> </span><span class="il"><span class="dl">#{</span><span class="co">NS</span><span class="dl">}</span></span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">NE</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">NW</span><span class="dl">}</span></span><span class="dl">"</span></span>],<tt>
+</tt>  <span class="co">S</span>       =&gt; [<span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">SE</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">SW</span><span class="dl">}</span></span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">NS</span><span class="dl">}</span></span><span class="k"> </span><span class="il"><span class="dl">#{</span><span class="co">NS</span><span class="dl">}</span></span><span class="dl">"</span></span>],<tt>
+</tt>  <span class="co">E</span>       =&gt; [<span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">SE</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">NE</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="dl">"</span></span>],<tt>
+</tt>  <span class="co">W</span>       =&gt; [<span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">SW</span><span class="dl">}</span></span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">NW</span><span class="dl">}</span></span><span class="dl">"</span></span>],<tt>
+</tt>  <span class="co">N</span>|<span class="co">S</span>     =&gt; [<span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">NS</span><span class="dl">}</span></span><span class="k"> </span><span class="il"><span class="dl">#{</span><span class="co">NS</span><span class="dl">}</span></span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">NS</span><span class="dl">}</span></span><span class="k"> </span><span class="il"><span class="dl">#{</span><span class="co">NS</span><span class="dl">}</span></span><span class="dl">"</span></span>],<tt>
+</tt>  <span class="co">N</span>|<span class="co">W</span>     =&gt; [<span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">NW</span><span class="dl">}</span></span><span class="k"> </span><span class="il"><span class="dl">#{</span><span class="co">NS</span><span class="dl">}</span></span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">NW</span><span class="dl">}</span></span><span class="dl">"</span></span>],<tt>
+</tt>  <span class="co">N</span>|<span class="co">E</span>     =&gt; [<span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">NS</span><span class="dl">}</span></span><span class="k"> </span><span class="il"><span class="dl">#{</span><span class="co">NE</span><span class="dl">}</span></span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">NE</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="dl">"</span></span>],<tt>
+</tt>  <span class="co">S</span>|<span class="co">W</span>     =&gt; [<span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">SW</span><span class="dl">}</span></span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">SW</span><span class="dl">}</span></span><span class="k"> </span><span class="il"><span class="dl">#{</span><span class="co">NS</span><span class="dl">}</span></span><span class="dl">"</span></span>],<tt>
+</tt>  <span class="co">S</span>|<span class="co">E</span>     =&gt; [<span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">SE</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">NS</span><span class="dl">}</span></span><span class="k"> </span><span class="il"><span class="dl">#{</span><span class="co">SE</span><span class="dl">}</span></span><span class="dl">"</span></span>],<tt>
+</tt>  <span class="co">E</span>|<span class="co">W</span>     =&gt; [<span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="dl">"</span></span>],<tt>
+</tt>  <span class="co">N</span>|<span class="co">S</span>|<span class="co">E</span>   =&gt; [<span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">NS</span><span class="dl">}</span></span><span class="k"> </span><span class="il"><span class="dl">#{</span><span class="co">NE</span><span class="dl">}</span></span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">NS</span><span class="dl">}</span></span><span class="k"> </span><span class="il"><span class="dl">#{</span><span class="co">SE</span><span class="dl">}</span></span><span class="dl">"</span></span>],<tt>
+</tt>  <span class="co">N</span>|<span class="co">S</span>|<span class="co">W</span>   =&gt; [<span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">NW</span><span class="dl">}</span></span><span class="k"> </span><span class="il"><span class="dl">#{</span><span class="co">NS</span><span class="dl">}</span></span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">SW</span><span class="dl">}</span></span><span class="k"> </span><span class="il"><span class="dl">#{</span><span class="co">NS</span><span class="dl">}</span></span><span class="dl">"</span></span>],<tt>
+</tt>  <span class="co">E</span>|<span class="co">W</span>|<span class="co">N</span>   =&gt; [<span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">NW</span><span class="dl">}</span></span><span class="k"> </span><span class="il"><span class="dl">#{</span><span class="co">NE</span><span class="dl">}</span></span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="dl">"</span></span>],<tt>
+</tt>  <span class="co">E</span>|<span class="co">W</span>|<span class="co">S</span>   =&gt; [<span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">SW</span><span class="dl">}</span></span><span class="k"> </span><span class="il"><span class="dl">#{</span><span class="co">SE</span><span class="dl">}</span></span><span class="dl">"</span></span>],<tt>
+</tt>  <span class="co">N</span>|<span class="co">S</span>|<span class="co">E</span>|<span class="co">W</span> =&gt; [<span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">NW</span><span class="dl">}</span></span><span class="k"> </span><span class="il"><span class="dl">#{</span><span class="co">NE</span><span class="dl">}</span></span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">SW</span><span class="dl">}</span></span><span class="k"> </span><span class="il"><span class="dl">#{</span><span class="co">SE</span><span class="dl">}</span></span><span class="dl">"</span></span>],<tt>
+</tt>  <span class="co">N</span>|<span class="co">S</span>|<span class="co">U</span>   =&gt; [<span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">NSW</span><span class="dl">}</span></span><span class="k"> </span><span class="il"><span class="dl">#{</span><span class="co">NSE</span><span class="dl">}</span></span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">NSW</span><span class="dl">}</span></span><span class="k"> </span><span class="il"><span class="dl">#{</span><span class="co">NSE</span><span class="dl">}</span></span><span class="dl">"</span></span>],<tt>
+</tt>  <span class="co">E</span>|<span class="co">W</span>|<span class="co">U</span>   =&gt; [<span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">EWN</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EWN</span><span class="dl">}</span></span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span><span class="co">EWS</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EW</span><span class="dl">}</span></span><span class="il"><span class="dl">#{</span><span class="co">EWS</span><span class="dl">}</span></span><span class="dl">"</span></span>]<tt>
+</tt>}<tt>
+</tt></pre></td>
+</tr></table>
+<p>Displaying the maze then becomes very straight-forward, just interating twice for each row so that each line of each tile gets drawn:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">height.times <span class="r">do</span> |y| <tt>
+</tt>  <span class="i">2</span>.times <span class="r">do</span> |row|<tt>
+</tt>    width.times { |x| print <span class="co">TILES</span>[grid[y][x]][row] }<tt>
+</tt>    puts<tt>
+</tt>  <span class="r">end</span> <tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The result:</p>
+<pre style="line-height: 0.99em; font-size: 1em;">
+┌───────┐┌────┐┌───────┐┌────┐
+│ ┌───┐ ││ ┌┐ ││ ┌───┐ ││ ┌┐ │
+│ │┌──┴─┴┤ ├┘ ││ └───┤ ├┴─┴┘ │
+│ ││ ┌┬─┬┤ ├──┘└─────┤ ├┬─┬──┘
+│ └┘ ││ ││ │┌───────┐│ ││ │┌─┐
+└────┘│ ││ │└──┐ ┌──┘│ ││ ││ │
+┌─────┤ ├┘ │┌──┤ ├───┘ └┴─┴┘ │
+│ ┌───┤ ├──┘│ ┌┤ ├──────┬─┬┐ │
+│ └───┤ ├───┤ ├┘ │┌────┐│ ││ │
+└─────┤ ├┐ ┌┤ ├──┘└──┐ ││ ││ │
+┌─────┴─┴┘ ││ └─────┐│ ││ ││ │
+│ ┌───┬─┬──┘└──┐ ┌──┘│ ││ │└─┘
+│ └───┴─┴──┐┌──┤ ├──┐│ └┤ ├──┐
+└─────┬─┬──┘│ ┌┤ ├┐ │└──┤ ├┐ │
+┌────┐│ └───┴─┴┘ └┴─┴──┐│ ││ │
+│ ┌┐ │└─────┬─┬┐ ┌┬─┬──┘│ ││ │
+│ ││ └──────┘ ││ ││ └───┘ ││ │
+│ │└──────────┘└─┘└───────┘│ │
+│ └────────────────────────┘ │
+└────────────────────────────┘
+</pre>
+<h2>Conclusion</h2>
+<p>Weave mazes can produce some very pretty designs, but randomly generated ones are not generally practical for most applications. Because the generator can “escape” from many dead-end situations by moving over or under a neighbor, the mazes tend to have very long passages (with a high “river” factor, meaning they can be quite windy), and very few junctions. Solving such a maze is not really very difficult.</p>
+<p>That said, they can look quite impressive! In general, I’ve found that algorithms that encourage longer passages produce the best weave mazes. Algorithms like <a href="http://weblog.jamisbuck.org/2011/1/3/maze-generation-kruskal-s-algorithm">Kruskal’s</a> and <a href="http://weblog.jamisbuck.org/2011/1/10/maze-generation-prim-s-algorithm">Prim’s</a> (which produce mazes with lots of short deadends) will have a harder time meeting the “passages must not deadend over or under another passage” criterion, and as a result will have fewer over/under passages.</p>
+<p>Give weave mazes a shot in the language of your choice, and share what you come up with! My own implementation, in Ruby, is given below.</p>
+<script src="https://gist.github.com/854218.js?file=weave.rb"></script>
+<noscript>
+<a href="https://gist.github.com/854218">weave.rb</a> on gist.github.com</noscript>
+<p>Enjoy!</p>

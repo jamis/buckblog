@@ -1,0 +1,18 @@
+---
+- date: 2009-02-01
+  author: awesome
+  content: "<p>Fekja! I was just about to use Net::SSH… and jackpot!</p>"
+- date: 2009-02-02
+  author: W. Klancnik
+  content: "<p>Awesome, thanks Jamis.  :)</p>"
+- date: 2009-02-11
+  author: Gaby
+  content: "<p>Hi Jamis, I have been using your generators for a couple of years now,
+    and I was really surprised when I tried to enter the webpage and it wasn’t there.
+    Are you planning on upload it to somewhere else?? Any info?</p>"
+- date: 2009-02-11
+  author: Jamis
+  content: "<p>@Gaby, the aarg.net site has been down for going on a year now, and
+    is not coming back. I’m not maintaining the generators anymore, but the source
+    code has been released into the public domain at http://github.com/jamis (look
+    for the projects that start with “dnd”).</p>"

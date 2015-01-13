@@ -1,0 +1,75 @@
+---
+layout: post
+title: Introducing TzTime
+post_id: 111
+categories:
+- Announcements
+date: 2007-02-02 13:52:00.000000000 -07:00
+author: Jamis
+permalink: 2007/02/02/introducing-tztime.html
+---
+
+<p>Time zones were created specifically to make programmers’ lives miserable. I’ve been tasked at least three times now to retrofit time zones into an application, and each time has been painful.</p>
+<p>Traditionally, I’ve done time zones as follows:</p>
+<ul>
+	<li>Install the <a href="http://tzinfo.rubyforge.org/">tzinfo</a> gem</li>
+		<li>Install the <a href="http://www.agilewebdevelopment.com/plugins/tzinfo_timezone">tzinfo_timezone</a> rails plugin</li>
+		<li>Add a <code>time_zone_id</code> to the accounts (or users) table</li>
+		<li>Set ActiveRecord::Base.default_time_zone to :utc</li>
+		<li>Define user2utc and utc2user helpers (for converting times between the user’s time zone and <span class="caps">UTC</span>)</li>
+		<li>Search through the code and find every place that either displays a date/time (<code>strftime</code>, etc.) or stores a user-entered time in the database, and make liberal use of user2utc and utc2user</li>
+	</ul>
+<p>What. A. Pain.</p>
+<p>Furthermore, it breaks down in lots of places. Consider the following:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">zone = <span class="co">TimeZone</span>[<span class="s"><span class="dl">"</span><span class="k">Mountain Time (US &amp; Canada)</span><span class="dl">"</span></span>]<tt>
+</tt>morning = zone.now.beginning_of_day<tt>
+</tt>p morning <span class="c">#-&gt; Fri Feb 02 00:00:00 UTC 2007</span><tt>
+</tt>p morning.utc <span class="c">#-&gt; Fri Feb 02 00:00:00 UTC 2007</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Note that the value of “morning” is given as a <span class="caps">UTC</span> time; this is because TZInfo has to return <em>something</em>, and since Ruby’s Time class does not allow you to set it to arbitrary time zones, TZInfo simply returns the value as <span class="caps">UTC</span>, requiring you, as the programmer, to keep track of its real time zone. Thus, you cannot use <code>Time#utc</code> to convert the value to <em>real</em> UTC, though that is the most natural operation. Instead you have to do <code>zone.local_to_utc(morning)</code>, which is non-intuitive and requires that you have access to the time zone object whenever you want to do the conversion.</p>
+<p>Now, what if you could do something like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">TzTime</span>.zone = <span class="co">TimeZone</span>[<span class="s"><span class="dl">"</span><span class="k">Mountain Time (US &amp; Canada)</span><span class="dl">"</span></span>]<tt>
+</tt>morning = <span class="co">TzTime</span>.now.beginning_of_day<tt>
+</tt>p morning <span class="c">#-&gt; 2007-02-02 00:00:00 MST</span><tt>
+</tt>p morning.utc <span class="c">#-&gt; Fri Feb 02 07:00:00 UTC 2007</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Well, you can! Just install the <a href="http://dev.rubyonrails.com/svn/rails/plugins/tztime/">tztime</a> plugin. You’ll want to make sure and set the global zone on each request, though; an around_filter works great:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">ApplicationController</span> &lt; <span class="co">ActionController</span>::<span class="co">Base</span><tt>
+</tt>  around_filter <span class="sy">:set_timezone</span><tt>
+</tt><tt>
+</tt>  private<tt>
+</tt>    <span class="r">def</span> <span class="fu">set_timezone</span><tt>
+</tt>      <span class="co">TzTime</span>.zone = current_user.time_zone<tt>
+</tt>      <span class="r">yield</span><tt>
+</tt>      <span class="co">TzTime</span>.reset!<tt>
+</tt>    <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>You can read all about it in the <a href="http://dev.rubyonrails.com/svn/rails/plugins/tztime/README"><span class="caps">README</span></a>. Hopefully this saves others as much pain as it has saved us at 37signals!</p>

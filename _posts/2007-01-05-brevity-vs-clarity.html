@@ -1,0 +1,80 @@
+---
+layout: post
+title: Brevity vs. Clarity
+post_id: 119
+categories:
+- Tips & Tricks
+date: 2007-01-05 15:22:00.000000000 -07:00
+author: Jamis
+permalink: 2007/01/05/brevity-vs-clarity.html
+---
+
+<p>Today’s <a href="http://weblog.jamisbuck.org/2007/1/2/assert_select"><span class="caps">TADFALAICKIU</span></a>: balancing brevity and clarity.</p>
+<p>I’m a big fan of the ternary operator. (That’s the bizarre little <code>foo ? bar : baz</code> construct which Ruby, and others, borrowed from C.) It lets you express simple conditionals very concisely. However, the poor ternary operator gets a lot of flak. It is easily abused, and some people have even gone so far as to swear that any use of it is an evil use.</p>
+<p>If that’s you, then I guess we’ll have to agree to disagree. :)</p>
+<p>I’ll admit that I’m still learning the balancing act. I’ve been going through some older code of mine and discovering things like the following:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">smart_overview_url</span>(options)<tt>
+</tt>  <span class="iv">@project</span> ?<tt>
+</tt>    project_overview_url(options.merge(<span class="sy">:project_id</span> =&gt; <span class="iv">@project</span>.id)) :<tt>
+</tt>    overview_url(options)<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Although certainly not one of the evilest invocations of the ternary operator, it is undeniably destined for <em>some</em> circle of Hell. <em>Ternary Operator Rule #1: if you can’t fit the entire condition on a single line, use an explicit if-then-else construct.</em></p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">smart_overview_url</span>(options)<tt>
+</tt>  <span class="r">if</span> <span class="iv">@project</span><tt>
+</tt>    project_overview_url(options.merge(<span class="sy">:project_id</span> =&gt; <span class="iv">@project</span>.id))<tt>
+</tt>  <span class="r">else</span><tt>
+</tt>    overview_url(options)<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>There, isn’t that cleaner? Other rules of thumb:</p>
+<ul>
+	<li>If you need to nest a ternary operator inside another ternary operator, you’re almost certainly doing it wrong. Nested ternaries are <em>hard to read</em>, and that’s bad. Break it out. Be verbose.</li>
+		<li>If you need to parenthesize any of the component parameters of the operator, you’re almost certainly doing it wrong. Parentheses add line noise to a sequence that already has quite a bit. Break it out. Be verbose.</li>
+	</ul>
+<p>So, when <em>is</em> it ok to use the ternary op? Try these examples:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># trivial conditions</span><tt>
+</tt>increment = x &lt; y ? <span class="i">1</span> : <span class="i">-1</span><tt>
+</tt><span class="c"># simple type conversions</span><tt>
+</tt>value = record.respond_to?(<span class="sy">:something</span>) ? record.something : <span class="pc">nil</span><tt>
+</tt><span class="c"># unfolding hashes</span><tt>
+</tt>element = hash[<span class="sy">:here</span>] ? hash[<span class="sy">:here</span>][<span class="sy">:there</span>] : <span class="pc">nil</span></pre></td>
+</tr></table>
+<p>Note that in the case where something is either a result of some operation or nil, you can also use the <code>&amp;&amp;</code> operator in Ruby:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># simple type conversions</span><tt>
+</tt>value = record.respond_to?(<span class="sy">:something</span>) &amp;&amp; record.something<tt>
+</tt><span class="c"># unfolding hashes</span><tt>
+</tt>element = hash[<span class="sy">:here</span>] &amp;&amp; hash[<span class="sy">:here</span>][<span class="sy">:there</span>]</pre></td>
+</tr></table>
+<p>That works because <code>&amp;&amp;</code> does not (necessarily) return a boolean value—it returns the first false/nil value, or the last value if none are false/nil.</p>

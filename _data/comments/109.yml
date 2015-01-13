@@ -1,0 +1,56 @@
+---
+- date: 2007-02-23
+  author: Dave Hoover
+  content: "<p>I think you’re a little off on the definition of protected.  Protected
+    methods can be called by any object with the same class as self.</p>"
+- date: 2007-02-23
+  author: Kevin Clark
+  content: "<p>You’re missing the interpolation of receiver on safe_send Jamis.</p>"
+- date: 2007-02-23
+  author: Kevin Clark
+  content: "<p>Gah, I’m wrong. Eval takes care of it. Too damn early to look at code.
+    Sorry.</p>"
+- date: 2007-02-23
+  author: Jamis
+  content: "<p>You’re right, Dave, thanks for pointing that out. I’ve updated the
+    article to mention that condition.</p>"
+- date: 2007-02-23
+  author: Dave Hoover
+  content: |-
+    <p>I’ve posted my example of “the exercise” here:
+    http://redsquirrel.com/cgi-bin/dave/dynamic/ruby.protected.access.html  :-)</p>
+- date: 2007-02-23
+  author: Jamis
+  content: "<p>Dave, thanks! Good example.</p>"
+- date: 2007-02-23
+  author: Jay Phillips
+  content: "<p>Just a quick word to the wise: instead of defining a one-line method
+    with “def a; self.a; end”, Ruby lets a method declaration exist on a single line
+    if you use provide the “()” right after the method name. For example:</p>\n\n\n\t<p>class
+    Foo\n  def a() end\n  def b() self.a end\n  def c() a end\nend</p>\n\n\n\t<p>The
+    parenthesis helps the interpreter distinctly identify the argument token. I usually
+    prefer this way since it doesn’t use the semi-colon hack.  :)</p>"
+- date: 2007-02-23
+  author: Jay Phillips
+  content: "<p>Whoops, the newline formatting got stripped.</p>\n\n\n\t<p>Use your
+    imagination to put newlines after each method.  :)</p>"
+- date: 2007-02-23
+  author: Jamis
+  content: "<p>Thanks, Jay. I generally prefer the semi-colons, since the empty parens
+    just look noisy to me. Different people, different preferences. :)</p>"
+- date: 2007-02-23
+  author: Nick Sieger
+  content: "<p>Thought I’d pipe in that visibility is a hot item to change in Ruby
+    2.  In particular, private may become more like Java’s, where a method is not
+    even visible outside the class it’s defined in (including subclasses), so no obj.send
+    :private_method anymore (though one could still use #instance_eval to reach it
+    if you really wanted).</p>\n\n\n\t<p>See ruby-core:9996 for details.</p>"
+- date: 2007-02-23
+  author: Rob Sanheim
+  content: "<p>For Ruby 2 you’ll be able to use obj.funcall(:private_meth) in place
+    of send.</p>"
+- date: 2007-03-14
+  author: rich
+  content: "<p>I’ve come from a C++/C#/Java background, and this is certainly something
+    that initially caught me off guard.  Thanks for clearing it up! :) This post in
+    my blog extends the discussion to instance variables….</p>\n\n\n\t<p>http://richtextblog.blogspot.com/2007/01/ruby-instance-variables-in-derived.html</p>"

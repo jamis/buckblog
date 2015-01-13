@@ -1,0 +1,233 @@
+---
+- date: 2010-12-27
+  author: Daniel Spiewak
+  content: "<p>Actually, once you understand this algorithm, I think the best place
+    to go next would be to change it to a breadth-first traversal.  The intuition
+    here is that a maze is an undirected graph, and this algorithm constructs the
+    maze by traversing that graph in depth-first order.  This is dandy, but as Jamis
+    noted, it requires stack size proportional to the size of the maze (in the worst
+    case).  Actually, it would be more precise to say that it require stack size proportional
+    to the longest acyclic path through the maze, which is (in the worst case) the
+    entire maze, but in the average case will be much much less.</p>\n\n\n\t<p>Anyway,
+    the motivation for breadth-first traversal is that you no longer have to maintain
+    the longest acyclic path, you simply maintain a queue of unvisited cells.  The
+    worst-case complexity is a <strong>lot</strong> better here, seeing as it can’t
+    be the entire maze (actually, I believe it’s closer to logarithmic in the size
+    of the maze).  The average case is also nicer, since a breadth-first traversal
+    drops cells which have been completely visited, requiring a lot less memory.</p>"
+- date: 2010-12-27
+  author: Jamis
+  content: "<p>@Daniel, good suggestion! I’m actually going to write up a description
+    of Eller’s algorithm next, which is a very clever way of doing just such a breadth-first
+    traversal. It only requires that memory proportional to a single row of the maze
+    be kept in memory, making it ideal for tight memory conditions. As I said, though,
+    it’s “clever”, so it’s harder to understand and implement than the recursive backtracker,
+    but still a lot of fun.</p>"
+- date: 2010-12-27
+  author: will
+  content: "<p>Which of the maze algorithms is the one where you start with a set
+    for each cell, then randomly pick two rooms to join from different sets, then
+    merge their sets, and once you only have one set, you know you can get to any
+    place from any other place in the maze?</p>"
+- date: 2010-12-27
+  author: Jamis
+  content: "<p>@will, that sounds like Kruskal’s algorithm. I’ve never implemented
+    it myself, but I’d like to give it a try…maybe tonight. :)</p>"
+- date: 2010-12-27
+  author: Jamis
+  content: '<p>Done! For the curious, here’s an implementation of Kruskal’s algorithm:
+    <a href="https://gist.github.com/756896">https://gist.github.com/756896</a>. It
+    works as will described, placing each cell into its own set, then iteratively
+    joining adjacent disjunct sets until only one set remains. I think I still prefer
+    recursive backtracking for simplicity and the esthetics of the result, but Kruskal’s
+    is definitely an intriguing approach. I’ll do a post about it later, to go into
+    it in more depth.</p>'
+- date: 2011-01-13
+  author: Isaac
+  content: "<p>I don’t understand where steps 3 and 4 come in then. Which part of
+    your code does the backtracking to the previous cell with unvisited adjacent cells?
+    It looks like the code will just terminate when it reaches a cell that has no
+    more valid adjacent cells instead of backing up.</p>"
+- date: 2011-01-13
+  author: Jamis
+  content: "<p>@Isaac, remember that the carve_passages_from method is called recursively;
+    thus, when the method terminates, the program continues from where that method
+    was last called, which may be within the method itself!</p>\n\n\n\t<p>Picture
+    it this way: carve_passages_from is called with a a location of (1,1). That invocation
+    of carve_passages_from chooses a direction and then calls carve_passages_from
+    <span class=\"caps\">AGAIN</span> with a new location of (1,2). If that newest
+    invocation of carve_passages_from cannot find a valid cell to move into, it will
+    terminate, and return to the invocation of carve_passages_from at (1,1), which
+    allows that loop to continue looking at adjacent cells (possibly choosing the
+    neighbor at, say, (1,0), and calling carve_passages_from on that cell).</p>\n\n\n\t<p>Does
+    that make sense? If you’d like to see an implementation that uses iteration instead
+    of recursion, I’ve got one here: <a href=\"https://gist.github.com/754545\">https://gist.github.com/754545</a>—it
+    uses an explicit stack, which makes the backtracking more obvious.</p>"
+- date: 2011-01-13
+  author: Isaac
+  content: "<p>Thanks for the help. I tried to implement some of these algorithms
+    myself a while back, but I got bogged down in the data structure implementation
+    for each of them (sometimes the mathematical descriptions in algorithms textbooks
+    are a little too abstract for me) and gave up. This has inspired me to have another
+    go!</p>"
+- date: 2011-01-13
+  author: Jamis
+  content: "<p>@Isaac, that’s awesome! Please do have another go, and let me know
+    how it turns out. Most of these algorithms are actually pretty straightforward
+    once you wrap your mind around them; if you have any further questions, feel free
+    to ask!</p>"
+- date: 2011-01-18
+  author: Alexandre
+  content: "<p>Hey there, Jamis. I saw your post a few weeks ago (on reddit) and I
+    figured I could try your approach on learning a new language with mazes.</p>\n\n\n\t<p>So
+    far, the repository at https://github.com/alexandream/mazes is what I managed
+    to accomplish with recursive backtracking. I plan on making quite a lot of experiments
+    on it, as I polish my lispy ways ;)</p>\n\n\n\t<p>If anyone wants to run it: with
+    racket installed you only need to run</p>\n\n\n\t<p>gracket driver.scm</p>"
+- date: 2011-01-19
+  author: Jamis
+  content: "<p>@Alexandre, thanks for sharing what you’ve created! I love seeing these
+    algorithms in other languages, as well as seeing how others approach the implementation.</p>"
+- date: 2011-01-19
+  author: Alexandre
+  content: "<p>Yeah, and thanks for this blog post: I had a hell of a fun implementing
+    this: first in Guile with Postscript for graphics, then in Racket.</p>\n\n\n\t<p>One
+    thing, I mistyped the cmd line in the previous one. It’s</p>\n\n\n\t<p>gracket
+    -f driver.scm</p>"
+- date: 2011-01-25
+  author: Isaac
+  content: '<p>So, I was looking through your code again. :-) How exactly does your
+    display code work? In particular, why do you do the checks for the adjacent cell
+    and for east and south? Things like this, for example, seem unintuitive:  print((grid<a
+    href="x">y</a> &amp; S != 0) ? ” ” : ”_”) – here you are printing nothing when
+    it has something (south) – I would have expected the reverse. Why wouldn’t something
+    naïve like ‘if has_south: print ; if has_north: print ; etc’ work?</p>'
+- date: 2011-01-25
+  author: Jamis
+  content: "<p>@Isaac, it sounds like you’re reversing the meaning of the direction
+    bits; if S is set, it means there is a passage to the south, not a wall, which
+    is why the display routine prints a space instead of an underscore when that bit
+    is set.</p>\n\n\n\t<p>Good question about why I’m only printing south and east!
+    The reason is that I begin by printing the top border, which gives me the initial
+    north wall. Then each row begins by printing the initial west wall. So, when I
+    display the cell at 0,0, I’ve already got the N and W walls, and I only have to
+    emit the S and E walls. Moving to 1,0, I’ve already got the W wall (from 0,0),
+    so I only need to print S and E, again. In general, by printing the S and E walls
+    at x,y, I’ve also printed the N wall for x,y+1, and the W wall for x+1,y.</p>\n\n\n\t<p>I
+    hope that makes sense. :)</p>\n\n\n\t<p>I’ll admit the display routines in my
+    sample code are warts; they were optimized for brevity, because I didn’t want
+    them to detract from the algorithm itself. Once I finish writing about these algorithms
+    (three more to go!) I’d like to cover topics like displaying mazes, etc.</p>"
+- date: 2011-01-31
+  author: Ken Liu
+  content: "<p>Here’s a Groovy version: https://gist.github.com/805416</p>\n\n\n\t<p>Great
+    advice, I learned a few things about Groovy along the way. I ported your code
+    instead of rewriting from scratch so I could spend more effort thinking about
+    how things are done in Groovy.</p>"
+- date: 2011-01-31
+  author: Jamis
+  content: "<p>@Ken, thanks for sharing! I’m glad the exercise showed you more about
+    Groovy; that (learning about a new programming language) was my ultimate goal
+    with these articles, after all!</p>"
+- date: 2011-02-06
+  author: Francis
+  content: "<p>Here’s a C implementation, it makes you appreciate higher level languages.
+    :D</p>\n\n\n<table class=\"CodeRay\"><tr>\n  <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt><strong>5</strong><tt>\n</tt>6<tt>\n</tt>7<tt>\n</tt>8<tt>\n</tt>9<tt>\n</tt><strong>10</strong><tt>\n</tt>11<tt>\n</tt>12<tt>\n</tt>13<tt>\n</tt>14<tt>\n</tt><strong>15</strong><tt>\n</tt>16<tt>\n</tt>17<tt>\n</tt>18<tt>\n</tt>19<tt>\n</tt><strong>20</strong><tt>\n</tt>21<tt>\n</tt>22<tt>\n</tt>23<tt>\n</tt>24<tt>\n</tt><strong>25</strong><tt>\n</tt>26<tt>\n</tt>27<tt>\n</tt>28<tt>\n</tt>29<tt>\n</tt><strong>30</strong><tt>\n</tt>31<tt>\n</tt>32<tt>\n</tt>33<tt>\n</tt>34<tt>\n</tt><strong>35</strong><tt>\n</tt>36<tt>\n</tt>37<tt>\n</tt>38<tt>\n</tt>39<tt>\n</tt><strong>40</strong><tt>\n</tt>41<tt>\n</tt>42<tt>\n</tt>43<tt>\n</tt>44<tt>\n</tt><strong>45</strong><tt>\n</tt>46<tt>\n</tt>47<tt>\n</tt>48<tt>\n</tt>49<tt>\n</tt><strong>50</strong><tt>\n</tt>51<tt>\n</tt>52<tt>\n</tt>53<tt>\n</tt>54<tt>\n</tt><strong>55</strong><tt>\n</tt>56<tt>\n</tt>57<tt>\n</tt>58<tt>\n</tt>59<tt>\n</tt><strong>60</strong><tt>\n</tt>61<tt>\n</tt>62<tt>\n</tt>63<tt>\n</tt>64<tt>\n</tt><strong>65</strong><tt>\n</tt>66<tt>\n</tt>67<tt>\n</tt>68<tt>\n</tt>69<tt>\n</tt><strong>70</strong><tt>\n</tt>71<tt>\n</tt>72<tt>\n</tt>73<tt>\n</tt>74<tt>\n</tt><strong>75</strong><tt>\n</tt>76<tt>\n</tt>77<tt>\n</tt>78<tt>\n</tt>79<tt>\n</tt><strong>80</strong><tt>\n</tt>81<tt>\n</tt>82<tt>\n</tt>83<tt>\n</tt>84<tt>\n</tt><strong>85</strong><tt>\n</tt>86<tt>\n</tt>87<tt>\n</tt>88<tt>\n</tt>89<tt>\n</tt><strong>90</strong><tt>\n</tt>91<tt>\n</tt>92<tt>\n</tt>93<tt>\n</tt>94<tt>\n</tt><strong>95</strong><tt>\n</tt>96<tt>\n</tt>97<tt>\n</tt>98<tt>\n</tt>99<tt>\n</tt><strong>100</strong><tt>\n</tt>101<tt>\n</tt>102<tt>\n</tt>103<tt>\n</tt>104<tt>\n</tt><strong>105</strong><tt>\n</tt>106<tt>\n</tt>107<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre><span class=\"pp\">#include</span> <span class=\"ic\">&lt;stdio.h&gt;</span><tt>\n</tt><span
+    class=\"pp\">#include</span> <span class=\"ic\">&lt;time.h&gt;</span><tt>\n</tt><tt>\n</tt><span
+    class=\"pp\">#define</span> WIDTH <span class=\"i\">20</span><tt>\n</tt><span
+    class=\"pp\">#define</span> HEIGHT <span class=\"i\">20</span><tt>\n</tt><tt>\n</tt><span
+    class=\"r\">enum</span> {N=<span class=\"i\">1</span>,E=<span class=\"i\">4</span>,S=<span
+    class=\"i\">2</span>,W=<span class=\"i\">8</span>};<tt>\n</tt><span class=\"pt\">int</span>
+    DX[<span class=\"i\">9</span>];<tt>\n</tt><span class=\"pt\">int</span> DY[<span
+    class=\"i\">9</span>];<tt>\n</tt><span class=\"pt\">int</span> OPPOSITE[<span
+    class=\"i\">9</span>];<tt>\n</tt><tt>\n</tt><span class=\"pt\">int</span> carve_passage_from(<span
+    class=\"pt\">int</span> cx, <span class=\"pt\">int</span> cy, <span class=\"pt\">int</span>
+    *grid[]);<tt>\n</tt><span class=\"pt\">int</span> shuffle_array(<span class=\"pt\">int</span>
+    *array, <span class=\"pt\">int</span> size);<tt>\n</tt><tt>\n</tt><span class=\"pt\">int</span>
+    main(<span class=\"pt\">int</span> argc, <span class=\"pt\">char</span> *argv[],
+    <span class=\"pt\">char</span> **envp) {<tt>\n</tt>  <span class=\"pt\">int</span>
+    x,y;<tt>\n</tt>  OPPOSITE[N] = S;<tt>\n</tt>  OPPOSITE[E] = W;<tt>\n</tt>  OPPOSITE[S]
+    = N;<tt>\n</tt>  OPPOSITE[W] = E;<tt>\n</tt><tt>\n</tt>  DX[N] = <span class=\"i\">0</span>;<tt>\n</tt>
+    \ DX[E] = <span class=\"i\">1</span>;<tt>\n</tt>  DX[S] = <span class=\"i\">0</span>;<tt>\n</tt>
+    \ DX[W] = -<span class=\"i\">1</span>;<tt>\n</tt><tt>\n</tt>  DY[N] = -<span class=\"i\">1</span>;<tt>\n</tt>
+    \ DY[E] = <span class=\"i\">0</span>;<tt>\n</tt>  DY[S] = <span class=\"i\">1</span>;<tt>\n</tt>
+    \ DY[W] = <span class=\"i\">0</span>;<tt>\n</tt>  <span class=\"pt\">int</span>
+    grid[WIDTH][HEIGHT];<tt>\n</tt>  <span class=\"c\">/** Seed the random generator
+    **/</span><tt>\n</tt>        srand((<span class=\"pt\">unsigned</span> <span class=\"pt\">int</span>)time((time_t
+    *)<span class=\"pc\">NULL</span>));<tt>\n</tt><tt>\n</tt><tt>\n</tt><tt>\n</tt><tt>\n</tt>
+    \ memset(&amp;grid[<span class=\"i\">0</span>], <span class=\"i\">0</span>, <span
+    class=\"r\">sizeof</span>(grid));<tt>\n</tt><tt>\n</tt>  carve_passage(<span class=\"i\">0</span>,
+    <span class=\"i\">0</span>, grid);<tt>\n</tt><tt>\n</tt>  <span class=\"c\">/**
+    Display the grid **/</span><tt>\n</tt>  printf(<span class=\"s\"><span class=\"dl\">\"</span><span
+    class=\"k\"> </span><span class=\"dl\">\"</span></span>);<tt>\n</tt>  <span class=\"r\">for</span>(x
+    = <span class=\"i\">0</span>; x &lt; (WIDTH * <span class=\"i\">2</span>); x++)
+    {<tt>\n</tt>    printf(<span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">_</span><span
+    class=\"dl\">\"</span></span>);<tt>\n</tt>  }<tt>\n</tt>  printf(<span class=\"s\"><span
+    class=\"dl\">\"</span><span class=\"ch\">\\n</span><span class=\"dl\">\"</span></span>);<tt>\n</tt><tt>\n</tt>
+    \ <span class=\"r\">for</span>(y = <span class=\"i\">0</span>; y &lt; HEIGHT;
+    y++) {<tt>\n</tt>    printf(<span class=\"s\"><span class=\"dl\">\"</span><span
+    class=\"k\">|</span><span class=\"dl\">\"</span></span>);<tt>\n</tt>    <span
+    class=\"r\">for</span>(x = <span class=\"i\">0</span>; x &lt; WIDTH; x++) {<tt>\n</tt>
+    \     printf( ((grid[x][y] &amp; S) !=  <span class=\"i\">0</span>)?<span class=\"s\"><span
+    class=\"dl\">\"</span><span class=\"k\"> </span><span class=\"dl\">\"</span></span>:<span
+    class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">_</span><span class=\"dl\">\"</span></span>);<tt>\n</tt>
+    \     <span class=\"r\">if</span>((grid[x][y] &amp; E) != <span class=\"i\">0</span>){<tt>\n</tt>
+    \       printf((( (grid[x][y] | grid[x + <span class=\"i\">1</span>][y]) &amp;
+    S) != <span class=\"i\">0</span>) ?<span class=\"s\"><span class=\"dl\">\"</span><span
+    class=\"k\"> </span><span class=\"dl\">\"</span></span>:<span class=\"s\"><span
+    class=\"dl\">\"</span><span class=\"k\">_</span><span class=\"dl\">\"</span></span>);<tt>\n</tt>
+    \     } <span class=\"r\">else</span> {<tt>\n</tt>        printf(<span class=\"s\"><span
+    class=\"dl\">\"</span><span class=\"k\">|</span><span class=\"dl\">\"</span></span>);<tt>\n</tt>
+    \     }<tt>\n</tt>    }<tt>\n</tt>    printf(<span class=\"s\"><span class=\"dl\">\"</span><span
+    class=\"ch\">\\n</span><span class=\"dl\">\"</span></span>);<tt>\n</tt>  }<tt>\n</tt>}<tt>\n</tt><tt>\n</tt><span
+    class=\"pt\">int</span> shuffle_array(<span class=\"pt\">int</span> *array, <span
+    class=\"pt\">int</span> size) {<tt>\n</tt>  <span class=\"pt\">int</span> i;<tt>\n</tt><tt>\n</tt>
+    \ <span class=\"r\">for</span>( i=<span class=\"i\">0</span>; i&lt;(size - <span
+    class=\"i\">1</span>); i++) {<tt>\n</tt>    <span class=\"pt\">int</span> r =
+    i + (rand() % (size - i));<tt>\n</tt>    <span class=\"pt\">int</span> temp =
+    array[i];<tt>\n</tt>    array[i] = array[r];<tt>\n</tt>    array[r] = temp;<tt>\n</tt>
+    \ }<tt>\n</tt>}<tt>\n</tt><tt>\n</tt><span class=\"pt\">int</span> carve_passage(<span
+    class=\"pt\">int</span> cx, <span class=\"pt\">int</span> cy, <span class=\"pt\">int</span>
+    *grid[WIDTH][HEIGHT]) {<tt>\n</tt><tt>\n</tt>  <span class=\"pt\">int</span> dx,
+    dy, nx, ny;<tt>\n</tt>  <span class=\"pt\">int</span> directions[<span class=\"i\">4</span>]
+    = {N, E, S, W};<tt>\n</tt><tt>\n</tt>  <span class=\"c\">//shuffle the direction
+    array</span><tt>\n</tt>  shuffle_array(directions, <span class=\"i\">4</span>);<tt>\n</tt><tt>\n</tt>
+    \ <span class=\"pt\">int</span> i;<tt>\n</tt>  <span class=\"r\">for</span>(i
+    = <span class=\"i\">0</span>; i &lt; <span class=\"i\">4</span>; i++) {<tt>\n</tt>
+    \   printf(<span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">Direction:
+    %d</span><span class=\"ch\">\\n</span><span class=\"dl\">\"</span></span>, directions[i]);<tt>\n</tt>
+    \ }<tt>\n</tt>  <span class=\"c\">//iterates through the direction then test if
+    the cell in that direction is valid and</span><tt>\n</tt>  <span class=\"c\">//within
+    the bounds of the maze</span><tt>\n</tt>  <span class=\"r\">for</span>(i = <span
+    class=\"i\">0</span>; i &lt; <span class=\"i\">4</span>; i++) {<tt>\n</tt>    dx
+    = DX[directions[i]];<tt>\n</tt>    dy = DY[directions[i]];<tt>\n</tt>    printf(<span
+    class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">Check direction=x:y
+    - %d=%d:%d</span><span class=\"ch\">\\n</span><span class=\"dl\">\"</span></span>,
+    directions[i], dx, dy);<tt>\n</tt>    <span class=\"c\">// check if the cell is
+    valid</span><tt>\n</tt>    nx = cx + dx;<tt>\n</tt>    ny = cy + dy;<tt>\n</tt>
+    \   <span class=\"c\">// check if we are on valid grid</span><tt>\n</tt>    <span
+    class=\"r\">if</span> ( ((nx &lt; WIDTH) &amp; (nx &gt;= <span class=\"i\">0</span>))
+    &amp; ((ny &lt; HEIGHT) &amp; (ny &gt;= <span class=\"i\">0</span>)) ) {<tt>\n</tt>
+    \     <span class=\"c\">//check if grid is not visited</span><tt>\n</tt>      <span
+    class=\"r\">if</span> (grid[nx][ny] == <span class=\"i\">0</span>) {<tt>\n</tt>
+    \       printf(<span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">Valid
+    cell x:y %d:%d</span><span class=\"ch\">\\n</span><span class=\"dl\">\"</span></span>,
+    nx, ny);<tt>\n</tt>        grid[cx][cy] = (<span class=\"pt\">int</span>)((<span
+    class=\"pt\">int</span>)grid[cx][cy] | (<span class=\"pt\">int</span>)directions[i]);<tt>\n</tt>
+    \       grid[nx][ny] = (<span class=\"pt\">int</span>)((<span class=\"pt\">int</span>)grid[nx][ny]
+    | (<span class=\"pt\">int</span>)OPPOSITE[directions[i]]);<tt>\n</tt>        carve_passage(nx,
+    ny, grid);<tt>\n</tt>      }<tt>\n</tt>    }<tt>\n</tt><tt>\n</tt>  }<tt>\n</tt>}<tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p><em>(edit:
+    broken code-paste fixed)</em></p>"
+- date: 2011-02-06
+  author: Jamis
+  content: <p>@Francis, thanks for sharing your implementation! Sorry about the broken
+    formatting; I’ve cleaned that up. In general, it’s probably best to post your
+    implementation somewhere else (I recommend <a href="http://gist.github.com">gist.github.com</a>)
+    and then link to it here, because the code-paste format for my blog is not very
+    discoverable. :/</p>
+- date: 2011-02-15
+  author: Shannon
+  content: "<p>Ah, I was in the same boat as @Isacc: I thought the direction bits
+    indicated walls. It wasn’t until comment #14 that it made sense to me.</p>\n\n\n\t<p>Here’s
+    a C# version [optimized for my understanding, not brevity ;)] here:</p>\n\n\n\t<p>https://gist.github.com/828805</p>"

@@ -1,0 +1,141 @@
+---
+layout: post
+title: Web services, Rails-style
+post_id: 165
+categories:
+- Spotlight
+date: 2006-03-27 11:43:00.000000000 -07:00
+author: Jamis
+permalink: 2006/03/27/web-services-rails-style.html
+summary: >
+  An exhortation to provide web-services by default for Rails apps
+---
+
+<p>The new <span class="caps">REST</span> web-service support in Rails 1.1 makes it so easy to add web-services to your app, you might as well do it earlier, rather than later.</p>
+<p>Consider: if you have a page in your app that displays a list of people, it might look something like this, without web-service support:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">list</span><tt>
+</tt>  <span class="iv">@people</span> = <span class="co">Person</span>.find(<span class="sy">:all</span>)<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Here’s the same action, with web-service support baked in:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">list</span><tt>
+</tt>  <span class="iv">@people</span> = <span class="co">Person</span>.find(<span class="sy">:all</span>)<tt>
+</tt><tt>
+</tt>  respond_to <span class="r">do</span> |wants|<tt>
+</tt>    wants.html<tt>
+</tt>    wants.xml { render <span class="sy">:xml</span> =&gt; <span class="iv">@people</span>.to_xml }<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>What that says is, “if the client wants <span class="caps">HTML</span> in response to this action, just respond as we would have before, but if the client wants <span class="caps">XML</span>, return them the list of people in <span class="caps">XML</span> format.” (Rails determines the desired response format from the <span class="caps">HTTP</span> Accept header submitted by the client.)</p>
+<p>Now, let’s suppose you have an action that adds a new person, optionally creating their company (by name) if it does not already exist. Without web-services, it might look like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">add</span><tt>
+</tt>  <span class="iv">@company</span> = <span class="co">Company</span>.find_or_create_by_name(params[<span class="sy">:company</span>][<span class="sy">:name</span>])<tt>
+</tt>  <span class="iv">@person</span>  = <span class="iv">@company</span>.people.create(params[<span class="sy">:person</span>])<tt>
+</tt><tt>
+</tt>  redirect_to(person_list_url)<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Here’s the same action, with web-service support baked in:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">add</span><tt>
+</tt>  company = params[<span class="sy">:person</span>].delete(<span class="sy">:company</span>)<tt>
+</tt>  <span class="iv">@company</span> = <span class="co">Company</span>.find_or_create_by_name(company[<span class="sy">:name</span>])<tt>
+</tt>  <span class="iv">@person</span>  = <span class="iv">@company</span>.people.create(params[<span class="sy">:person</span>])<tt>
+</tt><tt>
+</tt>  respond_to <span class="r">do</span> |wants|<tt>
+</tt>    wants.html { redirect_to(person_list_url) }<tt>
+</tt>    wants.js<tt>
+</tt>    wants.xml  { render <span class="sy">:xml</span> =&gt; <span class="iv">@person</span>.to_xml(<span class="sy">:include</span> =&gt; <span class="iv">@company</span>) }<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>It was simple enough that I also added <span class="caps">RJS</span> support here. If the client wants <span class="caps">HTML</span>, we just redirect them back to the person list. If they want Javascript (<code>wants.js</code>), then it is an <span class="caps">RJS</span> request and we render the <span class="caps">RJS</span> template associated with this action. Lastly, if the client wants <span class="caps">XML</span>, we render the created person as <span class="caps">XML</span>, but with a twist: we also include the person’s company in the rendered <span class="caps">XML</span>, so you get something like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="ta">&lt;person&gt;</span><tt>
+</tt>  <span class="ta">&lt;id&gt;</span>...<span class="ta">&lt;/id&gt;</span><tt>
+</tt>  ...<tt>
+</tt>  <span class="ta">&lt;company&gt;</span><tt>
+</tt>    <span class="ta">&lt;id&gt;</span>...<span class="ta">&lt;/id&gt;</span><tt>
+</tt>    <span class="ta">&lt;name&gt;</span>...<span class="ta">&lt;/name&gt;</span><tt>
+</tt>    ...<tt>
+</tt>  <span class="ta">&lt;/company&gt;</span><tt>
+</tt><span class="ta">&lt;/person&gt;</span></pre></td>
+</tr></table>
+<p>Note, however, the extra bit at the top of that action:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">company = params[<span class="sy">:person</span>].delete(<span class="sy">:company</span>)<tt>
+</tt><span class="iv">@company</span> = <span class="co">Company</span>.find_or_create_by_name(company[<span class="sy">:name</span>])</pre></td>
+</tr></table>
+<p>This is because the incoming <span class="caps">XML</span> document (if a web-service request is in process) can only contain a single root-node. So, we have to rearrange things so that the request looks like this (url-encoded):</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">person[name]=...&amp;person[company][name]=...&amp;...</pre></td>
+</tr></table>
+<p>And, like this (xml-encoded):</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="ta">&lt;person&gt;</span><tt>
+</tt>  <span class="ta">&lt;name&gt;</span>...<span class="ta">&lt;/name&gt;</span><tt>
+</tt>  <span class="ta">&lt;company&gt;</span><tt>
+</tt>    <span class="ta">&lt;name&gt;</span>...<span class="ta">&lt;/name&gt;</span><tt>
+</tt>  <span class="ta">&lt;/company&gt;</span><tt>
+</tt><span class="ta">&lt;/person&gt;</span></pre></td>
+</tr></table>
+<p>In other words, we make the request so that it operates on a single entity—a <em>person</em>. Then, in the action, we extract the <code>company</code> data from the request, find or create the company, and then create the new person with the remaining data.</p>
+<p>Note that you can define your own <span class="caps">XML</span> parameter parser which would allow you to describe multiple entities in a single request (i.e., by wrapping them all in a single root note), but if you just go with the flow and accept Rails’ defaults, life will be much easier.</p>

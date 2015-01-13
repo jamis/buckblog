@@ -1,0 +1,16 @@
+---
+layout: post
+title: rcov
+post_id: 124
+categories:
+- Tips & Tricks
+date: 2007-01-03 15:04:00.000000000 -07:00
+author: Jamis
+permalink: 2007/01/03/rcov.html
+---
+
+<p>Tip of the day: <a href="http://eigenclass.org/hiki.rb?rcov">rcov</a>.</p>
+<p>Writing tests is all well and good, but how do you know when your application is sufficiently tested? Especially when you’re just learning how to do automated testing, it can sometimes feel pretty arbitrary. However, there are many different metrics for evaluating the efficiency of your tests, and one of the simpler to measure is <em>code coverage</em>. How much of your code do your tests exercise?</p>
+<p>Mauricio’s “rcov” utility does just that. You use it to run your tests, and it then reports a percentage (total, as well as per file) of how many lines of code were executed. It even gives you a view of each file, with the untested lines in red! Really, really helpful. Your tests will run slower under rcov, but not much slower—and it is <em>incredibly</em> faster than other previous tools. Also, it works <em>really</em> well with Rails applications.</p>
+<p>Now, those of you that are testing gurus will be quick to point out that relying solely on code coverage can be dangerous, and I will agree. Code coverage should <em>not</em> be the only metric you use to evaluate your tests. Ensuring that every line of code has been executed at least once does not even come close to guaranteeing that your application is correct, but it is a lot better than shooting tests randomly into your domain and hoping for the best.</p>
+<p>Besides simple code coverage, others in the Ruby community are working all the time on different techniques for testing. You could do a lot worse than to follow what <a href="http://www.zenspider.com">Ryan Davis</a> is concocting with his <a href="http://www.zenspider.com/ZSS/Products/ZenTest/">ZenTest</a> suite of tools.</p>

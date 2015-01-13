@@ -1,0 +1,286 @@
+---
+layout: post
+title: 'Inside Capistrano: the Command abstraction'
+post_id: 146
+categories:
+- Under the Hood
+date: 2006-09-28 08:40:00.000000000 -06:00
+author: Jamis
+permalink: 2006/09/28/inside-capistrano-the-command-abstraction.html
+---
+
+<div class="inset">
+For those arriving late to the party, Capistrano is a utility for executing commands in parallel on multiple remote hosts. You can read all about it in the <a href="http://manuals.rubyonrails.com/read/book/17">Capistrano manual</a>.
+</div>
+<p>Capistrano really is the poster child for <a href="http://net-ssh.rubyforge.org">Net::SSH</a>. In the last “Inside Capistrano” article (<a href="http://weblog.jamisbuck.org/2006/9/26/inside-capistrano-the-gateway-implementation">the Gateway implementation</a>) I talked about Capistrano’s use of Net::SSH’s port forwarding feature. This time around, I’d like to focus on how Capistrano uses Net::SSH to execute a single command in parallel on multiple hosts.</p>
+<p>For now, we’re just going to skip past all the magic in Capistrano::Actor that manages the connections to the servers. (We’ll discuss that another time.) We’ll jump straight to Capistrano::Command, located in <a href="http://dev.rubyonrails.org/browser/tools/capistrano/lib/capistrano/command.rb">capistrano/command.rb</a>. It acceps five arguments: a list of named servers, a command to be executed, a Proc instance to act as a callback for any output from the servers, a hash of options, and a reference to the Actor instance that requested the command. (Whew!)</p>
+<p>The initialization is pretty straightforward:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">initialize</span>(servers, command, callback, options, actor)<tt>
+</tt>  <span class="iv">@servers</span> = servers<tt>
+</tt>  <span class="iv">@command</span> = command.strip.gsub(<span class="rx"><span class="dl">/</span><span class="ch">\r</span><span class="k">?</span><span class="ch">\n</span><span class="dl">/</span></span>, <span class="s"><span class="dl">"</span><span class="ch">\\</span><span class="ch">\n</span><span class="dl">"</span></span>)<tt>
+</tt>  <span class="iv">@callback</span> = callback<tt>
+</tt>  <span class="iv">@options</span> = options<tt>
+</tt>  <span class="iv">@actor</span> = actor<tt>
+</tt>  <span class="iv">@channels</span> = open_channels<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>The most significant part of the initialization is the call to <code>open_channels</code>. For those of you unfamiliar with Net::SSH, every interaction with a remote host is encapsulated in a channel. Each connection can have multiple channels open simultaneously; it is this feature that lets you have multiple forwarded ports going over the same connection you are using to interact with your shell on the remote host. (Try doing that with telnet!)</p>
+<p>Thus, in order to execute a command on the remote hosts, we need to open a channel for the command on each host. The <code>open_channels</code> method does just this. It’s not a complicated method, but if you aren’t familiar with Net::SSH, it might appear a little daunting with all the callbacks involved. We’ll break it up and take it a piece at a time.</p>
+<p>First, we just iterate over each server, using <code>map</code> to return an array of channel objects that correspond to the servers. (We use the actor instance here to get at the actual Net::SSH sessions for each named server, so we can open those channels. It is assumed that each connection has been established previously.)</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">open_channels</span><tt>
+</tt>  <span class="iv">@servers</span>.map <span class="r">do</span> |server|<tt>
+</tt>    <span class="iv">@actor</span>.sessions[server].open_channel <span class="r">do</span> |channel|<tt>
+</tt>      ...<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>For each new channel, we do a bit of set up:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">channel[<span class="sy">:host</span>] = server<tt>
+</tt>channel[<span class="sy">:actor</span>] = <span class="iv">@actor</span><tt>
+</tt>channel.request_pty <span class="sy">:want_reply</span> =&gt; <span class="pc">true</span></pre></td>
+</tr></table>
+<p>Every channel instance can be treated as a hash, so you can store custom data in it for later access. Here, we’re storing the name of the server the channel is connected to, as well as the actor reference (so we can use it in the callback). Then, we tell the remote host that we want to allocate a pty for this connection.</p>
+<p>With that out of the way, we set up some callbacks to handle different channel events. These are detailed below, with a bit of commentary:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt>23<tt>
+</tt>24<tt>
+</tt>25<tt>
+</tt>26<tt>
+</tt>27<tt>
+</tt>28<tt>
+</tt>29<tt>
+</tt><strong>30</strong><tt>
+</tt>31<tt>
+</tt>32<tt>
+</tt>33<tt>
+</tt>34<tt>
+</tt>35<tt>
+</tt>36<tt>
+</tt>37<tt>
+</tt>38<tt>
+</tt>39<tt>
+</tt><strong>40</strong><tt>
+</tt>41<tt>
+</tt>42<tt>
+</tt>43<tt>
+</tt>44<tt>
+</tt>45<tt>
+</tt>46<tt>
+</tt>47<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># The on_success handler is called when the server</span><tt>
+</tt><span class="c"># responds to our request_pty message, but only if</span><tt>
+</tt><span class="c"># a pty was allocated. We use this opportunity to send</span><tt>
+</tt><span class="c"># the actual command to the server, along with any data</span><tt>
+</tt><span class="c"># that should be piped to it on stdin.</span><tt>
+</tt>channel.on_success <span class="r">do</span> |ch|<tt>
+</tt>  ch.exec command<tt>
+</tt>  ch.send_data options[<span class="sy">:data</span>] <span class="r">if</span> options[<span class="sy">:data</span>]<tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="c"># Just as on_success is called when the server was able</span><tt>
+</tt><span class="c"># to allocate a pty, on_failure is called when it can't.</span><tt>
+</tt><span class="c"># In that case, we log a message and move on.</span><tt>
+</tt>channel.on_failure <span class="r">do</span> |ch|<tt>
+</tt>  logger.important <span class="s"><span class="dl">"</span><span class="k">could not open channel</span><span class="dl">"</span></span>, ch[<span class="sy">:host</span>]<tt>
+</tt>  ch.close<tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="c"># Any time the remote command emits data on its stdout,</span><tt>
+</tt><span class="c"># Net::SSH will call the channel's on_data callback. We</span><tt>
+</tt><span class="c"># delegate to the callback hook given when the Command</span><tt>
+</tt><span class="c"># was instantiated.</span><tt>
+</tt>channel.on_data <span class="r">do</span> |ch, data|<tt>
+</tt>  <span class="iv">@callback</span>[ch, <span class="sy">:out</span>, data] <span class="r">if</span> <span class="iv">@callback</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="c"># Stderr (and any other, non-stdout data) gets sent to</span><tt>
+</tt><span class="c"># the on_extended_data hook. We treat it all as stderr</span><tt>
+</tt><span class="c"># and delegate it to the primary callback.</span><tt>
+</tt>channel.on_extended_data <span class="r">do</span> |ch, type, data|<tt>
+</tt>  <span class="iv">@callback</span>[ch, <span class="sy">:err</span>, data] <span class="r">if</span> <span class="iv">@callback</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="c"># The on_request hook is used for most other kinds of</span><tt>
+</tt><span class="c"># response from the server. All we care about is the</span><tt>
+</tt><span class="c"># 'exit-status' reply, which we use to determine whether</span><tt>
+</tt><span class="c"># or not the command completed successfully.</span><tt>
+</tt>channel.on_request <span class="r">do</span> |ch, request, reply, data|<tt>
+</tt>  ch[<span class="sy">:status</span>] = data.read_long <span class="r">if</span> request == <span class="s"><span class="dl">"</span><span class="k">exit-status</span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="c"># When the command finishes, the on_close hook is called.</span><tt>
+</tt><span class="c"># We set a flag here that let's us easily query whether</span><tt>
+</tt><span class="c"># the channel is still active or not.</span><tt>
+</tt>channel.on_close <span class="r">do</span> |ch|<tt>
+</tt>  ch[<span class="sy">:closed</span>] = <span class="pc">true</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Alright! The channels are all ready for us now, and we can proceed with executing the command. This occurs in the <code>process!</code> method, which has a bit of Net::SSH magic in it so that each channel is processed in parallel.</p>
+<p>Each Net::SSH connection is event-driven, and as such requires an event loop to be running. Net::SSH gives you a method for running an event loop on a single connection (called “loop”), but if we want to drive multiple connections simultaneously, we need to implement our own event loop. That’s what the <code>process!</code> method does.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt>23<tt>
+</tt>24<tt>
+</tt>25<tt>
+</tt>26<tt>
+</tt>27<tt>
+</tt>28<tt>
+</tt>29<tt>
+</tt><strong>30</strong><tt>
+</tt>31<tt>
+</tt>32<tt>
+</tt>33<tt>
+</tt>34<tt>
+</tt>35<tt>
+</tt>36<tt>
+</tt>37<tt>
+</tt>38<tt>
+</tt>39<tt>
+</tt><strong>40</strong><tt>
+</tt>41<tt>
+</tt>42<tt>
+</tt>43<tt>
+</tt>44<tt>
+</tt>45<tt>
+</tt>46<tt>
+</tt>47<tt>
+</tt>48<tt>
+</tt>49<tt>
+</tt><strong>50</strong><tt>
+</tt>51<tt>
+</tt>52<tt>
+</tt>53<tt>
+</tt>54<tt>
+</tt>55<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">process!</span><tt>
+</tt>  <span class="c"># First, we mark the current time. This is so that we</span><tt>
+</tt>  <span class="c"># can ping each connection every second, so that</span><tt>
+</tt>  <span class="c"># long-running commands don't result in the connection</span><tt>
+</tt>  <span class="c"># timing out.</span><tt>
+</tt>  since = <span class="co">Time</span>.now<tt>
+</tt><tt>
+</tt>  <span class="c"># This begins the event loop...</span><tt>
+</tt>  loop <span class="r">do</span><tt>
+</tt><tt>
+</tt>    <span class="c"># This indicates how many channels are still active.</span><tt>
+</tt>    <span class="c"># When there are no more active channels, we can</span><tt>
+</tt>    <span class="c"># terminate the event loop.</span><tt>
+</tt>    active = <span class="i">0</span><tt>
+</tt><tt>
+</tt>    <span class="c"># For every active channel, have it's associated</span><tt>
+</tt>    <span class="c"># connection process any pending events. (The 'true'</span><tt>
+</tt>    <span class="c"># parameter tells the poll not to block, if no</span><tt>
+</tt>    <span class="c"># events are pending.)</span><tt>
+</tt>    <span class="iv">@channels</span>.each <span class="r">do</span> |ch|<tt>
+</tt>      <span class="r">next</span> <span class="r">if</span> ch[<span class="sy">:closed</span>]<tt>
+</tt>      active += <span class="i">1</span><tt>
+</tt>      ch.connection.process(<span class="pc">true</span>)<tt>
+</tt>    <span class="r">end</span><tt>
+</tt><tt>
+</tt>    <span class="c"># If there aren't any active channels, break out of</span><tt>
+</tt>    <span class="c"># the loop</span><tt>
+</tt>    <span class="r">break</span> <span class="r">if</span> active == <span class="i">0</span><tt>
+</tt><tt>
+</tt>    <span class="c"># If it has been at least a second since the last</span><tt>
+</tt>    <span class="c"># ping, ping every connection. Note that we ping</span><tt>
+</tt>    <span class="c"># whether the channel is active or not, since the</span><tt>
+</tt>    <span class="c"># connection itself IS, and we don't want it timing</span><tt>
+</tt>    <span class="c"># out just because one of the other channels is</span><tt>
+</tt>    <span class="c"># lagging behind the others.</span><tt>
+</tt>    <span class="r">if</span> <span class="co">Time</span>.now - since &gt;= <span class="i">1</span><tt>
+</tt>      since = <span class="co">Time</span>.now<tt>
+</tt>      <span class="iv">@channels</span>.each { |ch| ch.connection.ping! }<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>    <tt>
+</tt>    <span class="c"># a brief respite, to keep the CPU from going crazy</span><tt>
+</tt>    sleep <span class="fl">0.01</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  <span class="c"># If any command terminated with a non-zero exit</span><tt>
+</tt>  <span class="c"># status, then we raise an exception. Ultimately,</span><tt>
+</tt>  <span class="c"># Capistrano::Actor will catch that exception and try</span><tt>
+</tt>  <span class="c"># to rollback the current task (if a rollback handler</span><tt>
+</tt>  <span class="c"># is defined for it.)</span><tt>
+</tt>  <span class="r">if</span> failed = <span class="iv">@channels</span>.detect { |ch| ch[<span class="sy">:status</span>] != <span class="i">0</span> }<tt>
+</tt>    raise <span class="s"><span class="dl">"</span><span class="k">command </span><span class="il"><span class="dl">#{</span><span class="iv">@command</span>.inspect<span class="dl">}</span></span><span class="k"> failed on </span><span class="il"><span class="dl">#{</span>failed[<span class="sy">:host</span>]<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  <span class="pc">self</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>When the command terminates, control reverts to the caller (the Capistrano::Actor instance). As you can see, there really isn’t that much to it—it just requires that we do a bit of manual labor to set up that custom event loop.</p>
+<p>As with the Gateway code, you could probably mock up an actor instance and use the Command code independently of Capistrano, but it wasn’t really designed with that in mind. Still, it should provide plenty of inspiration for your own Net::SSH scripts.</p>
+<p>If you’d like to learn more about Net::SSH, <a href="http://net-ssh.rubyforge.org">the manual</a> is a good place to start.</p>
+<div class="tail">
+This is the second in a series of articles detailing various internals of Capistrano. The first article was about <a href="http://weblog.jamisbuck.org/2006/9/26/inside-capistrano-the-gateway-implementation">the Gateway implementation</a>. If there are any specific aspects of Capistrano you’d like discussed, feel free to leave your vote in the comments.
+</div>

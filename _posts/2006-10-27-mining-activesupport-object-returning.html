@@ -1,0 +1,69 @@
+---
+layout: post
+title: 'Mining ActiveSupport: Object#returning'
+post_id: 186
+categories:
+- Spotlight
+date: 2006-10-27 08:16:00.000000000 -06:00
+author: Jamis
+permalink: 2006/10/27/mining-activesupport-object-returning.html
+summary: >
+  The under-appreciated Object#returning method is presented, with examples
+  of how it is particularly useful
+---
+
+<p>ActiveSupport is the unsung hero of Rails. Much of what makes Rails code beautiful and powerful is implemented in ActiveSupport. It adds numerous methods to many of the core classes, which are used throughout Rails. If you don’t mind digging around, you can find all kinds of handy tricks to use in your own applications.</p>
+<p>Consider this common idiom:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">create_book</span><tt>
+</tt>  book = <span class="co">Book</span>.new<tt>
+</tt>  book.title = <span class="s"><span class="dl">"</span><span class="k">Trafalgar: The Nelson Touch</span><span class="dl">"</span></span><tt>
+</tt>  book.author = <span class="s"><span class="dl">"</span><span class="k">David Howarth</span><span class="dl">"</span></span><tt>
+</tt>  <span class="iv">@db</span>.add(book)<tt>
+</tt>  book<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>You create an object, set some properties on it, and then return the object. ActiveSupport adds a new method (called <code>returning</code>) to Object, which can be used to beautify (and in some cases, simplify) that idiom:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">create_book</span><tt>
+</tt>  returning <span class="co">Book</span>.new <span class="r">do</span> |book|<tt>
+</tt>    book.title = <span class="s"><span class="dl">"</span><span class="k">Trafalgar: The Nelson Touch</span><span class="dl">"</span></span><tt>
+</tt>    book.author = <span class="s"><span class="dl">"</span><span class="k">David Howarth</span><span class="dl">"</span></span><tt>
+</tt>    <span class="iv">@db</span>.add(book)<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>The latter is no shorter than the former, but it reads more elegantly. It feels more “Rubyish”. And there are times that it can save you a few lines of code, if that’s important. (Just scan the Rails source code for more examples.)</p>
+<p><code>Object#returning</code> has been in Rails for quite some time, being checked in on March 20, 2005 in <a href="http://dev.rubyonrails.org/browser/trunk/activesupport/lib/active_support/core_ext/kernel.rb?rev=949">revision 949</a>. (It now lives in <a href="http://dev.rubyonrails.org/browser/trunk/activesupport/lib/active_support/core_ext/object/misc.rb">active_support/core_ext/object/misc.rb</a>, and behaves slightly differently than the original did, but it is still as brief as ever.)</p>
+<p>Looking at the comment for that method, you’ll see it described as “A Ruby-ized realization of the K combinator, courtesy of Mikael Brockman.”</p>
+<p>In researching this article, I <del>googled</del> (pardon me, “searched Google”) for Mikael Brockman, to see just who this genius is. Unfortunately, though he seemed active enough in 2005, he appears to have fallen off the face of the Internet since then. At any rate: big props to Mr. Brockman for contributing this.</p>
+<p>If you’re into functional programming at all, you probably know right away what the K combinator is. For the rest of us, <a href="http://wiki.tcl.tk/1923">this article</a> is helpful (if a bit on the academic side, but that’s about par for the course for most reading about functional topics). Basically, the K combinator is a function of two arguments, that merely returns the first argument. The second argument is useful only for the side-effects it has on the first argument. The implementation of this in Ruby is beautifully succinct:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">returning</span>(value)<tt>
+</tt>  <span class="r">yield</span>(value)<tt>
+</tt>  value<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>It takes a value (the first argument), yields it to the associated block (the implicit second argument), and then returns the value. The block is used to operate on the first argument, and thus (by its side-effects) provides the actual work of this method.</p>
+<p>It’s pretty handy!</p>

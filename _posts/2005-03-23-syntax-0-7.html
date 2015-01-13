@@ -1,0 +1,16 @@
+---
+layout: post
+title: Syntax 0.7
+post_id: 226
+categories:
+- Announcements
+date: 2005-03-23 16:54:00.000000000 -07:00
+author: Jamis
+permalink: 2005/03/23/syntax-0-7.html
+---
+
+<p>Back in January I released a simple little library to do syntax highlighting of Ruby, <span class="caps">XML</span>, and <span class="caps">YAML</span> texts. I only did it because I wanted to be able to contribute syntax highlighted code blocks to <a href="http://www.hieraki.org">Hieraki</a>. However, it has since caught on. <a href="http://www.carldr.com/blog">Carl Drinkwater</a> writing a <a href="http://syntax.carldr.com">web interface for it</a> (as of right now, this appears to be using the 0.5 version of Syntax, so expect some errors in how it highlights Ruby code). And I know of at least one other project in the works that is planning on using Syntax.</p>
+<p>So, with all the new attention, I figured it was time to revisit it. The original release (versioned 0.5.0) was functional, but not particularly robust. Carl in particular discovered several cases where it failed to highlight correctly. And it didn’t handle heredocs very well at all, especially multiple heredocs on a single line.</p>
+<p>Then Florian Groß comes along and wants regions—syntax groups that span tokens of different groups. (Think of strings, which can contain escape sequences and interpolated expressions.)</p>
+<p>So, now you have version 0.7. The Ruby lexer has seen some large improvements, and is scads more stable and robust than it was before. Its heredoc support, in particular, <em>rocks</em>. (If I do say so myself.) Lastly, it also sports a brand-spaking-new <a href="http://docs.jamisbuck.org/read/book/4">users manual</a>.</p>
+<p>So, skip on over to <a href="http://rubyforge.org/projects/syntax">RubyForge</a> and have a look at the latest version. Or, just install the gem. You can also get it from <a href="http://www.jamisbuck.org/svn/syntax/trunk">my subversion repository, directly</a>. Whatever you prefer, send me feedback. And new syntax modules.</p>

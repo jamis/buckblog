@@ -1,0 +1,14 @@
+---
+- date: 2007-02-02
+  author: Chuck
+  content: "<p>Ok this is way cool.  I’m still trying to digest the syntax.  You make
+    a point of saying “there are more elegant ways of doing things…”  For this particular
+    problem, I could only come up with a hash using perhaps symbols, but I’m not convinced
+    this is any more elegant.  Did you have something else in mind when you made the
+    comment?</p>"
+- date: 2007-02-02
+  author: Jamis
+  content: "<p>Chuck, you’ll have to give me a specific example of where you think
+    you need enumerated types, and then let me counter it with how I’d do it in Ruby.
+    In practice, I’ve found I only need them when interfacing with an external, native
+    library that uses them.</p>"

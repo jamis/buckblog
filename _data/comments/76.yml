@@ -1,0 +1,169 @@
+---
+- date: 2007-09-08
+  author: Ryan Allen
+  content: "<p>Congrats :) Cute metaphor, too.</p>"
+- date: 2007-09-08
+  author: Theron Parlin
+  content: "<p>Must be the season… Our Sr Developer, Dave Woodward became a father
+    today as well… congrats!</p>"
+- date: 2007-09-08
+  author: Sterling Anderson
+  content: "<p>Congrats! We just deployed our own version of Child 3.0 last week!</p>"
+- date: 2007-09-08
+  author: Chuck Phillips
+  content: "<p>Congrats to the Buck family!</p>"
+- date: 2007-09-08
+  author: tobi
+  content: "<p>congratulations!</p>"
+- date: 2007-09-08
+  author: nemo
+  content: "<p>I’m sorry, where can I find the download link?</p>"
+- date: 2007-09-08
+  author: Nicolás Sanguinetti
+  content: "<p>Congrats! 1.d20 hurras for you all! :D</p>"
+- date: 2007-09-08
+  author: Ryan Heneise
+  content: "<p>Hooray!</p>\n\n\n\t<p>describe Child do\n  it “should make for proud
+    parents” do\n    child.parents.should be_proud\n  end\n  it “should have a hello
+    world tshirt” do\n    child.tshirt.content.should equal(“hello world!”)\n  end\nend</p>"
+- date: 2007-09-08
+  author: Ryan Heneise
+  content: "<p>Well, that was supposed to be a little rspec for the Child model… code
+    formatting didn’t work out as expected ;) Parse away…</p>"
+- date: 2007-09-09
+  author: DEkart
+  content: "<p>Congratulations!</p>"
+- date: 2007-09-09
+  author: Sebastian Gräßl
+  content: "<p>Congratulation!</p>\n\n\n\t<p>(My Sister got her first baby 12 days
+    ago)</p>"
+- date: 2007-09-09
+  author: Robert Evans
+  content: "<p>Congrats on a successful deployment!</p>\n\n\n\t<p>set :gateway, “Tarasine”
+    \nset :deploy_to, ”/life”</p>"
+- date: 2007-09-09
+  author: Tad
+  content: "<p>“Hello World!” :)</p>"
+- date: 2007-09-09
+  author: John Topley
+  content: "<p>Congratulations! :-)</p>"
+- date: 2007-09-09
+  author: Bil Kleb
+  content: "<p>Most excellent news!  I’m (9+)8 months into Baby3 myself.</p>"
+- date: 2007-09-09
+  author: Neil Wilson
+  content: "<p>Personally I’m three months into v2.0 of Child and it’s a bit early
+    to consider an upgrade.</p>\n\n\n\t<p>My best wishes to yourself and to Mum –
+    who did all the hard work!</p>\n\n\n\t<p>NeilW</p>"
+- date: 2007-09-09
+  author: RSL
+  content: "<p>Congrats on another fine product. :)</p>"
+- date: 2007-09-09
+  author: Wayne E Seguin
+  content: "<p>Congratulations Jamis!!! I also have 3.0 in the works. Aren’t they
+    wonderful!</p>"
+- date: 2007-09-09
+  author: Dieter Komendera
+  content: "<p>Congrats Jamis! As always, good work! ;-)</p>"
+- date: 2007-09-09
+  author: Mike Moore
+  content: "<p>9 months is quite the development cycle. Sounds alot like waterfall
+    to me… Perhaps you want to try a more Agile aproach next time?</p>\n\n\n\t<p>Congratulations
+    to you, your wife, and the whole family!</p>"
+- date: 2007-09-09
+  author: Jesse
+  content: "<p>Congratulations Buck Family!</p>"
+- date: 2007-09-09
+  author: William Voll
+  content: "<p>Congratulation Jamis and Tarasine! Way to go 3.0!! I hope 1.0 and 2.0
+    really enjoy 3.0</p>"
+- date: 2007-09-09
+  author: Charlie Park
+  content: "<p>So … did you use Capistrano for this one?</p>"
+- date: 2007-09-09
+  author: mrkris
+  content: "<p>congrats :)</p>"
+- date: 2007-09-09
+  author: Baz
+  content: "<p>Congratulations.</p>"
+- date: 2007-09-09
+  author: Sam Aaron
+  content: "<p>Congratulations! When does the marketing campaign start? ;-)</p>"
+- date: 2007-09-09
+  author: vruz
+  content: |-
+    <p>Welcome, Britton Edward Buck !!
+    Best wishes Jamis and wife !!</p>
+- date: 2007-09-09
+  author: Saimon Moore
+  content: "<p>Hey Jamis,</p>\n\n\n\t<p>Way to go on that productivity :)</p>\n\n\n\t<p>Excellant
+    news…I’m very pleased for you. Looking forward to our own first release with lots
+    of excitement (which, by the way, is going to have a 1.XX version number) ...</p>\n\n\n\t<p>All
+    the best, health &amp; happiness to you and your releases… :)</p>\n\n\n\t<p>Saimon</p>"
+- date: 2007-09-09
+  author: Adrian Madrid
+  content: "<p>Felicitaciones! Although long debugging nights await you, again, I’m
+    sure the feeling of holding a brand new product fresh of the product line is something
+    you can never forget. Hope your new product takes you to new markets you never
+    dreamed of.</p>\n\n\n\t<p><span class=\"caps\">AEM</span></p>"
+- date: 2007-09-09
+  author: jing
+  content: "<p>Congratulations</p>"
+- date: 2007-09-10
+  author: Tuxie
+  content: "<p>3 * “buck” =&gt; “buckbuckbuck”</p>"
+- date: 2007-09-10
+  author: subbu
+  content: "<p>Congratulations!!!</p>"
+- date: 2007-09-10
+  author: Naveen
+  content: "<p>Congratulations!</p>"
+- date: 2007-09-10
+  author: jimd
+  content: "<p>Congrats!</p>"
+- date: 2007-09-10
+  author: Jim Bob
+  content: "<p>Congratulations to you and Tarasine! Make sure to post a pic or two
+    to the tumblelog sometime.</p>"
+- date: 2007-09-11
+  author: Dirceu P. Júnior
+  content: |-
+    <p>congratulations.
+    is this soooo geeeeekkk</p>
+- date: 2007-09-11
+  author: Jason L Perry
+  content: "<p>Congrats, Jamis!</p>"
+- date: 2007-09-12
+  author: pimpmaster
+  content: "<p>Congrats to you and the fams!</p>\n\n\n\t<p>@ Charlie Park,</p>\n\n\n\t<p>Of
+    course he used Capistrano.. don’t be ridiculous</p>\n\n\n\t<p>cap deploy_with_gestation</p>"
+- date: 2007-09-15
+  author: Nicola
+  content: "<p>congratulations! \nWe are developing a new product too, but it’s still
+    2.0.\nThe release is planned for the beginning of november ;-)</p>"
+- date: 2007-09-18
+  author: Andy Goundry
+  content: "<p>nicely put Jamis :-)</p>\n\n\n\t<p>Many congrats to you all.</p>\n\n\n\t<ol>\n\t<li>38.
+    pimpmaster said…</li>\n\t\t<li>Of course he used Capistrano.. don’t be ridiculous</li>\n\t</ol>\n\n\n\t<p>although
+    cap was used, i assume there’s no cap rollback ;-)</p>"
+- date: 2007-09-18
+  author: Andy
+  content: "<p>Many congrats to you all :-)</p>"
+- date: 2007-09-19
+  author: dpihl
+  content: "<p>Will Mac <span class=\"caps\">OS X</span> Leopard bundle Child 3.0?</p>\n\n\n\t<p>I’m
+    hoping Child 3.0 won’t be bundled with Microsoft’s next Borg-tastic creation.
+    “Resistance is futile—you will be assimilated”. Don’t fight it. You got a lot
+    to learn, young Buck. The Borg knows what’s best for you.</p>\n\n\n\t<p>Too bad
+    there is no new Jamis Buck Mac Genealogy software program in which to enter the
+    details of Child 3.0 (birth certifficate, baby blessing, and so forth). What ever
+    happened to that idea???</p>"
+- date: 2007-09-19
+  author: Diego
+  content: |-
+    <p>Nice!
+    Congrats, I just had my 2nd and working the courage for a third one.</p>
+- date: 2007-11-08
+  author: Rob
+  content: "<p>A little late, but better late than never.  Congrats to you and your
+    family :-D</p>"

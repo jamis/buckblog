@@ -1,0 +1,32 @@
+---
+layout: post
+title: Net::SSH 2.0.3
+post_id: 52
+categories:
+- Announcements
+date: 2008-06-28 09:02:00.000000000 -06:00
+author: Jamis
+permalink: 2008/06/28/net-ssh-2-0-3.html
+---
+
+<p>Net::SSH 2.0.3 is now available!</p>
+<blockquote>
+		<p>gem install net-ssh</p>
+	</blockquote>
+<p>This is a maintenance release that fixes the following issues:</p>
+<ul>
+	<li>Net::SSH 2.0.2 and earlier wouldn’t work with Mocana <span class="caps">SSH</span> and a few other esoteric <span class="caps">SSH</span> servers commonly used on routers and other hardware. (Net::SSH truncated the server’s identity string at the first space, rather than at the end of the line as required by the specification, causing subsequent algorithm negotiations to fail.) 2.0.3 now preserves the entire identity string as reported by the remote server.</li>
+		<li>Malformed entries in ssh_config files are silently ignored now.</li>
+		<li>Entries in ssh_config files that are delimited with equals-signs are now parsed correctly.</li>
+		<li>The NameError raised when a forwarded port request could not be satisfied now raises the correct exception.</li>
+		<li>Net::SSH::Version is now Comparable, so you can test two version objects using comparison operators.</li>
+	</ul>
+<p>Please report bugs to the bug tracker for net-ssh on rubyforge:</p>
+<blockquote>
+		<p><a href="http://rubyforge.org/tracker/?atid=1123&amp;group_id=274&amp;func=browse">http://rubyforge.org/tracker/?atid=1123&amp;group_id=274&amp;func=browse</a></p>
+	</blockquote>
+<p>If you have a patch you want to submit, please make sure to create it against the latest version of the code in the Net::SSH repository on <a href="http://github.com">GitHub</a>:</p>
+<blockquote>
+		<p><a href="http://github.com/jamis/net-ssh/commits/master">http://github.com/jamis/net-ssh/commits/master</a></p>
+	</blockquote>
+<p>Patches may be submitted via email, as GitHub pull-requests, or as posts to the net-ssh tracker on rubyforge.</p>

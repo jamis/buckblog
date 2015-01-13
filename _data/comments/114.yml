@@ -1,0 +1,28 @@
+---
+- date: 2007-11-30
+  author: Tyler Bird
+  content: "<p>I just wanted to thank Jamis for this opportunity to contribute to
+    a great open source project.  As I begin to reach out to the other volunteers
+    I hope they will join me in my enthusiasm to produce some great documentation.</p>\n\n\n\t<p>If
+    anyone is still interested in contributing, or wants to send me articles from
+    their blog they’ve written for Capistrano please feel free to email me directly.</p>"
+- date: 2007-11-30
+  author: Nate Sutton
+  content: "<p>Woo!  This is sorely needed and will help soooooo many rails developers.
+    \ Very exciting indeed.</p>"
+- date: 2007-12-03
+  author: Chris
+  content: "<p>Jamis, \nHow might I go about dropping you an email?</p>"
+- date: 2007-12-03
+  author: Jason L Perry
+  content: "<p>Awesome, I had an interest in helping, but just not the time  to commit
+    to coordinating. Tyler is a member of Tampa.rb, so I’m sure we can get the whole
+    group involved a bit- hmmm, sounds like a potential topic for next weeks meeting.</p>"
+- date: 2007-12-26
+  author: Mihai
+  content: "<p>” I just wanted to let everyone know that a coordinator has been selected,
+    at last. “</p>\n\n\n\t<p>And that is indeed a nice thing!</p>"
+- date: 2008-01-22
+  author: Gary King
+  content: "<p>Why don’t we have an official Capistrano wiki so people can contribute
+    documentation while the official one is being written?</p>"

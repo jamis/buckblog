@@ -1,0 +1,13 @@
+---
+layout: post
+title: Mini-API's
+post_id: 176
+categories:
+- Redirect
+date: 2006-11-15 08:21:00.000000000 -07:00
+author: Jamis
+permalink: 2006/11/15/mini-api-s.html
+---
+
+<p><a href="http://project.ioni.st">Marcel Molina, Jr.</a> has a real talent for discovering elegant <span class="caps">API</span>’s. It’s been a treat working with him this last year, watching how he spends a little extra time on the developer interface to the unit tests or a library, making it nice and clean. I wish you could see what he and Sam did with the tests for <a href="http://www.campfirenow.com">Campfire</a>!</p>
+<p>In a recent post to the Projectionist tumblelog, Marcel provides a tip for <a href="http://project.ioni.st/post/966#post-966">avoid[ing] cluttering built in classes by using just in time convenience methods</a>. I love it! His focus is specifically on the instance_eval in the find_items_matching method, but I love the whole snippet. Take a string, extend it with some methods, and voila! A mini-API for querying that string. So much cleaner than just chaining a bunch of grep and match calls together. His instance_eval trick really just adds another mini-API to the array that is returned. <span class="caps">API</span>’s within <span class="caps">API</span>’s! Neat stuff.</p>

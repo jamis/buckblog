@@ -1,0 +1,25 @@
+---
+layout: post
+title: 'Review: Build Your Own Ruby on Rails Web Applications'
+post_id: 110
+categories:
+- Reviews
+date: 2007-02-21 11:25:00.000000000 -07:00
+author: Jamis
+permalink: 2007/02/21/review-build-your-own-ruby-on-rails-web-applications.html
+summary: >
+  A detailed review of Patrick Lenz's "Build your Own Ruby on Rails Web Applications"
+---
+
+<p><a href="http://www.sitepoint.com/books/rails1/"><img src="http://weblog.jamisbuck.org/assets/2007/2/21/byo-ror-cover.png" border="0" align="right"></a>I was recently sent a copy of Patrick Lenz’s <a href="http://www.sitepoint.com/books/rails1/">Build Your Own Ruby on Rails Web Applications</a>, published by <a href="http://www.sitepoint.com">SitePoint</a>. While I am certainly not in its target audience, I still found the book’s style refreshing, and even learned something about Rails I didn’t know before! (The <code>debug</code> helper, for inspecting models in your views.)</p>
+<p>The book is marketed as “the ultimate beginner’s guide to Ruby on Rails”, and while I don’t know that I would go quite that far, it is definitely a good introduction, especially if you are new to Ruby. I felt it spent about three or four chapters too many on introductory matter (you don’t really start doing anything with Rails itself until chapter 5) but once the book gets started it does a good job of helping you get a new Rails application off the ground.</p>
+<ul>
+	<li>It was written for Rails 1.2, making it one of the few books available covering the newest version of the framework.</li>
+		<li>It encourages unit and functional tests. Patrick mentions <acronym title="Test-Driven Development">TDD</acronym>, but does not follow it in the book, which is probably for the best in a book targeting people with little prior programming experience. Instead, each chapter ends with a section in which he walks through the process of adding tests for the features added in that chapter. Effective, but only as a step towards learning better testing practices.</li>
+		<li>It makes good use of the code generators and migrations, demonstrating their strengths well.</li>
+		<li>It shows how to use <span class="caps">RJS</span> templates to implement Ajaxed features, and the respond_to method to implement graceful degradation for browsers without Javascript enabled.</li>
+		<li>It shows how to implement a basic user authentication system <em>without resorting to plugins</em>! Far, far too many newcomers to Rails jump on the user-auth plugin bandwagon, which leads to cargo-culting. My advice is: <em>never use a plugin you would not be able to write yourself.</em> (Later in the book Patrick uses the acts_as_taggable plugin to implement tagging, but ultimately the point of the chapter was to show how to use plugins.)</li>
+		<li>It walks you through setting up your first production environment. Although it doesn’t use Capistrano (which would be well beyond the scope of the book), it does <em>mention</em> Capistrano, as well as many other possible deployment environments (including <span class="caps">SCGI</span>, Mongrel, nginx, and more).</li>
+	</ul>
+<p>So, are you new to Ruby and Rails? Want to learn how to write dynamic web applications? This book will suit you nicely. However, if you have prior experience with building Rails apps, you’ll probably find this book too simple for your own needs.</p>
+<p>Great work, Patrick! And congrats on getting a book based on Rails 1.2 out the door so quickly.</p>

@@ -1,0 +1,445 @@
+---
+- date: 2006-03-03
+  author: topfunky
+  content: |
+    How about
+
+    * SwitchTrack
+    * SwitchRail
+    * BuckTower
+- date: 2006-03-03
+  author: Jacob Fugal
+  content: |-
+    I was looking for other possible names here:
+
+    http://en.wikipedia.org/wiki/Railroad_switch
+
+    Maybe "switchpoint" or "turnout"?
+- date: 2006-03-03
+  author: Mr. Kahn
+  content: |
+    Switch Station (like a rail road switching station)
+- date: 2006-03-03
+  author: fred.grott@gmail.com
+  content: "How about a free set of ruby books to the one whose name choice you use?\n\nmy
+    choices are:\n\n  -BitchTower\n  -RailsSetter\n  -BabelTower\n  -RubyTower\n  -RailSpikeTower\n
+    \ -WaterTwoer\n  \n\n\n\n\n "
+- date: 2006-03-03
+  author: Peter Cooper
+  content: |+
+    SignalBox
+    AutoSwitch
+    ChangeOver
+    HomeSignal
+    SmokeBox
+    TwinTrack
+
+- date: 2006-03-03
+  author: procreate
+  content: Conductor. He's the one that governs it all.
+- date: 2006-03-03
+  author: Cody
+  content: Conductor is good, if you want to be safe maybe use RailsConductor instead.
+- date: 2006-03-03
+  author: Luke Melia
+  content: "Howzabout: \n<ul>\n<li>conductor</li>\n<li>whistle</li>\n<li>stationmaster</li>\n<li>junction</li>\n<li>switchman</li>\n</ul>"
+- date: 2006-03-03
+  author: Tim Case
+  content: "Of course in this day of legal madness it's no surprise that Jamis would
+    receive a C&amp;D from some company no one's really heard of and when you do get
+    a letter like that you just want it to go away as quickly as possible.  Legal
+    bullying as practiced in America.  Still the questions arise:\n\nHow is Switchtower
+    code a product? \n\nHow is Jamis the responsible party for this code?  \n\nDoes
+    Jamis own switchtower? \n\nDoes this mean any developer who worked on the code
+    should get a C&amp;D as well?  \n\nWhat if the name is changed and I still choose
+    to call it Switchtower should I get a C&amp;D as well?\n\nI say don't bow down
+    to the IP Scumsuckers and takes this fight all the way to the Supreme Court.  Let's
+    make the new name:\n\nIpodWindowsVistaLordoftheRingsSwitchTower\n\nOh and just
+    in case anyone takes this advice I live on the North Pole in a small cabin, so
+    just have the legal letters addressed to me c/o Santa Claus.\n\n"
+- date: 2006-03-03
+  author: Tom Jordan
+  content: |-
+    Putting ruby or rails in the name loses the fact that it can be used for more general stuff.
+
+    How about:
+    * Krinkle
+    * BackApp
+    * Whiplash
+    * Backlash
+    * nst (not switchtower)
+    * Boomerang
+    * Stammer
+    * stav (set to app version)
+    * Commando
+    * WatchTower
+    * AppRiot
+    * WhipBack
+    * PickApp
+    * SWARM (Simple Web App Reversion Master)
+- date: 2006-03-03
+  author: Pelle Braendgaard
+  content: |-
+    I agree with TIm. There should be no need for you to change the name of Switchtower. Unless their switchtower product has anything todo with deployment and change management these are completely different products. IANAL but as far as I understand US trademark law does not allow you to keep others from using your name in some completely unrelated product.
+
+    I say keep it Switchtower.
+- date: 2006-03-03
+  author: Trevor Squires
+  content: |-
+    A quick tour of a railroad glossary of terms yields this utter gem:
+
+    *Hump* - the highest point in the Marshalling Yard where cars are released to coast toward the correct track.
+
+    :-)
+- date: 2006-03-03
+  author: John Athayde
+  content: "from my understanding (and I'm not a lawyer), it is when there's a reasonable
+    belief that the two products could be confused. Unless you're a mega brand (e.g.
+    Coke) and then anything is more or less \"brand diultion\" \n\nSo as Pelle stated,
+    you should be in the clear. Call the EFF :)"
+- date: 2006-03-03
+  author: vinbarnes
+  content: |-
+    This really stinks. You picked a great name. Maybe you can get some ideas from here: http://www.answers.com/train%20yard
+
+    Good luck and thanks for such a great utility.
+- date: 2006-03-03
+  author: Bradley Taylor
+  content: 'They''re just mad, because the SwitchTower manual beats them in Google. '
+- date: 2006-03-03
+  author: rabble
+  content: "Hey Jamis,\n\nI suggest you check out http://www.chillingeffects.org/
+    and make sure that they actually have the right to force you to C &amp; D. As
+    John said, call the EFF. They can issue at least a counter letter. Sometimes companies
+    go away once they get a nastygram back. Remeber that Trademarks only apply to
+    specific uses of the application of that term, not all uses. Safari is both a
+    web browser from apple and a tech book service accessed via web browers from O'Reily.
+    \n\nOffer to put up a link to their website on the switchtower manual. I suspect
+    they are mostly upset at their losing google rank. That said, it took them a long
+    time to notice.\n\n-rabble"
+- date: 2006-03-03
+  author: Hans Fugal
+  content: "IANAL either, but I think Pelle may be right. Consult with a lawyer or
+    at least ask the people at groklaw or eff, if you want to keep the name.\n\nLooks
+    like Raindance makes a suite of network appliances for web conferencing which
+    when used together constitute what they call a SwitchTower network. This is not
+    competition with a development tool (completely different markets) but since they're
+    both \"computer stuff\" it would pay to check with a lawyer. \n\nThis boils down
+    to they aren't showing up on the first page of a google search for switchtower
+    and that makes them mad. It's easy to send out a cease and desist letter and scare
+    some open source developers into changing a name. I say stand your ground until
+    it actually comes down to spending money to do so (e.g. paying a lawyer or going
+    to court).\n\nOr just change the name. I never really liked it anyway (but don't
+    change it on my account!)."
+- date: 2006-03-03
+  author: Kevin
+  content: |
+    I hope whatever you choose you avoid the tired railroad metaphors.  It getting really annoying.  And the metaphor doesn't always work.
+
+    If anything, ST has a cooking metaphor going with its "recipes".  Maybe a kitchen/cooking/baking theme would work.  How about "Baker" or "Chef" or "ActiveCook" or something?
+
+    Hell, call it ActiveMicrowave since it takes the effort out of cooking up a production app :)
+- date: 2006-03-03
+  author: spig
+  content: |-
+    How about:
+
+    On the train engineer theme:
+    railseer
+    funnyhat
+
+    variations on switchtower:
+    bittower
+    switchcenter
+    swhichtower
+    switchpower
+    iSwitch
+    rSwitch (too javaesque)
+
+
+    i'm done
+- date: 2006-03-03
+  author: Phil
+  content: |-
+    Jamis--hope you can fight this. It smells of bullying, and that happens far too often in this country.
+
+    If you are forced to back down, you could always do a recursive GNU-ish thing. I'm thinking SOWS, meaning "SOWS Once Was SwitchTower". The beauty of recursion means you can make the first letter anything you like if you think of something more fitting.
+- date: 2006-03-03
+  author: Nola
+  content: "Well that kinda sucks. \n\nWhat about Deploy? .. RubyDeploy? "
+- date: 2006-03-03
+  author: chuckmcknight@yahoo.com
+  content: What about calling it TurnTable or TurnStile? Of course, you risk endless
+    jokes about the Byrds "Turn, Turn, Turn" apropos though they may be....  ;-)
+- date: 2006-03-03
+  author: Jamis
+  content: |-
+    I appreciate the moral support, all, but we have consulted a lawyer and their advice was that we not try to fight this. The point is that both the deployment software "SwitchTower", and Raindance's software, are both software, which is similar enough, apparently.
+
+    So, we're definitely renaming. We'd like to choose a name unrelated to railroad terminology, simply because ST is not rails specific and we'd like to emphasize that a bit.
+
+    Great suggestions so far, btw. Thanks, all!
+- date: 2006-03-03
+  author: Graham
+  content: "From Chilling.org FAQ:\nIf no income is solicited or earned by using someone
+    else's mark, this use is not normally infringement. Trademark rights protect consumers
+    from purchasing inferior goods because of false labeling. If no goods or services
+    are being offered, or the goods would not be confused with those of the mark owner,
+    or if the term is being used in a literary sense, but not to label or otherwise
+    identify the origin of other goods or services, then the term is not being used
+    commercially.\n\nConfusion between the names does not seem likely in the marketplace.
+    To a non-techie the difference may not be obvious, however both 'products' are
+    targeted at a technically savvy audiences. \n\nI appreciate you probably don't
+    want the hastle, aggravation and worry but I'd always recommend getting legal
+    advice before backing down. They may not have a strong case and relying on the
+    fact that you'll buckle upon reciept of the C&amp;D.\n\nI think it's a great name
+    BTW."
+- date: 2006-03-03
+  author: Tony
+  content: |+
+    Kinda like what Nola said, except how about Reploy (Ruby + Deploy).
+
+    Less then 1000 hits on google, reploy.org is available.  :)
+
+- date: 2006-03-03
+  author: schoenm@earthlink.net
+  content: |
+    * PuppetMaster
+    * Marionette
+    * Lobbyist ;-)
+    * DeusExMachina
+- date: 2006-03-03
+  author: vishi
+  content: "Whats better than a tower? \n\nIts a bird, its a plane, no its a -----superstation-----.\n\n"
+- date: 2006-03-03
+  author: Jim
+  content: "How about ControlTower.  A search of the USPTO site for registered trademarks
+    shows no matches for the one word version.  There are a few that match on \"Control
+    Tower\".\r\n\r\nHas similar connotations, but is aircraft oriented, rather then
+    train.  Ruby ControlTower (RCT) would probably differentiate enough to prevent
+    further C&amp;Ds.\r\n\r\nFor that matter, wouldn't Ruby SwitchTower be enough
+    to differentiate this from the other product? \r\n\r\nLink to USPTO TM search
+    form:\r\nhttp://tess2.uspto.gov/bin/gate.exe?f=searchss&amp;state=984bob.1.1"
+- date: 2006-03-03
+  author: Jim
+  content: "Sorry about the link format. I created a tinyurl link intead since it
+    wasn't obvious how to properly post a url with params in the comments.\r\n\r\nhttp://tinyurl.com/jnqln"
+- date: 2006-03-03
+  author: Jeremy P
+  content: Buckshot
+- date: 2006-03-03
+  author: Craig Davey
+  content: |
+    SwitchTover
+    SwitcherooTm
+    SwapTowers
+- date: 2006-03-03
+  author: chapter80
+  content: "Just make a minor change.  Like the way Microsoft adds the word Microsoft
+    (or MS) to their products (Microsoft Office, MS DOS).\n\nHow about \"J-switchtower\"
+    or \"switchtowerJB\" or \"The Real Switchtower\" or \"Switchtower For Rails\".
+    \ None of those should be a legal problem, since you can't trademark a real word
+    (to prevent others from using it).  \n\nIANAL "
+- date: 2006-03-03
+  author: Kevin
+  content: |-
+    How about naming it <strong>SwitchTowr</strong> and get rid of that useless <em>e</em> in there?
+
+    ;-)
+- date: 2006-03-03
+  author: Jay Levitt
+  content: "RoboBOFH \r\nScriptMao (it lets a thousand flowers bloom..)\r\nShepherd\r\nRubyVisor\r\nScriptCaster\r\nNetSherpa\r\nAerosol\r\n"
+- date: 2006-03-03
+  author: Tom Jordan
+  content: |
+    Ok, I've got it.
+
+    * Switchyard
+
+    http://www.thefreedictionary.com/switchyard
+- date: 2006-03-03
+  author: Tom Jordan
+  content: |-
+    Other switchyard examples:
+
+    http://www.sas.usace.army.mil/pptour/yardpix.htm
+- date: 2006-03-03
+  author: Anonymous
+  content: Conductor would be more appropriate as a replacement for ActiveRBAC.
+- date: 2006-03-03
+  author: Jeff Berg
+  content: How about ActiveSwitcher? I believe that if you even name it ActiveSwitchTower
+    you are not violating the trademark any longer, but i am not a lawyer.
+- date: 2006-03-03
+  author: Dan
+  content: |-
+    I think you should get a second opinion, preferably from the EFF.
+
+    Barring that, call it ScrewYouRaindanceYouPettyBastards
+- date: 2006-03-03
+  author: Jeff McDonald
+  content: "I'd like to see it called \n\nNetRunner\n\nIt sounds official, implies
+    a larger scope than just RoR, and the NetRunner's objective is to keep 'the Corp'
+    from acheiving their evil world domination (always a good thing)."
+- date: 2006-03-03
+  author: wahoo
+  content: How about 'Raindance_Can_SuckIt!'
+- date: 2006-03-03
+  author: Amr
+  content: |-
+    How about:
+
+    CowCatcher
+
+    (just for the heck of it hehehe)
+- date: 2006-03-03
+  author: Joshua Sierles
+  content: |-
+    Following the cooking metaphor:
+
+    Dispatula!
+- date: 2006-03-03
+  author: Vince N.
+  content: |-
+    derailer
+    rightofway
+    crossover
+- date: 2006-03-03
+  author: agile
+  content: |
+    "Bob"
+- date: 2006-03-03
+  author: kirk
+  content: "reverse it\n\nTowerSwitch  \n"
+- date: 2006-03-03
+  author: Daniel Morrison
+  content: |
+    I'm with Nola:
+
+    Deploy
+    or
+    RubyDeploy
+    DeployR
+- date: 2006-03-04
+  author: Jay Levitt
+  content: |-
+    DisAdmin (distributed)
+    BOFH-in-a-box
+    RuBot
+- date: 2006-03-04
+  author: Ruben
+  content: |-
+    SpreadTower
+    TransmitTower
+    ReachTower
+    Circulate
+
+    Just some thoughs :)
+- date: 2006-03-04
+  author: Chris
+  content: Gee.. I'm gonna have to be careful naming my Classes and Methods in future.
+- date: 2006-03-04
+  author: Angry Customer
+  content: Of course they have the legal right to defend their trademarked product
+    name, but  then we have the legal right to never use their products again.  I
+    sure won't be, and neither will anyone I work with.
+- date: 2006-03-04
+  author: Duarte Carrilho da Graça
+  content: How about just Ruby Switch?
+- date: 2006-03-04
+  author: Ryan
+  content: "I agree that you should find out if they have any legal merit to send
+    you a C&amp;D.  \n\nBesides, Raindance is just performing a marketing stunt so
+    that thousands of angry SwitchTower users and Ruby-lovers go to the Raindance
+    website and research their brand/technology. Afterwards it will trickle to other
+    blog and news sites.  Common ploy -- any news is good news type of thing.\n\n"
+- date: 2006-03-04
+  author: motobass
+  content: "IANAL, but remember the Firebird thing.  Even though one was a database
+    and the other a browser, and even though they were both open source, we now have
+    Firefox.  At the time I remember it having to do with both being in the tech/computer
+    space.  \r\n\r\nDispatula is a good one though the name suggests it is disposable.
+    \ Your project, however, is indispensable. \r\n "
+- date: 2006-03-04
+  author: Nathan Clayton
+  content: |-
+    How about something to dig in at them, should you not want to go through with challenging their claim.
+
+    Something like 'RadiantTower' or the like.
+- date: 2006-03-04
+  author: Zachary Pinter
+  content: |+
+    If Jim Weirich doesn't mind, you could call it Distributed Rake/DRake/Drake.
+
+    If you want to give raindance a bittersweet victory, you could do something like: Used To Be SwitchTower, and abbreviate it U2B SwitchTower. That would get past the naming issue (I assume) and still keep you at the top of google searches for SwitchTower.
+
+
+
+
+- date: 2006-03-04
+  author: Jay Levitt
+  content: "Oops.  I guess it helps to use textile to format a list, not just CRs..\n\n*
+    RoboBOFH \n* ScriptMao (it lets a thousand flowers bloom..) \n* Shepherd \n* RubyVisor
+    \n* ScriptCaster \n* NetSherpa \n* BOFH-in-a-box\n* DisAdmin\n* RuBot"
+- date: 2006-03-04
+  author: Jamie Orchard-Hays
+  content: |
+    How about "ControlTower" or "SwitchMaster"
+- date: 2006-03-05
+  author: vivek
+  content: how about "Switchr" ?
+- date: 2006-03-05
+  author: Matthieu
+  content: |-
+    How about : *"Aiguillage"* ?
+    it's the french word for "railway points / switch"
+    http://fr.wikipedia.org/wiki/Aiguillage
+    it's in french but there are some nice pictures...
+- date: 2006-03-05
+  author: Labrat
+  content: |-
+    My votes:
+
+    DeployTower
+
+    Switch &amp; Deploy
+
+    QuickSwitcher
+
+    Quicksilver (generic enough to avoid all issues I hope)
+
+    Striving With Interesting Technology Creates Havoc Tower (S.W.I.T.C.H. Tower)
+
+    JB &amp; Company's SwitchTower
+
+    X-SwitchTower
+
+    Switched Tower (due to legal threats (tm))
+
+
+
+    My sympathies go out to you, just hope that you can include "formerly SwitchTower" if you go back and replace all recurring instances with a new name.
+
+    I sure hope Amtrack doesn't come after Rails!!!
+- date: 2006-03-06
+  author: Pavel
+  content: |-
+    Turn-table?
+    http://en.wikipedia.org/wiki/Turntable_%28railroad%29
+- date: 2006-03-06
+  author: Pavel
+  content: |-
+    Or "strelka" -- this is Russian for railway switch...
+
+    and http://en.wikipedia.org/wiki/Strelka more as well.
+- date: 2006-03-08
+  author: Dan
+  content: Host it outside the US and screw the trademark.
+- date: 2006-03-08
+  author: Andrew Coleman
+  content: |-
+    Well, it is sad that you are being forced to change your name... IP laws are teh suck.
+
+    But, you may as well make the most of it while you can. Since you aren't really going for a railroad related name, you can go for some similar terms. For instance, SwitchTower is all about coordinating releases, upgrades, and maintenance. So how about Conductor or Orchestrator? It makes sense since we use your program to guide all of the code into place and get everything ready.
+
+    Now if you could just get it to direct in 3/4 time rather than in 4/4 time it might even be considered a SuperConductor!

@@ -1,0 +1,63 @@
+---
+- date: 2007-02-21
+  author: topfunky
+  content: "<p>Given Patrick’s experience supporting high-traffic sites built with
+    Rails and other frameworks (freshmeat.net, eins.de), I was hoping he would have
+    a chapter on that.</p>\n\n\n\t<p>Hopefully that will be his next book!</p>"
+- date: 2007-02-22
+  author: Andy Stewart
+  content: "<p>I’m curious why you advise never using a plugin one couldn’t write
+    oneself.</p>\n\n\n\t<p>I understand the benefits of being able to understand and
+    write the plugins, but I don’t really see the cost of not being able to do so
+    (assuming one just uses them rather than needing to modify them).</p>\n\n\n\t<p>And
+    even those cargo-cult scallywags are at least not wasting energy reinventing the
+    wheel over and over again.</p>\n\n\n\t<p>Would you also argue that one should
+    be capable of writing Rails itself in order to use it?  Just curious…!</p>"
+- date: 2007-02-22
+  author: Patrick Lenz
+  content: "<p>Hi Jamis,</p>\n\n\n\t<p>thanks for the kind words. Oh, and thanks for
+    also defending the book’s refusal to deal with restful application design (given
+    the book’s audience) in the Amazon.com comments :)</p>\n\n\n\t<p>Best,\nPatrick</p>"
+- date: 2007-02-22
+  author: Sarah Lewis
+  content: "<p>Out of curiosity, how do you feel this book compares to Agile Web Development
+    with Rails?  I have that book and have worked through about half of it; I’m wondering
+    what I can most helpfully recommend to other newcomers to the language/framework.</p>"
+- date: 2007-02-22
+  author: Jamis
+  content: "<p>Andy, a plugin is a world apart from a framework. I’d never recommend
+    people know how to write the OS they are using, either. However, I can’t tell
+    you how many times I’ve had people email or IM me asking me for help on some little
+    glitch, only to find out it is because of some quirk in a plugin they are using.
+    Plugins are not frameworks; by using plugins like black boxes, you are crippling
+    yourself and setting yourself up for problems down the road.</p>\n\n\n\t<p>Sarah,
+    the <span class=\"caps\">BYO</span> book I reviewed above is more of a beginner’s
+    book than AWDwR; it makes fewer assumptions about the reader’s experience with
+    web development and programming in general. Also, AWDwR attempts to delve into
+    more of the framework; the <span class=\"caps\">BYO</span> book doesn’t cover
+    ActionMailer, for instance, or <code>has_many :through</code>, or <span class=\"caps\">REST</span>,
+    or page caching, all of which are more advanced topics. The <span class=\"caps\">BYO</span>
+    book really is targetted at helping someone brand new to web development and Ruby
+    to “get their foot in the door.” AWDwR would be a good second book for such people,
+    I think.</p>"
+- date: 2007-02-22
+  author: Nathan Garza
+  content: "<p>Great review.  I’d have to agree with you on the plugins.  Using plugins
+    (or their equivalent in other frameworks/languages) as black boxes has often left
+    me burned in the past.  I have found that as learning tools they have been great!
+    \ For example, I’ve learned to build effective auth systems by implementing various
+    plugins and dissecting them.</p>"
+- date: 2007-02-27
+  author: Alex
+  content: "<p>Hi Jamie,\nIn the internet I see two different covers of your book.
+    One with a new railway and the other with an old steam engine. Are there two different
+    books? Or is the content identical?</p>\n\n\n\t<p>thanks,\nALex.</p>"
+- date: 2007-02-27
+  author: Jamis
+  content: "<p>Alex, it’s not my book, I just reviewed it. I’m not sure what would
+    be up with the two different covers; the cover image I posted here is from the
+    publisher’s website, though.</p>"
+- date: 2007-03-14
+  author: Manik
+  content: "<p>Hey Jamis,</p>\n\n\n\t<p>Thanks for the link, it is a wonderful book
+    and really helps us in getting people started on rails in our company.</p>"

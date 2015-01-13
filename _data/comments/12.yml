@@ -1,0 +1,92 @@
+---
+- date: 2011-01-03
+  author: Robin Houston
+  content: "<p>All right then! Here’s a (completely naive) implementation: http://s3.boskent.com/mazes/kruskal.html</p>\n\n\n\t<p>I’m
+    very much enjoying this series. Thanks.</p>"
+- date: 2011-01-03
+  author: flevour
+  content: |-
+    <p>Impressive stuff, thanks Jamis!
+    I have studied Kruskal’s algo in my CS degree, but this application is really of the “thinking outside the box” kind.
+    Thanks for the “a-ha” moment,
+    Francesco</p>
+- date: 2011-01-03
+  author: Jamis
+  content: "<p>@Robin, thanks for sharing your implementation! Javascript+canvas seems
+    like a great fit for this. I might have to try including something like that in
+    subsequent articles, to illustrate the mazes “in-situ”.</p>"
+- date: 2011-01-03
+  author: Robin Houston
+  content: "<p>That’s a great idea. Feel free to borrow any of my code, if that’s
+    helpful to you.</p>\n\n\n\t<p>Canvas is an interesting suggestion. I wonder if
+    it would be any better: straightforward <span class=\"caps\">DOM</span> rendering
+    seems to work well enough, and has the advantage of working even on ancient browsers
+    like <span class=\"caps\">IE6</span> (hiss).</p>\n\n\n\t<p>I did a version using
+    Eller’s algorithm the other day. I bet you can guess the <span class=\"caps\">URL</span>.
+    I’m just going to combine them all into one page, with an algorithm selector,
+    and add recursive backtracking to complete the set.</p>"
+- date: 2011-01-03
+  author: Jamis
+  content: <p>@Robin, yeah, you’re right that <span class="caps">DOM</span> rendering
+    is probably the best option for orthogonal mazes. Simplest, too. I’ll try that
+    initially. Eventually it’d be fun to render non-orthogonal mazes too (e.g. triangular
+    or hexagonal tesselations, etc.). I tend to get ahead of myself, though. :)</p>
+- date: 2011-01-03
+  author: lanval_
+  content: "<p>Hahah I love it! Well done.</p>"
+- date: 2011-01-05
+  author: Joe
+  content: "<p>@Robin, very nice, I got up to 19 mazes, I was at the end of the 19th
+    when the timer ran out.</p>"
+- date: 2011-01-07
+  author: Syed Aslam
+  content: "<p>@Robin, your implementation was very nice.. I went on to solve 15 mazes
+    when the timer ran out..</p>"
+- date: 2011-01-09
+  author: Robin Houston
+  content: "<p>Thanks, everyone!</p>\n\n\n\t<p>@Jamis, I like your new demo above.
+    It works fine in IE with a couple of standard <span class=\"caps\">CSS</span>
+    tweaks: https://gist.github.com/772053 (I’ve tested http://s3.boskent.com/mazes/jamisbuck-demo.html
+    on <span class=\"caps\">IE 6</span>, 7 and 8, and all seem fine.)</p>\n\n\n\t<p>I’ve
+    been getting a little obsessed with understanding the algorithms that generate
+    mazes uniformly at random. Aldous-Broder I get – and very cute the argument is,
+    too – but I don’t yet completely understand why Wilson’s algorithm works.</p>"
+- date: 2011-01-09
+  author: Robin Houston
+  content: "<p>PS. I see you’ve added demos to all three of the algorithm posts. Very
+    nice! Recursive backtracking is especially hypnotic to watch.</p>"
+- date: 2011-01-09
+  author: Jamis
+  content: "<p>@Robin, thanks for the <span class=\"caps\">CSS</span> suggestions!
+    I actually tried the float: left (based on the <span class=\"caps\">CSS</span>
+    from your maze game), but found it absolutely <span class=\"caps\">KILLED</span>
+    the animation performance on Webkit and FF for some of the mazes (like the recursive
+    backtracker). I’ll keep playing some more when I have a chance.</p>\n\n\n\t<p>You
+    might like to take a peek at <a href=\"http://github.com/jamis/csmazes\">http://github.com/jamis/csmazes</a>—this
+    are the sources for the JS demos I’m using now, and I have implementations for
+    all of the maze algorithms mentioned on the Think Labyrinth site. I’ll admit that
+    I haven’t dipped much into the proof side of many of these (especially Aldous-Broder
+    and Wilson’s, so I can’t help you there at all), but it’s been a great trip just
+    learning how to implement all these!</p>"
+- date: 2011-01-10
+  author: Robin Houston
+  content: "<p>@Jamis Ah, interesting! It should be easy enough to fix that with a
+    conditional include for IE. I’ll have a quick play, when I get a spare minute.</p>"
+- date: 2011-01-10
+  author: Robin Houston
+  content: "<p>@Jamis This is a bit weird: I’m just not seeing the performance degradation
+    on WebKit (Safari 5.0.3) or FF (3.6.13) for any of the algorithms, with the float
+    rule. Also worth noting that your existing demos work fine for me on <span class=\"caps\">IE8</span>.
+    But maybe I’m worrying about nothing: I bet you’re right that not many of your
+    readers use IE!</p>\n\n\n\t<p>I think I do now understand what makes Wilson’s
+    algorithm tick. It’s all quite interesting. I’m hoping I’ll get time to write
+    something up as a blog post this week.</p>"
+- date: 2011-01-10
+  author: Jamis
+  content: "<p>@Robin, the degradation was most noticable (for me) on Chrome 8.x,
+    with a 30×30 (“large”) recursive backtracker. For the smaller mazes it’s probably
+    not significant.</p>\n\n\n\t<p>Please let me know when you’ve got a write-up of
+    Wilson’s algorithm, I’m very interested!</p>"
+- date: 2011-02-16
+  author: Jamboree In The Hills
+  content: "<p>Awesome post. Do you mind if I ask what your source is for this information?</p>"

@@ -1,0 +1,32 @@
+---
+layout: post
+title: This is me, coming up for some air
+post_id: 220
+categories:
+- Projects
+date: 2005-04-30 14:51:00.000000000 -06:00
+author: Jamis
+permalink: 2005/04/30/this-is-me-coming-up-for-some-air.html
+---
+
+<p>I honestly cannot remember being this busy for a <em>long</em> time.</p>
+<p>Working to get <a href="http://www.backpackit.com">Backpack</a> ready has been really, really fun. I’ve been putting in more hours on this than I ever did on anything at <span class="caps">BYU</span>, and enjoying almost all of those hours immensely. (Ruby and Rails both have a great deal to do with that. Writing code in anything else is painfully tedious!)</p>
+<p>However, for the first time in awhile I’ve found myself with some time. My wife has gone out to run some errands, the kids are sleeping, and I’ve just finished patching a few more Backpack bugs (yah, on a <em>Saturday</em>!). But what do I find? A whole slough of side projects languishing and hungry for some loving!</p>
+<p>Specifically:</p>
+<ul>
+	<li>
+<a href="http://net-ssh.rubyforge.org/api">Net::SSH</a>. There are a few new bug fixes in the repository. I need to package release an update.</li>
+		<li>
+<a href="http://net-ssh.rubyforge.org/sftp">Net::SFTP</a>. Needs documenting <em>badly</em>. Once the docs are there, this is ready for a 1.0 release.</li>
+		<li>
+<a href="http://rubyforge.org/projects/syntax">Syntax</a>. I fixed several bugs some time ago, and never got around to packaging a release. What I really need to do is rethink this library—the regex-based approach is simple, but also impossible to use for parsing <em>every</em> valid Ruby construct. Maybe its time to go with a real parser? (Yah, like I’ve got the time for that!)</li>
+	</ul>
+<p>Other unreleased projects that I’m working on:</p>
+<ul>
+	<li>Ruby/TZ. A time-zone lib for Ruby, which will make it possible to support time zones and daylight-savings in a cross-platform manner.</li>
+		<li>Budgetwise. A personal finance application, in rails, that makes budgets the central theme instead of a sideshow.</li>
+	</ul>
+<p>However, all is not well in paradise. Net::SSH and Net::SFTP are starting to annoy me. I don’t want to work on them any more, because the architecture feels too over-wrought and the interface too unplanned. Consider what a pain it is to simply execute a command and return it’s output, synchronously. (If you haven’t tried to do that yet in Net::SSH, it’s probably because you haven’t used Net::SSH. I mean, it’s got to be one of the most common use cases, and yet it’s incredibly difficult to do!) If I had it to do all over again (yah, it would be rewrite #3 of the Net::SSH stuff) I’d start with the interface and work backwards, an approach I’ve learned from <a href="http://37signals.com">37signals</a> that works equally well on library <span class="caps">API</span>’s as it does on user interfaces.</p>
+<p>Syntax is starting to annoy me. As I said before, the regex-based parser (though fast, and 98% effective) is not a <em>true</em> parser. It can’t parse all valid Ruby constructs. <em>Can’t</em>, I say! No amount of patching will turn it into a true parser, and that knowledge makes me want to stop patching it altogether. So, if I had <em>that</em> to do all over again, I’d start with finding or writing a good, pure-Ruby parser and writing a syntax highlighter just for Ruby. Then, I’d do the same for <span class="caps">HTML</span>, YAML, and C (the other three syntaxes I do any amount of work with).</p>
+<p>Ruby/TZ and Budgetwise are both fun projects, and I look forward to working on those, but I feel some obligation to get at least the Net::SSH and Net::SFTP libs current. Syntax, too, I guess…</p>
+<p>I’m so conflicted! :)</p>

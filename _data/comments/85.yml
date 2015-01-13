@@ -1,0 +1,22 @@
+---
+- date: 2007-06-28
+  author: Anko
+  content: "<p>wooooooooooooooooo!</p>\n\n\n\t<p>:on_error =&gt; :continue is especially
+    cool!</p>\n\n\n\t<p>Anko</p>"
+- date: 2007-06-29
+  author: jeroen
+  content: "<p>Can I use the mongrel_cluster extension with cap2, or do <strong>all</strong>
+    extensions need to be updated? Or maybe cap2 even has built-in recipes for managing
+    mongrel_clusters :)</p>"
+- date: 2007-06-29
+  author: topher
+  content: "<p>The new zipped_stream method worked for me. I’m using the latest instantrails
+    (rails 1.2.3).</p>\n\n\n\t<p>Thanks.</p>"
+- date: 2007-06-29
+  author: Jamis
+  content: "<p>@Jeroen, my guess is that mongrel_cluster won’t work with cap2 until
+    the author of mongrel_cluster updates it. I could be wrong, so it’d be worth testing,
+    but I wouldn’t get your hopes up. :)</p>\n\n\n\t<p>The good news, though, is that
+    it isn’t very much work to make a cap1 extension work with cap2, generally. So
+    hopefully the author of the mongrel_cluster cap extensions will be able to do
+    that soon.</p>"

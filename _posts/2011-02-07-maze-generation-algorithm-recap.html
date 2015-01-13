@@ -1,0 +1,104 @@
+---
+layout: post
+title: 'Maze Generation: Algorithm Recap'
+post_id: 6
+categories:
+- Under the Hood
+date: 2011-02-07 11:02:00.000000000 -07:00
+author: Jamis
+permalink: 2011/02/07/maze-generation-algorithm-recap.html
+summary: >
+  A quick overview of the maze algorithms described in previous articles,
+  with links and animations
+---
+
+<p>(Hello Minecrafters! If you’re looking for random mazes you can build in Minecraft, you might be better served by <a href="http://jamisbuck.org/mazes/minecraft.html">this page I wrote</a>. It’ll give you block-wise schematics for the maze, and will require less mental translation than the demos here. Just don’t use IE—it won’t work right in that browser. If you want to learn more about random maze generation, though, read on!)</p>
+<p>Over the last six weeks I documented eleven different maze generation algorithms. It’s been a blast. I’ve had so much fun researching and implementing these! It’s been great to see some of you taking my advice and applying these to learning a new programming language, as well; I really believe there is a lot of value to be had, there.</p>
+<p>I intend to write more maze-related posts, too. Some possible topics include methods for rendering your mazes, ways to implement “weave” mazes (mazes where passages pass over and under other passages), non-rectangular tesselations, and so on. We’ll see where it all goes.</p>
+<p>To wrap up the algorithm series, here’s a quick recap of each of the eleven algorithms:</p>
+<p>(Note: if you’re using a feed-reader, or reading this on a parasite-blog, you’ll probably be missing out on the Javascript demos. I’m not just trying to drive traffic, here, I really do think you’ll get more out of the article by reading it at the source!)</p>
+<p>The <a href="http://weblog.jamisbuck.org/2010/12/27/maze-generation-recursive-backtracking">recursive backtracker</a> was my go-to algorithm for years. It’s fast, easy to implement, and generates mazes that are (to my eyes, at least) quite esthetically pleasing. Of all the algorithms, it generates the fewest dead-ends, and as a result has particularly long and winding passages. It’s especially hypnotic to watch the algorithm in action!</p>
+<script type="text/javascript" src="/javascripts/maze-minified.js"></script>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("RecursiveBacktracker", 5, 5, { "class": "small" });</script> 
+<script type="text/javascript">Maze.createCanvasWidget("RecursiveBacktracker", 15, 15, { "class": "medium", id: "backtracker_bigger", interval: 25 });</script>
+</div>
+<p><a href="http://weblog.jamisbuck.org/2010/12/29/maze-generation-eller-s-algorithm">Eller’s algorithm</a> is perhaps the most challenging to understand and implement of the algorithms I covered. Its clever use of sets allow it to generate infinitely tall mazes while only needing to examine a single row at a time. Esthetically, it strikes a nice balance between “long and winding” and “lots of cul-de-sacs”.</p>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("Eller", 5, 5, { "class": "small" });</script> 
+<script type="text/javascript">Maze.createCanvasWidget("Eller", 15, 15, { "class": "medium", id: "eller_bigger", interval: 25 });</script> 
+</div>
+<p><a href="http://weblog.jamisbuck.org/2011/1/3/maze-generation-kruskal-s-algorithm">Kruskal’s algorithm</a> is actually an algorithm for generating a minimum spanning tree (MST) for a graph. What I covered is actually a variation on that, which selects edges at random instead of by weight. The resulting mazes tend to have a lot of short cul-de-sacs. Implementation-wise, this algorithm might rank second in difficulty, some distance behind Eller’s algorithm.</p>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("Kruskal", 5, 5, { "class": "small", "watch": false });</script> 
+<script type="text/javascript">Maze.createCanvasWidget("Kruskal", 15, 15, { "class": "medium", "watch": false, id: "kruskal_bigger", interval: 25 });</script> 
+</div>
+<p><a href="http://weblog.jamisbuck.org/2011/1/10/maze-generation-prim-s-algorithm">Prim’s algorithm</a> is another <span class="caps">MST</span> algorithm. Like the variation I described for Kruskal’s, the Prim variant I covered also selects edges at random rather than by weight, allowing the creation of random mazes. Like Kruskal’s, the resulting mazes tend to be heavy on the cul-de-sacs, but the implementation is pretty straight-forward.</p>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("Prim", 5, 5, { "class": "small", "watch": false });</script> 
+<script type="text/javascript">Maze.createCanvasWidget("Prim", 15, 15, { "class": "medium", "watch": false, id: "prim_bigger", interval: 25 });</script> 
+</div>
+<p>The <a href="http://weblog.jamisbuck.org/2011/1/12/maze-generation-recursive-division-algorithm">recursive division algorithm</a> is novel in that it is the only one I covered that uses a “wall adding” technique, rather than a “passage carving” one. It is also novel in its fractal-like method of growing the maze. Theoretically, you could use this algorithm to generate infinitely large mazes by building sections on-demand, increasing the resolution as needed by repeating the algorithm on the currently focused area.</p>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("RecursiveDivision", 5, 5, { "class": "small", "watch": false, wallwise: true });</script> 
+<script type="text/javascript">Maze.createCanvasWidget("RecursiveDivision", 15, 15, { "class": "medium", "watch": false, wallwise: true, id: "division_bigger", interval: 25 });</script> 
+</div>
+<p>I included the <a href="http://weblog.jamisbuck.org/2011/1/17/maze-generation-aldous-broder-algorithm">Aldous-Broder algorithm</a> mostly for completeness; the algorithm is optimized for generating “uniform spanning trees” (spanning trees selected at random, and uniformly, from the set of all possible spanning trees). Sadly, this constraint means the algorithm itself is very inefficient!</p>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("AldousBroder", 5, 5, { "class": "small" });</script> 
+<script type="text/javascript">Maze.createCanvasWidget("AldousBroder", 15, 15, { "class": "medium", id: "abroder_bigger", interval: 25 });</script> 
+</div>
+<p><a href="http://weblog.jamisbuck.org/2011/1/20/maze-generation-wilson-s-algorithm">Wilson’s algorithm</a> is another method for generating uniform spanning trees. It converges more rapidly than Aldous-Broder, but still is much less effective as a general maze generator than any of the other algorithms I covered.</p>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("Wilson", 5, 5, { "class": "small" });</script> 
+<script type="text/javascript">Maze.createCanvasWidget("Wilson", 15, 15, { "class": "medium", id: "wilson_bigger", interval: 25 });</script> 
+</div>
+<p>The <a href="http://weblog.jamisbuck.org/2011/1/24/maze-generation-hunt-and-kill-algorithm">Hunt-and-Kill algorithm</a> is similar to the recursive backtracker (they both tend to generate long, winding passages), but this algorithm will search the grid, iteratively, looking for a new blank cell when it encounters a dead-end. A variation on this algorithm was my first introduction to maze generation, almost twenty years ago!</p>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("HuntAndKill", 5, 5, { "class": "small" });</script> 
+<script type="text/javascript">Maze.createCanvasWidget("HuntAndKill", 15, 15, { "class": "medium", id: "huntkill_bigger", interval: 25 });</script> 
+</div>
+<p>My new favorite, the <a href="http://weblog.jamisbuck.org/2011/1/27/maze-generation-growing-tree-algorithm">Growing Tree algorithm</a>, can work identically to the recursive backtracker when implemented one way, and with another small tweak can be made to work very similarly to Prim’s algorithm. It all depends on how cells are selected from its set of active cells. In fact, attributes of both algorithms can be gained by clever combinations of cell selection methods! It’s quite a flexible algorithm.</p>
+<p style="margin-left: 20px; font-size: 80%"> 
+Cell selection method: <select id="selection_methods" onchange="$('growtree_small').mazeReset(); $('growtree_medium').mazeReset();"> 
+<option value="newest">Newest (Recursive Backtracker)</option> 
+<option value="random">Random (Prim's)</option> 
+<option value="newest:75,random:25">Newest/Random, 75/25 split</option> 
+<option value="newest;random">Newest/Random, 50/50 split</option> 
+<option value="newest:25,random:75">Newest/Random, 25/75 split</option> 
+<option value="oldest">Oldest</option> 
+<option value="middle">Middle</option> 
+<option value="newest;oldest">Newest/Oldest, 50/50 split</option> 
+<option value="oldest;random">Oldest/Random, 50/50 split</option> 
+</select> 
+</p>
+<div class="row"> 
+<script type="text/javascript">Maze.createCanvasWidget("GrowingTree", 5, 5, { "class": "small", id: "growtree_small", "watch": false, input: function() { return $F('selection_methods'); }});</script> 
+<script type="text/javascript">Maze.createCanvasWidget("GrowingTree", 15, 15, { "class": "medium", id: "growtree_medium", "watch": false, interval: 25, input: function() { return $F('selection_methods'); }});</script> 
+</div>
+<p>The <a href="http://weblog.jamisbuck.org/2011/2/1/maze-generation-binary-tree-algorithm">Binary Tree algorithm</a> is an almost-trivially simple one, but you pay for that simplicity. The mazes it generates tend to have blemishes (long corridors spanning two sides) and a notable bias (routes tend to run diagonally). Still, for some applications this can be quite appropriate. Besides, with this algorithm you could theoretically have an infinitely large maze by generating only the area you need, on demand!</p>
+<p style="margin-left: 20px; font-size: 80%"> 
+  Bias: <select id="binary_tree_input" onchange="$('binarytree').mazeReset(); $('btree_bigger').mazeReset();"> 
+    <option value="nw">Northwest</option> 
+    <option value="ne">Northeast</option> 
+    <option value="sw">Southwest</option> 
+    <option value="se">Southeast</option> 
+  </select> 
+</p>
+<script type="text/javascript"> 
+  function binaryTreeInput() {
+    var s = document.getElementById('binary_tree_input');
+    return s.options[s.selectedIndex].value;
+  }
+</script>
+<div class="row"> 
+<script type="text/javascript">Maze.createCanvasWidget("BinaryTree", 5, 5, { "class": "small", input: binaryTreeInput });</script> 
+<script type="text/javascript">Maze.createCanvasWidget("BinaryTree", 15, 15, { "class": "medium", input: binaryTreeInput, id: "btree_bigger", interval: 25 });</script> 
+</div>
+<p>The last algorithm I covered was the <a href="http://weblog.jamisbuck.org/2011/2/3/maze-generation-sidewinder-algorithm">Sidewinder algorithm</a>. This is related to the Binary Tree algorithm, but does not have as noticable a bias, and there is only one long passage across the top.</p>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("Sidewinder", 5, 5, { "class": "small" });</script> 
+<script type="text/javascript">Maze.createCanvasWidget("Sidewinder", 15, 15, { "class": "medium", id: "sidewinder_bigger", interval: 25 });</script> 
+</div>
+<p>Thanks to everyone who has followed along for the last six weeks. Thanks especially go to those who shared their own implementations; I love seeing how these algorithms translate into other languages.</p>
+<p>So, that’s it for the algorithms, but stay tuned for more maze-related topics in the coming weeks!</p>

@@ -1,0 +1,146 @@
+---
+- date: 2007-01-05
+  author: Will Groppe
+  content: "<p>Thanks Jamis, I’ll put the &amp;&amp; operator to use immediately!</p>"
+- date: 2007-01-05
+  author: Silvio Gissi
+  content: "<p>Jamis, congratulations for yet another great article! Your site is
+    on my “must read daily” section.</p>\n\n\n\t<p>I have to disagree on the usage
+    of the &amp;&amp; operator though, it is a very interesting usage but, considering
+    the article title “Brevity vs. Clarity”, it seems to be a lot more on the Brevity
+    side :-).</p>"
+- date: 2007-01-05
+  author: Dave Hoover
+  content: "<p>Silvio, that brings up a good point because the &amp;&amp; is very
+    clear to me … because I’m used to it.  While there are certainly rules of thumb
+    for clarity, sometimes it’s very subjective.  It’s difficult (and important) to
+    strike a brevity/clarity balance that fits for your expected audience.</p>"
+- date: 2007-01-05
+  author: Jamis
+  content: "<p>Silvio, as Dave said, familiarity aids readability. I’m curious, though:
+    how would you rewrite the “hash[:here] &amp;&amp; hash<a>:here</a>” example? Would
+    you really use a full-blown if-statement?</p>\n\n\n\t<p>Too much syntax can be
+    just as bad as too little for readability. You need to strike a good balance.</p>"
+- date: 2007-01-05
+  author: Todd Sayre
+  content: <p>The &amp;&amp; property we’re talking about here is called <a href="http://en.wikipedia.org/wiki/Minimal_evaluation">Short
+    circuit evaluation</a>.  If someone wants to do some more reading.</p>
+- date: 2007-01-06
+  author: Neil Wilson
+  content: "<p>I have to say that I rarely use the ternary operator. I find that almost
+    always it breaks the flow reading of a piece of code. I always have to read it
+    twice to find out if the ? is a ternary operator or a ? at the end of a query
+    method.</p>\n\n\n\t<p>Of course in ruby an if statement has a value so you can
+    do:</p>\n\n\n\t<p>element = if hash[:here] then hash<a>:here</a> else nil end\nincrement
+    = if x &lt; y then 1 else -1 end</p>\n\n\n\t<p>which with syntax highlighting
+    is infinitely more readable than the ternary (IMHO). The presence of the ‘if’
+    immediately tells you that it is a conditional expression, rather than having
+    to work out if the ?  is a query or not. Sick example:</p>\n\n\n\t<p>element =
+    arr.empty? ? “empty” : arr.first\nelement = if arr.empty? then “empty” else arr.first
+    end</p>"
+- date: 2007-01-06
+  author: Neil Wilson
+  content: "<p>Let’s try that again with line breaks (comment systems – grrrrr)</p>\n\n\n\t<p>element
+    = if hash[:here] then hash<a>:here</a> else nil end</p>\n\n\n\t<p>increment =
+    if x &lt; y then 1 else -1 end</p>\n\n\n\t<p>and</p>\n\n\n\t<p>element = arr.empty?
+    ? “empty” : arr.first</p>\n\n\n\t<p>vs.</p>\n\n\n\t<p>element = if arr.empty?
+    then “empty” else arr.first end</p>"
+- date: 2007-01-06
+  author: Dylan
+  content: "<p>Bah.  You’re right Jamis.  Blast !  \nI hereby find myself guilty of
+    excessive ternary usage.</p>\n\n\n\t<p>Please keep up these <span class=\"caps\">TADFALAICKIU</span>
+    articles… they are brilliant.</p>"
+- date: 2007-01-06
+  author: Alain Ravet
+  content: |-
+    I’m a <em>rescue</em> fan, when it comes to saving code space
+
+     # simple type conversions :<br>
+    <code>
+        value = record.something rescue nil
+    </code>
+- date: 2007-01-06
+  author: Silvio Gissi
+  content: "<p>Jamis and Dave, you are right about the familiarity, being fairly new
+    to Ruby and coming from a C/Java background, the &amp;&amp; operator always sounds
+    like it will return a boolean (or 1/0) back. It will take me a while to get used
+    to this.</p>\n\n\n\t<p>Answering your question, I would stick with the ternary
+    operator as, for me, it is concise and explicit. Alain solution also sounds very
+    sweet, though it is a little generic as any raised exception would be caught by
+    the rescue, if believe.</p>"
+- date: 2007-01-06
+  author: John Topley
+  content: "<p>Isn’t it better to use exceptions for exceptional conditions, rather
+    than flow control? I guess it depends on whether you expect record.something to
+    have a value or not.</p>"
+- date: 2007-01-06
+  author: Jamis
+  content: "<p>John, I’m with you. If you expect that <code>record</code> may well
+    not respond to the <code>something</code> method, using <code>rescue</code> to
+    handle that case is a bad idea. Exceptions are for exceptional conditions, those
+    cases that <em>shouldn’t</em> occur, but <em>might</em>. Also, as Silvio pointed
+    out, using rescue in that case can hide a host of <em>unexpected</em> exceptions,
+    and introduce bugs in your code.</p>"
+- date: 2007-01-07
+  author: Daniel Schierbeck
+  content: "<p>Why not use the statement modifier syntax?</p>\n\n\n<pre><code># simple
+    type conversions\nvalue = record.something if record.respond_to?(:something)\n#
+    unfolding hashes\nelement = hash[:here][:there] if hash[:here]</code></pre>\n\n\t<p>That
+    last one could even read like this, which I believe is more descriptive:</p>\n\n\n<pre><code>element
+    = hash[:here][:there] if hash.has_key? :here</code></pre>"
+- date: 2007-01-07
+  author: Joachim Bengtsson
+  content: |-
+    <p>What? You don’t like the ternary operator? Back when I was a n00b coder, I loved it ;)</p>
+
+
+    <pre><code>
+    cam.a.x = -sin(camrot.p.y*2.0*M_PI)*(direction&amp;(forward|backward))*((direction&amp;backward)?-1.0:1.0) + cos(camrot.p.y*2.0*M_PI)*(direction&amp;(strafeleft|straferight))*((direction&amp;strafeleft)?1.0:-1.0)*0.4;
+    cam.a.z = cos(camrot.p.y*2.0*M_PI)*(direction&amp;(forward|backward))*((direction&amp;backward)?-1.0:1.0) + sin(camrot.p.y*2.0*M_PI)*(direction&amp;(strafeleft|straferight))*((direction&amp;strafeleft)?1.0:-1.0)*0.4;
+    </code></pre>
+- date: 2007-01-07
+  author: Jamis
+  content: "<p>Daniel, you’re right, that will implicitly set the variable to nil
+    if the condition is false…but in general I shy away from the implicit assignment
+    of local variables. Feels like too much magic, but that’s just my preference.</p>"
+- date: 2007-01-08
+  author: Ryan B.
+  content: "<p>Another way to do the hash:</p>\n\n\n<code>element = hash.fetch(:here,
+    {})[:there]</code>\n\n\t<p>Not quite as clean as some already mentioned, but thought
+    I’d throw it out there.</p>"
+- date: 2007-01-10
+  author: Alan Whitaker
+  content: "<p>Jamis, a great series, and interesting discussion on this point. A
+    few thoughts…</p>\n\n\n\t<p>1.  I tend to agree with you and John about reserving
+    the <code>rescue</code> usage for true exceptions.</p>\n\n\n\t<p>2.  A couple
+    co-workers and I discussed this post.  We have been in the habit of using the
+    if modifier proposed by Daniel above, but after reading your comment, it dawned
+    on me that the implicit nil value we were relying on is really an implicit non-assignment
+    (rather than assignment to nil), which could also quickly kill the ‘magic’ you
+    alluded to.  Consider:</p>\n\n\n<code>\nelement = 'something'\n\n# (later)...\n\nelement
+    = hash[:here][:there] if hash[:here]\n</code>\n\n\t<p>In this case, <code>element</code>
+    is still <code>'something'</code>.  We generally intended it to be nil after the
+    assignment (unless we really meant “only run this assignment ‘if’, otherwise keep
+    any previous value”).  So we decided to reserve our use of the if qualifier for
+    circumstances where we really mean “only run this logic if <em>__</em>”, and use
+    your nifty &amp;&amp; usage if we really mean “make an assignment/reassignment
+    and use nil if you can’t get to the value”.</p>\n\n\n\t<p>3.  The if/then/else
+    did feel better to me than the multiline ternary, particularly in your example
+    where it is wrapped thinly in the method.  For some reason though, a direct assignment
+    in context (not in a method as above…which often is a better idea) “feels” better
+    as a three line ternary:</p>\n\n\n<code>\nurl_i_want_to_use = @project ?\n    project_overview_url(options.merge(:project_id
+    =&gt; @project.id)) :\n    overview_url(options)\n</code>\n\n\t<p>Putting the
+    <code>url_i_want =</code> assignment explicitly in each branch seemed decidedly
+    un-DRY, yet assigning it to the return of a longer if statement actually seemed
+    to lose some of the clarity in the ternary, albeit a 3 line ternary.</p>"
+- date: 2007-01-10
+  author: Alan Whitaker
+  content: |-
+    <p>Oops, code did not format as expected, but think you know what I meant (retry…)</p>
+
+
+    <code>
+    url_i_want_to_use = @project ? &lt;br/&gt;
+        project_overview_url(options.merge(:project_id =&gt; @project.id)) : &lt;br/&gt;
+        overview_url(options)
+    </code>

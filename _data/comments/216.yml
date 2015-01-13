@@ -1,0 +1,306 @@
+---
+- date: 2005-12-24
+  author: Josh
+  content: |-
+    Best of luck to you and Godspeed! I'm currently trying to rescue my parents from the hell of Windows and they were very excited to switch to Mac after I told them of all the wonderful benefits.
+
+    But, the lack of a good genealogical program has become a total deal breaker.
+
+    I found this entry on Google. If you've found any decent alternatives since you wrote this please let me know.
+    <a href="mailto:thewoopwoop@gmail.com">thewoopwoop@gmail.com</a>
+- date: 2005-12-27
+  author: tom
+  content: 'I am still running OS 9 so I can run Family Records, the antiquated mac
+    version of the LDS church''s PAF. I''ve been keeping an eye on MacPAF though.
+    I''m not a software guru so I can''t predict it''s useflness. Originally found
+    here: <a href="http://www.macgenelogy.org/macpaf/">http://www.macgenelogy.org/macpaf/</a>'
+- date: 2005-12-30
+  author: Reunion User
+  content: You don't know what you're talking about regarding Reunion.
+- date: 2006-01-27
+  author: Jonathan Mark
+  content: "I heard you on the Ruby On Rails podcast. Some of my cousins and I are
+    attempting to put our common geneology on the web.\n\nI had hoped that I could
+    find out what software you used. I had hoped it would be some cool Ruby On Rails
+    application that I could use to start myself out in Ruby. \n\nUnfortunately you
+    are in the same boat as the rest of us. Nothing exciting is out there. My cousin
+    wants us to use phpgedview and I guess that is what we will use. \n\nThe RoR Typo
+    blog and layout you are using looks really great. I really ought to move on from
+    my 2002-era Zope2 blogging software. But Zope2 + Five, Zope3, Django, Ruby On
+    Rails? I cannot decide.\n\nKeep up the Ruby On Rails evangelization. It is having
+    an impact. I just bought the pickaxe book. Even if I end up not doing Ruby there
+    are a lot of good ideas there that apply to other languages.\n\nJonathan Mark\nGoodbyeJim.com"
+- date: 2006-01-30
+  author: Vivienne
+  content: Have you looked at GEDitCOM? i have been using it for some time. It is
+    a bit clutzy but adequate. I am about to upgrade my computer to the latest Mac
+    and am hoping that it will run the software a bit better. I would appreciate any
+    users' feedback. I am currently on Mac OS9
+- date: 2006-02-14
+  author: Gwen Cryer
+  content: Good luck, maybe if we started a genealogy research project for Steve Jobs
+    he would write us a program.
+- date: 2006-03-14
+  author: Sayler
+  content: |-
+    I'm a former Mac user hoping to come back into the fold.  It looks like are some good PHP-driven genealogy programs just starting to appear (e.g., http://lythgoes.net/genealogy/software.php).
+
+    I believe this approach has much more potential than all of the standard genealogy softwae that I've seen and tried.  All the above linked software really needs is to have some Mac-like templates created for it.
+- date: 2006-04-27
+  author: Eleanor
+  content: "Jamis,\r\n\r\nYou're absolutely right! I've kept my old Mac with OS 9
+    so I can run my obsolete Family Tree Maker 3.0. I have to copy decendancy outlines
+    into Word or gedcom to share with others from my new Mac (Tiger).\r\n\r\nI'm spoiled
+    with FTM -- it had so many great features, and I haven't found a limit to the
+    number of people I've added. Reunion just doesn't excite me.\r\n\r\nIf you could
+    write something along the lines of FTM, I'm in!"
+- date: 2006-06-07
+  author: Tom
+  content: 'Regarding your comments on Reunion: apparently you missed the fact that
+    it''s fully customizable, so if you''re looking at a "butt-ugly" screen, you change
+    it easily by going to Menu&gt;Options&gt;Display. You can choose one of the pre-sets
+    or set your own colors. The diagonal child buttons at the bottom you complained
+    about can also be changed by clicking on the notes button on bottom right of screen
+    and it will immediately give you a list view. Source capabilities are excellent...again,
+    customizable. Personally, I''ve tried every Mac genealogy app out there and have
+    never found a program that is as elegant, capable and easy to use as Reunion.
+    It should only get better with version 9.0, which is in the pipeline and due sometime
+    soon.'
+- date: 2006-06-20
+  author: Ron
+  content: "I've been looking for the same thing.  I had not found Reunion in my searches,
+    but after reading about it here, I tried it out.  It's probably some of the best,
+    but it's user interface needs some updating, and while it's really good for user
+    input, I found it's charts and reports to look kind of rough.  \r\n\r\nSince the
+    state of the software is so bad, why haven't the Rails crowd (I'm just learning)
+    started a competing product to phpGedView?  I'll bet they could do it better,
+    faster."
+- date: 2006-06-23
+  author: kswilson@bigpond.net.au
+  content: "Hi Jamis,\n\nI agree with all your comments so I built my own app. It
+    only  runs on Mac OSX 10.4 or later because it uses CoreData with an SQLite store
+    and Cocoa bindings (lots of them). \n\nTo download iFamilyForTiger Version 1.0
+    go to the Goulds Genealogy website at\n\nhttp://www.gould.com.au\n\nand follow
+    the links to Software / iFamilyForTiger\n\nVersion 1.0 is FREE because it does
+    not include some very important functions like Sources, Reports and Charting.
+    \n\niFamilyForTiger will handle 20,000 records with ease. \nIt imports and exports
+    Gedcom honestly (it lists the gedcom records that it ignores)."
+- date: 2006-08-18
+  author: JUAN ALFREDO MARICHAL MARTINEZ
+  content: I AM LOOKING FOR A GENEALOGY MRTHOD, AND Y THINK IT WILL BE INTERESTING.
+- date: 2006-08-18
+  author: JUAN ALFREDO MARICHAL MARTINEZ
+  content: SOMETIMES IT IS HARDLY FOUND THE ANSWERS TO MANY THIGNS IY WE DONT HAVE
+    A RECORD, AT THE SAME TIMA AN INVESTIGATION OF IT.
+- date: 2006-08-18
+  author: JUAN ALFREDO MARICHAL MARTINEZ
+  content: I WOUL LIKE TO SUBSCRIBE TO CAN UNDERSTAN AND LEARN MORE.
+- date: 2006-08-18
+  author: JUAN ALFREDO MARICHAL MARTINEZ
+  content: THANKS FOR ALL NOW. CHAOATTE. ALFREDO MARICHAL.
+- date: 2006-08-19
+  author: Kim
+  content: "Ditto and I want to prepare reports and disks like I can with PAF 5.  \r\n\r\nIf
+    wishes were fishes I would also want to be able to import large rtf text files,
+    pictures, movies, powerpoint presentations, etc., for ancestors and families as
+    I find them."
+- date: 2006-08-30
+  author: Andy
+  content: |-
+    To the people that like Reunion - Why would you build a database program that you can't tab to the "Add Event" pulldown menu? Stopping entry, clicking with the mouse on the pull down, scrolling (the list is alpha sensitive to keyboard inputs at least), selecting field to entry field
+
+    Um, when I clicked on "Preferences"  (or Command+) I was met with an annoying "Preferences are in the Options Menu in Reunion. I mean WTF!!! This is a **MAC** app. It blatantly disregards STANDARD APPLE GUI INTERFACE _RULES_ (OK, they are suggestions - but the whole point is that for Mac apps you can FIND the thing you're looking for, as opposed to Windoze mayhem of progamming and interface windows of all sorts of "whimsy"). Making a drop down list as a menu item, instead of making a preferences window seems to smack of lazy programming (but hell I've not written a program so who am I?). Also "Options" are not available from all windows though the message to go to them when hitting "Command + ," **is**.
+
+    There are some nice things in it but... as our guest noted ... just doesn't act or feel like a Mac app. Mac Family Tree is kind of neat and much prettier - but it still seems to violate some sense of logical data input and navigability - it is imaginative but also feels, well, "weird".
+
+    Unfortunately I've had to come back to Family Tree Maker on Windoze - which is completely bogged at 8000 persons making it next to impossible to use. However, it is **very** quick to navigate, source entry is relatively easy (once you get the hang of it) but **managing** sources (i.e. I'd like to merge some and can't for the life of me figure it out). Image handling is HORRIBLE as is the "scrap book" feature and in general text entry is all ASCII and generally sucks. So so long as you're entering within fields, you're fine...
+
+    Thanks for your efforts - can I help? Contact me...
+    http://glass-half-empty.blogspot.com/
+- date: 2006-10-04
+  author: Keith Wilson
+  content: "\r\nA demo of iFamily for Tiger Version 1.20 can now be downloaded from:\r\n\r\nhttp://web.mac.com/keithswilson/iWeb/Site/iFamilyForTiger.html\r\n\r\nV1.20
+    contains a lot of new functions that were not in Version 1.00\r\n\r\nKeith"
+- date: 2006-10-10
+  author: Keith Wilson
+  content: "<p>Hi,</p>\n\n\n\t<p>iFamily for Tiger Version 1.20 is now available for
+    purchase at the following link</p>\n\n\n\t<p>Goulds Genealogy http://www.gould.com.au</p>\n\n\n\t<p>Maybe
+    you know someone who has a Mac who is interested in genealogy</p>\n\n\n\t<p>Regards,
+    Keith Wilson</p>"
+- date: 2006-11-03
+  author: Bob Priest
+  content: "<p>I did have Family Tree Maker with my previous <span class=\"caps\">IMB</span>
+    pc and liked all that it did.\nNow I have Mac <span class=\"caps\">OS X</span>
+    and want to move things into my Mac.    I read all the above and get very confused.\nMy
+    question is simple:   What progam works best with <span class=\"caps\">OS X</span>?
+    \  Does it save things well?\nWhere may I get it??</p>\n\n\n\t<p>Bob Priest &lt;bobandjudy&gt;</p>"
+- date: 2006-12-01
+  author: Lonnye
+  content: |-
+    <p>I liked Gwen Cryer’s suggestion best:  get Steve Jobs involved.  I am a newbie to
+    storage of genealogy on my computer and began searching for ideas for a program.
+    Thank you for this web site; it’s been very helpful.  I have an iMac with Panther, so I
+    hope you can develop a <span class="caps">FTM</span> that I can use.</p>
+- date: 2006-12-21
+  author: cmeehan@nmia.com
+  content: "<p>Hi,\nI hear you on Mac genealogy software. Right now I’m using Gene
+    and am ready to spend more money on a genealogy program that can print a decent
+    copy. The author of Gene has not responded to the questions I had and I cannot
+    print a copy that doesn’t force me to get out the paper cutter to cut and paste.
+    Argh! Any news there?\nThanks. \nCarolyn</p>"
+- date: 2006-12-29
+  author: Gary S
+  content: "<p>Yep, one of the few weak software categories on the Mac.</p>\n\n\n\t<p>Have
+    you considered a Web-based app like The Next Generation of Genealogy Sitebuilding
+    (TNG) at http://lythgoes.net/genealogy/software.php ? (Mentioned in a post above.)
+    I find this approach very appealing as I only have time to dabble in tracking
+    down my family history. I’d like to get others in the family to collaborate on
+    the research, and an online app would make it easy. I have no idea how <span class=\"caps\">TNG</span>
+    scales though.</p>\n\n\n\t<p>If you’ve considered a Web-based approach, have you
+    started a Ruby on Rails app yet? I’m toying with the idea of learning a bit of
+    programming, and am considering either Ruby or Python, with the idea of working
+    in Ruby on Rails or Django. Haven’t checked to see if there’s anything out there
+    in Ruby/Ruby on Rails yet, but have only found <span class=\"caps\">GRAMPS</span>
+    in Python, and it appears to run on the workstation, not on a host.</p>\n\n\n\t<p>Oh
+    well, there’s so much else to love about the Mac, and I don’t really have time
+    to spend on genealogy right now any way. Maybe in a few years when I do, there
+    will be a good Mac-based appl</p>"
+- date: 2007-01-08
+  author: Kim E.
+  content: <p>I used iWeb to generate a genealogy site with photos/stories/family
+    histories/etc. and integrated TribalPages into it.  TribalPages is a wonderful
+    and easy to use tool that Mac folks should look to for ideas for their own product.  You
+    simply upload a <span class="caps">GEDCOM</span> file and then you can easily
+    and very quickly make updates to your site, add photos (up to 1000).  I was frustrated
+    with the Reunion (piece of crap) so I went this route.  If anyone is interested
+    in seeing what I’ve done, email me and I’ll send you the link and password.  kjespejo@comast.net</p>
+- date: 2007-02-01
+  author: barbara lemoine
+  content: "<p>I’m just now getting interested in putting family genealogy onto our
+    \ Mac10.3 computer. Anything that is free and can incorporte online work that
+    was previously done by others would be fantastic. Sounds like you might have what
+    I am looking for.</p>"
+- date: 2007-02-04
+  author: Keith Wilson
+  content: "<p>iFamily for Tiger V2.002 is now available for download at http://www.ifamilyfortiger.com</p>"
+- date: 2007-02-11
+  author: Trausti Thor Johannsson
+  content: "<p>You can get Osk at www.studlar.net, real easy to use and has no problems
+    to handle really large databases, like over 100.000 people.</p>\n\n\n\t<p>Try
+    it</p>"
+- date: 2007-02-23
+  author: Guy
+  content: "<p>Please try Keith Wilson’s iFamilyforTiger – It is a very good program
+    and has finally allowed me to ditch the <span class=\"caps\">PC I</span> kept
+    for using Family Tree Maker.</p>\n\n\n\t<p>Mac Family Tree was probably the best
+    genealogy program on the Mac for my 800 persons family tree, but I never really
+    liked the look and feel of the software and whilst I don’t understand the limitations
+    of Gedcoms, I apperciate that it is not the best file format.</p>\n\n\n\t<p>iFamilyforTiger,
+    probably doesn’t have the best name, and it isn’t available for anything less
+    than <span class=\"caps\">OSX 10</span>.4, but it is a great piece of Mac software
+    and I find it easy to use and visually perfect for my needs</p>\n\n\n\t<p>Guy</p>"
+- date: 2007-03-05
+  author: Andrea Sedlak
+  content: <p>I’ve been using Reunion since version 6 and I feel like I’m stuck with
+    it since I will <span class="caps">NOT</span> do Windows anything (having to deal
+    with it at work is more than I can stand).  The one really strong point is its
+    source detail.  I use it faithfully.  I also link complete writeups about the
+    families, including stories about how the couple met, immigrated, etc, and insert
+    my sources into those as citations.  So Reunion does work for me on that front.  <span
+    class="caps">HOWEVER</span>, it’s <span class="caps">DISMAL</span> on report capabilities.  The
+    commenter who said they are “rough” is too kind.  I’ve repeatedly suggested improvements
+    on their reports, but no response-<del>and the improvements listed for v.9 include
+    a just a nod toward  improved reports by allowing for rtfd’s etc.  Not much of
+    an addition, since I can always create that from Word if I needed it.  I’m looking
+    for report <span class="caps">LAYOUT</span> options</del>-snazzy templates, etc.
+    that one could export into.  Why not allow a Mac-only program to export into <span
+    class="caps">PAGES</span> and then take advantage of the different source links
+    in the gen program by turning them into manipulable footnotes or endnotes in the
+    Pages end document?  But I’m a dreamer, aren’t I?</p>
+- date: 2007-03-10
+  author: ddruehlman@yahoo.com
+  content: "<p>I would like to try a demo for ifamily but none of the above addresses
+    seem to be valid. What gives?</p>\n\n\n\t<p>Dan</p>"
+- date: 2007-04-05
+  author: jjtlhistory@sbcglobal.net
+  content: <p>I have wanted to go Mac since about 1994-5, but have always been stuck
+    with windows, since all I ever wanted to use my computer for is <span class="caps">GENEALOGY</span>!!!
+    It’s very discouraging to find these comments on this site. My brother-in-law
+    thinks I should buy a new iMac and put my Windows program on it, I prefer <span
+    class="caps">LEGACY</span>, but getting a new iMac and using Windows on half the
+    space seems rediculous to me!!! Is what’s offered on iFamilyforTiger any good?
+    I have some <span class="caps">HUGE</span> and numerous small databases. I started
+    building my own family tree and have since combined it with Presidential – celebrity
+    – and those copied from book and publications as well as downloads and <span class="caps">GEDCOMS</span>.
+    Like I said before, genealogy is my passion, and I haven’t even found time to
+    play with books, calendars, etc., in 12/15 years. Before that, I had <span class="caps">HUGE</span>
+    notebooks full of charts that spilled everytime I dropped or opened them to attempt
+    to add or move anything. It usually took weeks or months to straighten out such
+    a spill. Also, people at <span class="caps">OCCCG</span> refused to look at charts
+    that were handwritten, anymore, fifteen years or more ago.</p>
+- date: 2007-05-07
+  author: John
+  content: <p>I’ve looked at all the Mac Genealogy software and I guess I’m looking
+    to see the familiarity of Family Tree Maker, but I’m not seeing it. I was spoiled
+    by using the old Mac version in the days of <span class="caps">OS9</span>. So,
+    as soon as it appears on the scene… I’ll be very, very happy. In the meantime
+    I’ve got an <span class="caps">OS9</span> that I boot to use the old <span class="caps">FTM</span>.</p>
+- date: 2007-05-17
+  author: Richard Evans
+  content: "<p>Jamis – don’t suppose you’re still looking at comments from a message
+    you posted in 2005?</p>\n\n\n\t<p>In case you are, and in case you are still thinking
+    of writing your own genealogy application, let me add my support. A Mac genealogy
+    app from one of the guys in 37signals makes my mouth water.</p>\n\n\n\t<p>Reunion
+    is horrible, but it’s what we use.</p>\n\n\n\t<p>None of the available apps gives
+    me what I want. I want the genealogical weight of something like Reunion, and
+    I want it be pretty. But I also want to be able to tell stories, effortlessly
+    include multi-media, use web services like Google maps/earth to plot individuals
+    and family movements across the world (MemoryMiner just doesn’t cut it) and share
+    all this stuff with the rest of my family. Just think what an impact that kind
+    of app would have.</p>"
+- date: 2007-06-09
+  author: Jeffrey
+  content: <p>Frankly, two years after your original post, things don’t seem any better.
+    All I have tried is expensive or buggy or inadequate for modern times or all of
+    these. As for <span class="caps">X11</span> software, I agree with you. About
+    a year ago I tried one that seemed to generate circular references that corrupted
+    and destroyed its own database; a few months later this unstable work went from
+    free to pay. Mac geneology software is still in a miserable state; hopefully somebody
+    will write something worth using and reasonable for those who are looking for
+    something not too complex.</p>
+- date: 2007-07-05
+  author: Dianne
+  content: <p>I’ve recently tried (and then purchased) iFamily. It is great and I
+    fully recommend it – it is very ‘Mac’. There is a free download available on the
+    iFamily website, so you can check it out and import <span class="caps">GEDCOM</span>
+    files and play about with your own real data before you decide to buy.</p>
+- date: 2007-07-12
+  author: Woody
+  content: "<p>My sister has just been bitten by the genealogy bug, and she’s actually
+    considering ditching her iMac to get a windows maching, just to run Personal Ancestry
+    File. Makes a chill run down my spine just thinking about it. It was great seeing
+    iFamilyforTiger mentioned here, so I’ll be downloading and testing it out. Macworld
+    reviewed it yesterday and gave it 3.5 mice, and the publisher has, as of today
+    (July 12!), addressed the two big issues in the review with a new version soon
+    to be released. If nothing else, this developer’s responsiveness makes me very
+    happy to give iFamilyforTiger a spin. I have a feeling I’ll be very happy with
+    it.</p>"
+- date: 2007-08-04
+  author: Bill Piper
+  content: |-
+    <p>IFamily for Tiger has a new version (2.237) which came out in late July 2007 that you may enjoy. A free download is available which is good for a period of time and then one can download the program for $29.95 and updates are free. The programmer has a forum where issues are discussed and he is punctual in answering e-mails. The program operates on <span class="caps">MAC OS 10</span>.4 and later.
+       If you have an old program such as Family Tree Maker operating on <span class="caps">MAC OS 9</span>.2 or earlier, you can convert your date to <span class="caps">GEDCOM</span> on the old computer transfer the <span class="caps">GEDCOM</span> to your new <span class="caps">MAC</span> and the IFamily For Tiger will Import the information in a matter of a minute or so.</p>
+- date: 2007-09-20
+  author: Dave Pihl
+  content: "<p>Have you read this article on Eastman’s blog? \nhttp://eogn.typepad.com/eastmans_online_genealogy/2004/11/gedcom_explaine.html</p>\n\n\n\t<p>GEDitCOM
+    is based entirely on the old <span class=\"caps\">GEDCOM</span> standard. But
+    it seems pretty clear to me that a program based the <span class=\"caps\">XML</span>
+    meta tags ought to be undertaken post haste.</p>"
+- date: 2007-09-27
+  author: George
+  content: <p>I have a MacBook and use Parallel with Windows XP.  <span class="caps">PAF5</span>.2
+    and Legacy operate without any problems. Transfering from Mac <span class="caps">OS
+    10</span> to Windows is as easy as moving the mouse from one operating system
+    to the other.  The Windows XP has it own little window so it is a smooth process
+    going back and forth.  There are facits that I like in Legacy and then there are
+    the things that I like about <span class="caps">PAF5</span>.2</p>

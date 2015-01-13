@@ -1,0 +1,79 @@
+---
+- date: 2006-02-11
+  author: Phil Ross
+  content: You might be able to use @reboot in your crontab to run the spawn script
+    when cron starts up after a reboot.
+- date: 2006-02-11
+  author: Gerry
+  content: Thanks for the tip.  I was wondering why lighttpd would sometimes need
+    to be manually started after a deploy.
+- date: 2006-02-11
+  author: Jamis
+  content: Phil, the @reboot trick works perfectly. I'd heard of that before but had
+    forgotten about it. Thanks for pointing it out! (Note to other readers--that feature
+    only appears to exist in vixie cron.)
+- date: 2006-02-11
+  author: Michael Koziarski
+  content: |-
+    Jamis, you rock my world.
+
+    How about sharing your switch tower recipe with us mere mortals?
+
+    Cheers
+
+    Koz
+- date: 2006-02-12
+  author: rick
+  content: |-
+    I made a "Rakefile":http://techno-weenie.net/svn/projects/misc/spawner/Rakefile to do some of this for you.  The config is stored in a central yaml file.
+
+    Great tip, thanks a lot!
+- date: 2006-02-12
+  author: Jamis
+  content: |-
+    koz, which ST recipe do you mean? The stuff in the article basically lets you use the default ST tasks without needing to create any custom ones--stuff like the @restart@ task should now work out of the box.
+
+    rick, thanks for the rakefile!
+- date: 2006-02-13
+  author: Roeland
+  content: |
+    RAILS_ENV should be in the beginning of the line:
+
+    system "RAILS_ENV=#{conf['env']} ....."
+
+    You could make crontab like this:
+
+    @reboot /usr/local/sbin/lighttpd -f /users/home/roeland/etc/lighttpd.conf
+
+    @reboot /usr/local/bin/rake -f /users/home/roeland/etc/fcgi/Rakefile spawn_all
+- date: 2006-02-14
+  author: rick
+  content: 'Jakob: I fixed that.  It''s not running the command with RAILS_ENV in
+    front though.  Also, deploying requires me to kill lighttpd and the FCGI and respawn. '
+- date: 2006-02-14
+  author: Roeland
+  content: Strange, it works fine here. The only other thing I did is adding the full
+    path to apps.yml
+- date: 2006-02-16
+  author: Traden
+  content: |
+    I've been trying to deploy my first Rails app, but the Switchtower page has been down for a couple of days...anyone else been able to get to it?
+- date: 2006-02-21
+  author: rick
+  content: |-
+    If anyone's interested, I fixed my stupid glitch in the "Rakefile":http://techno-weenie.net/svn/projects/misc/spawner/Rakefile.  Rather than putting the environment at the beginning, I just set it with ENV['RAILS_ENV'].
+
+    Lighttpd goes down hard whenever I try to gracefully reload.  It seems each passing release gets worse...
+- date: 2006-02-24
+  author: jdh
+  content: Cool.
+- date: 2006-03-01
+  author: rohit
+  content: my spawn proceeses get killed when i restart lighty, can anyone plz tell
+    what may be wrong?
+- date: 2006-06-15
+  author: Andrew
+  content: |
+    bq. "Note, however, that a reboot of the machine hosting your account will require you to run the spawn scripts for your applications again… I’m sure there’s a handy solution for that floating around somewhere, but I don’t know it offhand."
+
+    "Here is how":http://avlooks.net/articles/2006/06/15/managing-dispatch-fcgi-processed to set up FastCGI to run as a service accessible to every Rails domain user on a shared webserver.

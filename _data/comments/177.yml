@@ -1,0 +1,75 @@
+---
+- date: 2006-11-13
+  author: Piers Cawley
+  content: "<p>I may be missing something but can’t you use an anonymous class as
+    as a trampoline/namespace for module_evalling your database definition. Have const_missing
+    create class variables in the trampoline.</p>\n\n\n\t<p>Also, once you’ve moved
+    to passing a block to if, you’ve eliminated the problem of eager evaluation, which
+    means you can get rid of the unary +. Have if create a new anonymous subclass
+    of the current namespace and module_eval the condition block in that. Class variable
+    scoping should be your friend at that point.</p>"
+- date: 2006-11-13
+  author: Jamis
+  content: "<p>Piers, it could be that there is a way to get rid of the unary +, but
+    I still don’t see it. The block for the if is not for deferral (in fact, I call
+    it immediately, so there’s no deferral going on at all).</p>\n\n\n\t<p>Regarding
+    const_missing, I actually tried that. I put const_missing in the cleanroom class
+    that was evaling the definition, but it never got called. I can only assume that’s
+    because I’m using a block instead of a text. I didn’t experiment too much, just
+    enough to hit on overriding the Module’s const_missing.</p>\n\n\n\t<p>Feel free
+    to play with my code if you want. I’m curious to see some of these ideas in action.</p>"
+- date: 2006-11-13
+  author: Piers Cawley
+  content: "<p>You currently calling the block immediately, but you don’t <strong>have</strong>
+    to do it. There is nothing to stop your ‘if’ implementation from looking something
+    like:</p>\n\n\n\t<p>def if(&amp;block)\n  ...\n  Class.new(current_environment)
+    &amp;block\n  ...\nend</p>\n\n\n\t<p>I shall go away and play…</p>"
+- date: 2006-11-13
+  author: Jamis
+  content: "<p>Piers, sorry, my previous reply was kind of distracted and I omitted
+    what I meant to say. There may very well be a way to make do without the explicit
+    unary plus, but it would require a lot of complexity under the covers. I kind
+    of like the unary plus, though—it makes it clear that the statement is being added
+    to the database, and it acts like a nice bullet point when you have multi-line
+    statements.</p>\n\n\n\t<p>That said, I certainly don’t want to discourage you
+    from playing with the code. I’d love to see anything you come up with!</p>"
+- date: 2006-11-13
+  author: Piers Cawley
+  content: "<p>So, I experimented with:</p>\n\n\n<code><pre>\ntop_level = class.new\nbegin\n
+    \ p \"About to eval\" \n  top_level {L}\n  p \"Evaluation successful\" \nrescue
+    NameError e\n  eval %{top_level::#{e.name.to_s} = Class.new}\n  retry\nend\n</pre></code>\n\n\t<p>However,
+    when I ran it, I went into an infinite loop, which kept throwing ‘already initialized
+    constant L’ warnings. Changing the eval in the rescue to:</p>\n\n\n<code><pre>\neval
+    %{#{e.name.to_s} = Class.new }\n</pre></code>\n\n\t<p>What seems to be happening
+    is that constant lookup is independent of any Binding objects, but is always based
+    the block’s lexical scope. Which smells like a ruby bug to me.</p>"
+- date: 2006-11-14
+  author: Jamis
+  content: "<p>Thanks, Piers, that confirms what I saw as well. I should note that
+    I’m still running ruby 1.8.4 locally. Were you testing on 1.8.5?</p>"
+- date: 2006-11-14
+  author: Rodrigo Kochenburger
+  content: "<p>Jamis, i’ve been checking your blog for this project and i’m really
+    enjoying. Its far one of the most interesting <span class=\"caps\">DSL</span>
+    i’ve seen built in Ruby. It shows us how powerful ruby is and how far we’re from
+    reaching ruby’s bondaries ;)</p>\n\n\n\t<p>Keep improving it!</p>"
+- date: 2006-11-14
+  author: Piers Cawley
+  content: "<p>I’m running 1.8.4 here.</p>\n\n\n\t<p>Rodrigo: It’s weird, there’s
+    a strong Ruby culture of meta programming, and there’s some nicely abstracted
+    ways of monkeying with it. Meanwhile Perl 5, which is where I come to Ruby from,
+    has some truly <em>horrible</em> ways of getting at the sort of things Ruby gives
+    you, but once you’ve wrapped your head around it, you can actually do more with
+    Perl than you can with Ruby. For instance, I’ve implemented the extract method
+    refactoring in pure Perl, but I’m still damned if I can work out how to do it
+    in Ruby.</p>\n\n\n\t<p>Actually, Smalltalk’s introspection stuff is probably the
+    right place for Ruby to steal from (All I want for Christmas is a version of Binding
+    I can introspect on and a way of getting either continuations (or failing that)
+    bindings back from caller).</p>"
+- date: 2006-11-25
+  author: Steven Bedrick
+  content: <p>Have you thought about <span class="caps">OWL</span> integration? Either
+    at the input end of things (enabling importation of description logics built using
+    something like Protege) or the output end (enabling the construction of description
+    logics using a nice ruby-like syntax, and then executing logical queries against
+    them using a third-party reasoner like Racer).</p>

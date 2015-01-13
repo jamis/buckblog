@@ -1,0 +1,184 @@
+---
+layout: post
+title: Singing the Praises of Benchmark
+post_id: 210
+categories:
+- Essays and Rants
+date: 2005-06-10 20:25:00.000000000 -06:00
+author: Jamis
+permalink: 2005/06/10/singing-the-praises-of-benchmark.html
+---
+
+<p>So, I wanted a way to know whether the contents of a <code>String</code> had been modified. Something like:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">s = <span class="s"><span class="dl">"</span><span class="k">hello world</span><span class="dl">"</span></span><tt>
+</tt>assert !s.dirty?<tt>
+</tt>s &lt;&lt; <span class="s"><span class="dl">"</span><span class="k"> and goodbye!</span><span class="dl">"</span></span><tt>
+</tt>assert s.dirty?<tt>
+</tt></pre></td>
+</tr></table>
+<p>A few ideas came to mind, and I found myself gravitating towards one of them, but I began to wonder which one would perform the best. Again, I had my suspicions, but I wrote up a benchmark anyway. And I am <em>certainly</em> glad I did because my intuition was <em>way</em> off.</p>
+<p>One trick I’d used before, where I had an object instance that I wanted to enhance, was to put the enhancement code in a module and then use <code>Object#extend</code> to add the module to the instance in question. Something like:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt>23<tt>
+</tt>24<tt>
+</tt><strong>25</strong><tt>
+</tt>26<tt>
+</tt>27<tt>
+</tt>28<tt>
+</tt>29<tt>
+</tt><strong>30</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">module</span> <span class="cl">DirtyDetector</span><tt>
+</tt>  <span class="co">METHODS</span> = [<span class="sy">:&lt;&lt;</span>, <span class="sy"><span class="sy">:</span><span class="dl">"</span><span class="k">[]=</span><span class="dl">"</span></span>, <span class="sy">:capitalize!</span>, <span class="sy">:chomp!</span>, <span class="sy">:chop!</span>, <span class="sy">:concat</span>, <span class="sy">:delete!</span>,<tt>
+</tt>    <span class="sy">:downcase!</span>, <span class="sy">:gsub!</span>, <span class="sy">:insert</span>, <span class="sy">:lstrip!</span>, <span class="sy">:next!</span>, <span class="sy">:replace</span>, <span class="sy">:reverse!</span>,<tt>
+</tt>    <span class="sy">:rstrip!</span>, <span class="sy">:slice!</span>, <span class="sy">:squeeze!</span>, <span class="sy">:strip!</span>, <span class="sy">:sub!</span>, <span class="sy">:succ!</span>, <span class="sy">:swapcase!</span>, <span class="sy">:tr!</span>,<tt>
+</tt>    <span class="sy">:tr_s!</span>, <span class="sy">:upcase!</span>]<tt>
+</tt><tt>
+</tt>  <span class="r">def</span> <span class="pc">self</span>.extend_object(base)<tt>
+</tt>    me = <span class="r">class</span> &lt;&lt;<span class="cl">base</span>; <span class="pc">self</span>; <span class="r">end</span><tt>
+</tt>    <span class="co">METHODS</span>.each <span class="r">do</span> |method|<tt>
+</tt>      me.class_eval { alias_method <span class="sy"><span class="sy">:</span><span class="dl">"</span><span class="k">unprotected_</span><span class="il"><span class="dl">#{</span>method<span class="dl">}</span></span><span class="dl">"</span></span>, <span class="sy"><span class="sy">:</span><span class="dl">"</span><span class="il"><span class="dl">#{</span>method<span class="dl">}</span></span><span class="dl">"</span></span> }<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>    <span class="r">super</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  <span class="r">def</span> <span class="fu">dirty?</span><tt>
+</tt>    <span class="iv">@dirty</span> == <span class="pc">true</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  <span class="co">METHODS</span>.each <span class="r">do</span> |method|<tt>
+</tt>    define_method(method) <span class="r">do</span> |*args|<tt>
+</tt>      <span class="iv">@dirty</span> = <span class="pc">true</span><tt>
+</tt>      send(<span class="s"><span class="dl">"</span><span class="k">unprotected_</span><span class="il"><span class="dl">#{</span>method<span class="dl">}</span></span><span class="dl">"</span></span>, *args)<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>s = <span class="s"><span class="dl">"</span><span class="k">hello world</span><span class="dl">"</span></span><tt>
+</tt>s.extend <span class="co">DirtyDetector</span><tt>
+</tt>s &lt;&lt; <span class="s"><span class="dl">"</span><span class="k"> and goodbye!</span><span class="dl">"</span></span><tt>
+</tt>assert s.dirty?<tt>
+</tt></pre></td>
+</tr></table>
+<p>This works (more or less-<del>I haven’t actually tested the above code as I’m giving it to you). However, the whole “class_eval” thing in <code>#extend_object</code> made me a little uneasy</del>-it seemed like quite a few invocations. I wondered if it would be more efficient to collect the <code>alias_method</code> calls into a big string and then eval them all at once:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">ALIASES</span> = <span class="co">METHODS</span>.inject(<span class="s"><span class="dl">"</span><span class="dl">"</span></span>) <span class="r">do</span> |aliases, method|<tt>
+</tt>  aliases &lt;&lt; <span class="s"><span class="dl">"</span><span class="k">alias_method :</span><span class="ch">\"</span><span class="k">unprotected_</span><span class="il"><span class="dl">#{</span>method<span class="dl">}</span></span><span class="ch">\"</span><span class="k">, :</span><span class="ch">\"</span><span class="il"><span class="dl">#{</span>method<span class="dl">}</span></span><span class="ch">\"</span><span class="ch">\n</span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">def</span> <span class="pc">self</span>.extend_object(base)<tt>
+</tt>  me = <span class="r">class</span> &lt;&lt;<span class="cl">base</span>; <span class="pc">self</span>; <span class="r">end</span><tt>
+</tt>  me.class_eval <span class="co">ALIASES</span><tt>
+</tt>  <span class="r">super</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>This was actually 50% <em>slower</em> than the other! It was obvious, once I saw the results, though—each eval has to parse the string again, which is not going to be an inexpensive operation. So, I wondered, could I find a way to <em>pre-compile</em> the string?</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">ALIASER</span> = eval <span class="s"><span class="dl">"</span><span class="k">Proc.new do</span><span class="ch">\n</span><span class="il"><span class="dl">#{</span><span class="co">ALIASES</span><span class="dl">}</span></span><span class="ch">\n</span><span class="k">end</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt><span class="r">def</span> <span class="pc">self</span>.extend_object(base)<tt>
+</tt>  me = <span class="r">class</span> &lt;&lt;<span class="cl">base</span>; <span class="pc">self</span>; <span class="r">end</span><tt>
+</tt>  me.class_eval &amp;<span class="co">ALIASER</span><tt>
+</tt>  <span class="r">super</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>That was much better, roughly twice as fast—and even faster than the first version. But it was still an order of magnitude slower than doing without the DirtyDetector. Having to alias each of those methods and add the new functionality to the instance is just not a very practical way to go about this. But what other option was there?</p>
+<p>Perhaps you saw the solution before I even started into this article. Bear with me, sometimes it takes a while before I can see the obvious, but I’ll get there in the end.</p>
+<p>I considered using Delegator, but I wanted the new instance to still be identifiable as a String (that is to say, <code>String === s</code> should still be true). The solution was to simply extend String and override the methods in question in the subclass:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">DirtyDetectorString</span> &lt; <span class="co">String</span><tt>
+</tt>  <span class="co">METHODS</span> = [<span class="sy">:&lt;&lt;</span>, <span class="sy"><span class="sy">:</span><span class="dl">"</span><span class="k">[]=</span><span class="dl">"</span></span>, <span class="sy">:capitalize!</span>, <span class="sy">:chomp!</span>, <span class="sy">:chop!</span>, <span class="sy">:concat</span>, <span class="sy">:delete!</span>,<tt>
+</tt>    <span class="sy">:downcase!</span>, <span class="sy">:gsub!</span>, <span class="sy">:insert</span>, <span class="sy">:lstrip!</span>, <span class="sy">:next!</span>, <span class="sy">:replace</span>, <span class="sy">:reverse!</span>,<tt>
+</tt>    <span class="sy">:rstrip!</span>, <span class="sy">:slice!</span>, <span class="sy">:squeeze!</span>, <span class="sy">:strip!</span>, <span class="sy">:sub!</span>, <span class="sy">:succ!</span>, <span class="sy">:swapcase!</span>, <span class="sy">:tr!</span>,<tt>
+</tt>    <span class="sy">:tr_s!</span>, <span class="sy">:upcase!</span>]<tt>
+</tt><tt>
+</tt>  <span class="co">METHODS</span>.each <span class="r">do</span> |method|<tt>
+</tt>    define_method(method) <span class="r">do</span> |*args|<tt>
+</tt>      <span class="iv">@dirty</span> = <span class="pc">true</span><tt>
+</tt>      <span class="r">super</span><tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  <span class="r">def</span> <span class="fu">dirty?</span><tt>
+</tt>    <span class="iv">@dirty</span> == <span class="pc">true</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>s = <span class="co">DirtyDetectorString</span>.new(<span class="s"><span class="dl">"</span><span class="k">hello world</span><span class="dl">"</span></span>)<tt>
+</tt>assert !s.dirty?<tt>
+</tt>s &lt;&lt; <span class="s"><span class="dl">"</span><span class="k"> and goodbye!</span><span class="dl">"</span></span><tt>
+</tt>assert s.dirty?<tt>
+</tt></pre></td>
+</tr></table>
+<p>And the best news? It performed nearly as fast as the native string operations! Thank goodness for the benchmark library.</p>

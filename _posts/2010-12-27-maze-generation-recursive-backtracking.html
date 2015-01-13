@@ -1,0 +1,100 @@
+---
+layout: post
+title: 'Maze Generation: Recursive Backtracking'
+post_id: 21
+categories:
+- Under the Hood
+date: 2010-12-27 06:49:00.000000000 -07:00
+author: Jamis
+permalink: 2010/12/27/maze-generation-recursive-backtracking.html
+summary: >
+  The first article in a series about maze generation algorithms
+---
+
+<p>I’ve said before that generating mazes is a great default project when experimenting with a new programming language. I’ve yet to find a better one (but I’d love to hear recommendations). However, before you can dive into generating a maze (especially in a syntax you are unfamiliar with), you had better have a solid grasp of how the process works.</p>
+<p>With mazes, you can take your pick of a solid double-handful of algorithms: recursive backtracking, Prim’s, Kruskal’s, Eller’s, Aldous-Broder or Wilson’s algorithms, recursive division, hunt-and-kill, and more.</p>
+<p>My favorite, and the one I implement by default, is recursive backtracking. It is fast, easy to understand, and straightforward to implement. You’ll need sufficient memory to store the entire maze in memory, though, and it requires stack space again proportional to the size of the maze, so for exceptionally large mazes it can be fairly inefficient. But for most mazes, it works a charm.</p>
+<p>Here’s the mile-high view of recursive backtracking:</p>
+<ol>
+	<li>Choose a starting point in the field.</li>
+		<li>Randomly choose a wall at that point and carve a passage through to the adjacent cell, but only if the adjacent cell has not been visited yet. This becomes the new current cell.</li>
+		<li>If all adjacent cells have been visited, back up to the last cell that has uncarved walls and repeat.</li>
+		<li>The algorithm ends when the process has backed all the way up to the starting point.</li>
+	</ol>
+<p>I generally implement the field as a grid of bitfields (where the bits in each cell describe which direction passages have been carved). That’s probably just the C programmer in me asserting dominance, though; feel free to experiment with other representations.</p>
+<p>In Ruby, I usually initialize the grid like so:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">grid = <span class="co">Array</span>.new(height) { <span class="co">Array</span>.new(width, <span class="i">0</span>) }<tt>
+</tt></pre></td>
+</tr></table>
+<p>Next, the algorithm itself is kicked off by calling the worker function:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">carve_passages_from</span>(cx, cy, grid)<tt>
+</tt>  <span class="c"># work, work, work</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>carve_passages_from(<span class="i">0</span>, <span class="i">0</span>, grid)<tt>
+</tt></pre></td>
+</tr></table>
+<p>This begins carving passages in the grid, starting at the upper-left corner, (0,0). And as you might have guessed from the algorithm’s name, this works recursively, as we’ll see next.</p>
+<p>The <code>carve_passages_from</code> method first creates a list of directions that ought to be tried from the current cell:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">directions = [<span class="co">N</span>, <span class="co">S</span>, <span class="co">E</span>, <span class="co">W</span>].sort_by{rand}<tt>
+</tt></pre></td>
+</tr></table>
+<p>We sort the list in random order, so that the path will meander, rather than having a bias in any particular direction.</p>
+<p>Then, the function iterates over each of those directions, determining the coordinates of the cell in that direction and deciding if the cell is valid or not. Note that a cell is valid only if it lies within the bounds of the maze, <span class="caps">AND</span> it has not previously been visited: we only want to carve passages into untouched cells, to avoid creating circular loops in the maze.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">directions.each <span class="r">do</span> |direction|<tt>
+</tt>  nx, ny = cx + <span class="co">DX</span>[direction], cy + <span class="co">DY</span>[direction]<tt>
+</tt><tt>
+</tt>  <span class="r">if</span> ny.between?(<span class="i">0</span>, grid.length<span class="i">-1</span>) &amp;&amp; nx.between?(<span class="i">0</span>, grid[ny].length<span class="i">-1</span>) &amp;&amp; grid[ny][nx] == <span class="i">0</span><tt>
+</tt>    <span class="c"># cell is valid!</span><tt>
+</tt>    <span class="c"># ...</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Finally, if the cell is valid, we carve a passage out of the current cell and into the next cell. Then, we recursively call <code>carve_passages_from</code> on the new cell:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">grid[cy][cx] |= direction<tt>
+</tt>grid[ny][nx] |= <span class="co">OPPOSITE</span>[direction]<tt>
+</tt>carve_passages_from(nx, ny, grid)<tt>
+</tt></pre></td>
+</tr></table>
+<p>And that’s really all there is to it!</p>
+<p>For all of you not using IE (and I honestly hope no reader of my blog uses IE), here’s a Javascript demo you can play with to see the algorithm in action:</p>
+<script type="text/javascript" src="/javascripts/maze-minified.js"></script>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("RecursiveBacktracker", 5, 5, { "class": "small" });</script>
+<script type="text/javascript">Maze.createCanvasWidget("RecursiveBacktracker", 15, 15, { "class": "medium", id: "recursive_medium", interval: 25 });</script>
+</div>
+<p>My complete Ruby implementation, including some lines to output the maze as <span class="caps">ASCII</span>, is here:</p>
+<script src="https://gist.github.com/755866.js?file=recursive-backtracker2.rb"></script>
+<noscript>[<a href="https://gist.github.com/755866">recursive-backtracker2.rb</a> at gist.github.com]</noscript>
+<p>Start by writing your own implementation in a language you’re comfortable in, just to wrap your mind around the algorithm. Try replacing the recursion with iteration (always a fun exercise). Consider extending it to include <a href="http://jamisbuck.org/images/maze7.png">weave mazes</a> (where passages move over or under other passages), or <a href="http://jamisbuck.org/images/maze8.png">braided mazes</a> (mazes where deadends are removed to create loops in the maze), or <a href="http://jamisbuck.org/images/maze10.png">symmetrical mazes</a>, or <a href="http://jamisbuck.org/images/maze11.png">wrapped mazes</a>. Or even <a href="http://jamisbuck.org/images/maze3.png">different</a> <a href="http://jamisbuck.org/images/maze4.png">cell</a> <a href="http://jamisbuck.org/images/maze5.png">tesselations</a>. If you’re at all like me, you may find that your “toy” project has <a href="http://github.com/jamis/theseus">taken on a life of its own</a>, and you’re suddenly researching new and exciting ways to build mazes!</p>
+<p>Once you understand the algorithm, though, the real fun is trying it in a language you’re unfamiliar with. It’ll show you conditionals, bit manipulation (if you use the bitfield storage like I showed above), iteration, recursion, and console output (if you decide to render your maze, too). When you’ve finished, you’ll have a good idea of how the language looks and works in practice, and not just for trivial “hello world” apps.</p>
+<p>Give it a try! Please share your implementations in the comments (links to gist.github.com are preferred).</p>

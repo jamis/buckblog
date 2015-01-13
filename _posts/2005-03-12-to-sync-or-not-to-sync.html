@@ -1,0 +1,86 @@
+---
+layout: post
+title: To sync or not to sync
+post_id: 228
+categories:
+- Essays and Rants
+date: 2005-03-12 06:06:00.000000000 -07:00
+author: Jamis
+permalink: 2005/03/12/to-sync-or-not-to-sync.html
+---
+
+<p><a href="http://www.loudthinking.com">David</a> is making great strides with adding <a href="http://www.adaptivepath.com/publications/essays/archives/000385.php">Ajax</a> helpers to <a href="http://www.rubyonrails.com">Rails</a>. His efforts have been focused on <em>synchronous</em> requests, which have served him well with <a href="http://www.tadalists.com">Ta-da Lists</a>, and as he pushes ahead with Honey. Since he’s got the synchronous side nailed down pretty well, he’s asked me to take a look at the <em>asynchronous</em> side.</p>
+<p><strong>Update [13 Mar]</strong> I changed the <span class="caps">URL</span> of this article, because the ellipsis was wreaking havoc… sorry to those for whom that breaks existing links…</p>
+<h2>Synchronous XMLHttpRequests</h2>
+<p>Using synchronous requests with the XMLHttpRequest object has the benefit of allowing you to send a request and get a response back in a very easy-to-implement manner. With a bit of abstraction, you can write something like this:</p>
+<code>
+<pre>
+  element.innerHTML = submit_request("/some/action?value=foo")
+</pre>
+</code>
+<p>The drawback of synchronous requests is that, with every browser I’ve ever tried them on (including Safari, Firefox, Mozilla, and <span class="caps">IE 6</span>), sending a synchronous request causes the browser to “freeze” until the request returns. It just stops responding.</p>
+<p>For very brief requests, this period of unresponsiveness is negligable. Consider <a href="http://www.tadalists.com">Ta-da Lists</a>—you add an item to a list, and it just blinks right up into the list. You never really notice the lag, unless you happen to be on a very slow network connection, or your network goes down at just the wrong moment.</p>
+<p>That brings up a thorny problem: what <em>if</em> the network goes down at just the wrong moment? What <em>if</em> the user is on a very slow network connection?</p>
+<p>It is easy to simulate this. In your web application, just put a <code>sleep</code> command in the appropriate action and have it go away for a few seconds. Observe how your application behaves now. Suddenly, it feels like the browser has crashed, or is hung. You press a button and get zero feedback that anything is being performed. Even your carefully designed mouse-over effects are silent. It is easy to imagine a user clicking the button over and over out of a sense of uncertainty—”is it doing what I asked it to do?”</p>
+<p>But what is the alternative?</p>
+<h2>Asynchronous XMLHttpRequests</h2>
+<p>The XMLHttpRequest object also supports an asynchronous interface. This means you can send off a request and then do other things while the request is processing. It has the added benefit of <em>not</em> locking up your browser while the request is processing.</p>
+<p>However, this added flexibility comes at a price: you can no longer simply send a request and expect the result immediately. You now have to register a callback, to be invoked when the request finishes, and have that callback do the rest of the work. (It is actually very reminiscent of <a href="http://c2.com/cgi/wiki?CallWithCurrentContinuation">call-with-current-continuation</a>, if you’re into that kind of thing.)</p>
+<p>Consider the following (again, very abstracted):</p>
+<code>
+<pre>
+  submit_request("/some/action?value=foo", function(result) {
+    element.innerHTML = result
+  } )
+</pre>
+</code>
+<p>I’m definitely not a Javascript guru—perhaps there is a way to make the two approaches (synchronous and asynchronous) have the same interface. But the point is that each requires a slightly different style of interface. With the synchronous approach, there is the implicit assumption that the request takes zero (or negligable) time. The asynchronous approach assumes a non-zero duration for the request, and this introduces other design decisions that ought to be made.</p>
+<p>Most significantly, if your request is now assumed to take a noticable length of time, how do you indicate to the user that something is occurring? You don’t want them to get confused, wondering whether the button they just clicked actually did anything. You certainly don’t want them to just assume that it worked and go away, only to have the error message you tried to send them lost in transit.</p>
+<p>Also, you <em>certainly</em> don’t want them to retry the action. Pressing a button over and over to elicit a response from the program is not generally a good idea, but that doesn’t prevent users from trying it.</p>
+<h2>UI Guidelines for Asynchronous Requests</h2>
+<p>Here are some things you might try to make the UI more responsive:</p>
+<ol>
+	<li>Hide the button, or link, or whatever, that was used to initiate the request. If it’s not there, the user can’t click it.</li>
+		<li>Replace the input with some text indicating that their request is being processed. An animated progress-bar can help, too, because it is a familiar indicator to most users.</li>
+		<li>Optionally, if you already have all the information you need in the client, you can assume success and render the new text while the request is processing. If you do this, however, make sure to render it in a different style than “confirmed” text. This prevents users from thinking that their request succeeded, when the success or failure of the request is not yet known.</li>
+		<li>Finally, when the request finishes, redisplay the buttons and links, show the input, hide the progress indicator, and basically take care of whatever else is needed to make the page look like it needs to look.</li>
+	</ol>
+<p>In Javascriptian pseudo-code:</p>
+<code>
+<pre>
+  hide_input()
+  show_progress_meter()
+  submit_request("/some/action?value=foo", function(result) {
+    hide_progress_meter()
+    show_input()
+    element.innerHTML = result
+  } )
+</pre>
+</code>
+<p>One last thing to beware of: you may need to set up sentinels to prevent incompatible operations from occuring simultaneously. If you have a button to (for instance) submit a new transaction to an account, and a link to delete a transaction, you may not want to allow both operations to occur simultaneously. You can either hide all other possible operations once an operation has been initiated, or you can set a sentinel variable and check for it in the other operations:</p>
+<code>
+<pre>
+  var transaction_submission_in_progress = false
+  var transaction_deletion_in_progress = false
+
+  function submit_transaction() {
+    if( transaction_deletion_in_progress ) return
+    transaction_submission_in_progress = true
+    hide_input()
+    show_progress_meter()
+    submit_request("/some/action?value=foo", function(result) {
+      hide_progress_meter()
+      show_input()
+      element.innerHTML = result
+      transaction_submission_in_progress = false
+    } )
+  }
+
+  function delete_transaction() {
+    if( transaction_submission_in_progress ) return
+    transaction_deletion_in_progress = true
+    ...
+  }
+</pre>
+</code>
+<p>In general, the asynchronous approach is certainly more complex, but it allows you much more freedom to build a more expressive and robust interface.</p>

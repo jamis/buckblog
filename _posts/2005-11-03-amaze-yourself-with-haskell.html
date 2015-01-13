@@ -1,0 +1,25 @@
+---
+layout: post
+title: aMAZE yourself with Haskell
+post_id: 247
+categories:
+- Odds & Ends
+date: 2005-11-03 17:41:00.000000000 -07:00
+author: Jamis
+permalink: 2005/11/03/amaze-yourself-with-haskell.html
+summary: >
+  The author provides a report on his progress learning Haskell
+---
+
+<p>So, as you’ve probably figured out by now, I’ve been learning Haskell. My first actual program now behind me, I thought I’d step up and talk a bit about my thoughts on Haskell so far.</p>
+<ul>
+	<li>Monads still really boggle me. They are my biggest stumbling block so far, and as far as I’m concerned, they are the biggest wart on the face of Haskell. Yah, sure, I understand the idea—you can use Monads to represent a sequence of actions without violating “functional programming”, but it still feels very, very awkward. I definitely have more reading (and practice) to do on this topic.</li>
+		<li>I <strong>love</strong> how you can define multiple versions of a function and use pattern matching so that the runtime system will choose the correct version based on the value of the parameters. Really slick.</li>
+		<li>I’m still trying to get a practical feel for when to use <code>let</code> and when to use <code>where</code>.</li>
+		<li>Using a strongly typed language feels kind of awkward after so long with Ruby, but that’s not a reflection on Haskell. I must admit that Haskell’s type system is pretty neat.</li>
+		<li>The whole thing with classes and instances is pretty slick, too, though I’m still trying to wrap my brain around it.</li>
+		<li>It feels like you have to pay much closer attention to what you are doing, to avoid cluttering your namespace. Modules help, but once you import them, you’re still stuck with everything in the same namespace. I’ve got to be missing something.</li>
+		<li>I really miss objects! Trying to program something that uses random number generation is a real pain in Haskell, because you have to pass the generator around from function to function. Give me stateful objects anyday, over a purely functional language…but I’m sure that’s mostly my inexperience talking.</li>
+	</ul>
+<p>Anyway, I’m still working my way through it. It is definitely unlike almost any language I’ve ever learned, although I definitely prefer it over Scheme. I still doubt I’ll convert from Ruby to Haskell, but it’s a new way of thinking about problems, and that is always valuable.</p>
+<p>For the curious, <a href="http://jamis.jamisbuck.org/files/Maze.hs">here is my first Haskell program</a>. it is a naive random maze generator, which is something I can code in my sleep in a procedural language, but which really stretched me when trying to implement it in Haskell. You Haskell experts out there, please feel free to give me advice on how to make this little program better! (But be gentle…)</p>

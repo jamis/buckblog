@@ -1,0 +1,111 @@
+---
+- date: 2007-03-07
+  author: Bill Siggelkow
+  content: "<p>Good tip, Jamis. As a seasoned Java programmer, deeply cognizant of
+    the uses and abuses of a rich exception hierarchy, this is an area of Ruby that
+    doesn’t get much coverage. After reading your post, I am all a twitter :)</p>"
+- date: 2007-03-07
+  author: Jim Kane
+  content: "<p>For those that enjoy spoonfeeding:\nRuby’s exception hierarchy: http://www.zenspider.com/Languages/Ruby/QuickRef.html#34\nGraph
+    of said hierarchy: http://objectgraph.rubyforge.org/hierarchy_dotOG.html</p>\n\n\n\t<p>Great
+    article, Jamis—I know I still make too little use of exceptions in my daily work,
+    and I suspect there are many others out there who underutilize it as well.</p>"
+- date: 2007-03-07
+  author: Josh Haberman
+  content: "<p>I would still like to know what the difference is between an “Exception”
+    and an “Error” in the standard Ruby exception hierarchy.  Ruby calls some of its
+    standard exceptions FooException (like SignalException) and some of them FooError
+    (like IOError).  Also, there are no best practices I know of about where in the
+    exception hierarchy you should derive your exceptions from.  If you derive from
+    RuntimeError, your exceptions will get caught by a simple “rescue”, but is that
+    what you want?</p>\n\n\n\t<p><a href=\"http://groups.google.com/group/comp.lang.ruby/browse_thread/thread/462298d29c2dcd7/363ec961d8d2856b%23363ec961d8d2856b\">I
+    asked this question on ruby-talk</a>, but was disappointed when <i>no one</i>
+    had anything to say on the topic.  I don’t like it when there are corners of the
+    language with no clear rationale or best practices.</p>"
+- date: 2007-03-07
+  author: Dave Woodward
+  content: "<p>After a frustrating time trying to write code to look for a bunch of
+    error codes in <span class=\"caps\">XML</span> responses, I realized I should
+    probably be using Exceptions instead.</p>\n\n\n\t<p>After making the error codes
+    raise exceptions when they’re parsed out, handling all of the various exceptions
+    suddenly became much easier, and using begin/rescue/else/ensure blocks is fun!</p>\n\n\n\t<p>I
+    am all about raising exceptions now, its nice to be able to raise an error at
+    one point in the code, and then handle it higher up the stack.</p>"
+- date: 2007-03-07
+  author: James H
+  content: "<p>Ah!  I saw you check that change in the other day and was wondering
+    what you were up to.  Clever!  I’ll have to keep this in mind for future works.</p>"
+- date: 2007-03-08
+  author: greg hauptmann
+  content: "<p>Hi Jamis – interestingly I just recently posted for advice on the Ruby
+    on Rails mailing list re error handling / exceptions recommendations but hadn’t
+    received anything.  I’d love to hear your comments/advise re on the below Jamis
+    if you have a few minutes.</p>\n\n\n\t<p>On 3/2/07, Greg Hauptmann &lt;greg&gt;
+    wrote:\nHi,</p>\n\n\n\t<p>Can I ask for some advise re what the best practice
+    is for handling exceptions &amp; errors through my rails code from the point of
+    view of how to display them back to the user?  Some items I’d love to be covered
+    include:</p>\n\n\n\t<p>[1] is the principle that <span class=\"caps\">ALL</span>
+    exceptions (even those the application might not to be able to do anything about)
+    should be caught and then the application then decides what text and view .rhtml?
+    \ Or should the approach be to allow exceptions to occur and the rails framework
+    to then pass this to a general error page?</p>\n\n\n\t<p>[2] errors/exceptions
+    that may occur in the action record / data layer – what categories of errors/exceptions
+    here should be either (a) returned as call didn’t work or (b) exception.  That
+    is, from a best practice point of view are there 2 categories of errors/exceptions
+    in the data layer that should be acknowledged and handed differently in terms
+    of how they are captured and passed back to the controller layer?  ( e.g. catch
+    exception and process in model code and return appropriate response, OR through
+    to an approach like: any issue that occur in the rails or database itself that
+    get raised as an exception, don’t try to catch them, but let the exception be
+    thrown back to the controller (at which point my first question kicks in re whether
+    the controller should catch these areas and process or let the rails framework
+    through to a general application error page)</p>\n\n\n\t<p>[3] where can I see
+    all the possible errors like RoutingError, UnknownAction…?   Is it enough to stick
+    with the standard rails rescue_action_in_public method (see below)?</p>\n\n\n\t<pre><code>def
+    rescue_action_in_public(exception) #:doc:\n  case exception\n    when RoutingError,
+    UnknownAction\n      render_text(IO.read(File.join(RAILS_ROOT, 'public', '404.html')),
+    \"404 Not Found\")\n    else\n      render_text(IO.read(File.join(RAILS_ROOT,
+    'public', '500.html')), \"500 Internal Error\")\n    end\nend</code></pre>\n\n\n\t<p>[4]
+    allocation of specific error numbers against each specific error the application
+    catches/can create?</p>\n\n\n\t<p>[5] separate log file for error details in a
+    specific parseable/setout format (e.g. for a paging system to reference) in additional
+    to standard log file which contains various other details like rails <span class=\"caps\">SQL</span>
+    / timing information, or full exception stack details</p>\n\n\n\t<p>[6] an action’s
+    render – this won’t be reached if I through an exception before this point or
+    there is a rails exception I don’t catch before this point no?</p>\n\n\n\t<p>[7]
+    anything else related to monitoring application health?</p>\n\n\n\t<p>Thanks\nGreg</p>"
+- date: 2007-03-08
+  author: Jamis
+  content: "<p>Josh: I’ve never read any treatise anywhere describing the difference
+    between the Error and Exception names. Keep in mind, though, that not all Exceptions
+    are Errors. When the user presses ctrl-C, a SignalException will be raised. That’s
+    not an error, it is simply “exceptional behavior”. Most exceptions, though, indicate
+    cases that are most likely errors, like a network connection breaking in the middle
+    of a data transfer, or an invalid password being given. Thus, I’ve started naming
+    most (if not all) of my custom exception subclasses as Errors.</p>\n\n\n\t<p>Greg:
+    when it comes to exception handling, you really just need to see what works for
+    you. Capturing every exception can be wearisome, and is usually unnecessary. Catch
+    what you can actually do something about, and let the rest bubble up. You might
+    look into the exception_notification plugin, which will send you an email when
+    an exception bubbles all the way back up to the top.</p>"
+- date: 2007-03-21
+  author: greg hauptmann
+  content: "<p>Hi Jamis,</p>\n\n\n\t<p>[1] Do you mind if I ask how do you personally
+    handle the following categories of events.</p>\n\n\n\t<p>a) Uncaught exceptions
+    (i.e. bubble up to top)\n   – Usage: System failure / developer can’t do anything\n
+    \  – Logging: How? Override rails exception framework to\n     issue a specific
+    “logger.error” message?  Check whether\n     a standard Rails “error” will be
+    sent to the log by\n     default anyway…\n   – Alerting: Use of “exception_notification”
+    plugin.</p>\n\n\n\t<p>b) Trapped exceptions (i.e. handle explicitly)\n   – Usage:
+    Understood application error (not system error)\n            / Developer can offer
+    value add\n   – Logging: Issue a “logger.error” line\n   – Alerting: How to hook
+    into “exception_notification” \n               plugin from here?</p>\n\n\n\t<p>c)
+    Application Specific Audit\n   – Usage: For application specific event (e.g. sale\n
+    \    has occurred) and want an email alert and log it too.\n   – Logging: Via
+    use of “logger.info” system (? or need\n     custom solution for audit logging?)\n
+    \  – Alerting: How to hook into “exception_notification” \n               plugin
+    from this point?</p>\n\n\n\t<p>[2] Do you think a best architecture would be that
+    the logging framework itself should cater for email &amp;/or sms’ing of key log
+    events (e.g. criticals).  Then if one was to customise the exception frame to
+    automatically log/alert via the logging framework (i.e. exception framework issues
+    a log message, the logging framework then determines when/how to send the alert?)</p>\n\n\n\t<p>Cheers\nGreg</p>"

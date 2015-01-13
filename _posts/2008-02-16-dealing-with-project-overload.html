@@ -1,0 +1,22 @@
+---
+layout: post
+title: Dealing with project overload
+post_id: 68
+categories:
+- Projects
+date: 2008-02-16 12:56:00.000000000 -07:00
+author: Jamis
+permalink: 2008/02/16/dealing-with-project-overload.html
+---
+
+<p>I’ve got my plate full of projects that need attention, and the stress has been getting to me. Everybody has different ways of dealing with stress, but I think mine is the least effective: ignoring things doesn’t make them go away.</p>
+<p>So, I’m taking a more active approach. Starting immediately, I’m going to be spending one hour, every day, six days a week, clearing away the backlog of projects. I’ll post a comment each day to keep myself honest—if I don’t leave a comment, you may assume I did not do any work that day!</p>
+<p>Here is a list of what I’ll be working on, more or less in order of priority:</p>
+<ol>
+	<li>Capistrano 2.2.0. This will primarily be a maintenance release, and mostly requires that the <a href="http://dev.rubyonrails.org/query?status=new&amp;status=assigned&amp;status=reopened&amp;component=Capistrano&amp;order=priority">patches that are pending</a> be tested and applied. It will also update the Net::SSH and Net::SFTP gem dependencies so that they explicitly exclude any 2.0 versions of those gems.</li>
+		<li>Net::SFTP 1.1.1. This is a super minor release with no new features. All it will do is update the gem dependency on Net::SFTP such that it won’t try to load Net::SSH v2.</li>
+		<li>Net::SSH v2, Net::SFTP v2, Net::SCP v1. These will be released simultaneously. They are an 80% rewrite of the original code (and yeah, rewrites are evil, but sometimes they are necessary). The <span class="caps">API</span> has changed, and scripts written against the existing <span class="caps">API</span> will almost certainly be broken by the upgrade, so make sure you are depending on version 1.x.</li>
+		<li>Capistrano 2.3.0. This is another maintenance release, which simply modifies Capistrano to work with the new Net::SSH and Net::SFTP versions. (Possibly Net::SCP, too, not sure about that yet).</li>
+		<li>SQLite3/Ruby 1.2.2. A maintenance release. Haven’t seen a release on this for a long, long time. No new features planned, but <a href="http://rubyforge.org/tracker/?group_id=274">lots of bug fixes are pending</a>.</li>
+	</ol>
+<p>I’m not even going to try and give an <span class="caps">ETA</span> on these. Just know that I’m working through them, an hour a day, and that progress is finally being made. I’ll post what I worked on in the comments to this thread, for those who want to follow along.</p>

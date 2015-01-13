@@ -1,0 +1,83 @@
+---
+- date: 2007-02-01
+  author: Dan Peterson
+  content: "<p>This would be good for local ActionMailer settings, too.</p>"
+- date: 2007-02-01
+  author: Dave Hoover
+  content: <p>It would be nice to be able to turn off @verbose test output as described
+    <a href="http://www.matthewbass.com/blog/2007/01/29/rails-test-results-without-the-cruft/">here</a>
+    on a per developer basis.  But that doesn’t seem possible.</p>
+- date: 2007-02-01
+  author: Austin Taylor
+  content: |-
+    <p>@Dave Hoover
+    Put something similar (load a file from the home dir) in your rakefile.</p>
+- date: 2007-02-01
+  author: Kevin Barnes
+  content: "<p>I created a personal plugin (acts_as_barnes :) for my customizations
+    so as not to clutter up the app’s environment.rb and rake tasks. I store it in
+    a branches subdir of our svn repo and set a global ignore in my svn config. Easy,
+    out of the way and tailored for me!</p>"
+- date: 2007-02-01
+  author: Justin French
+  content: |-
+    <p>per-developer database settings have come up as an annoyance more than once
+    per-developer action mailer config
+    per-developer logging levels could be useful from time-to-time
+    lots of little things</p>
+- date: 2007-02-01
+  author: Martin
+  content: "<p>Just create a damn database.yml per developer and dont save it in your
+    repository.</p>"
+- date: 2007-02-01
+  author: DerGuteMoritz
+  content: "<p>Nice idea! Maybe it would be useful to have the Initializer (“config”)
+    \ available in the railsrc. So, instead of load(), use:</p>\n\n\n\t<p>eval(File.read(railsrc),
+    binding)</p>"
+- date: 2007-02-01
+  author: Sebastian
+  content: "<p>Per-developer settings are not enough. You also need per-app settings.</p>\n\n\n\t<p>We
+    use a ~/.rails directory, with separate \n{app name}-database.yml and {app name}-environment.rb
+    files that get used if present.</p>\n\n\n\t<p>And {app name} is specified in the
+    app’s environment.rb just before running the code that looks for the files.</p>\n\n\n\t<p>This
+    way you can define all kinds of settings that are developer <strong>and</strong>
+    application dependent (like database settings, runtime customizations, etc, etc).</p>"
+- date: 2007-02-02
+  author: Hank
+  content: "<p>I personally think it would be cleaner to simply create custom scripts
+    like ‘username.rb’ in the config dir, and do a non-required include in the environment.
+    \ That way, you don’t have to go mucking about in your home directory, and changes
+    would only affect the one project.  This would be good for permanent personal
+    changes, but I usually don’t have any of those.</p>\n\n\n\t<p>environment.rb:</p>\n\n\n\t<p>if
+    <span class=\"caps\">RAILS</span>_ENV != “production” \n  mysrc = ”#{ENV[‘USER’]}.rb”
+    \n  load(mysrc) if File.exist?(mysrc)\nend</p>\n\n\n\t<p>hank.rb (in my case):</p>\n\n\n\t<p>ActionController::AbstractRequest.relative_url_root
+    = ”/ralree”</p>\n\n\n\t<p>That way, the change is only applied if the current
+    env’s username is ‘hank’.  Only problem would be dup usernames.  Would be nice
+    for working on multiple machines with multiple checkouts of the code since you’d
+    always have your environment changes committed, and you’d just have to make a
+    properly named account.</p>"
+- date: 2007-02-03
+  author: Timotheo
+  content: "<p>Noo Hank!  Nooooo!!!</p>\n\n\n\t<p>That doesn’t <span class=\"caps\">SCALE</span>!!!
+    \ Why on earth would you want 30 username.rb’s on your config directory? I had
+    a client who had a system like this, where there was a config file for each combination
+    of client, deployment, and environment, and for each developer.</p>\n\n\n\t<p>It
+    made me very sad, very often.</p>\n\n\n\t<p>I killed it.</p>\n\n\n\t<p>It died.</p>"
+- date: 2007-02-08
+  author: mathie
+  content: "<p>Hank: that’s similar to what I did.  In <code>config/environment.rb</code>,
+    I have:</p>\n\n\n<pre><code>Rails::Initializer.run do |config|\n  # [ ... ]\n\n
+    \ # Pull in developer-specific configuration\n  user_env = File.join(File.dirname(__FILE__),
+    'environments', \"#{ENV['USER']}.rb\")\n  eval(IO.read(user_env), binding, user_env)
+    if File.exists?(user_env) &amp;&amp; RAILS_ENV != \"production\" \nend</code></pre>\n\n\t<p>which
+    reads a file in <code>config/environments</code> per-developer, if it exists,
+    in the same context as the other files in there are read.</p>\n\n\n\t<p>Timotheo:
+    the advantage of this is that preferences are tracked in subversion across different
+    development machines (eg laptop and desktop in my case).</p>"
+- date: 2007-02-15
+  author: Hank
+  content: "<p>Timotheo:\nWell, if I were to scale my projects, I might consider something
+    different.  But, usually the max I could have would be 4 developers.  Also, why
+    not make a config/developers dir and keep all the configs in there out of the
+    way?  I don’t see a problem with this.</p>\n\n\n\t<p>mathie: Sounds good.  Might
+    implement it now with my new project.</p>"

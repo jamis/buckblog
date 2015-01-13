@@ -1,0 +1,92 @@
+---
+- date: 2006-10-02
+  author: Zack Chandler
+  content: "Jamis,\r\n  It's great to see you blogging so frequently now.  You are
+    a great teacher and a series on the \"mysterious\" routing code is right up my
+    alley.  I enjoyed the first installment and look forward to the rest.\r\n\r\nThanks,
+    Zack"
+- date: 2006-10-02
+  author: Jeremy Voorhis
+  content: "Jamis,\r\n\r\nThanks for diving into this. While I can finally get around
+    in the routes implementation, this is the kind of documentation we are missing.
+    Understanding the design makes a great difference!"
+- date: 2006-10-02
+  author: Adam Sanderson
+  content: Hey I'm really glad you are posting this information.  A lot of the rails
+    internals can be a little confusing just because there is so much 'magic' going
+    on.  It also goes a long ways towards explaining the aesthetic of the underlying
+    code, which is great.
+- date: 2006-10-02
+  author: Alan Francis
+  content: "Hi Jamis,\r\n\r\nJust wanted to add to the applause.  Your writing style
+    is clear and direct and I think Rails has really lacked a good, clear technical
+    author to spelunk the internals.\r\n\r\nThanks for the cap articles and here's
+    to more on Rails!\r\n\r\nAlan"
+- date: 2006-10-02
+  author: Jamis
+  content: Thanks for the encouragement, all! I appreciate it. It's good to know I'm
+    scratching an itch.
+- date: 2006-10-02
+  author: Myles Byrne
+  content: Best article on rails I've read in the last 6 months. Thanks Jamis.
+- date: 2006-10-02
+  author: Amr Malik
+  content: "From an eternal novice, many thanks for a well written and well explained
+    article. And thanks to your pointing it out, I learned about \"returning\" and
+    it was another opportunity to marvel at the beauty of ruby. \r\n\r\nI hope you
+    will keep writing these wonderful explanations of the magic behind Rails. Much
+    needed (imo), and much appreciated!\r\n\r\n-Amr"
+- date: 2006-10-03
+  author: Matt White
+  content: Thank you SO much for all of your recent posts! It's a real pleasure to
+    read such awesome info from one of the masters... Please keep it up!
+- date: 2006-10-03
+  author: Carlos Gabaldon
+  content: Thanks Jamis, Great article, this is the exact type of documentation that
+    the community needs!
+- date: 2006-10-03
+  author: Erik Bryn
+  content: "I agree, great stuff Jamis.\r\n\r\nNow we just need this article linked
+    from the Rails documentation."
+- date: 2006-10-03
+  author: Nicolas Paton
+  content: Thanks Jamis. Best article read on rails code to date!
+- date: 2006-10-17
+  author: Dave
+  content: "<p>Okay. Maybe I’m getting ahead and want to hear more about recognition,
+    but this has a specification flavor as well. One thing that mystifies me is the
+    grouped-controller routes, as when the Foo::BarController lives under app/controllers/foo/bars_controller.rb</p>\n\n\n\t<p>While
+    the standard</p>\n\n\n\t<pre><code>map.connect ':controller/:action/:id'</code></pre>\n\n\n\t<p>does
+    the appropriate recognition (:controller gets ‘foo/bars’) I’ve got some ajax that
+    needs specialized route processing, like :controller/:action/:target/:value. Unfortunately,
+    the route specification</p>\n\n\n\t<pre><code>map.connect ':controller/:action/:target/:value'</code></pre>\n\n\n\t<p>doesn’t
+    work; I need to do</p>\n\n\n\t<pre><code>map.connect 'foo/bars/:action/:target/:value',\n
+    \ :controller =&gt; 'foo/bars'</code></pre>\n\n\n\t<p>Painful, yes, but that’s
+    not all. If I also have a Foo::MumbleController that has the same pattern, I also
+    have to specify</p>\n\n\n\t<pre><code>map.connect 'foo/mumbles/:action/:target/:value',\n
+    \ :controller =&gt; 'foo/mumbles'</code></pre>\n\n\n\t<p>I understand that pattern
+    matching is a problem when all that’s given is “variables”, but even if I could
+    say something like</p>\n\n\n\t<pre><code>map.connect 'foo/:sub_controller/:action/:target/:value',\n
+    \ :controller =&gt; 'foo/:sub_controller'</code></pre>\n\n\n\t<p>I wouldn’t need
+    to repeat things as much. Unfortunately, there’s no way to set up the dynamic
+    access to the recognized parts to construct the hash value.</p>\n\n\n\t<p>I mean,
+    unless I’m missing something. (uff da!)</p>"
+- date: 2006-10-17
+  author: Jamis
+  content: "<p>Dave, bring this up on the rails mailing list. Without seeing your
+    full route definition file and the error you’re getting (and please, don’t post
+    them here) it’s hard to know what the problem is. The :controller/:action/:target/:value
+    route should definitely work as written.</p>"
+- date: 2006-10-25
+  author: Jim
+  content: "<p>“That returning statement may look odd; it’s a method defined in ActiveSupport
+    that makes it really easy to return a value, but only after performing some operations
+    on it. You’ll find it used all over in Rails, so it’s worth getting familiar with
+    it.”</p>\n\n\n\t<p>Could you expand on this a little bit or at least point to
+    where exactly it’s defined in ActiveSupport?  I dug around (admittedly not very
+    hard) a bit for it but didn’t see its definition.</p>\n\n\n\t<p>Thanks, Jamis!</p>"
+- date: 2006-10-27
+  author: Jamis
+  content: '<p>Jim, your question inspired me to write an article about Object#returning.
+    You can read about it in <a href="http://weblog.jamisbuck.org/2006/10/27/mining-activesupport-object-returning">Mining
+    ActiveSupport: Object#returning</a>. Thanks!</p>'

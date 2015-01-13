@@ -1,0 +1,29 @@
+---
+- date: 2005-12-14
+  author: Ryan Platte
+  content: |-
+    Happy 1.0, Jamis.
+
+    Please consider naming your first tip as a pattern so the rest of us can easily communicate about it.
+- date: 2005-12-14
+  author: Jamis
+  content: How about, "Datetime Booleans"? (Any other suggestions?)
+- date: 2005-12-14
+  author: Brian McCallister
+  content: 'Big suggestion: use dbi for data munging, not ActiveRecord. Using AR binds
+    you to *current* state of AR, so major changes wreck havoc on migrations.'
+- date: 2005-12-14
+  author: Jamis
+  content: Brian, I'm not sure I follow what you mean about "current state of AR".
+    I use AR for data munging all the time, and have never had any problems with it.
+    I find it much more convenient than (for instance) dbi.
+- date: 2005-12-14
+  author: Ryan Heneise
+  content: Wow, I thought that migration thing only ever happened to me. :) Thanks
+    for the great tip!
+- date: 2006-03-01
+  author: Xian
+  content: |-
+    I generally just do a mysqldump  pre migration, that way I can just reload it  if something borks.
+
+    Both dumping and reloading are one line shell commands.

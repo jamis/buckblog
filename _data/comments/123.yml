@@ -1,0 +1,227 @@
+---
+- date: 2007-01-30
+  author: Dave Hoover
+  content: "<p>Thanks for the post Jamis.  I’m glad you’re writing about this topic.
+    \ One question:  what’s a pseudo-model?</p>"
+- date: 2007-01-30
+  author: Jamis
+  content: "<p>Dave,</p>\n\n\n\t<p>A pseudo-model is a class that encapsulates some
+    kind of business logic, but which has no corresponding table in the database.
+    Not every application will use pseudo-models.</p>\n\n\n\t<p>Here’s a concrete
+    example: suppose you need to accept credit cards for one-off payment processing.
+    You don’t want to store the CC (because that opens an entire can of worms), you
+    just want to accept it, use it to process a payment, and then discard it.</p>\n\n\n\t<p>One
+    approach is to create a “CreditCard” model, which does not inherit from ActiveRecord::Base.
+    You add the methods to the CreditCard class that will capture payments and so
+    forth. You can even mimic some of the basic validations that Rails provides, for
+    transparency. The class is <em>kind of</em> a model, but not really (in the Rails
+    sense) because it doesn’t persist in the database.</p>\n\n\n\t<p>That’s what I
+    mean by “pseudo-model”.</p>"
+- date: 2007-01-30
+  author: Keith
+  content: "<p>What can you suggest as a good resource for writing effective test
+    cases for Rails apps?  I’ve been doing Rails development for about 16 months,
+    but I’ve always struggled with testing.  I want to do more; I would like to see
+    some concrete docs and examples of how to write them.</p>\n\n\n\t<p>Any suggestions?</p>\n\n\n\t<p>Keith</p>"
+- date: 2007-01-30
+  author: Dave Hoover
+  content: "<p>Jamis,</p>\n\n\n\t<p>Thanks for the explanation.  I didn’t have my
+    “Rails sense” in tune … to me, a model is an object that encapsulates business
+    logic, but I agree that in the Rails world, a model is more often assumed to be
+    an Active Record.</p>"
+- date: 2007-01-30
+  author: John
+  content: "<p>There’s another level of testing, though it’s not really Rails specific
+    – acceptance or “black box” testing where the final answer is evaluated.  This
+    is especially important when working in the science / engineering field.</p>\n\n\n\t<p>I’m
+    really impressed with the testing mechanisms in Rails and is one of the big reasons
+    we have switched to it.</p>"
+- date: 2007-01-30
+  author: Matt
+  content: "<p>I’m struggling most with the overlap of unit and functional tests.
+    Since functional tests also test models, what would you do in the case of a signup
+    form per say? You need to validate the format of a username, password, and email
+    address. Would you put that in a unit test or functional or both?</p>"
+- date: 2007-01-30
+  author: Jamis
+  content: "<p>Keith, I’m not sure what to recommend. I’m all self-taught, which means
+    I’m also probably chock full of bad habits, otherwise I’d be blogging more about
+    the specifics of testing your Rails apps. :)</p>\n\n\n\t<p>Matt, consider it a
+    matter of granularity. If you are testing validations, those can be tested independently
+    of a web request, and should maybe be tested in a unit test. However, if you want
+    to test the side-effects of a failed validation (e.g., a notification in the flash,
+    a redirect to some page, etc.), those would be tested in the functional test.
+    In general, you can also think of this in terms of coverage. You want your tests
+    to exercise as much of your code as possible. Tests that are specifically designed
+    to exercise the code in your models should go in unit tests. Tests that are designed
+    to exercise the code in your controller’s filters and actions should go in functional
+    tests. Naturally, because your controllers depend on models, functional tests
+    will also exercise your model code, but that’s a side effect, not a primary objective.</p>"
+- date: 2007-01-30
+  author: Nate
+  content: "<p>Jamis, I’m currently of the Pragmatic’s Agile Rails mindset when it
+    comes to testing ActionMailer.  I think it’s good for unit <span class=\"caps\">AND</span>
+    functional tests.</p>\n\n\n\t<p>Use the unit test to make sure the content, recipients,
+    subject, etc. are generated properly.  And use the functional test to make sure
+    the event of sending the email occurs when it should.</p>"
+- date: 2007-01-30
+  author: Ed
+  content: "<p>Thanks for the post, I’ve been doing Unit Testing and Functional Testing
+    for my models/controllers never really “get into” Integration Testing. This post
+    clears things up</p>\n\n\n\t<p>Have a nice day :)</p>"
+- date: 2007-01-31
+  author: Andreas
+  content: <p>Thanks for this post. As usual, geat writing. For the model/not-model/service/etc.
+    distinction I can highly recommend the book <a href="http://www.amazon.com/Domain-Driven-Design-Tackling-Complexity-Software/dp/0321125215/">Domain
+    Driven Design</a> by Eric Evans. It’s one of, if not the best book dealing with
+    domain models.</p>
+- date: 2007-01-31
+  author: Luke Redpath
+  content: "<p>I’ve said this many times before, but Rails’ take on testing terminology
+    is simply wrong and completely out of whack with the rest of the testing world.
+    Its probably late to change things now but I still try and make the point whenever
+    I can.</p>\n\n\n\t<p>Whilst what Jamis says is true of the Rails world, to the
+    rest of the testing world the following is true:</p>\n\n\n\t<p>A unit test is
+    a test that tests your objects in isolation. It is not a “model” test – you should
+    have unit tests for any code you are writing whether its part of your model layer
+    \ or its not. Persistance is besides the point) or your controller, or a standalone
+    lib, service layer etc. A small note – the term “pseudo-model” is a new one to
+    me. Model is simply short for domain model and is a software model of your business
+    logic – it is not simply “objects that are persisted to the database”. Your model
+    will often consist of persisted entities (AR objects in Rails), value objects
+    and many other things. I second the recommendation of Domain Driven Design from
+    the above poster.</p>\n\n\n\t<p>Strictly speaking a proper unit test should not
+    hit the network, database or the file system – that is, unit tests should be isolated
+    and not depend on resources which may or may not be available or may slow the
+    tests down (unit tests should be as fast as possible as you want to be running
+    them all of the time). Avoiding the database is hard whenever you use the ActiveRecord
+    pattern (as Rails does) as there is a natural coupling between the persistance
+    layer and your business objects however you can still try and avoid hitting the
+    database by stubbing data access methods. Networks and file systems can be avoided
+    by using mocks and stubs.</p>\n\n\n\t<p>Also, for those who prefer interaction-based
+    testing over state-based testing, it is common to pass around mocks in place of
+    other objects in your system to focus on the behaviour of the class under test
+    and its interaction with the supplied object/mock. This is because it is assumed
+    that the object it is using “works” (and should be covered by its own unit tests).</p>\n\n\n\t<p>Here
+    are some good articles relating to unit tests:</p>\n\n\n\t<p>http://www.artima.com/weblogs/viewpost.jsp?thread=126923\nhttp://jayfields.blogspot.com/2006/06/ruby-on-rails-unit-tests.html</p>\n\n\n\t<p>(in
+    fact there are loads of great articles on Jay’s blog).</p>\n\n\n\t<p>Finally its
+    worth noting that I see a lot of Rails code with fairly meaningless tests – you
+    know the kind of thing – the tests that save a record then check that the count
+    has increased and other silly things like that. You should only be writing unit
+    tests for code that you have written yourself (which should be second-nature if
+    you practice <span class=\"caps\">TDD</span>) – Rails ships with its own comprehensive
+    suite of unit tests for its built-functionality – there is no point in replicating
+    this. Given the simplest Rails model:</p>\n\n\n\t<p>class User &lt; ActiveRecord::Base;
+    end</p>\n\n\n\t<p>There is no need to write <strong>any</strong> unit tests for
+    the above because the behaviour of the User class is inherited from the already
+    tested ActiveRecord::Base. Once you start adding your own code to the class, its
+    time to start writing tests!</p>\n\n\n\t<p>Next up – functional tests. Somebody
+    above mentions another type of test – acceptance tests. Whilst acceptance testing
+    can have broader implications, acceptance and functional testing are terms that
+    are usually used to mean the same thing – certainly in eXtreme Programming. Acceptance
+    or functional testing is end to end testing of your app’s functionality (somewhat
+    similar to what Rails calls integration tests). In the case of web apps this would
+    usually be browser-based tests of different scenarios, automated using something
+    like Watir or Selenium.</p>\n\n\n\t<p>For libraries or other such code, acceptance/functional
+    tests would usually consist of different usages and scenarios of the library –
+    it tests the expected functionality of your code at a higher level than your unit
+    tests. They are less concerned with the lower-level details of your code. A fully
+    functional app or library (according to spec) should have a 100% pass rate for
+    functional tests. A newly started app/library should have 0%. Unit tests however,
+    should ideally always be at 100% (certainly by the time they are checked in anyway!).</p>\n\n\n\t<p>Here
+    is some info on acceptance tests from the XP website:</p>\n\n\n\t<p>http://www.extremeprogramming.org/rules/functionaltests.html</p>\n\n\n\t<p>So
+    that leaves the concept of integration tests. Rails uses the term for proper acceptance/functional
+    testing. In reality, integration tests simply mean taking individual units and
+    testing they integrate with other components (that you have probably stubbed or
+    mocked in the unit tests). Whilst this sounds like functional tests you are really
+    just checking that different units work together properly or with third-party
+    libraries or external resources. This is where you can test your library code
+    against a database or a network, or with some third-party library you are using.
+    As a result they will be a lot slower but thats ok, you don’t need to run them
+    as often as unit tests.</p>\n\n\n\t<p>So to sum up:</p>\n\n\n\t<p>Unit tests –
+    code tested in isolation from other objects and external resources.\nFunctional/acceptance
+    tests – tests the end-to-end functionality of your app as defined by user stories/use
+    cases etc.\nIntegration tests – tests integration of different individual units
+    with eachother, third-parties and external resources.</p>"
+- date: 2007-01-31
+  author: Luke Redpath
+  content: "<p>Oh, and I can’t believe I got through that whole comment without mentioning
+    RSpec (http://rspec.rubyforge.org)...whoops! It has a great emphasis on testing
+    (sorry, writing specifications) for your codes behaviour and is somewhat independent
+    of the level at which you write your specs (you could easily write “unit” specs
+    and “functional” specs with it). It has a great mocking/stubbing library built
+    in too.</p>"
+- date: 2007-01-31
+  author: Andreas
+  content: <p>Luke is right. But Rails is a bit different. Opinionated, I guess. As
+    long as the tests do their job, I personally don’t care much. It’s just like normalization
+    in <span class="caps">RDBMS</span>, sometimes you go a step back and de-normalize
+    things out of practical reasons. But I agree, programmers should know the canonical
+    way and know what’s different in Rails and why. I see plenty of stuff in Ruby/Rails
+    discussed that has already been discussed and “best practice proofed” when Java
+    popped up a couple of years ago. Kinda de-ja vu those days :)</p>
+- date: 2007-01-31
+  author: Daniel Lucraft
+  content: "<p>Interesting about the unit/acceptance/functional testing distinction.
+    I suppose we should rename the current directories to ‘model’, ‘controller’ and
+    ‘stack’ to avoid polluting the terminology.</p>\n\n\n\t<p>At the moment my rails/test/
+    directory contains subdirectories: unit, functional, integration, lib, daemons,
+    performance and special. I’m not making any particular point, I just thought I’d
+    mention it. Anyone stick anything else in there?</p>"
+- date: 2007-01-31
+  author: Eric
+  content: "<p>I use Test::Rails and have split my unit tests into three top level
+    directories under test: models, controllers, views.  I’ll admit that they aren’t
+    exactly unit tests (hit the DB, etc) so using “models”, “controllers”, “views”
+    doesn’t offend my testing-semantic sense too badly.  (Which is why I didn’t place
+    them under test/units/[models|views|controllers])</p>\n\n\n\t<p>I also have integration
+    and acceptance test directories.</p>"
+- date: 2007-02-06
+  author: http://21croissants.blogspot.com/
+  content: "<p>Jamis, thanks for this post, I also never got into “integration” tests
+    and I am looking forward to writing my first “integration” test !</p>\n\n\n\t<p>Luke,
+    thanks for your great article inside the comment! I also read your blog and appreciate
+    your style. I was about to write more or less the same thing with a less good
+    style (I am not a native english speaker!).</p>\n\n\n\t<p>I think it could good
+    to do a survey within the rails community in order to rename the folders test/unit
+    to test/models, tests/functional to test/controllers and tests/integration to
+    something else. As far as I am concerned, the word “integration” should be used
+    only in a Continuous Integration context.</p>\n\n\n\t<p>People such as Martin
+    Fowler write excellent books and articles and pay a lof of attention to the words
+    they use to describe abstract concepts. His best example is Mocks aren’t Stubs
+    which clarifies a lot the definition of mock objects. These concepts and the Design
+    Patterns are true whatever the language we use to implement them. Why does the
+    Rails community would use a different vocabulary?</p>\n\n\n\t<p>Rails is opinionated,
+    it’s a good thing when it simplifies the configuration but it’s no so good when
+    it creates confusion among developers new to testing (and there are a lot!!!).</p>\n\n\n\t<p>How
+    many rails beginners write fat controllers without any testing? We need an opinionated
+    way (with generators) to write controller tests using a mock object framework
+    to replace the model layer , this would help the beginners to understand the principle
+    of decoupling the layers of an application.</p>\n\n\n\t<p>Behaviour Driven Development
+    parenthesis:\nI’d like to complement Luke’s comment on <span class=\"caps\">BDD</span>
+    by quoting test/spec, a <span class=\"caps\">BDD</span> framework compatible with
+    Test::Unit\nhttp://chneukirchen.org/blog/archive/2007/01/announcing-test-spec-0-3-a-bdd-interface-for-test-unit.html</p>\n\n\n\t<p>At
+    the end of the day, bdd style testing is a like speaking a different language:
+    all assert_* methods have their should_* equivalent.\nI really don’t understand
+    why the rspec developpers did not write a wrapper of Test::Unit? Why would the
+    people intested by their excellent library would have to rewrite all their tests???
+    I am going to write an article about test/spec in my blog to create some debate
+    ….</p>\n\n\n\t<p>Jean-Michel\n21croissants</p>"
+- date: 2007-02-25
+  author: romanb
+  content: "<p>I mostly agree with Luke’s comment but i’m getting a little bit confused.
+    From what i know from various XP sources its a valid approach to skip the UI when
+    writing functional tests. So i thought the functional tests in rails are in exactly
+    that category since they start at the controller level where most of the application
+    logic begins. The functional tests in rails interact with a test database, the
+    view, ect. which is typical for a functional test where you want everything connected.\nMaybe
+    the confusion and misinterpretation stems from the fact that they’re often called
+    “controller tests”? (which they aren’t)</p>\n\n\n\t<p>Please correct me if im
+    wrong since im still relatively new to these XP terminologies.</p>\n\n\n\t<p>One
+    question that comes up in my mind is: When writing functional tests in this way
+    where you’re skipping the UI and these functional tests already cover the controller
+    parts very well, is there still a need for unit testing the controllers with the
+    database mocked out? That seems to be superfluous. Maybe thats why these functional
+    tests are called “controller tests”, too in rails? simply because they already
+    cover this part in depth.</p>\n\n\n\t<p>Now that im done writing this, im a little
+    bit confused about these terms, too.\nDoes anybody want to enlighten me? ;-)</p>"

@@ -1,0 +1,15 @@
+---
+layout: post
+title: 'Under the hood: ActiveRecord::Base.find, Part 1'
+post_id: 173
+categories:
+- Under the Hood
+date: 2006-11-17 15:55:00.000000000 -07:00
+author: Jamis
+permalink: 2006/11/17/under-the-hood-activerecord-base-find-part-1.html
+---
+
+<p>People attribute a lot of magic behavior to <code>ActiveRecord::Base.find</code>, and rightly so. It does a <em>lot</em> of different things. Want to find a record by id? Done. Multiple records by id? Done. Records based on custom conditions, including associations (arbitrarily deep), and limit the result? Done, done, and done.</p>
+<p>However, all this magic comes at a price: the implementation of <code>find</code> is non-trivial.</p>
+<p>I’d like to help people better understand how <code>find</code> works. By understanding what it does and how it does it, you’ll be able to make better decisions about your own applications, such as when eager loading of associations might be a bad idea, or what kinds of indexes your tables need.</p>
+<p>So, next week (Thanksgiving notwithstanding) I’ll work on getting the first installment out. I learned one very important thing from the last “Under the hood” series I did: don’t write monstrously long articles, because most people won’t read them. So, this series will consist of much shorter, more bite-sized looks at specific parts of the #find implementation. Stay tuned!</p>

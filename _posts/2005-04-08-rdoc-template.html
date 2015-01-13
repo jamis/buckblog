@@ -1,0 +1,18 @@
+---
+layout: post
+title: RDoc Template
+post_id: 219
+categories:
+- Announcements
+date: 2005-04-08 02:45:00.000000000 -06:00
+author: Jamis
+permalink: 2005/04/08/rdoc-template.html
+---
+
+<p>Gavin Sinclair, after googling to no avail, encouraged me to post the <span class="caps">URL</span> for my “jamis” RDoc template so that others might be able to find it more easily.</p>
+<p>This is the same template (well, a newer version of the same template) that I use for the <span class="caps">API</span> documentation of <a href="http://sqlite-ruby.rubyforge.org">SQLite/Ruby</a>, <a href="http://sqlite-ruby.rubyforge.org/sqlite3">SQLite3/Ruby</a>, <a href="http://needle.rubyforge.org/api">Needle</a>, <a href="http://copland.rubyforge.org/api">Copland</a>, <a href="http://net-ssh.rubyforge.org/api">Net::SSH</a>, and <a href="http://net-ssh.rubyforge.org/sftp/api">Net::SFTP</a>. <a href="http://onestepback.org">Jim Weirich</a> has also used it for his <a href="http://rake.rubyforge.org">Rake <span class="caps">API</span></a> docs, and <a href="http://www.loudthinking.com">David Heinemeier Hansson</a> is using it for the <a href="http://api.rubyonrails.com">Rails <span class="caps">API</span></a> docs.</p>
+<p>So, with that kind of recommendation, how can you possibly resist? Download it at:</p>
+<blockquote>
+		<p><a href="http://www.jamisbuck.org/svn/rdoc-templates/jamis.rb">http://www.jamisbuck.org/svn/rdoc-templates/jamis.rb</a></p>
+	</blockquote>
+<p>To use it, copy it into the “rdoc/generators/template/html” directory of your Ruby installation (i.e., on my machine, ”/usr/local/lib/ruby/1.8/rdoc/generators/template/html”). Then, when you run rdoc, just pass “—template=jamis” and you should be good to go.</p>

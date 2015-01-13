@@ -1,0 +1,108 @@
+---
+- date: 2008-05-02
+  author: James
+  content: "<p>All this looks great!  Your work on these libraries really helps Ruby
+    be a successful language.</p>\n\n\n\t<p>I have one suggestion, though: session.via(gateway
+    info here) seems like it’s a perfect match for the decorator or wrapper pattern.
+    \ That is, the following code makes more sense to me:</p>\n\n\n<div class=\"CodeRay
+    code\"><pre class=\"true\"><code>Net::SSH::Multi.start do |outer_session|\n  #
+    access servers via a gateway\n  outer_session.via 'gateway', 'gateway-user' do
+    |session|\n    ... above code here ...\n  end\nend\n</code></pre></div>\n\n\t<p>That
+    is, session.via should return a new session object rather than being mutable.
+    \ This would allow chained gateways, though I’m not really sure anybody needs
+    that.  The real advantage is the decrease on the conceptual weight of Session
+    – it need only return a WrappedSession or a GatewaySessionWrapper or something
+    instead of needing to keep track of the gateway information itself.</p>\n\n\n\t<p>Bravo
+    on the release!</p>"
+- date: 2008-05-02
+  author: Jamis
+  content: "<p>@James, thanks for the suggestion, I’ll take it under consideration.
+    What session#via really does, though, is set the <em>default</em> gateway instance
+    to use. You can specify per-session gateways with session.use(‘host’, ‘name’,
+    :via =&gt; Net::SSH::Gateway.new(...)).</p>"
+- date: 2008-05-02
+  author: mark
+  content: "<p>Congrats Jamis!!  This is awesome!</p>"
+- date: 2008-05-05
+  author: Charles L
+  content: "<p>Yeah this is great. Have been using v1 of Net::SSH &amp; Net::SFTP
+    quite a bit.</p>\n\n\n\t<p>The cleaned up <span class=\"caps\">SFTP</span> api
+    is a nice touch – mimicing the Dir and File methods similar to how “zip/zipfilesystem”
+    works makes it easy to write code that is agnostic of the method it uses to access
+    files (local fs, zip, remote sftp, etc). Kind of a de-facto ruby vfs.</p>"
+- date: 2008-05-05
+  author: tobi
+  content: <p>I like how <span class="caps">SSH</span>:Multi + Rake gives you a very
+    low-magic version of capistrano.</p>
+- date: 2008-05-06
+  author: Alex
+  content: "<p>I try to update my gem and not find the 2.0 version :</p>\n\n\n\t<ol>\n\t<li>gem
+    search net-ssh -r</li>\n\t</ol>\n\n\n\t<ul>\n\t<li>\n<span class=\"caps\">REMOTE
+    GEMS</span> <strong>*</strong>\n</li>\n\t</ul>\n\n\n\t<p>net-ssh (1.1.2, 1.1.1,
+    1.1.0, 1.0.10, 1.0.9, 1.0.8, 1.0.7, 1.0.6, 1.0.5, 1.0.4, 1.0.3, 1.0.2, 1.0.1,
+    1.0.0, 0.9.0, 0.6.0, 0.5.0, 0.1.0, 0.0.5, 0.0.4, 0.0.3, 0.0.2, 0.0.1)\n    Net::SSH
+    is a pure-Ruby implementation of the <span class=\"caps\">SSH2</span> client protocol.</p>\n\n\n\t<p>Where
+    is the 2.0 ??</p>"
+- date: 2008-05-06
+  author: Alex
+  content: "<p>Solved with,\ngem update—system</p>\n\n\n\t<p>Great work, thanks.</p>"
+- date: 2008-05-07
+  author: rafa
+  content: "<p>net/ssh requires jruby-openssl when when running on JRuby, is there
+    some way for it to be added as dependency on the net/ssh gem?</p>\n\n\n\t<p>Also,
+    running on JRuby+Windows I had to add ‘net/ssh/pageant.rb’ to $LOADED_FEATURES
+    before requiring net/ssh, jruby does not have a ‘dl/import’</p>\n\n\n\t<p>http://www.nabble.com/dl-import-on-JRuby-td16465077.html</p>"
+- date: 2008-05-27
+  author: ben
+  content: <p>Can you provide information on the <span class="caps">SSH</span> v1.1
+    methods that you have removed, and what equivalent methods should be used?</p>
+- date: 2008-06-04
+  author: James Brinkerhoff
+  content: "<p>I’ve been using Net::SSH for a while now with great success.   For
+    the first time today I attempted to setup a forwarded port to access mysql on
+    a remote host that only listens to 127.0.0.1.</p>\n\n\n\t<p>I can set the tunnel
+    up fine and then access mysql using the standard mysql binary client, or I can
+    setup the tunnel using ‘ssh’ itself and then access the database via ruby, but
+    not both.</p>\n\n\n\t<p>Any thoughts?</p>"
+- date: 2008-06-09
+  author: Neil Hawley
+  content: "<p>Jamis, trying <span class=\"caps\">SSH 2</span>.0.2 however I seem
+    to have a different path set in my profile from when I used <span class=\"caps\">SSH
+    1</span>.1.2, the path doesn’t contain sudo. This is using the same server and
+    account.</p>\n\n\n\t<p>Any thoughts?</p>\n\n\n\t<p>Thanks,\nNeil.</p>"
+- date: 2008-06-17
+  author: Anko
+  content: "<p>/usr/lib/ruby/gems/1.8/gems/net-ssh-2.0.2/lib/net/ssh/transport/algorithms.rb:192:in
+    `prepare_preferred_algorithms!’: unsupported hmac algorithm: `umac-64@openssh.com’
+    (NotImplementedError)\n        from /usr/lib/ruby/gems/1.8/gems/net-ssh-2.0.2/lib/net/ssh/transport/algorithms.rb:185:in
+    `each’\n        from /usr/lib/ruby/gems/1.8/gems/net-ssh-2.0.2/lib/net/ssh/transport/algorithms.rb:185:in
+    `prepare_preferred_algorithms!’\n        from /usr/lib/ruby/gems/1.8/gems/net-ssh-2.0.2/lib/net/ssh/transport/algorithms.rb:96:in
+    `initialize’\n        from /usr/lib/ruby/gems/1.8/gems/net-ssh-2.0.2/lib/net/ssh/transport/session.rb:77:in
+    `new’\n        from /usr/lib/ruby/gems/1.8/gems/net-ssh-2.0.2/lib/net/ssh/transport/session.rb:77:in
+    `initialize’\n        from /usr/lib/ruby/gems/1.8/gems/net-ssh-2.0.2/lib/net/ssh.rb:182:in
+    `new’\n        from /usr/lib/ruby/gems/1.8/gems/net-ssh-2.0.2/lib/net/ssh.rb:182:in
+    `start’\n        from /home/sysnjk/scripts/wlinstances.rb:7</p>\n\n\n\t<p>:(</p>"
+- date: 2008-06-17
+  author: Anko
+  content: "<p>fixed it with</p>\n\n\n\t<p>Net::SSH.start(hostname, username, :hmac
+    =&gt; ‘hmac-md5’) do |ssh|</p>\n\n\n\t<p>end</p>\n\n\n\t<p>but i think umac-64@openssh.com
+    is quite common?</p>"
+- date: 2008-06-17
+  author: Anko
+  content: "<p>However,\nI can’t find a way to put the :hmac  option in net/ssh/multi.</p>\n\n\n\t<p>:(</p>"
+- date: 2008-06-18
+  author: Anko
+  content: "<p>p.s. this makes net/ssh incompatible with the default solaris 10 install.</p>"
+- date: 2008-06-22
+  author: Jamis
+  content: "<p>@Anko, I’m afraid I’ve all but given up trying to keep any solaris
+    flavor happy. They all seem to do their own thing. As for “umac-64@openssh.com”
+    being common, this is the first time in 4 years of working with Net::SSH that
+    I’ve ever even heard of it. If you really want it supported, though, please look
+    at providing a patch. I’d certainly consider one for that.</p>"
+- date: 2008-07-13
+  author: Anko
+  content: "<p>Okay will do, but it might take some time as i don’t have solaris at
+    home and finding work time for it is near impossible.</p>\n\n\n\t<p>I’ve found
+    a public domain umac implementation @ http://fastcrypto.org/ so i’ll start reading
+    the ssh specs tonight :)</p>"

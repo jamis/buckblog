@@ -1,0 +1,33 @@
+---
+layout: post
+title: Taking 37signals' Process for a Spin
+post_id: 256
+categories:
+- Projects
+date: 2005-01-30 15:04:00.000000000 -07:00
+author: Jamis
+permalink: 2005/01/30/taking-37signals-process-for-a-spi.html
+---
+
+<p>As I mentioned in <a href="http://jamis.jamisbuck.org/blog.cgi/programming/Building%20of%20Basecamp_20050129084800.tx">my last post</a>, I am recently returned from the <a href="http://www.37signals.com/workshop-basecamp.php">Building of Basecamp</a> workshop in Seattle. The last few days have been spent (besides nursing my sick one-year-old back to health) in contemplation of the things I learned in that workshop, and I’ve decided something.</p>
+<p>I want to give 37signals’ process a try.</p>
+<p>More than just the three mantras they named in the workshops (“Less software”, “Say ‘no’ by default”, and “Done”), they also described in great detail the process they employed in developing <a href="http://www.basecamphq.com">Basecamp</a>. My notes on the workshop aren’t complete enough to be able to describe their terms for each of the steps, but as close as I can remember, it went something like this:</p>
+<ul>
+	<li>List the high-level “features” (“ideas”, really) that should comprise the product. Don’t be too specific, and don’t try to describe an implementation.</li>
+		<li>Take one of the features and sketch-<del>on paper</del>-a rough interface for it.  Draw the different components of the corresponding screen.</li>
+		<li>Once you feel good about the paper sketch, build the interface in <span class="caps">HTML</span>.  Don’t write any code-<del>just describe the interface in <span class="caps">HTML</span> and <span class="caps">CSS</span> (and Javascript). Leave the implementation for later</del>-for now, all we want is a mock-up.</li>
+		<li>When the mock-up looks good and demonstrates all the necessary functionality, plug the code into it.</li>
+	</ul>
+<p>The above list is bulleted instead of enumerated on purpose—this is not a roadmap, to be taken one step at a time, in order. Rather, you should feel free to throw away the deliverable of any particular step and start again if it turns out to not be acceptible (this all goes back to the “less software” mantra).</p>
+<p>The process <em>feels</em> right to me. It rings true. Will it really work for me in practice? I think so, but there’s only one way to find out.</p>
+<p>I’m going to start blogging about my progress on my financial program, Budget-Wise. I’m going to completely start over, using the process described in the workshop. And I’ll try to live by the Three Mantras.</p>
+<h2>Step One</h2>
+<p>So, step one is to list the features I need. (Not want, <em>need</em>. “Less software”, remember? My criterion here is “if the application is still usable without this feature, <em>it doesn’t need that feature</em>.”)</p>
+<ul>
+	<li>Secure access</li>
+		<li>Allocate funds to and spend from <em>budgets</em>, which are subsets of <em>accounts</em>
+</li>
+		<li>Reconcile transactions against bank statements</li>
+	</ul>
+<p>And that’s it, I think. Lots of things the application <em>could</em> do (reports, graphs, charts, savings goals, and so forth), but the application fulfils its primary purpose without those things. (Naturally, there is plenty of wiggle room in the interpretation of the above list, but that’s the idea. It’s the mock-ups that help solidify what the feature set of the application will really be.)</p>
+<p>Next step (for another day) is to pick a feature and sketch it out. I’ll start easy, with the interface(s) for securing the application. (An added bonus: you lucky readers will get to see exactly why I’m a programmer and not a designer!)</p>

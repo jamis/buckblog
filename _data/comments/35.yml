@@ -1,0 +1,135 @@
+---
+- date: 2009-05-14
+  author: Jonno
+  content: "<p>Very cool. I like it.</p>\n\n\n\t<p>I will try to see if I can get
+    it going on heroku.com .</p>\n\n\n\t<p>My only major complaint is the color scheme
+    … that green is awful ;)</p>\n\n\n\t<p>What is your reasoning behind not importing
+    bank statements and tagging transactions automatically?</p>"
+- date: 2009-05-14
+  author: Jamis
+  content: "<p>@Jonno, if you want a version that works on Heroku, you might look
+    at <a href=\"http://github.com/watkyn/bucketwise/tree/master\">http://github.com/watkyn/bucketwise/tree/master</a>,
+    Tony Eichelberger’s fork. He’s made a few other changes, and I don’t think he’s
+    merged my latest changes, but it might give you an idea of what needs to happen
+    to run it on heroku.com.</p>\n\n\n\t<p>I prefer not to import bank statements
+    because I prefer to manually enter them. Manually entering and categorizing transactions
+    gives me the chance to review them. When transactions are blindly imported and
+    automatically categorized, there is no real learning occurring.</p>"
+- date: 2009-05-14
+  author: Mark
+  content: "<p>@Jamis, I totally agree with automatically importing. I don’t see any
+    real difference from just using my bank’s website if I just automatically import.
+    Besides, it doesn’t give me a chance to catch errors and reconciling doesn’t mean
+    much in that scenario.</p>\n\n\n\t<p>I’m a GnuCash user, but I’ve grown tired
+    of it. I’ll give this a try and if I like it, I’ll fork it and tune it better
+    to my needs ;)</p>\n\n\n\t<p>Looks good though, thanks!</p>"
+- date: 2009-05-16
+  author: Jonno
+  content: "<p>I understand not wanting to auto tag them, but would not a wizard for
+    importing a bank statement make the process of tagging go a <strong>lot</strong>
+    faster?</p>\n\n\n\t<p>I will checkout that fork. Thanks.</p>"
+- date: 2009-05-16
+  author: Dalibor
+  content: "<p>I like the application and I will surely give a watch at the source
+    code to gather some new tips and knowledge. Btw, thanks for sharing it.</p>\n\n\n\t<p>About
+    the features of the application, I think it is missing few reports and charts
+    about how the spendings are changing across the time which is very important to
+    see what are we achieving with our personal finance program in any period of time.</p>"
+- date: 2009-05-16
+  author: Jamis
+  content: "<p>@Dalibor, no doubt it’s missing a lot of things. I’m implementing as
+    I feel a need for features, but what I need and what you need will no doubt be
+    two very different things. That’s why I put BucketWise into the public domain;
+    please feel free to implement what you feel it is lacking.</p>"
+- date: 2009-05-16
+  author: Ryan Phelps
+  content: "<p>Thanks for sharing this, Jamis!</p>\n\n\n\t<p>What would be the smartest
+    way to keep BucketWise up-to-date while using it at the same time (local installation)?
+    Should I just clone the repository and pull whenever I want to update, or is there
+    some task I need to run?</p>"
+- date: 2009-05-16
+  author: Jamis
+  content: "<p>@Ryan, if you’re just running it locally, I’d just do “git pull”, followed
+    by “rake db:migrate”. Also, you’d probably also do well to do “rake git:hooks:install”
+    first (only need to do that once); that way, every time you do “git pull”, the
+    external dependencies will be automatically kept up-to-date, too.</p>"
+- date: 2009-05-19
+  author: Jamuraa
+  content: "<p>Jamis!  You have solved my problems and answered my dreams!  I am currently
+    using a web application (neobudget.com) which costs money monthly (or yearly)
+    to do <span class=\"caps\">EXACTLY</span> this type of budgeting.  This application
+    will replace completely this web application and do it for free and in a way that
+    I can always improve the application if I need to.</p>\n\n\n\t<p>I absolutely
+    love the envelope type of budgeting but it is way too much work to do manually
+    or even with a spreadsheet, it is perfect for a web application.  I plan on installing
+    your application on my home server as soon as possible.  I also love the credit
+    card feature.</p>"
+- date: 2009-05-20
+  author: Gerry
+  content: "<p>Jamis – absolute stroke of brilliance. Two reasons I find this a killer
+    app:</p>\n\n\n\t<p>1) multi-user: I just got it setup and deployed to my home
+    server, and will be able to get my partner, and eventually the kids, entering
+    purchase information. Really, a simple and awesome way to share financial information.
+    As another commentor stated: “it is perfect for a web application”</p>\n\n\n\t<p>2)
+    The credit card “pay now” approach. I have used Quicken in the past, which pretty
+    much kept me up to date on my expenditures (not being multi-user was always an
+    issue). But, the credit card account had more of an impact on total net worth
+    than day to day cash / monitoring of spending habits. In Bucketwise, the simple
+    act of setting the cash aside from the account the credit card will be paid from,
+    is a stroke of brilliance in human behaviour modification. After having gotten
+    everything setup and balanced, the bottom line is sobering, instead of the normal
+    “we have lots of cash” kinda feeling.</p>\n\n\n\t<p>Thanks for sharing this great
+    application!</p>"
+- date: 2009-05-22
+  author: Jamis
+  content: "<p>@Jamuraa and @Gerry, thanks for sharing what you like about BucketWise!
+    I hope it continues to be helpful. Be sure and let me know where you think it
+    falls short as you use it—I certainly don’t make any guarantees, but I’m definitely
+    interested in hearing how it works/doesn’t work for others.</p>"
+- date: 2009-06-04
+  author: Chris
+  content: "<p>Jamis – trying to clone but I don’t see anything coming up at http://github.com/jamis/bucketwise/tree/v1.1.0</p>"
+- date: 2009-06-05
+  author: Dave
+  content: "<p>What happened to bucketwise? Github shows an empty repo, last updated
+    May 29.</p>"
+- date: 2009-06-09
+  author: Jamis
+  content: "<p>@Chris, @Dave: sorry about that. There was a github bug which has since
+    been fixed (but was never really explained). Makes me a little nervous that they
+    can just arbitrarily “lose” an established repository, but they’re saying it won’t
+    happen again. At any rate, the bucketwise repo is available again.</p>"
+- date: 2009-06-10
+  author: Ravi Rao
+  content: "<p>Hey Jamis – thanks for your work; someone pointed me at Bucketwise
+    and this blog post when I asked for recommendations on a personal finance management
+    software that “just worked”. So I’m curious if a mobile-optimized version is at
+    all in the works? It’d be a huge feature/win for me—I haven’t yet played with
+    the demo site on mobile, but I will try out the current experience and let you
+    know.</p>\n\n\n\t<p>Thanks again, I’m looking fwd to setting it up over the weekend
+    and playing with it in the weeks to come!</p>"
+- date: 2009-06-16
+  author: Jamis
+  content: "<p>@Ravi, I’d love a mobile optimized version, too, but not enough to
+    work on it myself. :) The code’s there, please feel free to fiddle with it and
+    see what you can come up with!</p>"
+- date: 2009-07-08
+  author: Ambyr Amoureuse
+  content: "<p>I can agree with your opinion :)) I use BucketWise too in my company
+    :)) The finances are much better now :)) I am happy that the new version is coming
+    out, I will use it for sure :))</p>"
+- date: 2009-07-14
+  author: Marta Solteros
+  content: "<p>Absolut agree with you, I had the same experiences and i can tell also
+    i had some little problems, but the whole thing run very good, and i just have
+    good words about it.</p>"
+- date: 2009-07-16
+  author: Elena Single
+  content: "<p>I have BucketWise as well. And I have to say it works well and above
+    all is not expensive! I can’t wait for the new version, I am sure it will be even
+    better.</p>"
+- date: 2009-07-24
+  author: Jeanne Rencontres
+  content: "<p>I didn’t know about BucketWise but what u wrot, convince me. I will
+    try it if it is not so expensive like Elena said.</p>\n\n\n\t<p>Thank you for
+    thi article</p>"

@@ -1,0 +1,32 @@
+---
+- date: 2008-08-27
+  author: Mike Hodgson
+  content: "<p>Hi Jamis,</p>\n\n\n\t<p>I’ve built a mingw32 version of the gem, for
+    those of us using Luis Lavena’s new One-Click Installer. it can be had here:</p>\n\n\n\t<p>http://www.mikehodgson.com/sqlite3-ruby-1.2.3-x86-mingw32.gem</p>\n\n\n\t<p>Thanks
+    for the great work!</p>"
+- date: 2008-08-27
+  author: Jamis
+  content: "<p>Thanks Mike! I’ve added that gem to the rubyforge project (with your
+    permission), so it should be accessible via “gem install” now.</p>"
+- date: 2008-09-15
+  author: John T.
+  content: "<p>Any chance of a 1.2.4 mswin32 gem being available? Trying to do a ‘gem
+    update’ on WinXP generates an error when it gets to the Sqlite3-ruby gem:</p>\n\n\n\t<p>Building
+    native extensions.  This could take a while…\n<span class=\"caps\">ERROR</span>:
+    \ While executing gem … (Gem::Installer::ExtensionBuildError)\n    <span class=\"caps\">ERROR</span>:
+    Failed to build gem native extension.</p>\n\n\n\t<p>and kills the rest of the
+    update.</p>\n\n\n\t<p>Thanks</p>"
+- date: 2008-10-01
+  author: roger
+  content: |-
+    <p>for some reason with mingw
+    I do
+    gem install sqlite3-ruby
+    and it still tries to compile it from source :)
+    -=R</p>
+- date: 2008-10-22
+  author: roger
+  content: |-
+    <p>Looks like some windows users could benefit from a pre-compiled mswin32 version of 1.2.4
+    http://www.ruby-forum.com/topic/168927#new
+    Thanks!</p>

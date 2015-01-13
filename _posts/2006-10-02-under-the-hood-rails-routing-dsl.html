@@ -1,0 +1,160 @@
+---
+layout: post
+title: 'Under the hood: Rails'' routing DSL'
+post_id: 190
+categories:
+- Under the Hood
+date: 2006-10-02 08:42:00.000000000 -06:00
+author: Jamis
+permalink: 2006/10/02/under-the-hood-rails-routing-dsl.html
+---
+
+<p>Rails is chock full of magic. From ActiveRecord to ActionView, the full stack employs just about every Ruby idiom in the book to make the programming experience as smooth, painless, and seamless as possible. This comes at a price, though: the source code is generally pretty opaque to Ruby novices. We’ve done our best to keep things readable (it’s in our best interest, after all, since the easier it is to read, the easier it is for people to create and submit patches), but there are still certain areas of Rails that are widely regarded as “hard to follow”.</p>
+<p>Routing is one of those areas.</p>
+<p>This is the first of three articles that will delve into the dark recesses of the routing code. It deals only with the implementation of the routing <acronym title="Domain Specific Language">DSL</acronym> (e.g., the part you use in <code>config/routes.rb</code>). The next two articles will deal with route recognition, and route generation, respectively.</p>
+<p>I’d encourage you to follow along in the routing code. This article covers the version of routing in edge rails. You’ll find that it bears very little relation to the version of routing in Rails 1.1.6 and earlier, but don’t let that throw you. As of this writing, <a href="http://dev.rubyonrails.org/browser/trunk/actionpack/lib/action_controller/routing.rb?rev=5169">revision 5169</a> contains the latest version of <code>routing.rb</code>.</p>
+<p>The <code>config/routes.rb</code> file forms the primary (and generally, only) interface to routing for most Rails developers. If you look in the <code>config/routes.rb</code> file for the vast majority of Rails applications, you’ll see something like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">ActionController</span>::<span class="co">Routing</span>::<span class="co">Routes</span>.draw <span class="r">do</span> |map|<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt>  map.connect <span class="s"><span class="dl">"</span><span class="k">:controller/:action/:id</span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>That <code>ActionController::Routing::Routes</code> reference is rather misleading. It is not a class, but is simply a constant referring to an instance of <code>ActionController::Routing::RouteSet</code>. (You can see the instantiation occurring at the bottom of <code>action_controller/routing.rb</code>.) That one instance is in charge of managing the routes for the entire lifetime of the Ruby process.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">module</span> <span class="cl">ActionController</span><tt>
+</tt>  <span class="r">module</span> <span class="cl">Routing</span><tt>
+</tt>    <span class="c"># ...</span><tt>
+</tt>    <span class="co">Routes</span> = <span class="co">RouteSet</span>.new<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>The <code>RouteSet#draw</code> method is where the <span class="caps">DSL</span> magic all begins. If you look in the <code>routing.rb</code> code (around line 1113), it’s only three lines long, but what a significant three lines those are!</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">draw</span><tt>
+</tt>  clear!<tt>
+</tt>  <span class="r">yield</span> <span class="co">Mapper</span>.new(<span class="pc">self</span>)<tt>
+</tt>  named_routes.install<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>That one method is the entry point for the entire routing <span class="caps">DSL</span>. First, any existing routes are removed from the collection (via the <code>clear!</code> method). Then, a new <code>ActionController::Routing::RouteSet::Mapper</code> instance is created and yielded to the block (where it is generally bound to the <code>map</code> variable in <code>config/routes.rb</code>). After all the routes have been “drawn” (or defined), any named routes are installed into ActionController::Base, so that the named routing helpers can be used by controller and view code (as <code>foo_url</code> and <code>foo_path</code>).</p>
+<p><code>ActionController::Routing::RouteSet::Mapper</code> is nearly trivial. It’s just a proxy that delegates to the <code>RouteSet</code> instance that created it. When you call <code>map.connect</code>, the work is delegated to <code>RouteSet#add_route</code>. When you create a named route, the <code>method_missing</code> hook on the <code>Mapper</code> redirects the call to <code>RouteSet#add_named_route</code>. If you are looking for ways to extend routing, take note: <code>Mapper</code> is what you need to extend in order to add to or change the routing <span class="caps">DSL</span>. For an example of how to extend it, take a look at <a href="http://dev.rubyonrails.org/browser/trunk/actionpack/lib/action_controller/resources.rb">action_controller/resources.rb</a>. (That’s where the new RESTful routing options are defined.)</p>
+<p>So, the call chain so far goes something like <code>RouteSet#draw</code>, <code>Mapper#connect</code>, <code>RouteSet#add_route</code>. Looking at <code>RouteSet#add_route</code> (line 1147), you’ll see it’s another tiny method of only three lines. Instead of doing all the work itself, it just calls on <code>builder.build</code> to create the new <code>Route</code> instance, and then adds the new route to the <code>routes</code> collection.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">add_route</span>(path, options = {})<tt>
+</tt>  route = builder.build(path, options)<tt>
+</tt>  routes &lt;&lt; route<tt>
+</tt>  route<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Looking at the definition for the <code>builder</code> method (line 1109), it just lazily instantiates an <code>ActionController::Routing::RouteBuilder</code> object and returns it. <code>RouteBuilder</code> is a factory class for creating new <code>Route</code> instances. You’ll find it defined beginning at line 785.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">builder</span><tt>
+</tt>  <span class="iv">@builder</span> ||= <span class="co">RouteBuilder</span>.new<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>The <code>RouteBuilder</code> is another good class to note if you are trying to extend Rails. The fact that <code>RouteSet</code> uses a <code>builder</code> method to lazily instantiate the builder means you can easily subclass <code>RouteBuilder</code> and then install your subclass using an overridden <code>RouteSet#builder</code> method. (You might want do this if, for instance, your routing extension adds a new kind of routing segment that needs special consideration during parsing.)</p>
+<p>The main job of <code>RouteBuilder</code> is to take a path string, and a hash of options, and return a Route that corresponds to them. It does this by calling <code>segments_for_route_path</code> (line 807) to decompose (or tokenize) the path into “segments”. (Segments are the atomic substrings of the path, which represent the delimiters, static text, and dynamic tokens it contains.) The builder then calls <code>assign_route_options</code> to combine the default values and condtions with those segments. Sounds complex, but it’s actually remarkably straightforward.</p>
+<p>You can see that <code>segments_for_route_path</code> just calls <code>segment_for</code> repeatedly to decompose the string. Each call to <code>segment_for</code> returns a new <code>Segment</code> instance that represents some section of the string.</p>
+<p>Looking at <code>segment_for</code>, you can see that it just uses a case statement with regexen to determine what type of segment to return:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">segment_for</span>(string)<tt>
+</tt>  segment = <span class="r">case</span> string<tt>
+</tt>    <span class="r">when</span> <span class="rx"><span class="dl">/</span><span class="ch">\A</span><span class="k">:(</span><span class="ch">\w</span><span class="k">+)</span><span class="dl">/</span></span><tt>
+</tt>      key = <span class="gv">$1</span>.to_sym<tt>
+</tt>      <span class="r">case</span> key<tt>
+</tt>        <span class="r">when</span> <span class="sy">:controller</span> <span class="r">then</span> <span class="co">ControllerSegment</span>.new(key)<tt>
+</tt>        <span class="r">else</span> <span class="co">DynamicSegment</span>.new key<tt>
+</tt>      <span class="r">end</span><tt>
+</tt>    <span class="r">when</span> <span class="rx"><span class="dl">/</span><span class="ch">\A</span><span class="ch">\*</span><span class="k">(</span><span class="ch">\w</span><span class="k">+)</span><span class="dl">/</span></span> <span class="r">then</span> <span class="co">PathSegment</span>.new(<span class="gv">$1</span>.to_sym, <span class="sy">:optional</span> =&gt; <span class="pc">true</span>)<tt>
+</tt>    <span class="r">when</span> <span class="rx"><span class="dl">/</span><span class="ch">\A</span><span class="ch">\?</span><span class="k">(.*?)</span><span class="ch">\?</span><span class="dl">/</span></span><tt>
+</tt>      returning segment = <span class="co">StaticSegment</span>.new(<span class="gv">$1</span>) <span class="r">do</span><tt>
+</tt>        segment.is_optional = <span class="pc">true</span><tt>
+</tt>      <span class="r">end</span><tt>
+</tt>    <span class="r">when</span> <span class="rx"><span class="dl">/</span><span class="ch">\A</span><span class="k">(</span><span class="il"><span class="dl">#{</span>separator_pattern(<span class="sy">:inverted</span>)<span class="dl">}</span></span><span class="k">+)</span><span class="dl">/</span></span> <span class="r">then</span> <span class="co">StaticSegment</span>.new(<span class="gv">$1</span>)<tt>
+</tt>    <span class="r">when</span> <span class="co">Regexp</span>.new(separator_pattern) <span class="r">then</span><tt>
+</tt>      returning segment = <span class="co">DividerSegment</span>.new(<span class="gv">$&amp;</span>) <span class="r">do</span><tt>
+</tt>        segment.is_optional = (optional_separators.include? <span class="gv">$&amp;</span>)<tt>
+</tt>      <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt>  [segment, <span class="gv">$~</span>.post_match]<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>(That <code>returning</code> statement may look odd; it’s a method defined in ActiveSupport that makes it really easy to return a value, but only after performing some operations on it. You’ll find it used all over in Rails, so it’s worth getting familiar with it.)</p>
+<p>If you are trying to extend Routes, this is where your <code>RouteBuilder</code> subclass would extend <code>segment_for</code> to add it’s own custom string processing. As you can see, routing currently supports five different segment types:</p>
+<ul>
+	<li>
+<code>DynamicSegment</code>. This represents parts of the route that begin with a colon, like <code>:action</code>, <code>:permalink</code> or <code>:id</code>.</li>
+		<li>
+<code>ControllerSegment</code>. This is actually a subclass of <code>DynamicSegment</code>. It represents to special string <code>:controller</code>, because it does some special recognition on those strings. (We’ll cover that more in the next article).</li>
+		<li>
+<code>PathSegment</code>. This is for segments that start with an asterisk, and which represent the remainder of the path. Routes like <code>"/file/*path"</code> use a <code>PathSegment</code>.</li>
+		<li>
+<code>StaticSegment</code>. This is any static text in your route that must be matched (or generated) verbatim. If you have a path like <code>"/one/two"</code>, the strings <code>"one"</code> and <code>"two"</code> are both static segments.</li>
+		<li>
+<code>DividerSegment</code>. This is any segment that is used to delimit the other segments. Generally, this will be the forward slash character, but also includes commas, periods, semicolons, and question marks.</li>
+	</ul>
+<p>The new Route, once instantiated, will include an array of segments that encode the path it encapsulates. You can inspect the route by calling it’s <code>#to_s</code> method. That will give you a readable version of its path, and its options, should you ever need it. In fact, when I’m troubleshooting something, I find it helpful to add something like the following to the end of <code>config/routes.rb</code>:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">ActionController</span>::<span class="co">Routing</span>::<span class="co">Routes</span>.routes.each <span class="r">do</span> |route|<tt>
+</tt>  puts route<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Rick Olson has also created a <a href="http://svn.techno-weenie.net/projects/plugins/routing_navigator/">routing navigator plugin</a> for Rails that makes it easy to see what routes exist in your project. This is especially handy if you are using the RESTful routes, since they dynamically generate a whole host of routes behind the scenes.</p>
+<p>Before we conclude this whirlwind tour, we need to make one last brief stop. When you create a named route, the mapper delegates to the <code>RouteSet#add_named_route</code> method, which (after calling <code>add_route</code>) delegates to a helper object called <code>named_routes</code>. Each <code>RouteSet</code> instance includes a reference to a <code>NamedRouteCollection</code> instance (see line 986), called <code>named_routes</code>. Any time you add a route to this collection, a set of helper methods are automatically generated for that route and are added to an anonymous module, which is used to install the helpers into (e.g.) the ActionController::Base class. This installation only occurs when the <code>NamedRouteCollection#install</code> method is called, and that happens at the end of <code>RouteSet#draw</code>.</p>
+<p>If you have any questions about something I glossed over (or omitted), please feel free to ask in the comments and I’ll try to answer.</p>
+<p>That, then, is the overview of the implementation of the Routing <span class="caps">DSL</span>. The next article will deal with how this all ties into route recognition, which comes into play every time a request is received by a Rails application. Stay tuned!</p>

@@ -1,0 +1,29 @@
+---
+layout: post
+title: Overriding attributes in ActiveRecord
+post_id: 103
+categories:
+- Tips & Tricks
+date: 2007-02-06 11:14:00.000000000 -07:00
+author: Jamis
+permalink: 2007/02/06/overriding-attributes-in-activerecord.html
+---
+
+<p>I <em>love</em> that <code>super</code> calls <code>method_missing</code> if the method is not defined on the superclass.</p>
+<p>Consider this case. You have some ActiveRecord named <code>Account</code>, which has an associated <code>email_address</code>. However, an account owner may optionally give a special “notification” email address, which will be used for things like newsletter emails and security issues and such. If no notification address has been explicitly given, it should fall back to the account’s primary email address. It’s as simple as this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">Account</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+</tt>  <span class="r">def</span> <span class="fu">notification_address</span><tt>
+</tt>    <span class="r">super</span> || email_address<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Calling <code>super</code> forces the superclass, ActiveRecord::Base, to be sent the <code>notification_address</code> message, which it won’t understand. This causes <code>method_missing</code> to be called on AR::Base, which looks for the <code>notification_address</code> attribute in the record’s attribute set. If that has not been set, it will be nil, in which case we then default to the email_address value.</p>
+<p>Just as you’d expect.</p>

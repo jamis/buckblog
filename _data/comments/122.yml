@@ -1,0 +1,35 @@
+---
+- date: 2007-01-31
+  author: Kevin Marsh
+  content: "<p>Pretty clever hack, and it made me realize that AR alternates syntax
+    highlighting. Every other query is either pink or cyan. Never really thought about
+    it before…</p>"
+- date: 2007-01-31
+  author: Erik Kastner
+  content: "<p>Amazingly cool hack. Thank you.</p>\n\n\n\t<p>Any chance of getting
+    log_to into core? :)</p>"
+- date: 2007-01-31
+  author: John
+  content: "<p>That’s a really nice trick!</p>"
+- date: 2007-01-31
+  author: UnderpantsGnome
+  content: "<p>Jamis- Very nice. Though sometimes you may not want color (it could
+    happen, I guess), here’s a slight variation.</p>\n\n\n<pre><code>\ndef log_to(stream,
+    colorize=true)\n  ActiveRecord::Base.logger = Logger.new(stream)\n  ActiveRecord::Base.clear_active_connections!\n
+    \ ActiveRecord::Base.colorize_logging = colorize\nend\n</code></pre>\n\n\t<p>Michael-</p>"
+- date: 2007-01-31
+  author: Jamis
+  content: "<p>Nice variation, UnderpantsGnome. I’m adding that to my own local copy,
+    since I personally hate the colorized logging. :)</p>"
+- date: 2007-02-01
+  author: Kevin Barnes
+  content: "<p>Building on UG’s, default the stream to <span class=\"caps\">STDOUT</span>
+    in the method definition, since that’s probably what you want most of the time.</p>\n\n\n\t<p>Jamis,
+    as always, great stuff!</p>"
+- date: 2007-02-01
+  author: mathie
+  content: "<p>Nice!  That’s another snippet added to my `~/.irbrc`.</p>"
+- date: 2007-02-05
+  author: Tim Lucas
+  content: "<p>nice! Might give this a go to ensure eager loading is working from
+    tests.</p>"

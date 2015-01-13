@@ -1,0 +1,19 @@
+---
+layout: post
+title: Net::SSH, Capistrano, and Saying Goodbye
+post_id: 39
+categories:
+- Projects
+date: 2009-02-24 21:38:00.000000000 -07:00
+author: Jamis
+permalink: 2009/02/24/net-ssh-capistrano-and-saying-goodbye.html
+---
+
+<p>It is with mixed emotions that I announce two things this evening.</p>
+<p>First, I’m announcing the final release of both Net::SSH (2.0.11) and Capistrano (2.5.5). Both are minor changes: Net::SSH 2.0.11 adds support for a :key_data option, so you can supply raw <span class="caps">PEM</span>-formatted key data. Capistrano 2.5.5 enhances the role() method so you can now declare empty roles. Either way, not much to get excited about, but the changes were pending and deserved releasing.</p>
+<p>Secondly: I’m ceasing development on <a href="http://github.com/jamis/sqlite-ruby/tree/master">SQLite/Ruby</a>, <a href="http://github.com/jamis/sqlite3-ruby/tree/master">SQLite3/Ruby</a>, <a href="http://github.com/jamis/net-ssh/tree">Net::SSH</a> (and related libs, <a href="http://github.com/jamis/net-sftp/tree">Net::SFTP</a>, <a href="http://github.com/jamis/net-scp/tree">Net::SCP</a>, etc.) and <a href="http://github.com/jamis/capistrano/tree">Capistrano</a>. I will no longer be accepting patches, bug reports, support requests, feature requests, or general emails related to any of these projects. For Capistrano, I will continue to follow the mailing list, and might appear in the #capistrano irc channel from time to time, but I am no longer the maintainer of these projects. I will continue to host the capify.org site and wiki for as long as they are of use to people.</p>
+<p>This was a very hard decision, and one that has taken me months to come to grips with. I cannot express how much I appreciate the huge support from everyone that has found value in Capistrano, in particular. Your kind words and encouragement have meant a lot to me. But I’m burning out, and I have to drop these before things get worse. Maybe after some period of time I’ll come back to them—I don’t know. But I’m not planning on it.</p>
+<p>So where do these projects go from here? That’s entirely up to the community. If you have a neat idea for any of these, please feel free to fork the project on GitHub (see my <a href="http://github.com/jamis">profile page</a> for the links to the individual projects) and release updates on your own schedule. If no one steps forward, that’s fine—I’m not asking for volunteers. But if someone feels passionately that any of these are not “finished”, and has ideas for how they could be further improved, I will not stand in the way.</p>
+<p>However, please know that I am <em>not available</em> for questions about the code, or for advice on how to implement changes. I’m trying to cut as cleanly as I can. Any emails I get asking about the code will likely be ignored. I’m not trying to be rude; I’m just setting expectations.</p>
+<p>I won’t disappear, though. These libraries were just becoming millstones around my neck; without their weight dragging me down, I look forward to being able to experiment and play with new projects and new ideas. We’ll see what the future holds!</p>
+<p>So, thanks all for a fantastic couple of years.</p>

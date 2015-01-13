@@ -1,0 +1,6 @@
+---
+- date: 2011-01-18
+  author: James
+  content: "<p>It does produce nice mazes though, whilst the Recursive Division technique
+    regularly produces ugly ones – arising from the random decision to place a divide
+    quite close to the edge of the space being split.</p>"

@@ -1,0 +1,213 @@
+---
+layout: post
+title: 'Inside Capistrano: the Gateway implementation'
+post_id: 148
+categories:
+- Under the Hood
+date: 2006-09-26 10:58:00.000000000 -06:00
+author: Jamis
+permalink: 2006/09/26/inside-capistrano-the-gateway-implementation.html
+---
+
+<div class="inset">
+For those arriving late to the party, Capistrano is a utility for executing commands in parallel on multiple remote hosts. You can read all about it in the <a href="http://manuals.rubyonrails.com/read/book/17">Capistrano manual</a>.
+</div>
+<p>Most Capistrano users have probably never needed to use its gateway feature. I find that vaguely ironic, since it was one of the features in Capistrano that were on the original list of requirements when I sat down to code it all up.</p>
+<p>Basically, what the gateway lets you do is tunnel your connections through a single computer. This lets you connect to computers that are behind a firewall, or on a <span class="caps">VPN</span>. We use this feature all the time at <a href="http://37signals.com">37signals</a>, since the bulk of our cluster is not directly accessible via the Internet.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># specify the gateway server</span><tt>
+</tt>set <span class="sy">:gateway</span>, <span class="s"><span class="dl">"</span><span class="k">gateway.server.com</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt><span class="c"># the following servers are behind a firewall and</span><tt>
+</tt><span class="c"># cannot be accessed directly</span><tt>
+</tt>role <span class="sy">:app</span>, <span class="s"><span class="dl">"</span><span class="k">app.server.com</span><span class="dl">"</span></span><tt>
+</tt>role <span class="sy">:web</span>, <span class="s"><span class="dl">"</span><span class="k">web.server.com</span><span class="dl">"</span></span><tt>
+</tt>role <span class="sy">:db</span>,  <span class="s"><span class="dl">"</span><span class="k">db.server.com</span><span class="dl">"</span></span>, <span class="sy">:primary</span> =&gt; <span class="pc">true</span></pre></td>
+</tr></table>
+<p>The gateway code is a bare 100 lines long, including comments. Basically, all it does is establish a connection to the gateway machine, and then for every connection established via the gateway, it forwards a port from the local host to the requested server. Then, it establishes a connection to the requested server via that forwarded port. It makes heavy use of threads to accomplish this, and is one of the places that helped iron out several synchronicity issues in <a href="http://net-ssh.rubyforge.org">Net::SSH</a>. In fact, the code is a good showcase of what you can do with forwarded ports in Net::SSH.</p>
+<p>So, let’s take it all apart and walk through the code, beginning with the <code>initialize</code> method. (For those of you that want to follow along, the file in question is <a href="http://dev.rubyonrails.org/browser/tools/capistrano/lib/capistrano/gateway.rb">capistrano/gateway.rb</a>.)</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">initialize</span>(server, config)<tt>
+</tt>  <span class="iv">@config</span> = config<tt>
+</tt>  <span class="iv">@next_port</span> = <span class="co">MAX_PORT</span><tt>
+</tt>  <span class="iv">@terminate_thread</span> = <span class="pc">false</span><tt>
+</tt>  <span class="iv">@port_guard</span> = <span class="co">Mutex</span>.new<tt>
+</tt><tt>
+</tt>  mutex = <span class="co">Mutex</span>.new<tt>
+</tt>  waiter = <span class="co">ConditionVariable</span>.new<tt>
+</tt><tt>
+</tt>  <span class="iv">@thread</span> = <span class="co">Thread</span>.new <span class="r">do</span><tt>
+</tt>    <span class="co">SSH</span>.connect(server, <span class="iv">@config</span>) <span class="r">do</span> |<span class="iv">@session</span>|<tt>
+</tt>      mutex.synchronize { waiter.signal }<tt>
+</tt>      <span class="iv">@session</span>.loop { !<span class="iv">@terminate_thread</span> }<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  mutex.synchronize { waiter.wait(mutex) }<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>(In the interest of keeping things compact, I’ve removed the comments and the lines related to logging.)</p>
+<p>The meat of this is the <code>Thread.new</code> statement there in the middle. All it does is establish the gateway’s <span class="caps">SSH</span> connection. (The <code>config</code> instance variable is a Capistrano::Configuration instance, from which various <span class="caps">SSH</span> options are pulled, including the user, password, port, etc.) Once the connection is live, the block will be called, and we signal the “waiter” (the condition variable). This wakes up the calling thread (which is blocked in the <code>wait</code> call following the thread). Once the connection is live, we enter the session loop, which goes until asked to terminate (the <code>terminate_thread</code> instance variable).</p>
+<p>Note that <code>SSH.connect</code> is another Capistrano abstraction that basically wraps the lower-level <code>Net::SSH.start</code>. There’s not much to it; you can read the entire thing in <a href="http://dev.rubyonrails.org/browser/tools/capistrano/lib/capistrano/ssh.rb">capistrano/ssh.rb</a>.</p>
+<p>Once the gateway connection is live, other connections may be established through it by calling the <code>connect_to</code> method, passing in a string that names the target server.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt>23<tt>
+</tt>24<tt>
+</tt>25<tt>
+</tt>26<tt>
+</tt>27<tt>
+</tt>28<tt>
+</tt>29<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">connect_to</span>(server)<tt>
+</tt>  connection = <span class="pc">nil</span><tt>
+</tt>  port = next_port<tt>
+</tt><tt>
+</tt>  thread = <span class="co">Thread</span>.new <span class="r">do</span><tt>
+</tt>    <span class="r">begin</span><tt>
+</tt>      <span class="iv">@session</span>.forward.local(port, server, <span class="i">22</span>)<tt>
+</tt>      connection = <span class="co">SSH</span>.connect(<span class="s"><span class="dl">'</span><span class="k">127.0.0.1</span><span class="dl">'</span></span>, <span class="iv">@config</span>, port)<tt>
+</tt>    <span class="r">rescue</span> <span class="co">Errno</span>::<span class="co">EADDRINUSE</span><tt>
+</tt>      port = next_port<tt>
+</tt>      <span class="r">retry</span><tt>
+</tt>    <span class="r">rescue</span> <span class="co">Exception</span> =&gt; e<tt>
+</tt>      puts e.class.name<tt>
+</tt>      puts e.backtrace.join(<span class="s"><span class="dl">"</span><span class="ch">\n</span><span class="dl">"</span></span>)<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  thread.join<tt>
+</tt>  connection <span class="r">or</span> raise <span class="s"><span class="dl">"</span><span class="k">Could not establish connection to </span><span class="il"><span class="dl">#{</span>server<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">def</span> <span class="fu">next_port</span><tt>
+</tt>  <span class="iv">@port_guard</span>.synchronize <span class="r">do</span><tt>
+</tt>    port = <span class="iv">@next_port</span><tt>
+</tt>    <span class="iv">@next_port</span> -= <span class="i">1</span><tt>
+</tt>    <span class="iv">@next_port</span> = <span class="co">MAX_PORT</span> <span class="r">if</span> <span class="iv">@next_port</span> &lt; <span class="co">MIN_PORT</span><tt>
+</tt>    port<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>For this bit, we first get the next (possibly) available port on the local host. Then, in a thread, we start a forwarded port from the local host to the remote host, and try to establish an <span class="caps">SSH</span> connection through it. If the port turns out to be in use, we grab the next port and try again.</p>
+<p>And that’s it, really.</p>
+<p>There isn’t that much to the gateway implementation, but we like it that way. It is one of the most critical parts of Capistrano for us at 37signals, and the current implementation is both simpler than before (compare it to the version in Capistrano 1.1) and more robust. You could even conceivably use the gateway code directly in your own scripts, if you ever needed to connect to one or more hosts through a forwarded port. Something like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt>23<tt>
+</tt>24<tt>
+</tt>25<tt>
+</tt>26<tt>
+</tt>27<tt>
+</tt>28<tt>
+</tt>29<tt>
+</tt><strong>30</strong><tt>
+</tt>31<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">require <span class="s"><span class="dl">'</span><span class="k">capistrano/gateway</span><span class="dl">'</span></span><tt>
+</tt>require <span class="s"><span class="dl">'</span><span class="k">capistrano/logger</span><span class="dl">'</span></span><tt>
+</tt><tt>
+</tt><span class="c"># First, we create a config object that quacks,</span><tt>
+</tt><span class="c"># mostly, like a Capistrano::Configuration object.</span><tt>
+</tt>config = <span class="co">Struct</span>.new(<span class="sy">:user</span>, <span class="sy">:password</span>, <span class="sy">:ssh_options</span>,<tt>
+</tt>  <span class="sy">:logger</span>).new<tt>
+</tt>config.user = <span class="s"><span class="dl">"</span><span class="k">username</span><span class="dl">"</span></span><tt>
+</tt>config.password = <span class="s"><span class="dl">"</span><span class="k">password</span><span class="dl">"</span></span><tt>
+</tt>config.ssh_options = {}<tt>
+</tt>config.logger = <span class="co">Capistrano</span>::<span class="co">Logger</span>.new(<tt>
+</tt>  <span class="sy">:output</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">/dev/null</span><span class="dl">"</span></span>)<tt>
+</tt><tt>
+</tt><span class="c"># Connect to the Gateway...</span><tt>
+</tt>gateway = <span class="co">Capistrano</span>::<span class="co">Gateway</span>.new(<span class="s"><span class="dl">"</span><span class="k">gateway</span><span class="dl">"</span></span>, config)<tt>
+</tt><tt>
+</tt><span class="c"># Establish a connection to an internal machine via </span><tt>
+</tt><span class="c"># the gateway</span><tt>
+</tt>host = gateway.connect_to(<span class="s"><span class="dl">"</span><span class="k">internal</span><span class="dl">"</span></span>)<tt>
+</tt><tt>
+</tt><span class="c"># "host" is now an SSH session object. We can</span><tt>
+</tt><span class="c"># manipulate it using the Net::SSH API.</span><tt>
+</tt>host.open_channel <span class="r">do</span> |ch|<tt>
+</tt>  ch.on_data <span class="r">do</span> |ch, data|<tt>
+</tt>    puts(data)<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  ch.exec <span class="s"><span class="dl">"</span><span class="k">hostname</span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>host.loop</pre></td>
+</tr></table>
+<p>For more information on Net::SSH, you can tackle the <a href="http://net-ssh.rubyforge.org">Net::SSH documentation</a>. It tries to be fairly comprehensive.</p>
+<div class="tail">
+This is the first in what I hope will become a series of articles, detailing various internals of Capistrano. If there are any specific aspects of Capistrano you’d like discussed, feel free to leave your vote in the comments.
+</div>

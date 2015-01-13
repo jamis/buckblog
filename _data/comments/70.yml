@@ -1,0 +1,223 @@
+---
+- date: 2008-11-09
+  author: Neeraj
+  content: "<p>Thank you for sharing.</p>\n\n\n\t<p>I worked on Java for years but
+    I didn’t know that I had 46 different choices when it came to handling collection.</p>"
+- date: 2008-11-09
+  author: Mirko
+  content: "<p>Great article, thanks for sharing! I still catch myself using Java-isms
+    in Ruby every once in a while, but it’s slowly getting better… ;)</p>"
+- date: 2008-11-09
+  author: Dave
+  content: "<p>Jamis, that was beautiful. Thanks.</p>"
+- date: 2008-11-09
+  author: Garry
+  content: "<p>I like a lot of your points, but still can’t bring myself to like DSLs.
+    :)</p>"
+- date: 2008-11-09
+  author: Mark
+  content: "<p>Wonderful post Jamis. Is there going to be a video of the talk?</p>"
+- date: 2008-11-09
+  author: Daniel Cukier
+  content: "<p>Nice post! \nI love comparisons of art elements with programming, and
+    you did it very well. When you are learning a new language, is very natural, in
+    the begining, to use the forms of the languages you already know. We need to get
+    deep in the new language to use its most beatiful compositions.</p>"
+- date: 2008-11-09
+  author: Jamis
+  content: "<p>@Garry, I’m curious what you <em>do</em> like, then? It’s been said
+    that every Ruby program is a <span class=\"caps\">DSL</span>, used to describe
+    the domain of the program. Perhaps you just associate the term “DSL” with a specific
+    use of <span class=\"caps\">DSL</span>’s that you don’t like?</p>\n\n\n\t<p>@Mark,
+    yes, I understand the video will be available eventually, but it will probably
+    a couple of weeks at the earliest. All presentations at rubyconf were recorded,
+    but that’s a lot of video to convert!</p>"
+- date: 2008-11-09
+  author: Hongli Lai
+  content: "<p>Nice blog post. :) But I don’t think I agree with your points about
+    Java collections vs Ruby collections. The different collections interfaces/implementations
+    do have different purposes.</p>\n\n\n\t<p>For example, take HashMap and TreeMap.
+    HashMap is – tadaa – implemented with a hash table and has an average lookup time
+    of O(1). But the thing is, it’s average. It’s not entirely out of the question
+    that someone won’t feed your application with malicious data which forces the
+    HashMap’s lookups to become O(n). A TreeMap is implemented with a binary tree,
+    and thus all lookups are guaranteed to be O(log n), which makes it invulnerable
+    to such attacks. This problem doesn’t apply to everybody and so it depends on
+    the situation whether a HashMap or a TreeMap is best. In Ruby on the other hand,
+    there’s only Hash, with all pros and cons associated with it. While it’s fine
+    for most people, you might be screwed if your app has a large Hash and someone
+    is capable of feeding it malicious data.</p>\n\n\n\t<p>Another example: queues.
+    While an Array in Ruby can be used as a queue, it’s algorithmically not efficient.
+    Array deletions are O(n) and thus a shift-pop/push-unshift operation is pretty
+    expensive for large queues. A queue would be much more efficient if there’s a
+    linked list implementation, but Ruby does not provide one.</p>\n\n\n\t<p>Ruby
+    is a fine language, and its standard library is fine for most programming jobs.
+    But it’s not always the most efficient. The Java standard library provides so
+    many classes because they want to target many people, and which class is the most
+    efficient really depends on the application.</p>"
+- date: 2008-11-09
+  author: Markus
+  content: '<p>Great post, great perspective.  <span class="caps">FYI</span>, here’s
+    another way to illustrate how direct translations don’t really work: http://www.blahblahfish.com.
+    :)</p>'
+- date: 2008-11-09
+  author: Jamis
+  content: "<p>@Hongli, I totally agree. My article was in no way intended to say
+    that Java is “bad” because of it’s proliferation of collection implementations.
+    It just means you architect your apps differently, and (as demonstrated by your
+    discussion of the pros and cons of different collection types) you have to be
+    very aware of when you want to use each. It requires a deep knowledge of the Java
+    collections <span class=\"caps\">API</span> in order to use Java collections effectively.</p>\n\n\n\t<p>Ruby
+    takes a different approach, and you shouldn’t try to shoehorn the Java approach
+    into Ruby. Instead, you should embrace “the Ruby way” when doing Ruby programming.
+    That was all I was saying.</p>"
+- date: 2008-11-10
+  author: Louis
+  content: "<p>I really like the (LEGO and Play-Doh) metaphors you use here.</p>\n\n\n\t<p>A
+    question I regularly face in my work is “should we use a general-purpose language
+    (i.e. <span class=\"caps\">UML</span>) or domain-specific language to represent
+    our system?” Your metaphor is perhaps the neatest way I’ve seen for explaining
+    the differences between the two.</p>"
+- date: 2008-11-10
+  author: Sam Figueroa
+  content: "<p>I really love this article. I’ve seen some cases of people over-doing
+    the Singleton pattern at my old job. It’s great people use “standard” ways for
+    coding but to design code to fit patterns seams kind wrong.</p>\n\n\n\t<p>I really
+    like the Play-Doh / <span class=\"caps\">LEGO</span> analogy you brought up here.</p>\n\n\n\t<p>Just
+    in time. Not just in case. &gt; <span class=\"caps\">WORD UP</span></p>"
+- date: 2008-11-10
+  author: Mark
+  content: "<p>I remember hurting my brain trying to dig into the Net::SSHv1 source.
+    \ Thanks for slugging away to get the v2 rewrite completed.</p>"
+- date: 2008-11-10
+  author: Thom Parkin
+  content: |-
+    <p>I attended RubyConf2008 and saw you giving this talk, Jamis.
+    On my notes I scribbled, “The best talk I have seen”.  It was thoroughly enjoyable, highly engaging and quite poignant.
+    Great job!!!</p>
+- date: 2008-11-10
+  author: ronen
+  content: "<p>Nice article, a small comment on:</p>\n\n\n\t<p>“I think I mumbled
+    something like “that would be a neat idea”. To me, it was a novel concept. I’d
+    never heard of it before. You’d never see a Java program that was configured by
+    writing Java code. That screams “hard coding”! But Ruby, you see, is different.”</p>\n\n\n\t<p>There
+    are more than one projects that enables Java configuration in Java code, like
+    http://www.springsource.org/javaconfig and http://code.google.com/p/google-guice/.</p>"
+- date: 2008-11-10
+  author: andy
+  content: "<p>the perfect is the enemy of the good</p>"
+- date: 2008-11-11
+  author: Tom
+  content: "<p>Do all ruby people have to masturbate over their language and throw
+    shit at others? That’s an never ending debate of what’s better, ruby, macs, being
+    gay or java, linux, being straight, etc.</p>"
+- date: 2008-11-11
+  author: Jamis
+  content: "<p>@Tom, you totally missed the point of my article. Java’s a fine language.
+    You shouldn’t be so sensitive. :) All I said was that if you use Java, use Java
+    techniques, and if you use Ruby, use Ruby techniques. The two techniques are not
+    compatible, and trying to mix them will get you into trouble.</p>"
+- date: 2008-11-11
+  author: brainopia
+  content: "<p>I like your article. Metaphor with lego and play-doh is great! It was
+    useful to hear your story about DI in ruby.</p>"
+- date: 2008-11-11
+  author: paul
+  content: <p>if Java is <span class="caps">LEGO</span> and Ruby is Play-Doh, what
+    is <span class="caps">ERLANG</span>?</p>
+- date: 2008-11-11
+  author: Bob
+  content: "<p>Awesome, thanks for the great read. I’ve made the Lego/Play-Doh(Clay)
+    analogy with some friends of mine before.</p>"
+- date: 2008-11-12
+  author: Thibaut Barrère
+  content: "<p>Thanks for taking time to share this. The “lessons learned” are fantastic.</p>\n\n\n\t<p>Funnily
+    I took the exact same comparison of java/.net containers vs. ruby containers to
+    illustrate how simple writing software should be most of the time!</p>"
+- date: 2008-11-12
+  author: Ryan Baxter
+  content: "<p>Great post!</p>"
+- date: 2008-11-12
+  author: ali
+  content: "<p>Excellent Post. Thanks for sharing</p>"
+- date: 2008-11-13
+  author: Piotr Sarnacki
+  content: "<p>There is quite funny post about writing ruby in other languages style
+    ;-)</p>\n\n\n\t<p>http://blog.aenima.pl/2008/4/14/you-can-write-fortran-in-any-language</p>"
+- date: 2008-11-14
+  author: Chris Smith
+  content: "<p>Thanks Jamis for this article. I’ve always been more comfortable with
+    the old Lego of my childhood (the basic blocks) than Play-Doh, which just offers
+    too many possibilities. But I would prefer Play-Doh any day to the hyper-specialized
+    Lego of today, which allow almost no freedom of expression. I enjoyed your comparisons
+    to Java. Great writing.</p>"
+- date: 2008-11-16
+  author: "Терехова Наталья"
+  content: |-
+    <p>For Tarasine Buck! (Please!!!)
+    Дорогая Тарасина, здравствуй! Ты меня, наверное, совсем не помнишь. К сожалению, еще давно я потеряла с тобой связь. Но к тебе остались очень теплые чувства. Сейчас через интернет смогла найти только страницу твоего мужа. Как тебе написать – не знаю. Надеюсь, твой муж даст тебе  прочитать это сообщение. Я из России, из Санкт-Петербурга. Ты когда-то давно была в этом городе. Меня зовут Наташа. Раньше моя фамилия была Смирнова, но сейчас я вышла замуж, теперь моя фамилия Терехова. Если ты мне ответишь на мой e-mail, я буду очень рада, пришлю мое фото, ты тогда, наверное, меня узнаешь. Мой адрес: casper1971@mail.ru. Я буду ждать от тебя ответа!</p>
+- date: 2008-11-16
+  author: another andy
+  content: "<p>what a great post. what i like about the lego/play-doh analogy is that
+    it leaves room for choice. sometimes you need a lego, for the rest of the time
+    play-doh will do. plus, play-doh’s a heck of lot cheaper. one question, if you
+    were just getting going with ruby, whose code would you read?</p>"
+- date: 2008-11-16
+  author: Jamis
+  content: "<p>@another andy, that’s a really good question. I’d say anything by Jim
+    Weirich, for starters. I don’t agree with all of his coding conventions, but he
+    writes Ruby very, very well. The Rails framework is worth reading through, too.
+    I’ll think more on this. Maybe I’ll write a post about it. :)</p>"
+- date: 2008-12-03
+  author: John
+  content: "<p>I like this post very much.  Many folks though, are of a different
+    tilt and might think analogies like those above to be a stretch, or at the very
+    least taking some liberty.  This may not change any minds, but hopefully will
+    add productively to the thread.</p>\n\n\n\t<p>Recently I was at the Idaho Discovery
+    Museum for their Make It! Exhibition.  At this exhibition the museum had very
+    large plastic tubs of UberStix, a large table to use them on, and some ready made
+    foundations to get people started.  These are really tremendous building pieces.
+    \ While simple, they are amazingly versatile, connecting to other pieces in tens
+    of ways.  I just bought a big set for my uber-builder nephew who is a Lego maven.
+    \ I think he will love them.</p>\n\n\n\t<p>Next to the uberstix was two large
+    chests of Kaplan Planks and a padded but firm floor pad.  These plank style building
+    blocks are really simple.  Only dirt is simpler.  They are a straight plank of
+    maple.  All blocks are exactly the same dimension.  They don’t even have paint.
+    \ I love blocks, play with them all the time.  However, I wasn’t prepared for
+    the difference in the “attraction factor” these two different displays got.</p>\n\n\n\t<p>The
+    uberstix were mostly ignored.  You could see occasionally someone stuck around
+    to do something significant.  However, the work always looked like something had
+    gone “wrong” at some point and the “author/artist/builder/engineer” couldn’t find
+    the next step that was satisfying.  It seemed to me, that at some point, most
+    of the builders using the uberstix just walked away.</p>\n\n\n\t<p>Next door at
+    the Kaplan blocks something totally different was going on.  Small kids, big kids,
+    parents, groups, single folks with a burning vision were grabbing great big piles
+    of blocks and redoing the Brooklyn Bridge and the Taj Mahal.  I hear you can buy
+    a Taj Mahal kit for Lego.  Honestly, I now clearly understand why it would probably
+    be cooler to see the Taj in plain, unfinished Kaplan blocks.</p>\n\n\n\t<p>What
+    really impressed me was a middle aged woman with a baby.  A friend was helping
+    her with the baby, and she had some time to play with the blocks.  Before long,
+    she had a tower as tall as she was and was innovating at a ferocious rate.  Her
+    design was clever and cool.  I had to ask her if this was a regular hobby or something
+    new.  She told me she had never built anything with blocks.</p>\n\n\n\t<p>Many
+    in the Ruby community are used to talking about simplicity and constraints as
+    a path to creativity.  However in the context of programming languages, a recent
+    quote I read occurs to me.  It went something like this: “Any sufficiently large
+    Ruby program ends up duplicating Common Lisp.”</p>\n\n\n\t<p>At the time this
+    comment rubbed me the wrong way.  Though I have loved Lisp languages for years
+    (and like to call them the Latin of programming languages), I really enjoy Ruby.
+    \ One of the pleasing characteristics of Ruby is the syntax.</p>\n\n\n\t<p>Now
+    syntax is pretty interesting.  A lisper will call it syntactic sugar.  “Nothing
+    but junk food that doesn’t add anything” is the implication.  But syntax has important
+    uses to a human.  It points the way in the direction of idiom.  And we humans
+    are deeply idiomatic.</p>\n\n\n\t<p>I used to be an ivory tower lisper (still
+    like it).  However I am <strong>happier</strong> writing ruby.  This makes sense
+    to me.  And I no longer view big Ruby programs turning into Common Lisp as a problem.
+    \ They can turn into whatever they and I want them to.  As long as the ride and
+    the building is a bunch of fun.</p>\n\n\n\t<p>:)</p>"
+- date: 2008-12-04
+  author: Jamis
+  content: "<p>@John, excellently stated. Thanks for sharing.</p>"
+- date: 2009-02-03
+  author: Josh
+  content: "<p>http://niemann.blogs.nytimes.com/2009/02/02/i-lego-ny/</p>"

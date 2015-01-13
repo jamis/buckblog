@@ -1,0 +1,128 @@
+---
+- date: 2011-03-17
+  author: Robin Houston
+  content: "<p>Is it really so hard to allow adjacent crossings? What’s wrong with
+    this: https://gist.github.com/874649 ?</p>"
+- date: 2011-03-17
+  author: Robin Houston
+  content: "<p>Never mind! I see what’s wrong with it. Sorry…</p>"
+- date: 2011-03-17
+  author: Robin Houston
+  content: "<p>Okay, so I’ve had another chance to look at this, and it seems there’s
+    a pretty simple way to fix the problem I had before. I’ve updated the gist.</p>\n\n\n\t<p>It’s
+    really a very small change from your version. Here’s the diff: https://gist.github.com/875502</p>\n\n\n\t<p>Does
+    that look all right to you?</p>"
+- date: 2011-03-17
+  author: Robin Houston
+  content: "<p>Argh, no! This doesn’t work either you can get loops in the maze because
+    the sets aren’t maintained properly. I see I shall have to actually think about
+    this…</p>"
+- date: 2011-03-17
+  author: Jamis
+  content: "<p>@Robin, sorry to put a puzzler on your plate! I’ll admit I had hoped
+    you would see a simple solution that I had missed. :) I spent a few hours on it,
+    and got “close”, eventually winding up with a design in which there were two tree
+    nodes for each cell (one over, one under), but hit a dead-end trying to solve
+    a problem where the sets were being merged with the wrong neighbor set. It’s definitely
+    not intractable, but it sure feels a lot more complicated than it ought to be!</p>"
+- date: 2011-03-18
+  author: Fref
+  content: "<p>Animated weave mazes… Great!</p>\n\n\n\t<p>The final results of the
+    Kruskal-pre-processed-weave are really nice.</p>\n\n\n\t<p>Can you extend your
+    posts to 3D mazes? (hard to animate or even display, though).</p>"
+- date: 2011-03-18
+  author: Jamis
+  content: "<p>@Fref, almost all of the algorithms I covered extend very cleanly to
+    3D; you just need to use a 3-dimensional array instead of a 2D array, and add
+    UP/DOWN to the possible list of directions, and the rest “just works”. Some algorithms,
+    like Eller’s, might be harder to extend into 3D, though (I haven’t tried, that’s
+    just my suspicion).</p>"
+- date: 2011-03-18
+  author: Robin Houston
+  content: "<p>@Jamis Don’t be sorry! I wouldn’t be here if I didn’t like puzzlers.
+    Why do you think the twisty mazes appeal to me? :-)</p>\n\n\n\t<p>I did wonder
+    about doing something like what you describe, but it seemed likely to get complicated
+    pretty quickly.</p>\n\n\n\t<p>But there does seem to be a reasonably simple solution,
+    taking advantage of the fact that a passage can never turn a corner within a crossing
+    cluster. So when a new crossing is added to a cluster, just walk in a straight
+    line to the far edge of the cluster to see where the passage comes out again (i.e.
+    to find which node to join with).</p>\n\n\n\t<p>I’ve updated the gist, and I’m
+    crossing my fingers that it actually <strong>is</strong> right this time!</p>\n\n\n\t<p>I
+    had to turn “grid” and “sets” into instance variables of the main object so the
+    next_non_U method could see them. I suspect my limited experience of Ruby is letting
+    me down here: how would you have done it? (As something of a newcomer to Ruby,
+    I find it rather weird that methods don’t close over the variables of their outer
+    scope, but I imagine it’s one of those things you get used to pretty quickly.)</p>"
+- date: 2011-03-18
+  author: Jamis
+  content: "<p>@Robin, that’s a great observation. It seems like that could definitely
+    be a promising avenue to explore. Sadly, the gist still isn’t quite right: try
+    “kruskals-weave.rb 10 10 50 2762126207”, and you’ll see there are subtrees that
+    are disconnected from the rest of the graph (the bottom-right corner, for instance,
+    is part of one such subtree). I’m going to play with this approach some today,
+    though, it seems like it ought to work!</p>\n\n\n\t<p>Regarding the grid/sets
+    instance variables, at this point, the script is getting big enough that I would
+    probably refactor everything into an object so that the state can be shared more
+    easily. Barring that, I would probably have just passed the grid and sets variables
+    to the method as arguments. I definitely agree that there have been times where
+    I’ve wished Ruby methods were closures.</p>"
+- date: 2011-03-18
+  author: Jamis
+  content: "<p>@Robin, how about this?</p>\n\n\n\t<p><a href=\"https://gist.github.com/876334\">https://gist.github.com/876334</a></p>\n\n\n\t<p>This
+    tries it as a 3-phase approach, where the first phase just lays down the crossings
+    (without connecting them to adjacent cells). The second phase then uses your next_non_U
+    to connect sets based on the crossings. And the third-phase is just Kruskals.</p>\n\n\n\t<p>Empirically
+    it seems to work, but I’m still trying to see, more formally, if it will actually
+    generate perfect mazes every time.</p>"
+- date: 2011-03-18
+  author: Darren
+  content: "<p>I like Kruskal’s for things like this. It lets you put in buildings
+    (inaccessible places) and large rooms. I’ll have to add weaves to my implementation,
+    which will be nice because I am using it to drive a 3D maze game.</p>\n\n\n\t<p>http://www.youtube.com/watch?v=X2mkwcfEd_8</p>"
+- date: 2011-03-18
+  author: Jamis
+  content: "<p>@Darren, very nice! Let me know how doing weaves in a 3D environment
+    works; you might have better luck just implementing a true 3D maze.</p>\n\n\n\t<p>@Robin,
+    alas, I found a counter-example in my proposed 3-phase implementation: “kruskal-weave-2.rb
+    10 10 40 77682634”. There’s an artifact just above the center. I see how it happens,
+    and I have some ideas for how to work around it, but it does suggest that my idea
+    was flawed. :)</p>"
+- date: 2011-03-18
+  author: Robin Houston
+  content: "<p>@Jamis Sadly I haven’t had any more time to look at this today, and
+    now I’m going to be offline for the next week. Your three-phase idea sounds pretty
+    sensible — but I guess it has the problem that it can create a loop out of crossings,
+    since you’re laying down the crossings before you know what is connected to what?
+    (I don’t have a computer with me now, so I can’t try your example to see whether
+    that is indeed the problem you found.)</p>\n\n\n\t<p>This is surprisingly hard!
+    If you haven’t cracked it in the next week, then I swear I won’t rest until I
+    do.</p>\n\n\n\t<p>PS. I <strong>have</strong> given up on the problem of uniform
+    weave-maze generation. None of my ideas worked, and I haven’t any more. Ah well.</p>"
+- date: 2011-03-18
+  author: Jamis
+  content: "<p>@Robin, enjoy your time offline! I’ll keep tinkering on this. Sorry
+    to hear you’ve given up on the uniform weave-mazes, but I totally understand;
+    that’s a very hard problem. :)</p>\n\n\n\t<p>The problem I saw with the 3-phase
+    was indeed a result of loops being added because of the blind first-phase. There
+    must be happy medium between laying the crossings down blindly, and setting the
+    connecting passages in stone. Anyway, I’ll keep at it.</p>"
+- date: 2011-03-31
+  author: Robin Houston
+  content: "<p>All right, then! How about this? https://gist.github.com/896124</p>"
+- date: 2011-03-31
+  author: Robin Houston
+  content: "<p>Problems worthy of attack\nprove their worth by hitting back.\n— Piet
+    Hein</p>\n\n\n\t<p>kruskal-weave-3.rb 15 15 50 4146911113</p>\n\n\n\t<p>:-(</p>"
+- date: 2011-04-01
+  author: Robin Houston
+  content: "<p>Ah, it’s all right! There’s an easy fix this time.</p>\n\n\n\t<p>I’m
+    starting to think this might be correct, at last. The only innovation is that
+    it deals with the crossings a row at a time, and doesn’t update the ‘sets’ until
+    it’s checked that a candidate row can be inserted without creating any loops.
+    If there’s a loop, it just generates another row of random crossings and tries
+    again.</p>"
+- date: 2011-04-05
+  author: Jamis
+  content: "<p>@Robin, that’s excellent! That seems to work very nicely. Thanks for
+    working that out! It’s pretty amazing how busy the mazes look with the crossings
+    so tightly packed. :)</p>"

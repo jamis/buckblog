@@ -1,0 +1,111 @@
+---
+- date: 2011-01-12
+  author: ben
+  content: "<p>Loving this maze posts.  This would make a fun book at some point.</p>"
+- date: 2011-01-12
+  author: yachris
+  content: "<p>Really like the animations <del>- they make the algorithms come alive
+    :</del>)</p>\n\n\n\t<p>It’d be cool to see a “breadth first” version of this.
+    \ What I mean is keep a list of rooms.  The first room is the whole maze; you
+    take the next room off the front of the list, split it into two new rooms and
+    add each to the end of the list.  So instead of recursing down to the smallest
+    rooms in each area, it fills in a the same level of detail everywhere.  Takes
+    more memory, but it would easily allow the “infinite zoom” effect.</p>\n\n\n\t<p>Thanks!</p>"
+- date: 2011-01-12
+  author: Jamis
+  content: "<p>@yachris, that’d be a great way to approach it—give it a try and let
+    me know how it goes!</p>"
+- date: 2011-01-12
+  author: Samuel Williams
+  content: "<p>I had a different approach.</p>\n\n\n\t<p>(1) Generate a random path
+    through the maze, then randomly add walls that don’t intersect that path.</p>\n\n\n\t<p>(2)
+    Select a start and end point. Randomly add walls and check that they are still
+    connected. Repeat until appropriate wall density is met.</p>\n\n\n\t<p>For (2),
+    I used A* algorithm.</p>\n\n\n\t<p>If you are interested in mazes, you might enjoy
+    my A* demonstration:\nhttp://www.oriontransfer.co.nz/research/a-star-maze-solver/index</p>"
+- date: 2011-01-12
+  author: Magnus
+  content: "<p>I have a method by which I can solve any maze instantly, after some
+    initial work has been done.</p>"
+- date: 2011-01-13
+  author: Darryl Nester
+  content: "<p>Just discovered this series of posts today—very nice!</p>\n\n\n\t<p>I
+    did some similar work creating demos of maze generation a few years ago, intended
+    for an audience of students in an introductory programming course.  My demos are
+    here:\nhttp://www.bluffton.edu/%7Enesterd/java/maze.html\n(These illustrate several
+    methods of maze generation on square and hexagonal grids.  They should work in
+    any browser, including [shudder] IE.)</p>\n\n\n\t<p>In addition, if you want to
+    test your understanding of recursive backtracking mazes, see if you can identify
+    the starting point of the maze in the finished product:\nhttp://www.bluffton.edu/%7Enesterd/java/mazegame.html</p>"
+- date: 2011-01-13
+  author: terry
+  content: "<p>love your blog and especially the javascript demos.  i would love to
+    forward them to similarly minded techies.  do you have a page which just summarises
+    the demos for the various algorithms on one page?</p>"
+- date: 2011-01-13
+  author: Jamis
+  content: "<p>@Darryl, very nice! Using pregenerated image tiles to display the maze
+    is a great idea, I was trying to think of ways to efficiently show different tesselations,
+    and that’s a good one. I may have to steal that eventually. :)</p>\n\n\n\t<p>@terry,
+    the source code is in CoffeeScript (which compiles to Javascript), and is available
+    here: <a href=\"http://github.com/jamis/csmazes\">http://github.com/jamis/csmazes</a>.
+    A demo of all algorithms implemented in that project is hosted at <a href=\"http://www.jamisbuck.org/mazes\">http://jamisbuck.org/mazes</a>,
+    but that site may not always be in sync with the latest version on GitHub.</p>"
+- date: 2011-01-13
+  author: Michael B
+  content: "<p>Interesting article. I love mazes, and generation of them has always
+    been something that I thought I’d get into but never seemed to find the time.</p>\n\n\n\t<p>It
+    still amazes me, though, that someone would intentionally alienate a significant
+    portion of the potential visitors by making one browser or another not support
+    their code. You don’t write code that only works in IE because the users of the
+    other browsers will not be able to use your website, and vice-versa. I’m not trumping
+    any one browser, it just seems like I spend a lot of time trying to get that concept
+    through to far too many people in the development world.</p>\n\n\n\t<p><span class=\"caps\">BTW</span>,
+    just out of curiosity I tried it and your samples did work for me in <span class=\"caps\">IE
+    8</span>, both running and stepping.</p>"
+- date: 2011-01-13
+  author: Jamis
+  content: "<p>@Michael, I’m glad it worked for you in <span class=\"caps\">IE8</span>.
+    Just so you know, I’m not intentionally alienating IE users. I spent a few hours
+    trying to get these algorithms to render well in IE, and it was some of the most
+    frustrating hours I’ve spent in recent memory. And it was fruitlessly spent, too.
+    I have no idea why it’s working for you (though I’m glad it is), but my experiments
+    all resulted in the mazes rendering with cells wrapping oddly, resizing randomly
+    during animation, and generally being a mess. The closest I got to it working
+    in IE also resulted in the animation performance degrading terribly on other browers
+    at larger resolutions, which wasn’t acceptable to me.</p>\n\n\n\t<p>The code for
+    these animations is in the public domain, though, at <a href=\"http://github.com/jamis/csmazes\">http://github.com/jamis/csmazes</a>,
+    so if you (or any other IE-minded person) feels passionately enough about this,
+    they are certainly welcome to have a go at it. For myself, this is all a labor
+    of love, and done without a penny received in return, so I’m obviously going to
+    focus on what brings me pleasure, and IE definitely does not do that.</p>"
+- date: 2011-01-13
+  author: Jon Peterson
+  content: "<p>I could certainly see this being combined with your Mandelbrot zoom
+    idea into a game inspired by Falldown ( http://www.albinoblacksheep.com/games/falldown
+    ).</p>\n\n\n\t<p>It would probably require some refining of the algorithm to prevent
+    impossible situations from developing <del>- at least to a certain degree -</del>
+    but I think it’s something a lot of people would play if it showed up on Kongregate!</p>"
+- date: 2011-01-13
+  author: Jon Peterson
+  content: |-
+    <p>Err… that was supposed to be wrapped in dashes. I did not intend it as strikethru text.
+    Just clarifying! Meant it as an admission that such a game would have different requirements, <span class="caps">NOT</span> as a negative implication about your code.</p>
+- date: 2011-01-20
+  author: TechNeilogy
+  content: "<p>I like this algorithm.  The fractal nature of the mazes reflects the
+    type of complexity one finds in natural maze-like structures such as complex buildings,
+    caves, etc.  It is not unusual in such venues to find complex groupings of passages
+    connected by narrow halls or single doors.  So the mazes generated seem more realistic
+    to me and less like artificial puzzles.</p>"
+- date: 2011-02-25
+  author: shayneo
+  content: "<p>Whats nice about this one, is by backing off from recursing down to
+    fully completing the render you get “rooms” generated. On my experiments on a
+    100×100 grid, about 5-6 depths recursion generates nice mazes with lots of “rooms”.</p>"
+- date: 2011-04-05
+  author: Josiah Carlson
+  content: "<p>You don’t need to “add walls” in order to implement this algorithm.
+    I implemented it with a “passage carvers” method by only changing a small piece.
+    https://gist.github.com/904686</p>\n\n\n\t<p>Also: great articles. I’ve been enjoying
+    going back and reading them when I have free time :)</p>"

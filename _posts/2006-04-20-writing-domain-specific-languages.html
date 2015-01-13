@@ -1,0 +1,115 @@
+---
+layout: post
+title: Writing Domain Specific Languages
+post_id: 159
+categories:
+- Essays and Rants
+date: 2006-04-20 09:22:00.000000000 -06:00
+author: Jamis
+permalink: 2006/04/20/writing-domain-specific-languages.html
+---
+
+<p>I received an email from Erik Kastner recently, in which he asked me, “How do you get to the point where you are writing <a href="http://en.wikipedia.org/wiki/Domain_Specific_Language">Domain Specific Languages</a>?”</p>
+<p>I had never really thought critically about the process of writing a <acronym title="Domain Specific Language">DSL</acronym>. It’s like, if someone were to ask you, “how do you get to the point where you are programming computers?” For me, at least, it was something I just gradually started playing with, a little at a time. I certainly don’t consider myself an expert on the topic, but what follows are some of my thoughts regarding <span class="caps">DSL</span> creation.</p>
+<p>On the technical end, the trick to writing <span class="caps">DSL</span>’s in Ruby is really knowing what you can and can’t do with Ruby’s metaprogramming features. For instance, how would you:</p>
+<ul>
+	<li>write a method that works just like <code>attr_reader</code>?</li>
+		<li>write a <code>cattr_reader</code> method, which worked just like <code>attr_reader</code>, but dealt at the Class level instead of the instance level? </li>
+		<li>write a method like <code>Array#each</code>?</li>
+		<li>create a mixin like Enumerable that provided similar functionality, simply based on the existance of <code>#each</code>?</li>
+	</ul>
+<p>The fascinating thing is that, in my experience, most well-written Ruby programs are already a <span class="caps">DSL</span>, just by nature of Ruby’s syntax. Symbols, blocks, optional parentheses around parameters—these all go a long way toward making Ruby programs read naturally. Additionally, a well-designed application encapsulates its problem domain, which also just happens to be a good metric for determining the effectiveness of a <span class="caps">DSL</span>. A <span class="caps">DSL</span> can be thought of as (and many cases, really <em>is</em>) an <span class="caps">API</span> for your application.</p>
+<p>As with any interface, <span class="caps">GUI</span> or otherwise, mockups are critical in the design phase. How else will you know what you want to implement? I’ve found that when I’m wanting to write a <span class="caps">DSL</span> it helps to mock it up. Just as I would throw together some <span class="caps">HTML</span> to mock up a new web application, I will throw together a simple “mock.rb” file that contains what I would like the <span class="caps">DSL</span> to look like. It can even be helpful to disregard limits of Ruby syntax—make it look like what you would most prefer, in an ideal world, and when it is done, strip it back based on Rails syntax limitations. Once I’ve got something that reads well and seems to cover all the bases, I’ll convert that mockup into unit tests, and then start implementing it from there.</p>
+<p>For example, suppose you were designing a <span class="caps">DSL</span> to represent meal recipes. Ideally, it might look like:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">PBJ Sandwich<tt>
+</tt><tt>
+</tt>ingredients:<tt>
+</tt>- two slices of bread<tt>
+</tt>- one heaping tablespoon of peanut butter<tt>
+</tt>- one teaspoon of jam<tt>
+</tt><tt>
+</tt>instructions:<tt>
+</tt>- spread peanut butter on one side of one slice of bread<tt>
+</tt>- spread jam on top of peanut butter<tt>
+</tt>- place other slice of bread on top<tt>
+</tt><tt>
+</tt>servings: 1<tt>
+</tt>prep time: 2 minutes</pre></td>
+</tr></table>
+<p>This is definitely not a syntax that the Ruby parser will accept. However, with a few tweaks we can get it pretty close to what we’d like, and still have it parsable by Ruby:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">recipe <span class="s"><span class="dl">"</span><span class="k">PBJ Sandwich</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>ingredients <span class="s"><span class="dl">"</span><span class="k">two slices of bread</span><span class="dl">"</span></span>,<tt>
+</tt>            <span class="s"><span class="dl">"</span><span class="k">one heaping tablespoon of peanut butter</span><span class="dl">"</span></span>,<tt>
+</tt>            <span class="s"><span class="dl">"</span><span class="k">one teaspoon of jam</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>instructions <span class="s"><span class="dl">"</span><span class="k">spread peanut butter...</span><span class="dl">"</span></span>,<tt>
+</tt>             <span class="s"><span class="dl">"</span><span class="k">spread jam...</span><span class="dl">"</span></span>,<tt>
+</tt>             <span class="s"><span class="dl">"</span><span class="k">place other slice...</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>servings <span class="i">1</span><tt>
+</tt>prep_time <span class="s"><span class="dl">"</span><span class="k">2 minutes</span><span class="dl">"</span></span></pre></td>
+</tr></table>
+<p>From there, we would build some unit tests to make sure each of the elements of the <span class="caps">DSL</span> work as expected, and that they work together as we would like. However, first we need to determine what <em>kind</em> of <span class="caps">DSL</span> we are making. This decision will depend on the format of our <span class="caps">DSL</span>, and will impact how we do our testing. There are basically four significant approaches to <span class="caps">DSL</span> design:</p>
+<ul>
+	<li>
+<strong>Instantiation</strong>. This is the form that is seen most often in Ruby projects, and which most Rubyists probably don’t even think of as a <span class="caps">DSL</span>. Basically, your <span class="caps">DSL</span> is simply methods of an object. You interact with it by instantiating the object and calling the methods. The <span class="caps">HTML</span> creation <span class="caps">DSL</span> of Ruby’s <span class="caps">CGI</span> class uses this approach, as does the <span class="caps">XML</span> creation <span class="caps">DSL</span> of Jim Weirich’s Builder.</li>
+		<li>
+<strong>Class macros</strong>. You define your <span class="caps">DSL</span> as methods on some ancestor class, and subclasses can then use those methods to tweak the behavior of themselves and their subclasses. These kinds of macros often create new methods. Think “attr_reader” in the stdlib, or “has_many” in ActiveRecord.</li>
+		<li>
+<strong>Top-level methods</strong>. Your application basically loads a “configuration” file, which is just a Ruby script augmented with your <span class="caps">DSL</span> syntax. Your application defines the <span class="caps">DSL</span> as top-level methods, and then invokes <code>load</code> with the path to your <span class="caps">DSL</span> script. When those methods are called in the configuration file, they modify some central (typically global) data, which your application uses to determine how it should execute. Rake is an example of this kind of <span class="caps">DSL</span>.</li>
+		<li>
+<strong>Sandboxing</strong>. This approach is a special case of the more general <em>instantiation</em> technique. Your <span class="caps">DSL</span> is defined as methods of some object, but that object is really just a “sandbox”. Interacting with the object’s methods modify some state in the sandbox, which is then queried by the application. Typically, this approach is used in conjunction with <code>instance_eval</code> and friends, so that some configuration file is loaded (or a block is given) and executed within the context of the sandbox. (This sounds similar to the <em>top-level methods</em> technique, with the exception that the <span class="caps">DSL</span> is restricted to the sandbox—there no global methods involved.) Capistrano and Needle both use this approach.</li>
+	</ul>
+<p>Looking at the recipe example earlier, we don’t want to use <em>instantiation</em>, because that would require explicit receivers (e.g. <code>x.recipe "PBJ..."</code>). We don’t want <em>class macros</em>, because that would imply that the recipes are defined within a class. What we want is to use either the <em>top-level methods</em> approach or the <em>sandboxing</em> approach, the difference being what our tolerance is for adding methods to the global namespace is, and whether or not we can deal with a global data store for the entire application.</p>
+<p>Once we know what approach we are going to use, we would then define the unit tests based on that decision.</p>
+<p>Regardless of the approach you use, some of the language features you can use to make your <span class="caps">DSL</span> come to life include:</p>
+<ul>
+	<li>
+<strong>symbols</strong>. These have less line-noise than strings and tend to be favored by <span class="caps">DSL</span> writers.</li>
+		<li>
+<strong>procs</strong>. More than anything else, these make <span class="caps">DSL</span>’s in Ruby read and work naturally. They allow simple encapsulation of functionality (so you can write augmented branching constructs), and also let you do delayed evaluation of code.</li>
+		<li>
+<strong>modules</strong>. With modules you can easily specialize individual objects with <span class="caps">DSL</span> methods.</li>
+		<li>
+<strong><code>eval</code>, <code>instance_eval</code>, and <code>class_eval</code></strong>. It is definitely worth learning the difference between these three, and how they can be used. These are critical to many different dynamic techniques.</li>
+		<li>
+<strong><code>define_method</code></strong>. This lets you define new methods that can reference their closure, which you can’t do so easily using the eval methods.</li>
+		<li>
+<strong><code>alias_method</code></strong>. Rails uses this to good effect to allow modules to override behavior of the classes they are included in.</li>
+		<li>
+<strong><code>Module#included</code></strong> lets you do additional processing at the moment that a module is included in a class.</li>
+		<li>
+<strong><code>Class#inherited</code></strong> lets you keep track of who is inheriting from what</li>
+	</ul>
+<p>There are, of course, many more tools that a <span class="caps">DSL</span> writer can use, but I won’t enumerate them all here. Hopefully some of this is helpful. I keep seeing people on the mailing lists asking for “books to learn how to write <span class="caps">DSL</span>’s”, but I don’t think it is something a book can really help you with. It’s a different way of thinking about writing code, and as such needs to be learned by doing, not by reading. Experimentation is the key!</p>

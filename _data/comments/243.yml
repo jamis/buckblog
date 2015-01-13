@@ -1,0 +1,9 @@
+---
+- date: 2005-12-17
+  author: livejasmin
+  content: |-
+    This is awesome, can’t wait to use it.
+
+    Is there an easy way to remove the old versions with gem? I have so many, and each gem has its own version number, so it’s a pain to go through and remove all the old ones.
+
+    Does anyone have any tips to share?

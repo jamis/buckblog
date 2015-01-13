@@ -1,0 +1,53 @@
+---
+layout: post
+title: When duplication is not duplication
+post_id: 61
+categories:
+- Essays and Rants
+date: 2008-03-06 15:56:00.000000000 -07:00
+author: Jamis
+permalink: 2008/03/06/when-duplication-is-not-duplication.html
+---
+
+<p>I was looking through some C code today, and stumbled across this lovely little gem:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">tmp = <span class="s"><span class="dl">"</span><span class="ch">\"</span><span class="k">#</span><span class="dl">"</span></span>;<tt>
+</tt><span class="r">while</span> (*tmp) {<tt>
+</tt>  FD_SET(*tmp, url_encode_map);<tt>
+</tt>  tmp++;<tt>
+</tt>}<tt>
+</tt></pre></td>
+</tr></table>
+<p>Now, be honest. I don’t care <em>how</em> good you are at C, it takes you a few brain cycles to process that and figure out that it is just setting two bits in a bit field. It really <em>should</em> have been written like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">FD_SET(<span class="ch">'"'</span>, url_encode_map);<tt>
+</tt>FD_SET(<span class="ch">'#'</span>, url_encode_map);<tt>
+</tt></pre></td>
+</tr></table>
+<p>This raises the question: <em>why wasn’t it</em>? I’ll tell you why:</p>
+<p>Programmers have this burning desire to avoid code duplication. We’re taught, almost since the cradle, to abhor duplicated code and to avoid it all cost. Duplicating code is <em>evil</em>, it leads to <em>unmaintainable code</em>, and <em>propogates bugs</em>. <em>Never, ever, do it!!!</em></p>
+<p>Allow me to let you in on a little secret.</p>
+<p><em>Calling the same function twice is <span class="caps">NOT</span> duplicating code.</em> Not if the arguments change between calls.</p>
+<p>Even calling the same function <em>three times</em> in a row is kosher. Four times, even. At some point, you might want to consider a loop, if the arguments can be determined functionally, but only do so when the list of similar function calls is harder to read and understand than the loop is. This is often when the loop takes fewer lines of code than the function calls do:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">for</span> (i = <span class="i">127</span>; i &lt; <span class="i">256</span>; i++) {<tt>
+</tt>  FD_SET(i, hdr_encode_map);<tt>
+</tt>  FD_SET(i, url_encode_map);<tt>
+</tt>}<tt>
+</tt></pre></td>
+</tr></table>
+<p>There. Had to get that off my chest. Now, back to work.</p>

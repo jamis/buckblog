@@ -1,0 +1,69 @@
+---
+- date: 2008-03-07
+  author: Daniel
+  content: "<p>Amazing. Fantastic Job</p>"
+- date: 2008-03-07
+  author: Tim Harper
+  content: "<p>You’ve impacted me for life.  I will never look at a clock the same.
+    \ Ever. :)</p>"
+- date: 2008-03-07
+  author: Eric Anderson
+  content: "<p>Enjoyed this greatly. Especially the fact that the styling of the answer
+    looks like a browser response.</p>"
+- date: 2008-03-07
+  author: Nicolás Sanguinetti
+  content: "<p>Damn, it’s 9:40, now I have to wait for about 4 hours before the hour
+    becomes useful.</p>"
+- date: 2008-03-07
+  author: andy
+  content: "<p>as someone else with a baby boy waking me up a few times a night I
+    found this to be especially heart-warming</p>\n\n\n\t<p>thanks</p>"
+- date: 2008-03-07
+  author: Keeto
+  content: "<p>One of the funniest things I’ve seen in a long time.. Great work..</p>"
+- date: 2008-03-08
+  author: kylichuku
+  content: "<p>hehe, using brute force technique you can get really appropriate answers
+    to the questions :)</p>"
+- date: 2008-03-08
+  author: hatless
+  content: "<p>I’m disappointed that the actual status code being returned for all
+    of them is good ol’ 200. How are we supposed to implement applications that consume
+    it in an efficient way if we have to scrape the body text?</p>"
+- date: 2008-03-08
+  author: Jamis
+  content: "<p>@hatless, I tried having it actually return that status code, but some
+    of them are actually interpreted by the browser as that status, with unexpected
+    consequences. Imagine that! A browser understanding a status code! ;)</p>\n\n\n\t<p>On
+    the other hand, though, you obviously didn’t think to try the <span class=\"caps\">XML</span>
+    version:</p>\n\n\n<table class=\"CodeRay\"><tr>\n  <td title=\"click to toggle\"
+    class=\"line_numbers\"><pre>1<tt>\n</tt></pre></td>\n  <td class=\"code\"><pre>curl
+    -i \"http://8ttp.jamisbuck.org/answer.xml?q=Will Java ever make a comeback\"<tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>That
+    will return a blank body with the “correct” <span class=\"caps\">HTTP</span> status
+    code, and an X-Question header that echoes the original question.</p>"
+- date: 2008-03-08
+  author: Jamis
+  content: "<p><strong>sigh</strong></p>\n\n\n\t<p>Never mind. The <span class=\"caps\">XML</span>
+    version doesn’t actually work, because lighttpd translates <span class=\"caps\">HTTP</span>
+    status codes it doesn’t understand (which is most of them) to “400 Bad Request”.</p>\n\n\n\t<p>Ah,
+    well.</p>"
+- date: 2008-03-08
+  author: hatless
+  content: "<p>Must say I’m impressed that you at least intended to have it work “properly”.
+    \ :)</p>"
+- date: 2008-03-11
+  author: JohnB
+  content: "<p>As usual, I am in awe.  I trust that the https version works for when
+    I need a secure answer to “she loves me, or loves me not?”...</p>"
+- date: 2008-03-15
+  author: Ryan
+  content: "<p>Goodbye the rest of the afternoon!</p>"
+- date: 2008-04-08
+  author: Dustin
+  content: "<p>Jamis,</p>\n\n\n\t<p>Aren’t you the original developer of Vade Mecum?
+    You’ve come a long way! :D</p>\n\n\n\t<p>404 Sleep not found! Awesome. Glad to
+    see family life gets others up at 4:00 am to (hopefully) get something done.</p>"
+- date: 2008-04-10
+  author: Jamis
+  content: "<p>@Dustin, yes, I originally wrote Vade Mecum, too! I’ve dabbled in quite
+    a few different things, and PocketPC development was one of them. :)</p>"

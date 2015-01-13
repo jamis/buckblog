@@ -1,0 +1,97 @@
+---
+- date: 2011-02-07
+  author: olivier
+  content: "<p>a mazing! great! thank you</p>"
+- date: 2011-02-07
+  author: Wyatt Carss
+  content: "<p>This has been a fantastic read to keep along with – thanks for all
+    the excellent work!</p>"
+- date: 2011-02-07
+  author: Gordon
+  content: |-
+    <p>Hi Jamis!
+    I really enjoyed these posts, and I think it would be great if you discussed a bit your javascript implementations!
+    Thanks!</p>
+- date: 2011-02-07
+  author: TechNeilogy
+  content: "<p>Thanks for the series; blogging at its best!</p>"
+- date: 2011-02-07
+  author: jim
+  content: "<p>you are officially the King of Mazes!</p>"
+- date: 2011-02-07
+  author: Jamis
+  content: "<p>Thanks, everyone, for the kind words and encouragement! It means a
+    lot to me that you are enjoying what I’m writing; it keeps me wanting to write
+    more. :)</p>"
+- date: 2011-02-08
+  author: Pedro Arthur Duarte
+  content: "<p>Like Olivier said, the post was just “a mazing” =D</p>"
+- date: 2011-02-09
+  author: Nekogui
+  content: |-
+    <p>“a mazing” \o/
+    Great post :)</p>
+- date: 2011-02-09
+  author: gulput
+  content: |-
+    <p>The RoR front-end is almost done and quick contribution I gave was a Perl script that receives a folder as input and analyzes all the source code available inside the folder (recursive). You can find the <span class="caps">README</span>.markdown under the same folder.
+    This analysis is just oriented to quantity of lines of code.</p>
+- date: 2011-02-09
+  author: chris
+  content: "<p>The whole series of posts were “a mazing.” Hehe. Thanks for the time
+    and effort. I have a sort of ill-formed question. I’ve been wondering about labyrinths.
+    That is, one winding path. Usually, at least in how I visualize a labyrinth, the
+    end of the labyrinth is in the center of the structure. These algorithms seem
+    to be “hit two walls down” and those are the ends. Are there biases one can introduce
+    to generate increased path distance between certain sets of points, and shorter
+    distance between others? Or something similar? Like, the further one approaches
+    the center of the maze, the harder it becomes. Forgive me, if this sounds ill-phrased
+    it is because it is ill-formed in my own thoughts.</p>"
+- date: 2011-02-09
+  author: Jamis
+  content: "<p>Hey @chris, good questions. I honestly don’t know the answers. :) But
+    it sounds like a fun challenge. If you figure anything out, let me know.</p>\n\n\n\t<p>Also,
+    so you know, the term “labyrinth” is often to describe a “maze” with no junctions.
+    That is to say, it’s a maze where you go in at the start point, and walk and walk
+    and walk until you get out. There are no intersections, no choices to make, etc.
+    Just a long windy passage. It’s fairly easy to turn any perfect maze (on a rectangular
+    grid) into such a labyrinth: you just choose a starting point, and then follow
+    the maze, splitting each passage in half lengthwise as you go. So deadends become
+    u-turns, passages become two-way streets, etc. When you’re done, you’ll have a
+    labyrinth that enters at one point, winds over every cell in the maze, and exits
+    at a point neighboring the entrance. It will be exactly twice the dimensions of
+    the original maze.</p>\n\n\n\t<p>Not sure if that gives you any ideas or not.
+    :) But it’s a fun trick!</p>"
+- date: 2011-02-11
+  author: Axolotl
+  content: "<p>Thank you very much for this great series of articles. Looking forward
+    to implementing one or more of these algorithms :D</p>"
+- date: 2011-02-11
+  author: chris
+  content: "<p>Hey @jamis: That is a cool trick, very clever – how easily converted
+    from maze to labyrinth! I’ll be sure to keep you informed of anything interesting
+    (doubtful, hehe) I come up with. Thanks again.</p>"
+- date: 2011-02-16
+  author: Srini
+  content: "<p>Awesome set of articles. Thanks a ton Jamis. You’re an inspiration.</p>"
+- date: 2011-02-24
+  author: dent
+  content: "<p>I also wanted to say thanks for this series; I was inspired to re-implement
+    Primm’s algorithm on a hexagonal grid (like http://www-cs-students.stanford.edu/~amitp/Articles/HexLOS.html
+    shows) and had a great time doing it!</p>"
+- date: 2011-04-07
+  author: WagonRepairer
+  content: "<p>Hi there! Thank you very much for outlining these algorithms. This
+    has been very helpful.</p>\n\n\n\t<p>Linked below is my port of three of them
+    (Recursive Backtracker, Hunt&amp;Kill and Recursive Division) in Lua (using one
+    of Lua’s many pseudo-OOP styles) for a game project using the SpringRTS engine.</p>\n\n\n\t<p>http://code.google.com/p/spring-engine-dungeon/source/browse/trunk/mods/mazecraft-pre.sdd/LuaRules/Gadgets/mazecode.lua#</p>\n\n\n\t<p>The
+    Recursive Division turns out to be the best suited for our game as it allows control
+    over corridor sizes, rooms and even easy doors. But I enjoyed this so much I think
+    I just might implement the Growing Tree for fun even if we don’t use it.</p>"
+- date: 2011-04-08
+  author: Jamis
+  content: "<p>@WagonRepairer, thanks for sharing your Lua version of those algorithms!
+    You’ll have to let us know when the game project is ready for consumption :)</p>"
+- date: 2011-05-04
+  author: hey_yoro@yahoo.com
+  content: "<p>What a nice and helpfull site… Congrats!</p>"

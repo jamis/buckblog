@@ -1,0 +1,347 @@
+---
+layout: post
+title: 'Maze Generation: Eller''s Algorithm'
+post_id: 20
+categories:
+- Under the Hood
+date: 2010-12-29 06:41:00.000000000 -07:00
+author: Jamis
+permalink: 2010/12/29/maze-generation-eller-s-algorithm.html
+summary: >
+  A clever technique is demonstrated for generating a random maze,
+  one row at a time
+---
+
+<p>Last time I talked about the <a href="http://weblog.jamisbuck.org/2010/12/27/maze-generation-recursive-backtracking">recursive backtracker algorithm</a> for maze generation. That’s probably always going to be my favorite algorithm for generating mazes, for a variety of reasons, but that’s not going to stop me from looking at others.</p>
+<p>For one thing, there are some pretty crazy algorithms out there for generating mazes.</p>
+<p>Eller’s algorithm is one of the craziest. It’s also one of the fastest. And it’s the only one I know that let’s you generate mazes of an infinite size. In linear time.</p>
+<p>Yeah, it’s that crazy.</p>
+<p>It does this by building the maze one row at a time, using sets to keep track of which columns are ultimately connected. But it never needs to look at more than a single row, and when it finishes, it always produces a perfect maze.</p>
+<p>Like I did for the recursive backtracking algorithm, here’s the “mile-high” overview of Eller’s algorithm:</p>
+<ol>
+	<li>Initialize the cells of the first row to each exist in their own set.</li>
+		<li>Now, randomly join adjacent cells, but only if they are not in the same set. When joining adjacent cells, merge the cells of both sets into a single set, indicating that all cells in both sets are now connected (there is a path that connects any two cells in the set).</li>
+		<li>For each set, randomly create vertical connections downward to the next row. Each remaining set must have at least one vertical connection. The cells in the next row thus connected must share the set of the cell above them.</li>
+		<li>Flesh out the next row by putting any remaining cells into their own sets.</li>
+		<li>Repeat until the last row is reached.</li>
+		<li>For the last row, join all adjacent cells that do not share a set, and omit the vertical connections, and you’re done!</li>
+	</ol>
+<p>If you’re at all like me, your head is probably spinning at this point. Let’s back up and work through an example manually, to help you see how the algorithm works in practice. Let’s begin with a simple 5-column row.</p>
+<h2>An example</h2>
+<p>First, we initialize each cell in that row to be in its own set. I’ll just assign each cell a number, indicating the set it belongs to:</p>
+<pre>
+   ___________________
+  |   |   |   |   |   |
+  | 1 | 2 | 3 | 4 | 5 |
+  |___|___|___|___|___|
+</pre>
+<p>Next, we randomly join adjacent cells that belong to different sets. The cells so joined also are merged into the same set:</p>
+<pre>
+   ___________________
+  |           |       |
+  | 1   1   1 | 4   4 |
+  |___________|_______|
+</pre>
+<p>Now we randomly determine the vertical connections, at least one per set. The cells in the next row that we connected to must be assigned to the set of the cell above them:</p>
+<pre>
+   ___________________
+  |           |       |
+  | 1   1   1 | 4   4 |
+  |    ___    |___    |
+  |   |   |   |   |   |
+  | 1 |   | 1 |   | 4 |
+  |___|   |___|   |___|
+</pre>
+<p>Next, we flesh out the next row, assigning each remaining cell to its own set:</p>
+<pre>
+   ___________________
+  |           |       |
+  | 1   1   1 | 4   4 |
+  |    ___    |___    |
+  |   |   |   |   |   |
+  | 1 | 6 | 1 | 7 | 4 |
+  |___|___|___|___|___|
+</pre>
+<p>At this point, we can actually discard the first row, because the algorithm is done with it. We’ll keep it around for now, though, for the sake of illustration. I’ll just put a little space between the previous rows, and the current row:</p>
+<pre>
+   ___________________
+  |           |       |
+  | 1   1   1 | 4   4 |
+  |    ___    |___    |
+       ___     ___     
+  |   |   |   |   |   |
+  | 1 | 6 | 1 | 7 | 4 |
+  |___|___|___|___|___|
+</pre>
+<p>Now, we just repeat the previous steps on our new row. We randomly connect adjacent sets that do not share a set. Something like this:</p>
+<pre>
+       ___     ___     
+  |       |       |   |
+  | 1   1 | 1   1 | 4 |
+  |_______|_______|___|
+</pre>
+<p>Now we add at least one vertical connection for each set:</p>
+<pre>
+       ___     ___     
+  |       |       |   |
+  | 1   1 | 1   1 | 4 |
+  |___    |_______|   |
+      |   |       |   |
+      | 1 |       | 4 |
+      |___|       |___|
+</pre>
+<p>And then we flesh out the next row (I’m reusing some extinct set numbers here, for the sake of single-digits):</p>
+<pre>
+       ___     ___     
+  |       |       |   |
+  | 1   1 | 1   1 | 4 |
+  |___    |_______|   |
+  |   |   |   |   |   |
+  | 8 | 1 | 9 | 2 | 4 |
+  |___|___|___|___|___|
+</pre>
+<p>This is our current state, with history, now:</p>
+<pre>
+   ___________________
+  |           |       |
+  | 1   1   1 | 4   4 |
+  |    ___    |___    |
+  |       |       |   |
+  | 1   1 | 1   1 | 4 |
+  |___    |_______|   |
+   ___     ___ ___
+  |   |   |   |   |   |
+  | 8 | 1 | 9 | 2 | 4 |
+  |___|___|___|___|___|
+</pre>
+<p>It’s starting to look like a maze! Let’s do one more iteration, and then finish it out. So, first, randomly join adjacent cells from different sets:</p>
+<pre>
+   ___     ___ ___
+  |   |   |           |
+  | 8 | 1 | 9   9   9 |
+  |___|___|___ ___ ___|
+</pre>
+<p>Then, add at least one veritcal connection for each set:</p>
+<pre>
+   ___     ___ ___
+  |   |   |           |
+  | 8 | 1 | 9   9   9 |
+  |   |   |___     ___|
+  |   |   |   |   |
+  | 8 | 1 |   | 9 |
+  |___|___|   |___|
+</pre>
+<p>And flesh out the next row:</p>
+<pre>
+   ___________________
+  |           |       |
+  | 1   1   1 | 9   9 |
+  |    ___    |___    |
+  |       |       |   |
+  | 1   1 | 1   1 | 9 |
+  |___    |_______|   |
+  |   |   |           |
+  | 8 | 1 | 9   9   9 |
+  |   |   |___     ___|
+           ___     ___ 
+  |   |   |   |   |   |
+  | 8 | 1 | 3 | 9 | 5 |
+  |___|___|___|___|___|
+</pre>
+<p>And now the last row. This time, we must connect <span class="caps">ALL</span> adjacent (but disjoint) cells. In this case, that means all of them:</p>
+<pre>
+           ___     ___ 
+  |                   |
+  | 8   8   8   8   8 |
+  |___________________|
+</pre>
+<p>Since this is the last row, we skip the bit where we add verticals…and that means we’re done! The result, with set numbers removed, is:</p>
+<pre>
+   ___________________
+  |           |       |
+  |           |       |
+  |    ___    |___    |
+  |       |       |   |
+  |       |       |   |
+  |___    |_______|   |
+  |   |   |           |
+  |   |   |           |
+  |   |   |___     ___|
+  |                   |
+  |                   |
+  |___________________|
+</pre>
+<p>A perfect maze!</p>
+<h2>Analysis</h2>
+<p>Let’s analyze that a bit. It seemed to come together pretty magically, considering we weren’t looking at anything but the current row (and the next row, briefly). The key to it all are the <em>sets</em>.</p>
+<p>The set that a cell belongs to tells the algorithm who its siblings were, are, and will be. It’s the crystal ball that lets the algorithm gaze into the future (and the past!) and avoid adding cycles and isolates to the maze.</p>
+<p>Cells that share a set, also share a path between them. (If you don’t believe me, look at the example I just gave, above. Every cell that shares a set identifier is connected; cells in different sets are not connected.)</p>
+<p>If the algorithm allowed us to create a passage between two cells that shared a set, it would be introducing a <em>second</em> path between those two cells. That’s essentially the definition of a <em>loop</em> or <em>cycle</em> in the graph, and since we don’t want cycles in our maze, we disallow that.</p>
+<p>Conversely, cells that do not share a set, are not connected (they are <em>disjoint</em>). By the time we reach the end of the maze, every cell must be connected to every other cell, and the only way we can do that is if every set is eventually merged into a single set.</p>
+<p>We can’t do that if a set does not propogate itself to the next row. This is why the algorithm requires that at least one vertical passage be created for each set in the row. Otherwise, any set that didn’t create a vertical passage would become extinct after the current row. The result would be an <em>isolate</em>, an orphaned collection of cells that could never be reached from outside that set.</p>
+<p>Then, at the end, the algorithm joins all disjoint sets, allowing every cell in the the entire maze to be connected by a single, unique path to any other cell in the maze. And we’re done!</p>
+<h2>Implementation</h2>
+<p>How would you implement this? The key, for me, turned out to be implementing the sets. You need to be able to quickly determine the set of any given cell in a row, as well as determine the list of cells in any given set. I did this by maintaining a hash of arrays that mapped sets to cells, and another hash that mapped cells to sets. As I did in the example above, I simply used a unique integer to identify each set.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="iv">@sets</span> = <span class="co">Hash</span>.new { |h,k| h[k] = [] }<tt>
+</tt><span class="iv">@cells</span> = {}<tt>
+</tt><tt>
+</tt><span class="r">def</span> <span class="fu">same?</span>(cell1, cell2)<tt>
+</tt>  <span class="iv">@cells</span>[cell1] == <span class="iv">@cells</span>[cell2]<tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">def</span> <span class="fu">add</span>(cell, set)<tt>
+</tt>  <span class="iv">@cells</span>[cell] = set<tt>
+</tt>  <span class="iv">@sets</span>[set] &lt;&lt; cell<tt>
+</tt>  <span class="pc">self</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">def</span> <span class="fu">each_set</span><tt>
+</tt>  <span class="iv">@sets</span>.each <span class="r">do</span> |id, set|<tt>
+</tt>    <span class="r">yield</span> id, set<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The process of merging two sets is O(n) as I’ve implemented it, but given that n is fairly small, that didn’t worry me too much:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">merge</span>(sink_cell, target_cell)<tt>
+</tt>  sink, target = <span class="iv">@cells</span>[sink_cell], <span class="iv">@cells</span>[target_cell]<tt>
+</tt><tt>
+</tt>  <span class="iv">@sets</span>[sink].concat(<span class="iv">@sets</span>[target])<tt>
+</tt>  <span class="iv">@sets</span>[target].each { |cell| <span class="iv">@cells</span>[cell] = sink }<tt>
+</tt>  <span class="iv">@sets</span>.delete(target)<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>There’s plenty of room for optimization there, though.</p>
+<p>Lastly, assigning set ids is done via a #populate method:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">populate</span><tt>
+</tt>  width.times <span class="r">do</span> |cell|<tt>
+</tt>    <span class="r">unless</span> <span class="iv">@cells</span>[cell]<tt>
+</tt>      set = <span class="iv">@next_set</span> += <span class="i">1</span><tt>
+</tt>      <span class="iv">@sets</span>[set] &lt;&lt; cell<tt>
+</tt>      <span class="iv">@cells</span>[cell] = set<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  <span class="pc">self</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Once I had these routines (encapsulated into a State class), the algorithm itself came fairly neatly. It works in two steps, plus a third to convert the representation into something easier to display.</p>
+<p>The first step looks over the row and randomly connects adjacent cells (if they exist in disjoint sets):</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">connected_sets = []<tt>
+</tt>connected_set = [<span class="i">0</span>]<tt>
+</tt><tt>
+</tt>(state.width<span class="i">-1</span>).times <span class="r">do</span> |c|<tt>
+</tt>  <span class="r">if</span> state.same?(c, c<span class="i">+1</span>) || (!finish &amp;&amp; rand(<span class="i">2</span>) &gt; <span class="i">0</span>)<tt>
+</tt>    <span class="c"># cells are not joined by a passage, so we start a new connected set</span><tt>
+</tt>    connected_sets &lt;&lt; connected_set<tt>
+</tt>    connected_set = [c<span class="i">+1</span>]<tt>
+</tt>  <span class="r">else</span><tt>
+</tt>    state.merge(c, c<span class="i">+1</span>)<tt>
+</tt>    connected_set &lt;&lt; c<span class="i">+1</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>connected_sets &lt;&lt; connected_set<tt>
+</tt></pre></td>
+</tr></table>
+<p>As you can see, the process simply looks at each cell and its neighbor, comparing their states and then either adding the cells to a “connected set” (a series of adjacent cells that are all horizontally connected) and merging the sets together, or creating a new connected set when the two cells should not be merged.</p>
+<p>The <code>finish</code> variable is used to change the behavior for the final row; it is false for the rest of the rows.</p>
+<p>The second step looks at the available sets and randomly adds vertical connections:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">verticals = []<tt>
+</tt>next_state = state.next<tt>
+</tt><tt>
+</tt><span class="r">unless</span> finish<tt>
+</tt>  state.each_set <span class="r">do</span> |id, set|<tt>
+</tt>    cells_to_connect = set.sort_by { rand }[<span class="i">0</span>, <span class="i">1</span> + rand(set.length<span class="i">-1</span>)]<tt>
+</tt>    verticals.concat(cells_to_connect)<tt>
+</tt>    cells_to_connect.each { |cell| next_state.add(cell, id) }<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p><code>State#next</code> just returns a new State object (that we’re using for the next row). Then, for each set of cells, we randomly pick some number of them and add them to the list of verticals we’re going to create. (The verticals are also added to the next row, in the same set.)</p>
+<p>The algorithm itself then loops over these steps repeatedly, setting <code>state</code> to <code>next_state</code> at the end of each pass, until it is done. (In my case, I trapped the <span class="caps">INT</span> signal, so ctrl-C can be used to terminate the algorithm and gracefully finish the maze.)</p>
+<p>For those of you not using IE (which will make a total mess of this), here are two demos you can play with to see the algorithm in action:</p>
+<script type="text/javascript" src="/javascripts/maze-minified.js"></script>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("Eller", 5, 5, { "class": "small" });</script>
+<script type="text/javascript">Maze.createCanvasWidget("Eller", 15, 15, { "class": "medium", id: "eller_medium", interval: 25 });</script>
+</div>
+<p>My complete implementation (in Ruby) is here:</p>
+<script src="https://gist.github.com/753860.js?file=ellers.rb"></script>
+<noscript><a href="https://gist.github.com/753860">ellers.rb on gist.github.com</a></noscript>
+<p>I think Eller’s algorithm is harder to customize than the recursive backtracking algorithm, but it can be done. Consider it an exercise, if you want: how would you introduce horizontal or vertical bias into the maze? (I.e., how would you make the maze prefer longer corridors, either horizontally or vertically?) How would you implement weave mazes, where the passages move over or under other passages? Especially tricky: how would you introduce symmetry into the output, given that the algorithm itself doesn’t look at anything more than the single row?</p>
+<p>If nothing else, though, please give Eller’s algorithm a shot. Please share your implementations (in any language!) in the comments (links to <a href="http://gist.github.com">gist.github.com</a> are preferred).</p>

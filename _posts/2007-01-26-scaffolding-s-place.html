@@ -1,0 +1,19 @@
+---
+layout: post
+title: Scaffolding's place
+post_id: 126
+categories:
+- Essays and Rants
+date: 2007-01-26 08:33:00.000000000 -07:00
+author: Jamis
+permalink: 2007/01/26/scaffolding-s-place.html
+---
+
+<p>Scaffolding, scaffolding, scaffolding… In a <a href="http://weblog.jamisbuck.org/2007/1/25/review-beginning-ruby-on-rails-e-commerce">recent article</a> I said that “I have lots of issues with scaffolding”. Why would that be? I mean, what’s not to like about scaffolding, really? It’s all about rapid application development, and prototyping, and <a href="http://gettingreal.37signals.com/">getting real</a>, isn’t it? Isn’t it?? <span class="caps">WELL</span>????</p>
+<p>Specifically, the issue I have with scaffolding is this: it puts the emphasis on the application’s model, instead of the user interface. It assumes that you know the domain of the application before you know how the user is going to interact with it. It assumes that the user interface can successfully follow your conjured domain. It assumes, frankly, far too much.</p>
+<p>Now, don’t get me wrong: as a pedagogical aid, scaffolding is great. It lets newcomers to Rails quickly get a skeletal app up and running, giving them a platform from which to beginning learning Rails without stumbling over too many details. That’s great. <em>But scaffolding is not for building real applications.</em></p>
+<p>Your users don’t care about the data model. Face it, <em>they just don’t care</em>. They will never interact with the data model. They will never interact with your carefully crafted schema. <em>They interact with the UI.</em> Therefore, it is very important that when you start an application, <em>you start with what the users will care about</em>. Get the UI right. Sketch it out, mock it up, get it real. Once you have a “real” UI to work from, it is amazing how much it can tell you about the application’s domain.</p>
+<p>A single screen can tell you more about what models you need and the relationships between them than a hundred-page written specification. A picture really is worth a thousand words. And the remarkable thing is this: the model you infer from the UI is often <em>not</em> what you would have created had you gone for the model first.</p>
+<p>Furthermore, working with scaffolding makes it nigh impossible to do <a href="http://en.wikipedia.org/wiki/Test-driven_development">test-driven development</a>, whereas working from a UI makes it very, very easy. With scaffolding, what tests would you write first? What is the behavior your want your final product to have? That’s not a very easy question to answer when all you know is the set of models you think your application needs.</p>
+<p>When working from a UI, though, you can look at all the elements and data on the page and immediately start seeing what tests you need. “If the user is an administrator and they view the page, they ought to see this link, but otherwise that link is hidden.” <span class="caps">BAM</span>, instant test case. And you immediately know you’re going to need (at the very least) “users”, some of whom can be “administrators”.</p>
+<p>I’ll say it again, scaffolding is a great learning tool, like training wheels or parachuting in tandem with an instructor. But when you do the real thing, those training wheels come off. You jump from the plane alone. You design the UI first.</p>

@@ -1,0 +1,8 @@
+---
+- date: 2006-11-15
+  author: kevin
+  content: "<p>The link points to http://www.therails.way.com/ not http://www.therailsway.com/.</p>"
+- date: 2006-11-15
+  author: Jamis
+  content: "<p>Gah, thanks Kevin. Fixed. That’s what I get for being all excited and
+    eager. :)</p>"

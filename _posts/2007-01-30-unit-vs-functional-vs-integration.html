@@ -1,0 +1,19 @@
+---
+layout: post
+title: Unit vs. Functional vs. Integration
+post_id: 123
+categories:
+- Tips & Tricks
+date: 2007-01-30 08:23:00.000000000 -07:00
+author: Jamis
+permalink: 2007/01/30/unit-vs-functional-vs-integration.html
+---
+
+<p>Unit tests. Functional tests. Integration tests. Rails draws a lot of circles around your tests, and it does a good job (in general) of helping you know what kinds of tests belong in each, but there are still some gray areas (and areas that I think it categorizes incorrectly).</p>
+<p>For example: when do you use a functional test, and when do you use an integration test? Googling will point you at a variety different opinions, but here’s my take on it.</p>
+<p>Unit tests are for testing models and pseudo-models. Basically, they are the simplest of your tests, exercising very specific functionality. Rails also throws your ActionMailer tests in this group, but I think that’s wrong. ActionMailer objects are more like controllers than like models, so I generally move my mailer tests to the functionals.</p>
+<p>Functional tests bypass a lot of the start-up processes of Rails: they don’t try to recognize any routes, they ignore your instructions regarding your sessions, and they don’t do any request parsing. They depend heavily on the TestRequest and TestResponse classes, which stub out much of the basic functionality of the request and response objects.</p>
+<p>As a result, functional tests are fast (since they skip so much initialization), and they are excellent at testing the meat of your controllers. However, because they require you to explicitly instantiate the controller you want to test (take a look at the <code>setup</code> method that Rails generates for you), they are harder to use in cross-controller scenarios. Also, if you want to make sure your routes are processed by the correct controllers and actions, functional tests don’t make that very easy, either.</p>
+<p>Integration tests, on the other hand, test the entire Rails stack. Each request in an integration test mimics a real web request and exercises routing recognition, actually parses incoming requests, uses real sessions, and so forth. As a result, integration tests are significantly slower than functional tests, but they are <em>excellent</em> at testing cross-controller stories. Want to make sure the flash you set in the “create” action is being properly displayed in the “index” action? Sounds like you need an integration test. You can even use integration tests to exercise entire stories: “user logs in, views the catalog, views a product, adds it to their cart, checks out, enters credit card, submits payment, sees invoice.”</p>
+<p>Integration tests are also good for grouping a bunch of related tests that cut across controllers, like permissions and access control. Even though each individual test might only test a single controller, each one is testing a <em>different</em> controller, and rather than have all your access control tests spread across several files in the “functional” directory, it is more convenient (and maintainable) to group them into a single integration test suite.</p>
+<p>Naturally, your application may have some classes that don’t fit cleanly into any of the above three categories. What about a service that runs via cron? What about code that processes incoming emails? As a rule of thumb, if your test focuses on very specific functionality and tests only a single model, put it in the “unit” directory. If it tests something that depends on your models (like a controller, mailer, or other service), put it in the “functional” directory. And if you are testing something that cuts across multiple controllers or services, or if you want to aggregate tests across multiple controllers, then those belong in an integration test.</p>

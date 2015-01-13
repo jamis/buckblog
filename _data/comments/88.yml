@@ -1,0 +1,43 @@
+---
+- date: 2007-06-12
+  author: johan
+  content: "<p>Congrats Jamis (and all the contributors). That page is quite the ruby
+    lovefest (rails, ruby dtrace, rubycocoa).</p>"
+- date: 2007-06-12
+  author: Dr J
+  content: "<p>Congrats Jamis.  Little by little you are taking over the world…</p>"
+- date: 2007-06-12
+  author: joost
+  content: "<p>Great to hear. You’d think they notify you…</p>"
+- date: 2007-06-12
+  author: Martin
+  content: "<p>Congratulations!</p>"
+- date: 2007-06-12
+  author: acrylic
+  content: "<p>I believe it will be installed through rubygems, so updating to the
+    latest version won’t be a problem for users (just run “gem update”)</p>"
+- date: 2007-06-12
+  author: Thijs van der Vossen
+  content: "<p>Jamis, after all this time Capistrano still makes me smile every time
+    I use it. It’s wonderful. Thanks. :)</p>"
+- date: 2007-06-12
+  author: Jamie
+  content: "<p>Congrats… amazingly handy tool. I’ll hold you to the release date an
+    you can hold me to the same date for the new Lucid blog theme. Let the race begin
+    ;)</p>"
+- date: 2007-06-13
+  author: Erinc
+  content: "<p>Congratulations! I was surprised to read that you weren’t informed
+    before.</p>"
+- date: 2007-06-14
+  author: Hendy Irawan
+  content: "<p>Yaay!! Jamis’s my man! :D</p>"
+- date: 2007-06-15
+  author: Amr
+  content: "<p>Awesome! Capistrano deserves every bit of this recognition! I have
+    a feeling Cap2 is going to become the <span class=\"caps\">UNIX</span> admins’
+    new best friend…</p>\n\n\n\t<p>Congratulations!!</p>"
+- date: 2007-06-17
+  author: dharana
+  content: "<p>Congratulations Jamis, I’m switching to capistrano for my web projects
+    as soon as 2.0 final is ready!</p>"

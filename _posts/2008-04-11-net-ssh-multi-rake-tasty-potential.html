@@ -1,0 +1,110 @@
+---
+layout: post
+title: Net::SSH::Multi + Rake == Tasty Potential
+post_id: 59
+categories:
+- Tips & Tricks
+date: 2008-04-11 10:08:00.000000000 -06:00
+author: Jamis
+permalink: 2008/04/11/net-ssh-multi-rake-tasty-potential.html
+summary: >
+  Net::SSH::Multi is announced and demonstrated in connection with custom
+  Rake tasks
+---
+
+<p>Last night I released the first preview of <a href="http://github.com/jamis/net-ssh-multi/tree/master">Net::SSH::Multi</a> (<code>gem install --source http://gems.jamisbuck.org net-ssh-multi</code>). Today, let me show you a tasty hint of what you can do with it.</p>
+<p>Consider the following Rakefile:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt>23<tt>
+</tt>24<tt>
+</tt><strong>25</strong><tt>
+</tt>26<tt>
+</tt>27<tt>
+</tt>28<tt>
+</tt>29<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">remote</span><tt>
+</tt>  <span class="iv">@remote</span> ||= <span class="r">begin</span><tt>
+</tt>    require <span class="s"><span class="dl">'</span><span class="k">net/ssh/multi</span><span class="dl">'</span></span><tt>
+</tt><tt>
+</tt>    session = <span class="co">Net</span>::<span class="co">SSH</span>::<span class="co">Multi</span>.start<tt>
+</tt><tt>
+</tt>    session.via <span class="s"><span class="dl">'</span><span class="k">gateway.host</span><span class="dl">'</span></span>, session.default_user<tt>
+</tt><tt>
+</tt>    session.group <span class="sy">:web</span> =&gt; session.use(<span class="s"><span class="dl">'</span><span class="k">web1</span><span class="dl">'</span></span>, <span class="s"><span class="dl">'</span><span class="k">web2</span><span class="dl">'</span></span>)<tt>
+</tt>    session.group <span class="sy">:app</span> =&gt; session.use(*(<span class="i">1</span>..<span class="i">8</span>).map { |n| <span class="s"><span class="dl">"</span><span class="k">app%02d</span><span class="dl">"</span></span> % n })<tt>
+</tt>    session.group <span class="sy">:db</span>  =&gt; session.use(<span class="s"><span class="dl">'</span><span class="k">db1</span><span class="dl">'</span></span>, <span class="sy">:properties</span> =&gt; { <span class="sy">:primary</span> =&gt; <span class="pc">true</span> })<tt>
+</tt><tt>
+</tt>    session<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>namespace <span class="sy">:remote</span> <span class="r">do</span><tt>
+</tt>  task <span class="sy">:hostnames</span> <span class="r">do</span><tt>
+</tt>    remote.exec(<span class="s"><span class="dl">"</span><span class="k">hostname</span><span class="dl">"</span></span>).wait<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  task <span class="sy">:app_hostnames</span> <span class="r">do</span><tt>
+</tt>    remote.with(<span class="sy">:app</span>).exec(<span class="s"><span class="dl">"</span><span class="k">hostname</span><span class="dl">"</span></span>).wait<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  task <span class="sy">:web_hostnames</span> <span class="r">do</span><tt>
+</tt>    remote.with(<span class="sy">:web</span>).exec(<span class="s"><span class="dl">"</span><span class="k">hostname</span><span class="dl">"</span></span>).wait<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>You can now do things like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">$ rake remote:hostnames<tt>
+</tt>(in /home/jamis)<tt>
+</tt>[web1] web1.host<tt>
+</tt>[app02] app02.host<tt>
+</tt>[app05] app05.host<tt>
+</tt>[app03] app03.host<tt>
+</tt>[app06] app06.host<tt>
+</tt>[app08] app08.host<tt>
+</tt>[db1] db1.host<tt>
+</tt>[app01] app01.host<tt>
+</tt>[web2] web2.host<tt>
+</tt>[app04] app04.host<tt>
+</tt>[app07] app07.host<tt>
+</tt></pre></td>
+</tr></table>
+<p>The Net::SSH::Multi library is still experimental, but it is stable and full-featured enough that I seriously considered implementing the next release of Capistrano on top of it. (I’ll probably put that off until cap3, though, due to the magnitude of the change.) If you do something cool with it, let me know!</p>

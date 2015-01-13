@@ -1,0 +1,63 @@
+---
+layout: post
+title: 'RubyConf: Day Two'
+post_id: 334
+categories:
+- Reviews
+date: 2004-10-02 13:49:00.000000000 -06:00
+author: Jamis
+permalink: 2004/10/02/rubyconf-day-two.html
+---
+
+<p>This morning started equally bleary-eyed. I just can’t seem to shake this jet lag.</p>
+<p>At any rate, I managed to shower and stumble downstairs for another exciting continental breakfast, followed by…</p>
+<h2>Morning Panel</h2>
+<h3>Patrick May: Narf, revisiting a 2 year old</h3>
+<p>Patrick spoke about his <a href="http://narf-lib.org/cgi-bin/wiki.rb">Narf</a> web framework. It’s stated goal is “to trivialize web development,” and it looks like it does a good job of that. He stated that when he started doing web development in Ruby, he was disappointed by the lack of choices in that arena, and that the <span class="caps">CGI</span> library that comes standard with Ruby is…not very good. :)</p>
+<p>One of his focuses has been on testability, and it looks like he’s done some good things in that area. I’ll definately give this project a closer look.</p>
+<h3>James Britt: ruby-doc.org, Now and the Future</h3>
+<p>James Britt is the maintainer of the fantastic <a href="http://www.ruby-doc.org">ruby-doc.org</a> website. It is a collection of various Ruby documentation, both of the core classes and the extended <span class="caps">API</span>. It even includes a version of the Pickaxe.</p>
+<p>James talked about the inspiration for ruby-doc.org, citing a ruby-talk discussion from acouple years ago in which a former Python guy complained about the lack of organized Ruby documentation. Jim Freeze (who talked about Ruby training yesterday) volunteered to help organize the documentation, and ruby-doc.org was born.</p>
+<p>James also talked about the iterations that ruby-doc.org has been through, and ended with a plea for help: he would like a more automated way to post new content, and to allow others to post content. I suspect we’ll see a new-and-improved ruby-doc.org in the near future.</p>
+<h3>David Heinemeier Hansson: Ruby on Rails</h3>
+<p>This was perhaps the most anticipated presentation of the entire conference. David Heinemeier Hansson (or <span class="caps">DHH</span> as he is affectionately called by many Rubyists) is the author of the revolutionary <a href="http://www.rubyonrails.com">Rails</a> web framework. It has been lauded and heralded by nearly everyone as the best new thing in Ruby. I have yet to do more than poke at it, but after the conference I’ll make some time to go through the videos and documentation that David has prepared. (And you should, too!)</p>
+<p>David’s presentation focused mostly on the history of Rails—how and why it came to be. He was originally a <span class="caps">PHP</span> programmer, but became disaffected with <span class="caps">PHP</span> (and other web frameworks) as his projects got larger. Thinking there had to be a better way, he started looking…</p>
+<p>He found Ruby, and was turned off by the lack of good web frameworks available for it. (There have since been many that have appeared, but at the time there was certainly a dearth.) What he wanted was something that was just enough to make database-driven web applications “tolerable.”</p>
+<p>So he started work on Rails. “Frameworks are retrospectives,” David said. They are “not built, but extracted.” Many projects fail because the developers build the framework without having any application for it. David built Rails piece-by-piece, as it was needed, so Rails really is “just enough.”</p>
+<p>He also believes firmly in “convention over configuration.” “Adhere to yesterdays’ weather,” he said. If it worked for you yesterday, put it in the framework so it can be reused. The consequence of this is that the framework becomes oriented around his way of doing things, but to be honest, his way of doing things is pretty good.</p>
+<p>He spoke, half jokingly, about how part of getting people to adopt a framework like this (where you are more-or-less forcing people to do things your way) is to allow them to configure things <em>just a little</em>. They come to you and say:</p>
+<p>“Hey, why can’t I do X?”</p>
+<p>“Well, you can, if you tweak this setting here in every class that needs it.”</p>
+<p>“Oh, cool,” they say, and off they go. Later, they come back.</p>
+<p>“I’m getting tired of having to tweak this setting in every class. Can I make it a default?”</p>
+<p>“Oh, you know,” you say, “you can’t, really. However, if you just build your application such that W, Y, and Z are true, then it will just work.”</p>
+<p>“Oh, cool,” they say, and before they know it, they’re doing things your way.</p>
+<p>The trick, David said, was to get them to at least <em>use</em> the framework and see how cool it is. Once they’re hooked, they’ll conform. :)</p>
+<p>A good quote from David: “Yes, some Java people are smart.” (Don’t ask for the context, just take the quote.)</p>
+<h2>Afternoon Panel</h2>
+<h3>Jim Weirich: Thee Many Facets of RubyGems</h3>
+<p>Jim Weirich spoke about <a href="http://rubygems.rubyforge.org">RubyGems</a>, a great package manager for Ruby that has made great strides in the last 6 months or so. In fact, the 100th gem (Ruby package) was just released in the last week, so it has some great content, too.</p>
+<p>Jim gave us all a tour of RubyGems’ functionality, and demonstrated how to install RubyGems in such a way that gem-installed packages can work seamlessly with other packages. Just install RubyGems, and then set your <span class="caps">RUBYOPT</span> environment variable:</p>
+<pre>
+  RUBYOPT=rubygems
+</pre>
+<p>(You can set <span class="caps">RUBYOPT</span> to anything that you want Ruby to consider a command-line option every time it runs…just leave the dashes off the options.)</p>
+<h3>
+<span class="caps">SASADA</span> Koichi: <span class="caps">YARV</span>, Yet Another RubyVM</h3>
+<p>Koichi has come to us <em>clear from Japan</em>, and not only that, but gave a one hour presentation, <em>in English</em>. It was really great to have him here. He has a great sense of humor, and knows a <em><span class="caps">LOT</span></em> about compilers and virtual machines.</p>
+<p>He hopes for his project, <span class="caps">YARV</span>, to be adopted as Rite (Ruby v2.0). Matz has apparently promised him that this would be so, if he finishes it. How’s that for motivation?</p>
+<p><span class="caps">YARV</span> compiles Ruby code to a byte code (or a “word” code, as he called it, since the instructions are native words, not bytes). It then executes the instructions. This uses the existing (1.9) Ruby <span class="caps">C API</span>, including the garbage collector and so forth, basically implementing <span class="caps">YARV</span> as a Ruby extension. This allows <span class="caps">YARV</span> to focus just on the VM, and not have to worry about implementing all the peripherals.</p>
+<p>For compilation, it even uses the Ruby parser, taking the node tree that is produced and then walking it to emit the instruction sequences.</p>
+<p>He showed us some benchmarks, which were impressive. There was between 50% and 300% performance improvements (depending on what was being tested) when a script was run via <span class="caps">YARV</span>, versus when it was run through the existing Ruby interpreter. Not bad!</p>
+<p>Keep it up, Koichi!</p>
+<h3>Nathaniel Talbott: <code>"Test::Unit".downcase.gsub(/::/, "/")</code>
+</h3>
+<p>Nathaniel talked about his “test/unit” testing framework for Ruby (which is actually bundled with Ruby, as of version 1.8). He talked about what he’s learned, and where he’s going with it.</p>
+<p>He showed us and demonstrated some sample code from the upcoming “test/unit2”, and it looks <em>great</em>. You no longer have to create a class for each unit test. Also, you can create reusable fixtures, easily.</p>
+<p>I’m really looking forward to this to be released!</p>
+<h2>Keynote Speaker: Brad Cox, <em>The History and Design of Objective-C</em>
+</h2>
+<p>After dinner, we were privleged to hear from Brad Cox, one of the creators of the Objective-C programming language. (FYI, Objective-C is the language used to implement the MacOS X graphical interface.)</p>
+<p>He talked about the rationale for Objective-C, and how it evolved. He only spoke about that for a half-hour or so, and then moved on to his more recent interests—DRM and how it <em>ought</em> to be implemented.</p>
+<p><span class="caps">DRM</span> (Digital Rights Management) is a hot (and controversial) topic, and I’m afraid Brad got rather bombarded by questions (some bordering on accusations) from the attendees. His main thrust is that dividing property into “tangible” and “intellectual” is insufficient, that a third division needs to be made: “digital”. He claims that “digital” property differs from the other two, and needs to be handled differently.</p>
+<p>His proposal is that digital property be managed on a per-use basis. For instance, you can get the software for free, but you have to pay for it every time you use it. Although I’m not convinced, it was an interesting idea. You can read more about it at <a href="http://www.virtualschool.edu/mybank/">MyBank Digital Rights Management System</a>.</p>

@@ -1,0 +1,15 @@
+---
+layout: post
+title: Reloading Dependencies
+post_id: 340
+categories:
+- Tips & Tricks
+date: 2004-10-10 12:23:00.000000000 -06:00
+author: Jamis
+permalink: 2004/10/10/reloading-dependencies.html
+---
+
+<p>Leon Breedt recently proposed a way to allow services to be refreshed automatically when their dependencies are altered, in Syringe (<a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/116021">ruby-talk:116021</a>, among others). Although I don’t think his proposed solution is generally possible in Syringe, it did inspire me with another idea.</p>
+<p>My response to his post (<a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/116040">ruby-talk:116040</a>) described a new service model, whimsically termed <code>RefreshableServiceModel</code>, that would allow services to be registered and manually identified as observers on other services. It wraps its services in a kind of deferring proxy. When the observed services emit an explicit “refresh!” signal, the observers then reload themselves and cause their wrapped services to be reinstantiated.</p>
+<p>To properly support what Leon mentioned, this would require that upon recieving a “refresh!” notification, each service should also emit its own “refresh!” notification, after reloading itself. This will propogate the refresh all the way through the dependency graph. However, since cycles in the graph are possible, this means that some way of detecting the cycles and preventing an infinite loop would be necessary, too.</p>
+<p>I haven’t tried implementing it yet, so I don’t know if it will work, but I’m tempted… I’m still a little doubtful about how generally useful this would be, though.</p>

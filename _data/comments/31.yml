@@ -1,0 +1,33 @@
+---
+- date: 2010-01-25
+  author: Michael Jackson
+  content: "<p>You make an excellent point about striking a balance between coding
+    and other hobbies to achieve full awesomeness. It’s very easy to become engulfed
+    in a sea of various technologies and projects so that they end up occupying not
+    only your working hours but your leisure time as well, which of course becomes
+    tiresome after a while. Thanks for the reminder.</p>"
+- date: 2010-01-26
+  author: Ryan Corradini
+  content: "<p>I agree with both of these rules, and would have liked to see you elaborate
+    on them a bit, but I can also understand the need to just kick stuff out of your
+    path sometimes.</p>\n\n\n\t<p>I would argue that true, zen awesomeness can only
+    come when you have that balance / moderation you’re talking about. If your entire
+    life is code, on matter how good you are, I wouldn’t call that awesome… I’d call
+    it a little bit pathetic.</p>"
+- date: 2010-02-13
+  author: aibras
+  content: "<p>Hey Jamis! \nI enjoyed the 4 series awesomeness articles.</p>\n\n\n\t<p>if
+    I get this straight, the basic idea of your article series is the programming
+    language and its resources [people, readable materials, libraries]; even though
+    that you mentioned the design patterns in hurry.</p>\n\n\n\t<p>I have something
+    to add:</p>\n\n\n\t<p>What about the concepts or generally the theories? \nfor
+    example knowing the concepts of the <span class=\"caps\">OOP</span> involve more
+    than the languages or libraries; think of <span class=\"caps\">UML</span> as a
+    tool to understand the <span class=\"caps\">OOP</span>.\nwe can consider the algorithms
+    &amp; math parts of this also.</p>\n\n\n\t<p>another thing, you didn’t mention
+    the programming domains. for example programming in <span class=\"caps\">HTTP</span>
+    context; is different than programming a device driver.</p>\n\n\n\t<p>last thing,
+    almost everything you talked about is somehow a tool. for me, the “four cardinal
+    rules” should be something like:</p>\n\n\n\t<p>1.  Know thy tools.\n1.1. Know
+    thy languages.\n1.2. Know thy libraries.\n2. Know thy domains. \n3. Know thy theories.
+    \n4. Know thy communities.</p>"

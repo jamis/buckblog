@@ -1,0 +1,39 @@
+---
+layout: post
+title: 'Preview Releases: Net::SSH, Net::SSH::Multi'
+post_id: 57
+categories:
+- Announcements
+date: 2008-04-19 21:36:00.000000000 -06:00
+author: Jamis
+permalink: 2008/04/19/preview-releases-net-ssh-net-ssh-multi.html
+---
+
+<p>I’m almost ready to do a preview release of the next Capistrano version, which is built on top of the new Net::SSH library. To do that, though, I need to prime the pump by pushing out a few small fixes to Net::SSH. So, behold!</p>
+<h3>Net::SSH 2.0 Preview Release #4 (1.99.3):</h3>
+<pre><code>gem install --source http://gems.jamisbuck.org net-ssh</code></pre>
+<p>This release has two minor new features and two fixed bugs:</p>
+<ul>
+	<li>Make sure <span class="caps">HOME</span> is set to something sane, even on OS’s that don’t set it by default. This makes things work a little better on Windows than before. (Ahem…any windows users out there that want to start playing with Net::SSH…I’d love to hear from you how it does.)</li>
+	</ul>
+<ul>
+	<li>Add a :passphrase option to specify the passphrase to use with private keys. This lets you use encrypted keys without interaction (though since it requires you to hard-code the passphrase in your script…it kind of makes it pointless to use an encrypted key. Still, I’ve had lots of requests for this, and Francis Sullivan finally provided a patch).</li>
+	</ul>
+<ul>
+	<li>
+<span class="caps">BUG FIX</span>: a new auth-agent connection will now be opened for every auth-agent channel request, rather than reusing a single auth-agent connection. This fixes some rather bizarre errors on some hosts.</li>
+	</ul>
+<ul>
+	<li>
+<span class="caps">BUG FIX</span>: explicitly provided keys (those given via the :keys option) are now loaded correctly, thanks to some timely File.expand_path’ing provided in a patch from Thomas Hudson.</li>
+	</ul>
+<h3>Net::SSH::Multi 1.0 Preview Release #2 (0.99.1)</h3>
+<p>Unrelated to Capistrano (since the next release of cap won’t be using it), I’m also pushing out a second preview release of Net::SSH::Multi, a library for managing multiple Net::SSH connections in parallel.</p>
+<pre><code>gem install --source http://gems.jamisbuck.org net-ssh-multi</code></pre>
+<p>This release has a single bug fix:</p>
+<ul>
+	<li>
+<span class="caps">BUG FIX</span>: don’t try to do IO.select on closed streams. This fixes a problem related to auth-agent channels getting closed and causing the parallel session processing to blow up.</li>
+	</ul>
+<h3>Capistrano 2.3.0 preview release?</h3>
+<p>I’ll hopefully have a preview release for the next Capistrano version next week sometime. It’s close! I’m using it myself, locally, but I want to try it on a few more deploys to make sure it really works as advertised. I haven’t actually run any timings on it, but Capistrano with Net::SSH v2 feels significantly faster than it was on Net::SSH 1.x. Stay tuned!</p>

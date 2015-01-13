@@ -1,0 +1,69 @@
+---
+layout: post
+title: Extending render
+post_id: 138
+categories:
+- Tips & Tricks
+date: 2007-01-16 12:38:00.000000000 -07:00
+author: Jamis
+permalink: 2007/01/16/extending-render.html
+---
+
+<p><a href="http://rails.co.za/articles/2007/01/13/rjs-refactoring">Yesterday’s tip</a> demonstrated how to refactor common <span class="caps">RJS</span> bits into their own method. Specifically, it gave an example that created a special <code>render_error</code> method which you can call whenever you need to render an error.</p>
+<p>Today’s tip is about overriding the existing <code>render</code> method, to add support for your own custom conditions. Specifically, <code>render_error</code> is nice and all, but wouldn’t it be nice to make it look more like the standard Rails <code>render</code> method?</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">create</span><tt>
+</tt>  ...<tt>
+</tt><span class="r">rescue</span> <span class="co">Exception</span> =&gt; error<tt>
+</tt>  render <span class="sy">:error</span> =&gt; error<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>It’s remarkably simple, actually. To implement the above, you’d just throw something like the following in your ApplicationController:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">render</span>(*args)<tt>
+</tt>  <span class="r">if</span> args.length == <span class="i">1</span> &amp;&amp; args.first.is_a?(<span class="co">Hash</span>)<tt>
+</tt>    <span class="r">case</span> args.first[<span class="sy">:error</span>]<tt>
+</tt>    <span class="r">when</span> <span class="pc">nil</span> <span class="r">then</span> <span class="r">super</span><tt>
+</tt>    <span class="r">when</span> <span class="co">ActiveRecord</span>::<span class="co">InvalidRecord</span><tt>
+</tt>      render(<span class="sy">:update</span>) <span class="r">do</span> |page|<tt>
+</tt>        page[<span class="sy">:js_error_bold</span>].replace_html(args.first[<span class="sy">:message</span>])<tt>
+</tt>        page[<span class="sy">:js_error_text</span>].replace_html(<tt>
+</tt>          args.first[<span class="sy">:error</span>].record.errors.full_messages.join(<span class="s"><span class="dl">"</span><span class="ch">\n</span><span class="dl">"</span></span>))<tt>
+</tt>        page[<span class="sy">:js_error</span>].visual_effect <span class="sy">:blind_down</span>, <span class="sy">:duration</span> =&gt; <span class="fl">0.2</span><tt>
+</tt>      <span class="r">end</span><tt>
+</tt>    <span class="r">else</span> raise args.first[<span class="sy">:error</span>]<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">else</span><tt>
+</tt>    <span class="r">super</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>In other words, first we check to see if the first and only argument is a hash (since that’s all our new feature uses). Then, we test the value of the <code>:error</code> key, calling super whenever we want to delegate to Rails’ <code>render</code> method. We then compare the error raised to some list of errors that we want to handle specially, and do the appropriate work for each.</p>
+<p>You could also make it so that it accepted the error directly, as the first argument (<code>render(error)</code>).</p>
+<p>You can use this technique anywhere you find yourself rendering the same kind of thing in multiple places. Errors are a good example, and are (frankly) where I use this technique the most.</p>

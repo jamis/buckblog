@@ -1,0 +1,19 @@
+---
+layout: default
+---
+
+<h2>Archives</h2>
+
+{% assign month = "" %}
+<div class="articles">
+  {% for post in site.posts %}
+    {% assign post_month = post.date | date: "%Y%m" %}
+
+    {% if post_month == month %}{% assign new_month = false %}
+    {% else %}{% assign new_month = true %}{% endif %}
+
+    {% assign month = post_month %}
+
+    {% include post_link.html %}
+  {% endfor %}
+</div>

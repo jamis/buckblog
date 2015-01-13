@@ -1,0 +1,78 @@
+---
+layout: post
+title: 'RubyConf: Day One'
+post_id: 341
+categories:
+- Reviews
+date: 2004-10-01 14:12:00.000000000 -06:00
+author: Jamis
+permalink: 2004/10/01/rubyconf-day-one.html
+---
+
+<p>I woke this morning from a deep sleep, feeling fuzzy and foggy and befuddled. I had set the alarm for 7:30 (since the continental breakfast started at 8:30), but keep in mind that I’m two hours from my native time zone. My body still thought it was 5:30 (I’d been up until past midnight, local time. Gotta love late flights.)</p>
+<p>After taking several minutes to reorient myself and come awake, I got ready and headed downstairs. Breakfast was a bagel, two tarts, and some orange juice.</p>
+<p>David Black introduced the conference at about quarter after 9, and things got under way at 10.</p>
+<h2>Morning Panel</h2>
+<h3>Jim Freeze: Ruby training in a corporate setting</h3>
+<p>Jim’s presentation was particularly interesting to me, since I’ve been proselyting Ruby like mad at my current job (as a software engineer at <a href="http://www.byu.edu"><span class="caps">BYU</span></a>). He began proselyting Ruby at his job after only knowing it for 6 months, and was very successful at helping it to become adopted there. Currently, there are over 50 employees that write Ruby code, and if someone does something in Perl they get chastised. :)</p>
+<p>He now teaches a 2.5 day course about Ruby, at his job. He said that when doing such training, you should use interactive examples, code reviews, and snacks. He also emphasized that the course is <em>not a presentation</em>. The students should treat it as a class, with exercises, etc.</p>
+<p>“Wow ‘em,” he said. Show them <code>irb</code>, and things like:</p>
+<pre>
+  irb(main)&gt; 2**2
+  =&gt; 4
+  irb(main)&gt; 2**2**2
+  =&gt; 16
+  irb(main)&gt; 2**2**2**2
+  =&gt; 65536
+  irb(main)&gt; 2**2**2**2**2
+  =&gt; 200352993...
+</pre>
+<p>“Can <code>Perl</code> do that?” he asked.</p>
+<p>He also emphasized showing that everything is an object:</p>
+<pre>
+  irb(main)&gt; 5 * 4
+  =&gt; 20
+  irb(main)&gt; 5.* 4
+  =&gt; 20
+  irb(main)&gt; 5.methods
+  =&gt; ["%", "between?", "numerator", ...]
+  irb(main)&gt; 5.class
+  =&gt; Fixnum
+  irb(main)&gt; Fixnum.methods
+  =&gt; ["method", "send", "name", ...]
+</pre>
+<p>Most importantly, he said, you should always use the language (i.e., terminology) that the students are familiar with. Examples should be given using terms and situations that they can relate to. Also, in his course, he shows them the “fun” stuff, like the email and http libraries.</p>
+<p>Once the students are using Ruby for work, it is important to facilitate their integration into the new environment. Give them all the credit for their work, even if you write most of it at first. Help them feel successful with it.</p>
+<p>Lastly, he asked if the 300+ PowerPoint slides he has should be opensourced. The general concensus was “yes,” although the format they should be released as was not determined.</p>
+<h3>Rich Kilmer: Controlling and Testing Distributed Systems with Ruby</h3>
+<p>This presentation was supposed to be “Rubyx4DC” by John Knight, but John didn’t show up. Rich graciously offered to pinch hit, and gave this presentation which he originally gave at <a href="http://conferences.oreillynet.com/os2004/"><span class="caps">OSCON</span></a>.</p>
+<p>Although most of his talk was not directly applicable to anything I’m doing, and so was not of particular interest, I did like his speaking style very much. He was also not very complimentary about <span class="caps">DARPA</span> research projects and Java programmers. :) One choice quote: “I loved Java at one point, too. I just grew up.” (That might become my new sig line…)</p>
+<p>Basically, what I got from Rich’s presentation was this: he and others wrote a Ruby system to test a Java system that was supposed to operate even with up to 40% infrastructure loss. This Java system is called “Cougaar” (and no, it has nothing to do with <span class="caps">BYU</span>), and consists of <em>800,000 lines of Java code</em>. Ultimately, it will be used by the military for logistics, to determine where and what resources are needed, and when.</p>
+<p>The Ruby infrastructure, Rich said, works beautifully and wow’ed everyone involved. They wrote an application called <span class="caps">ACME</span> (and no, I can’t remember what it stands for) which is data drive, and which tests Cougaar. <span class="caps">ACME</span> generates <span class="caps">XML</span> scripts (and Ruby scripts, and Python scripts) which are recipes for how a particular test run should proceed. The <span class="caps">XML</span> scripts can be over a <em>million lines long</em>. The generated Ruby scripts are <em>875,000 lines</em>. Rich admitted that they were causing the Ruby interpreter a bit of grief. :)</p>
+<p>Dynamic languages, Rich said, are great for testing complex domains. Ruby lets you increase complexity, and increase the abstraction to hide the complexity at the same time. It is also a good substitute for a domain language (one written to handle a specific domain).</p>
+<h2>Afternoon Panel</h2>
+<h3>Austin Ziegler: Ruwiki</h3>
+<p>Austin gave a good tour of his <a href="http://ruwiki.rubyforge.org/ruwiki.cgi">Ruwiki</a> project. Ruwiki is a wiki implemented in Ruby, with many good existing (and planned) features. You ought to look at the Ruwiki page for more information on the project.</p>
+<h3>Hal Fulton: Tycho, a Proposed Ruby-based <span class="caps">PIM</span>
+</h3>
+<p>I was originally planning to loan my laptop to Hal for this presentation, but I couldn’t get FXRuby to work correctly on it. Hal managed to find another laptop, fortunately.</p>
+<p>His <a href="http://tycho.rubyforge.org/">Tycho</a> project, although very young, sounds really neat. It is more than just a contact manager, it is an everything-you-want-to-keep-track-of manager. It helps catagorize and manage “notes”, and will provide an <span class="caps">API</span> for easily searching and manipulating those notes. He even mentioned that it might be a good use of inversion of control, providing a great lead in for my presentation (which will be Sunday morning).</p>
+<p>He encouraged interested Rubyists to hack on the code, to help make it better.</p>
+<h2>Evening Panel</h2>
+<h3>Paul Brannan: Hacking Ruby</h3>
+<p>Paul spoke at length about the various ways to extend Ruby, making it do more than it was intended (or ought) to do. He talked about <code>callcc</code>, and Florian Gross’ “Binding.of_caller” extension. He also talked about the Ruby/DL library.</p>
+<p>One thing that really caught my attention was <code>Object.become</code>, an extension which lets you replace one object instance with another, <em>in place</em>. For instance:</p>
+<pre>
+  obj1 = bob = Object.new
+  obj2 = Object.new
+
+  obj1.become( obj2 )
+</pre>
+<p>If you were to do the above, obj1 (and all variables that point to it) would be the <em>exact same instance</em> as obj2. This means that even the <code>bob</code> variable would be changed. This would be a wonderful feature to have in <a href="http://copland.rubyforge.org">Copland</a>, with the deferred instantation feature. Perhaps “Object.become” will find its way into Ruby…</p>
+<h3>Rich Kilmer: Alph</h3>
+<p>This was probably my favorite presentation today. Two presentations in one day from Rich Kilmer—what more can you ask? :)</p>
+<p><a href="http://alph.rubyforge.org">Alph</a> is a project of his that allows you to interface with an executing (Macromedia) Flash VM, from Ruby. He had to jump through a bunch of hoops to make this work, though—Ruby starts a Java VM, which loads an <span class="caps">SWF</span> Frame, which contains a browser, which contains the Flash plugin, which launches Flash. The new Flash VM then calls back into the executing Ruby instance, and they begin communicating over a socket.</p>
+<p>This allows you to do things like script Flash animations and interfaces, <em>from Ruby</em>. Very cool. Macromedia should be very, very afraid. :) Rich now wants to create a whole component framework in Flash, for doing layout-based <span class="caps">GUI</span>’s. Flash has one, called Flex, but it is encumbered by a very inconvenient license, and it so ticked Rich off that, quote, “it made me want to write my own component framework, in Flash.”</p>
+<p>I can relate. :)</p>
+<h2>Goodies</h2>
+<p>Can’t forget to mention that I got a copy of the new Pickaxe! It’s a great book, and it’s even signed by Dave Thomas!</p>

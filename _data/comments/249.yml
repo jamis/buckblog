@@ -1,0 +1,35 @@
+---
+- date: 2005-10-31
+  author: Brian M.
+  content: Wow! Thanks. I've been neglecting doing this myself as I've been using
+    S.E.E. for all my Haskell hacking but this is a step in the right direction.
+- date: 2005-11-01
+  author: Damien Pollet
+  content: "Hi Jamis,\r\n\r\nI think I'll learn Haskell too, at least when I can think
+    of an interesting project to hack with it :) The tutorial you pointed to in your
+    previous post was helpful, thanks!\r\n\r\nThere is a list of wanted bundles on
+    \"TextMate's wiki\":http://macromates.com/wiki/pmwiki?n=Main.Bundles, maybe you
+    can submit your bundle for inclusion in the repository?"
+- date: 2005-11-01
+  author: Matt Mower
+  content: Jamis that's brilliant.  I took a first look at Haskell last night and
+    immediatelly wondered where the TextMate support was ;-)
+- date: 2005-11-02
+  author: Nola Stowe
+  content: For windows, Ultra-Edit has support for Haskel code, haven't tried it though.
+    You'll find it on "wordfile" page. http://ultraedit.com/ if interested.
+- date: 2005-11-02
+  author: Brian M.
+  content: I don't have a windows machine but I hear the is a plugin for Visual Studio
+    for Haskell that is really nice. TextMate (thanks to Jamis) and SubEthaEdit both
+    do Haskell on OS X. Standard *nix editors like Vim and Emacs support Haskell (these
+    work on windows and OS X too). There is preliminary work on a new tool called
+    hIDE. It is still young but keep your eyes open for that one if you use Haskell
+    at all.
+- date: 2005-12-15
+  author: Miguel M. Almeida
+  content: "Thank you!! My most wanted plug-in!\nI was thinking of doing the Haskell
+    bundle for Textmate, mas it is quite hard, so I gived up.\nThank you. "
+- date: 2006-10-20
+  author: Alan Oliver
+  content: "<p>Thanks for this! It’s gonna save me an awful lot of work!</p>\n\n\n\t<p>:)</p>"

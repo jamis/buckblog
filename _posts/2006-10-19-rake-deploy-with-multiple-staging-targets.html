@@ -1,0 +1,46 @@
+---
+layout: post
+title: Rake deploy with multiple staging targets
+post_id: 191
+categories:
+- Tips & Tricks
+date: 2006-10-19 09:35:00.000000000 -06:00
+author: Jamis
+permalink: 2006/10/19/rake-deploy-with-multiple-staging-targets.html
+---
+
+<p>Jeroen Houben posted a nifty technique on the <a href="http://groups.google.com/group/capistrano">Capistrano mailing list</a> this morning. He was wanting a way to do:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">$ rake remote:staging:deploy</pre></td>
+</tr></table>
+<p>Basically, he wanted to be able to specify which stage should be the target of an arbitrary capistrano task. I suggested that he could use the <code>cap</code> command directly, with the <code>-f</code> switch to specify a different recipe file:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">$ cap -f config/deploy.staging.rb deploy</pre></td>
+</tr></table>
+<p>However, Jeroen pointed out that he liked being able to do <code>rake -T</code> to see all the possible deployment commands. He wanted to be able to see all the various staging options there, too. So, he dug in and came up with a way to easily copy the existing <code>remote:xyz</code> tasks into a subnamespace. His solution makes it as easy to do as:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">namespace <span class="sy">:remote</span> <span class="r">do</span><tt>
+</tt><tt>
+</tt>  <span class="c"># remote:staging:deploy, remote:staging:migrate, etc.</span><tt>
+</tt>  copy_remote_tasks(<span class="s"><span class="dl">"</span><span class="k">staging</span><span class="dl">"</span></span>)<tt>
+</tt><tt>
+</tt>  <span class="c"># remote:network_dev:deploy, remote:network_dev:migrate, etc.</span><tt>
+</tt>  copy_remote_tasks(<span class="s"><span class="dl">"</span><span class="k">network_dev</span><span class="dl">"</span></span>)<tt>
+</tt><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Great work, Jeroen!</p>

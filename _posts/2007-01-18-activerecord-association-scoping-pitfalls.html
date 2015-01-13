@@ -1,0 +1,120 @@
+---
+layout: post
+title: ActiveRecord association scoping pitfalls
+post_id: 136
+categories:
+- Tips & Tricks
+date: 2007-01-18 13:23:00.000000000 -07:00
+author: Jamis
+permalink: 2007/01/18/activerecord-association-scoping-pitfalls.html
+---
+
+<p>ActiveRecord’s associations let you specify just about every option that ActiveRecord#find accepts. Want your account’s people returned in sorted order? Just specify ”:order =&gt; ‘name’” in the association.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">Account</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+</tt>  has_many <span class="sy">:people</span>, <span class="sy">:order</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">name</span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>What could be simpler? Alas, there are all kinds of hidden pitfalls in this approach.</p>
+<p>Note that any query scoped by that association is going to use that order, whether you need (or even want) it or not. One consequence of this is that if your scoped find uses an index that doesn’t include the sort key (“name”, in this case), you’re going to be taxing your database unnecessarily. Let’s assume that your “people” table has an index on “account_id” and “name”, so that the default query is nice and performant:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># SELECT * FROM people WHERE (people.account_id = 1)</span><tt>
+</tt><span class="c"># ORDER BY name</span><tt>
+</tt>account.people<tt>
+</tt><tt>
+</tt><span class="c"># SELECT * FROM people WHERE (people.account_id = 1</span><tt>
+</tt><span class="c"># AND (admin = 1)) ORDER BY name</span><tt>
+</tt>account.people.find(<span class="sy">:all</span>, <span class="sy">:conditions</span> =&gt; [<span class="s"><span class="dl">"</span><span class="k">admin = ?</span><span class="dl">"</span></span>, <span class="pc">true</span>])<tt>
+</tt><tt>
+</tt><span class="c"># SELECT * FROM people WHERE (people.account_id = 1)</span><tt>
+</tt><span class="c"># ORDER BY role, name</span><tt>
+</tt>account.people.find(<span class="sy">:all</span>, <span class="sy">:order</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">role</span><span class="dl">"</span></span>)<tt>
+</tt></pre></td>
+</tr></table>
+<p>Note that last example, in particular. <em>Specifying a sort order in a scoped query appends to the sort order of the scope.</em> In other words, the query will now work the database harder, unless you just happen to have an index on all three of “account_id”, “role”, and “name”. There is not (currently) an easy way to reach into the parent’s scope and alter (or even “switch off”) the existing order.</p>
+<p>This gets even uglier if your association happens to specify a default :include clause:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">Account</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+</tt>  has_many <span class="sy">:people</span>, <span class="sy">:include</span> =&gt; <span class="sy">:email_addresses</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Now, if you try and scope the query, the scope will always inherit the requirement that the email_addresses table must be joined in. Now, sometimes you want that join. But all the time? On every scoped query? <em>Are you sure?</em> Not only does this make your database work harder (since queries involving multiple tables require more work than queries against a single table, in general), but it increases the risk of name clashes if you specify conditions or order keys without fully qualifying the table names:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># May cause problems if email_address also have a 'role' column</span><tt>
+</tt>account.people.find(<span class="sy">:all</span>, <span class="sy">:order</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">role</span><span class="dl">"</span></span>)<tt>
+</tt><tt>
+</tt><span class="c"># The safer way to do it, but you wouldn't know that</span><tt>
+</tt><span class="c"># unless you were well acquainted with how the people</span><tt>
+</tt><span class="c"># association is defined.</span><tt>
+</tt>account.people.find(<span class="sy">:all</span>, <span class="sy">:order</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">people.role</span><span class="dl">"</span></span>)<tt>
+</tt></pre></td>
+</tr></table>
+<p>So, what are your options? I would recommend doing like I’ve discussed in other articles, and like Koz and I have pointed out on <a href="http://www.therailsway.com">The Rails Way</a>: either set up a separate association that includes the sorts and includes, or use an extension method. Then, you can use the unadorned version of the association to do your scoped queries safely and efficiently, having a much better idea of what they are going to be doing to your database.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">Account</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+</tt>  <span class="c"># Option #1, using a second association. Allows you to do:</span><tt>
+</tt>  <span class="c">#   account.people</span><tt>
+</tt>  <span class="c">#   account.people_by_name</span><tt>
+</tt>  has_many <span class="sy">:people</span><tt>
+</tt>  has_many <span class="sy">:people_by_name</span>, <span class="sy">:class_name</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">Person</span><span class="dl">"</span></span>, <span class="sy">:order</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">name</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>  <span class="c"># or, using extension methods, you can do:</span><tt>
+</tt>  <span class="c">#   account.people</span><tt>
+</tt>  <span class="c">#   account.people.by_name</span><tt>
+</tt>  has_many <span class="sy">:people</span> <span class="r">do</span><tt>
+</tt>    <span class="r">def</span> <span class="fu">by_name</span><tt>
+</tt>      <span class="iv">@by_name</span> ||= find(<span class="sy">:all</span>, <span class="sy">:order</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">name</span><span class="dl">"</span></span>)<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Either way, you can rest easily knowing that the vanilla “people” association will let you query the database without any scoped assumptions about order. In fact, the only assumption you’ll get at all is the assumption that the query needs to include the “account_id” comparison.</p>
+<p>Which is right.</p>

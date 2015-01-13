@@ -1,0 +1,46 @@
+---
+layout: post
+title: assert_xml_select
+post_id: 121
+categories:
+- Tips & Tricks
+date: 2007-01-04 09:49:00.000000000 -07:00
+author: Jamis
+permalink: 2007/01/04/assert_xml_select.html
+---
+
+<p>Yeah, I’m on a real testing kick these days. Today’s <a href="http://weblog.jamisbuck.org/2007/1/2/assert_select"><span class="caps">TADFALAICKIU</span></a> is a little trick you can play with <a href="http://weblog.jamisbuck.org/2007/1/2/assert_select">assert_select</a>.</p>
+<p>Out of the box, <code>assert_select</code> works only with <span class="caps">HTML</span> documents. If you try it on an <span class="caps">XML</span> document (like, say, an <span class="caps">RSS</span> or Atom feed), you’ll more than likely see warnings about the document being malformed. It’s easy enough to work around, though.</p>
+<p>The trick is to define your own <code>HTML::Document</code> instance <em>before</em> calling <code>assert_select</code>. When you define your own instance, you can pass some optional parameters that make <code>HTML::Document</code> play nicely with <span class="caps">XML</span>:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><tt>
+</tt><span class="r">def</span> <span class="fu">xml_document</span><tt>
+</tt>  <span class="iv">@xml_document</span> ||= <span class="co">HTML</span>::<span class="co">Document</span>.new(<span class="iv">@response</span>.body, <span class="pc">false</span>, <span class="pc">true</span>)<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The second parameter says whether you want to parse the document in <em>strict</em> mode or not. “False” is the default; if you set it to “true”, you’ll get an exception (instead of a warning) whenever the parser hits what looks like a malformed document.</p>
+<p>The third parameter says whether or not the document is an <span class="caps">XML</span> document or not. It defaults to “false”, meaning that, by default, only <span class="caps">HTML</span> documents are parsed. Here, we set it to “true”.</p>
+<p>Once you’ve defined your custom document, you just need to define your <code>assert_select</code> wrapper:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><tt>
+</tt><span class="r">def</span> <span class="fu">assert_xml_select</span>(*args, &amp;block)<tt>
+</tt>  <span class="iv">@html_document</span> = xml_document<tt>
+</tt>  assert_select(*args, &amp;block)<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The <code>assert_select</code> method then will reuse the existing <code>html_document</code> value. Nothing to it! Just put these two methods in your <code>test/test_helper.rb</code> file, and you’re all set.</p>
+<p>(Caveat: the above won’t work if you’re trying to use <code>assert_select</code> on <span class="caps">XML</span> returned via <span class="caps">RJS</span>, since when <code>assert_select</code> parses the <span class="caps">RJS</span> response to extract the document, it builds it’s own html document.)</p>
+<p><strong>Update:</strong> <a href="http://www.businesslogic.com/">Jerry Vos and Jeff Talbot</a> pointed out the the version of assert_xml_select I originally had was not passing the block through, so nested assert_xml_select calls were not being invoked. I’ve updated the code, above, to pass the block through. Thanks for catching that, guys!</p>

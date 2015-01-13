@@ -1,0 +1,63 @@
+---
+- date: 2006-12-01
+  author: Grant Hutchins
+  content: "<p>Thanks for the continued insights!</p>\n\n\n\t<p>Array#zip works for
+    me even when the arrays don’t line up, tested in Ruby 1.8.5 at least:</p>\n\n\n<blockquote>\n\t<blockquote>\n\t<p>b</p>\n\n\t</blockquote>\n\n\n\n</blockquote>\n\n\n\n\n\t<p>=&gt;
+    [“first”, “last”]</p>\n\n\n<blockquote>\n\t<blockquote>\n\t<p>c</p>\n\n\t</blockquote>\n\n\n\n</blockquote>\n\n\n\n\n\t<p>=&gt;
+    [“grant”, “hutchins”, {:contrived_example=&gt;true}]</p>\n\n\n<blockquote>\n\t<blockquote>\n\t<p>b.zip©</p>\n\n\t</blockquote>\n\n\n\n</blockquote>\n\n\n\n\n\t<p>=&gt;
+    [[“first”, “grant”], [“last”, “hutchins”]]</p>\n\n\n<blockquote>\n\t<blockquote>\n\t<p>Hash[*(b.zip©).flatten]</p>\n\n\t</blockquote>\n\n\n\n</blockquote>\n\n\n\n\n\t<p>=&gt;
+    {“last”=&gt;”hutchins”, “first”=&gt;”grant”}</p>"
+- date: 2006-12-01
+  author: Zack
+  content: "<p>Jamis,</p>\n\n\n\t<p>Speaking of syntactic sugar don’t you think the
+    construct_attributes_from_arguments() method screams for a returning clause… </p>\n\n\n\t<pre><code>def
+    construct_attributes_from_arguments(attribute_names, arguments)\n  returning attributes
+    = {} do\n    attribute_names.each_with_index { |name, idx| attributes[name] =
+    arguments[idx] }\n  end\nend</code></pre>\n\n\n\t<p>Zack</p>"
+- date: 2006-12-01
+  author: Sandro Paganotti
+  content: "<p>Thanks for this article, i found it very interesting ! \nJust one question:
+    why rails core team used method_missing instead of reflection to generate finders
+    ?</p>"
+- date: 2006-12-01
+  author: Jamis
+  content: "<p>Sandro,</p>\n\n\n\t<p>We can’t use reflecting to generate these dynamic
+    finders, because they could be any combination of all attributes on the table,
+    and that could be a very large number. Rather than waste cycles building thousands
+    of methods that will (in all likelihood) never be called, ActiveRecord just waits
+    until they are actually called and implements them on the fly via method_missing.</p>"
+- date: 2006-12-01
+  author: Jamis
+  content: "<p>Grant, thanks for pointing that out! I wasn’t aware that zip was safe
+    to use with arrays with unequal lengths. That would cut that method down to a
+    single line.</p>\n\n\n\t<p>Zack, you’re right, it’s a prime candidate for Kernel#returning.
+    Though, with Array#zip, the need for it is obviated.</p>"
+- date: 2006-12-01
+  author: Charlie
+  content: "<p>Thanks for the article!  One follow up on the reflection question from
+    Sandro. It would seem that you could very easily add the method to the class the
+    first time it is invoked. This would make subsequent calls faster. How much faster
+    I really don’t have any idea (might not be worth it).</p>\n\n\n\t<p>Just a thought,\nCharlie</p>"
+- date: 2006-12-01
+  author: Jamis
+  content: "<p>It does make a slight difference in speed, but not, I think, enough
+    to warren the extra machinery involved. If you are calling something like User.find_by_username_and_password
+    over and over, frequently, you would probably do better to use find(:all, :conditions
+    =&gt; {}) directly. Myself, I only use dynamic finders maybe once or (at most)
+    twice per request. The bottleneck in most cases is the database, not Rails.</p>"
+- date: 2006-12-04
+  author: Matt
+  content: "<p>Thanks for another great post Jamis! Your under the hood series are
+    always very useful. It’s a nice treat that you include comments about why the
+    decisions within the code were made the way they were, as well as showing the
+    call paths.</p>"
+- date: 2006-12-05
+  author: Martin Smith
+  content: "<p>Hi Jamis,</p>\n\n\n\t<p>Very nice series.</p>\n\n\n\t<p>From a purely
+    selfish point of view could I suggest the next step in this series?</p>\n\n\n\t<p>Model
+    creation after query, especially how the columns get turned into attributes and
+    the difference between the normal assessors and the before_type_cast versions.</p>\n\n\n\t<p>Martin</p>"
+- date: 2006-12-05
+  author: Jamis
+  content: "<p>Thanks, Martin. I’ll add your suggestion to my list. No promises, you
+    understand, but I’ll keep it in mind!</p>"

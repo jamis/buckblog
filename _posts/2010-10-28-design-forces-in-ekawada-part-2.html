@@ -1,0 +1,24 @@
+---
+layout: post
+title: Design Forces in Ekawada, Part 2
+post_id: 28
+categories:
+- Projects
+- Under the Hood
+date: 2010-10-28 22:34:00.000000000 -06:00
+author: Jamis
+permalink: 2010/10/28/design-forces-in-ekawada-part-2.html
+---
+
+<p>In my <a href="http://weblog.jamisbuck.org/2010/10/27/a-look-inside-ekawada-s-design">previous post</a>, I talked a bit about one of the “forces” that influenced the design of Ekawada, my as-yet-unreleased string figure catalog app for iOS. In this post, I want to talk about another of the forces that affected the app: <em>“What are some easy figures to do?”</em></p>
+<p>It’s not hard to imagine someone with little-to-no string figure experience being curious about the app, especially since it is free, and downloading it just to see what it’s all about. They might want to start with the easiest figure, just to see if it is something they could really learn. How should the application show this to them?</p>
+<p><img src="http://jamisbuck.org/images/ekawada-index-02.png" width="320" height="480" alt="The figure list, sorted by complexity" title="The figure list can be sorted by complexity" align="right" style="border: 2px solid black; margin: 0 0 1em 1em;"></p>
+<p>From the UI point of view, I took the easy way out: in the upper-left corner of the index is a toggle that lets you switch between “ABC” (alphabetical) and “123” (difficulty) orderings. I’m not best pleased with that solution, though: it’s not very self-explanatory. Expect that to change in a future version of Ekawada, after I have more opportunity to think about how best to present that.</p>
+<p>(Ignore for now the blue button at the bottom—that’s there because the view is being filtered to show only the “starter set” of figures. Tapping that button would return the view to the default of showing all installed figures.)</p>
+<p>At any rate, toggling the view to “123” gives you the figure list, sorted by difficulty (actually complexity—more on that shortly). The first figure in the list is the least complex, and the one at the bottom is the most complex.</p>
+<p>Here’s where things get sticky, though. There is no formal, standardized way to evaluate a string figure and say how difficult it is. If you look at the various string figure web sites that try to categorize figures by difficulty, they all do it in a very subjective way. Sure, you may agree that the “easy” ones are easier than the “hard” ones, but you may also disagree with <em>specific</em> categorizations.</p>
+<p>Anyway.</p>
+<p>I wanted a way in Ekawada for people to order figures by difficulty, and thus I needed a way to objectively rate figures. After a bit of experimentation and observation, I came up with a system that considers what types of maneuvers are used in each step, and assigns a number to each type of maneuver. Then, the various maneuvers used in a figure are summed, and the figure is given a rating. “Opening A”, for instance, is rated a 10, “An Apache Door” is a 61, and “Cat’s Cradle” is <del>a whopping 196</del> 42. <em>(edit: I updated the system to handle figure sequences better, so Cat’s Cradle has a much more sane complexity rating.)</em></p>
+<p>This gets to the point of “complexity” versus “difficulty”. Cat’s Cradle is rated at 196, but that’s because it is a <em>complex</em> figure (actually, series of figures), and is not actually very <em>difficult</em>. Thus, the rating <em>still</em> doesn’t necessarily tell you what is <em>easy</em> and what is <em>hard</em>, only what is <em>simple</em> and what is <em>complicated</em>.</p>
+<p>Often, that’s good enough. I do plan to tweak the algorithm for computing the complexity after Ekawada is released, based on feedback from users. However, I think it’s good enough for version one as it is.</p>
+<p>Next week, I’ll talk about how Ekawada balances another of the design forces on my list: “I can’t hold a figure on my hands and turn pages at the same time.”</p>

@@ -1,0 +1,66 @@
+---
+- date: 2007-01-03
+  author: Peter
+  content: "<p>Hi Jamis,</p>\n\n\n\t<p>I am new to testing.\nBut can you explain me
+    something.\nWe do <span class=\"caps\">DNA</span> testing, particle acceleration,
+    orbits into space you name it.</p>\n\n\n\t<p>Why don’t we have a solution for
+    this programming problem?</p>\n\n\n\t<p>Thanx</p>"
+- date: 2007-01-03
+  author: Jamis
+  content: "<p>Peter, what programming problem are you talking about? Code coverage
+    analysis? rcov, presented in this article, satisfies that nicely. Am I misunderstanding
+    your question?</p>"
+- date: 2007-01-03
+  author: Dan Manges
+  content: "<p>In addition to test coverage, you can also use rcov to analyze code
+    usage:</p>\n\n\n\t<p>rcov script/server</p>"
+- date: 2007-01-04
+  author: Peter
+  content: "<p>Hi Jamis,</p>\n\n\n\t<p>I should stick to one glass of wine ;-)</p>\n\n\n\t<p>What
+    I mean is the following.\nIf its allready out somewhere pardon me.\nThere are
+    all kinds of assumptions in Rails for the good.\nWhy can’t code be written for
+    tests based on those assumptions.\nFor example:\nIn my model I have an attribute
+    :price\nSo in the real world I know I won’t find a book in a store with a price
+    tag of zero or -4.17 dollar, and at the counter I would look like a fool trying
+    to pay with 0 dollar bill.\nSo, could I assume some clever software being able
+    to write tests based on say for example an attribute with the name :price.\nThen
+    \nbook.price = -1 \nassert !book.valid</p>\n\n\n\t<p>book.price = 0\nassert !book.valid</p>\n\n\n\t<p>would
+    be written automatically.\nNow I am a noob at testing, so this probably doesn’t
+    qualify for rcov.\nAnd for a noob its difficult what to choose for rails testing.</p>\n\n\n\t<p>Sorry
+    if this is the wrong topic for my question</p>\n\n\n\t<p>regards,\npeter</p>"
+- date: 2007-01-04
+  author: Robert
+  content: "<p>Peter: I’m sure Jamis could answer your question much better than I,
+    but I think what you are alluding to is Behaviour Driven Development. RSpec is
+    a great plugin/gem for doing this.</p>\n\n\n\t<p>As far as the software writing
+    tests for you, I don’t think that is a wise decision. Human behaviour is too unpredictable.
+    What you call price, another could call amount, and another something else. Besides,
+    tests are quite easy to write yourself.</p>\n\n\n\t<p>You can either use <span
+    class=\"caps\">TDD</span> (Test Driven Development) that comes pre-packaged with
+    Rails or use RSpec for <span class=\"caps\">BDD</span> (Behaviour Driven Development).
+    I tend to think testing is going to shift to behaviour driven development as you
+    don’t need to test the Rails Framework, but you do need to test the behaviour
+    (methods) you’ve written.</p>"
+- date: 2007-01-04
+  author: Jamis
+  content: "<p>In addition to Robert’s comments, it’s useful to point out that testing
+    validations is the “uninteresting” part of testing. “Is this value what I expect?”
+    It’s easy to query and easy to test.</p>\n\n\n\t<p>The interesting cases are things
+    like “is the correct branch being rendered in my partial,” or “are all the parts
+    of this case statement being taken, with the correct results”. Things like that
+    can’t really be tested using just convention, since the “expected” result differs
+    from application to application.</p>\n\n\n\t<p>Also, it is use mentioning, here,
+    this computer science thingy known as the <a href=\"http://tinyurl.com/w7ssl\">halting
+    theorem</a>. Without getting into all the gory details, that theorem basically
+    implies that it is not possible to prove that some arbitrary computer program
+    will function correctly. This means that it is not possible to write a program
+    that can check the correct functioning of another arbitrary program. <em>This</em>
+    means that we’re stuck finding better and better (but still imperfect) ways of
+    testing our applications.</p>\n\n\n\t<p>I cannot recommend strongly enough the
+    importance of learning multiple different testing strategies. Using a single strategy
+    is certainly better than using none at all, and it is a good place to start, but
+    don’t stop there. The more ways you use to test your app, the more accurate your
+    app will be.</p>"
+- date: 2007-01-04
+  author: Peter
+  content: "<p>Hi Jamis and Robert,</p>\n\n\n\t<p>Thanks for answering</p>"

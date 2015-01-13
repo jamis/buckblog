@@ -1,0 +1,57 @@
+---
+layout: post
+title: Raising the right exception
+post_id: 96
+categories:
+- Tips & Tricks
+date: 2007-03-07 13:22:00.000000000 -07:00
+author: Jamis
+permalink: 2007/03/07/raising-the-right-exception.html
+---
+
+<p>Ruby makes it very easy to raise exceptions:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">finagle_something</span><tt>
+</tt>  raise <span class="s"><span class="dl">"</span><span class="k">need a block</span><span class="dl">"</span></span> <span class="r">unless</span> block_given?<tt>
+</tt>  ...<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Using <code>raise</code> like that (with just the exception message) is really handy for quick-and-dirty solutions. But for Serious Business Stuff™ you may often find the ambiguity of the default RuntimeError a little frustrating.</p>
+<p>Ruby has a <em>bunch</em> of predefined exception classes that you can use. For the above, you’d do better to raise an ArgumentError, specifically (<code>raise ArgumentError, "need a block"</code>). It can pay big dividends to become familiar with the standard exception hierarchy in Ruby.</p>
+<p>Sometimes, though, the standard exception classes just aren’t enough. For example, in Capistrano 2.0, I’d like any exception that Capistrano itself raises to be immediately recognizable as a Capistrano exception. The solution?</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">module</span> <span class="cl">Capistrano</span><tt>
+</tt>  <span class="r">class</span> <span class="cl">Error</span> &lt; <span class="co">RuntimeError</span>; <span class="r">end</span><tt>
+</tt>  <span class="r">class</span> <span class="cl">ConnectionError</span> &lt; <span class="co">Error</span>; <span class="r">end</span><tt>
+</tt>  ...<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Now, clients of Capistrano only need to look for <code>Capistrano::Error</code> to safely catch any exceptional conditions within Capistrano:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">use_capistrano</span><tt>
+</tt>  ...<tt>
+</tt><span class="r">rescue</span> <span class="co">Capistrano</span>::<span class="co">Error</span> =&gt; error<tt>
+</tt>  warn <span class="s"><span class="dl">"</span><span class="k">couldn't do a capistrano thing: </span><span class="il"><span class="dl">#{</span>error.message<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Furthermore, the benefits of having more specific exception classes (like Capistrano::ConnectionError) are manifold; you can write code to easily detect and retry certain errors, or report some problems differently than others. When you start using specific exception classes, instead of the default RuntimeError, you’ll find you can handle your exceptions much more gracefully, and write much more robust programs.</p>

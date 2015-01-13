@@ -1,0 +1,102 @@
+---
+layout: post
+title: 'Refactoring Net::SSH: Part 4'
+post_id: 335
+categories:
+- Under the Hood
+date: 2004-10-16 17:07:00.000000000 -06:00
+author: Jamis
+permalink: 2004/10/16/refactoring-net-ssh-part-4.html
+---
+
+<p>The adventure continues, as I persist in refactoring <a href="http://net-ssh.rubyforge.org">Net::SSH</a> to take advantage of dependency injection, using <a href="http://needle.rubyforge.org">Needle</a>. This issue of the adventure will detail a snag in the refactoring, and some of my current thinking to overcome it.</p>
+<p>I’m down to the last piece of the transport layer implementation. (For those that care, the transport layer is the lowest level of the <span class="caps">SSH2</span> protocol, managing the sending and receiving of packets. This includes compression, encryption, and validation of packets.) This last piece is the <a href="http://rubyforge.org/cgi-bin/viewcvs/cgi/viewcvs.cgi/net-ssh/lib/net/ssh/transport/session.rb?rev=1.16&amp;cvsroot=net-ssh&amp;content-type=text/vnd.viewcvs-markup">Net::SSH::Transport::Session class</a>.</p>
+<p>The session is the piece that ties all the different parts of the transport layer together, sitting them all down at the table and making them work together. Specifically, the transport layer’s responsibilities include:</p>
+<ol>
+	<li>Establish a network connection to an <span class="caps">SSH</span> server.</li>
+		<li>Exchange version information with the other end of the connection.</li>
+		<li>Negotiate (with the remote node) the preferred algorithms to use for ciphers, key exchanging, compression and so forth.</li>
+		<li>Exchange keys</li>
+		<li>Provide an abstraction for sending and receiving packets</li>
+	</ol>
+<p>To accomplish these responsibilities, the session has dependencies on the following services:</p>
+<ul>
+	<li>
+<code>outgoing_packet_stream</code> (for sending packets)</li>
+		<li>
+<code>incoming_packet_stream</code> (for receiving packets)</li>
+		<li>
+<code>kex_names</code> (for identifying the kex algorithm implementation to use)</li>
+		<li>
+<code>cipher_factories</code> (for returning cipher implementations appropriate for the selected cryptography backend)</li>
+		<li>
+<code>key_factories</code> (for returning key implementations)</li>
+		<li>
+<code>hmac_factories</code> (for returning hmac implementations)</li>
+		<li>
+<code>buffer_factories</code> (for returning buffer implementations)</li>
+		<li>
+<code>compression_algorithms</code> (for returning compression algorithm implementations)</li>
+		<li>
+<code>decompression_algorithms</code> (for returning decompression algorithm implementations)</li>
+		<li>
+<code>logs</code> (for obtaining a new logger reference)</li>
+		<li>
+<code>socket_factory</code> (for opening a network connection to the requested host/port)</li>
+	</ul>
+<p>There may even be a few more, as I dig deeper into refactoring this beast.</p>
+<p>The challenge is this: nearly every one of those services is needed <em>in the session’s constructor</em>. That means that injecting the dependencies as setters won’t work—they don’t get set soon enough. Every single one of these must be passed as an argument to the constructor.</p>
+<p>Yech.</p>
+<p>So, I’ve spent some time thinking about this. There are a few different ways to go about this.</p>
+<h3>Cave. Just pass them to the constructor.</h3>
+<p>The first option is to just do it the “academic” way. “The process recommends approach X, so I’ll do approach X.”</p>
+<p>I don’t think anyone will blame me from balking at this. How many parameters does that mean the constructor takes? <em><strong>Eleven?!</strong></em></p>
+<pre>
+  transport.register( :session ) do |c,p|
+    Net::SSH::Transport::Session.new(
+      c.outgoing_packet_stream, c.incoming_packet_stream,
+      c.kex_names, c.cipher_factories[c.crypto_backend],
+      c.key_factories[c.crypto_backend], c.hmac_factories[c.crypto_backend],
+      c.buffer_factories[c.crypto_backend], c.compression_algorithms,
+      c.decompression_algorithms, c.logs.get(p.fullname), c.socket_factory
+    )
+  end
+</pre>
+<p>No.</p>
+<p>True, the burden of this could be mitigated somewhat by sending a hash to the constructor and injecting the parameters that way. That almost makes it look like setter injection, too:</p>
+<pre>
+  transport.register( :session ) do |c,p|
+    Net::SSH::Transport::Session.new(
+      :outgoing_packet_stream =&gt; c.outgoing_packet_stream,
+      :incoming_packet_stream =&gt; c.incoming_packet_stream,
+      :kex_names              =&gt; c.kex_names,
+      :cipher_factory         =&gt; c.cipher_factories[ c.crypto_backend ],
+      ...
+    )
+  end
+</pre>
+<p>A little better. I might at least <em>consider</em> such an approach. But there’s got to be a better way!</p>
+<h3>Use setters and a custom ‘init’ method.</h3>
+<p>Constructor injection is fine-<del>don’t get me wrong</del>-but my personal preference is setter injection. When using constructor injection, it becomes hard to deal with many dependencies (as demonstrated above). Also, you can’t <strong>name</strong> the dependencies (unless you use a hash, which is too prone to typos).</p>
+<p>So, another option I considered is to just use setter injection. The problem with this in this case, as I mentioned, is that the logic that needs the dependencies is in the constructor, which is called <em>before</em> the setters can be called.</p>
+<p>The solution, then, is to put the construction logic that needs the dependencies in a separate method, which is invoked explicitly after the setters have been taken care of.</p>
+<pre>
+  transport.register( :session ) do |c,p|
+    session = Net::SSH::Transport::Session.new
+    session.outgoing_packet_stream = c.outgoing_packet_stream
+    session.incoming_packet_stream = c.incoming_packet_stream
+    session.kex_names              = c.kex_names
+    session.cipher_factory         = c.cipher_factories[ c.crypto_backend ]
+    ...
+    session.initialize_service
+  end
+</pre>
+<p>I like this better, because I can use my beloved setter injection. However, having to invoke the “initialize_service” method explicitly feels a bit kludgy. It is also prone to error, since that step would be easy to forget. (Fortunately, it would only need to exist in a very few places in the code, so that’s not as big of a drawback as it could be, in this case.)</p>
+<h3>Should Needle handle this case?</h3>
+<p>So the question that came to my mind was, “Should Needle handle this case?” Needle could, of course, be modified to check each newly instantiated service to see if it reponds to a special method name (like “initialize_service”), and if it does, invoke that method automatically. It <em>could</em>, but <em>should</em> it?</p>
+<p>My initial urge was to say, “sure!” and jump in head first, coding like mad. This approach is, after all, supported by <a href="http://copland.rubyforge.org">Copland</a> and <a href="http://jakarta.apache.org/hivemind">HiveMind</a>. It works nicely in those frameworks. Upon reflection, though, I think it does <em>not</em> belong in Needle, and here’s why:</p>
+<p>Copland and HiveMind try to be <em>application frameworks</em>. They try to do a lot of things, most of it magic, to make life easier for the developer. This makes those frameworks large and complex (which is not necessarily a bad thing).</p>
+<p>The goal of Needle is to be a <em>framework framework</em>. That is to say, other frameworks may be built on top of Needle, adding complexity as needed. Needle itself should stay small, and relatively simple. This allows Needle to be fast as well, since the common case does not need (for example) to invoke an <code>initialize_service</code> method and should not be slowed down by an unnecessary call to <code>responds_to?</code>.</p>
+<p>This means that developers using Needle directly <em>may</em> need to do a little more work (in some of the less common situations) than they would with other frameworks, like Copland. However, for <em>most</em> tasks, Needle will be at least as easy to use as those frameworks, and will scale much better, to boot.</p>
+<p>If someone wanted to be able to add the automatic call to “initialize_service”, they could do it as a new service model. Or, as a new element in the instantiation pipeline, to use the terminology I described in <a href="http://www.jamisbuck.org/jamis/blog.cgi/programming/dependency-injection/Thoughts%20on%20Service%20Models_20041014230605.tx">Thoughts on Service Models</a>.</p>
+<p>So what approach will I take with the Transport::Session service? Not sure yet. It’ll be either the send-hash-to-constructor approach, or the setters-with-explicit-init approach. Tune in next time to hear the resolution to this dilemma…</p>

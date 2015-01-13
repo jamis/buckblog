@@ -1,0 +1,76 @@
+---
+- date: 2007-01-29
+  author: Robby Russell
+  content: <p>Thanks for the quick tip on testing your views. Perhaps I should muck
+    around more with the rSpec on Rails view specifications. This comes in handy when
+    you’re <span class="caps">HTML</span>/CSS designers are working in the views,
+    moving things around… and you can have them run their tests (or specs) before
+    they commit to verify that they didn’t break any of the logic within the views.</p>
+- date: 2007-01-29
+  author: Kevin Marsh
+  content: "<p>assert_select is so nifty. Please write more about it… I’m sure there’s
+    stuff I’ve missed.</p>"
+- date: 2007-01-29
+  author: weepy
+  content: "<p>yehuda katz has an interesting version of assert_select that uses hpricot
+    :</p>\n\n\n\t<p>http://yehudakatz.com/2007/01/27/a-better-assert_select-assert_elements/</p>\n\n\n\t<p>weepy</p>"
+- date: 2007-01-29
+  author: Assaf
+  content: "<p>You’re absolutely right.</p>\n\n\n\t<p>If you want to get a handle
+    on testing views, just think of the way you would style them, such that you could
+    change the style without having to change the code. Not all elements you test
+    will be styled explicitly, but the same principles apply. If you do that, you’ll
+    get both content and tests to survive layout changes.</p>\n\n\n\t<p>Having done
+    <span class=\"caps\">CSS</span> for awhile, this is almost second nature, that
+    translates well to test cases. If you wanted to style person.name, would you look
+    for an H2 or a .person.name?</p>\n\n\n\t<p>I always look by ID first, class second,
+    composition last if at all, and only on specific cases actually at the element
+    type (e.g. input fields).</p>\n\n\n\t<p>One thing I like to do is separating functional
+    and layout tests.</p>\n\n\n\t<p>If I’m testing a blog, I use the functional tests
+    to make sure a new post will show up, and disappear if I change its status back
+    to draft. These tests are about the logic of the application, not the layout,
+    and shouldn’t break when you change the layout.</p>\n\n\n\t<p>I use the layout
+    tests to make sure it looks the way it’s expected to. So for a blog, I would check
+    that all the posts appear (by ID), but also that they appear in reverse chronological
+    order (composition). And I would test it against my stylesheets. Since I’m using
+    hAtom, I know the title will show up as such if it has the .entry-title class
+    and contained inside an .hentry.</p>\n\n\n\t<p>Of course, I could just render
+    the page in the browser, but when you get to have enough pages with different
+    content combinations, manually testing each one of them is a recipe for failure.</p>\n\n\n\t<p>So
+    essentially, I would recommend checking each view twice. Once against the functional
+    behavior of the app: results come from actions. And once against the presentational
+    spec: that changes to the code do not break the users.</p>\n\n\n\t<p>And always
+    look for the least amount of information to identify an element, in both your
+    <span class=\"caps\">CSS</span> stylesheets and test cases. The less information
+    you need, the more change resilient they are.</p>"
+- date: 2007-01-29
+  author: Jamie
+  content: "<p>The only thing with that is that you may not need/want an id for that
+    specific link however if it is safe to assume you want the link to appear in a
+    #nav div, is there any way to do that.</p>\n\n\n\t<p>Worded slightly differently,
+    what I’m trying to say is, is there a way to assert that a link pointing to ’/foo/bar/’
+    exists in a div of id #nav without having to give the link an id itself?</p>"
+- date: 2007-01-29
+  author: choonkeat
+  content: "<p>As fluid as i want to be, i’ve been bitten several times when the template
+    changes has restructured the form, etc, but the test and controller were still
+    based on old expected params[] – wrong sense of security when tests all passes</p>\n\n\n\t<p>So
+    now, i use hpricot_forms: http://www.agilewebdevelopment.com/plugins/hpricot_forms</p>\n\n\n\t<p>Based
+    on form field names. Not css. Not id.</p>"
+- date: 2007-01-29
+  author: Nicolás Sanguinetti
+  content: "<p>Jamie, assert_select uses <span class=\"caps\">CSS</span> selectors,
+    so in your case you can do something like:</p>\n\n\n\t<p>assert_select ”#nav a[href$=#{home_path}]”</p>\n\n\n\t<p>And
+    that will check that you have an a tag, which href attribute ends in what results
+    from evaluating `home_path`, and which has an ancestor with id “nav”.</p>\n\n\n\t<p>For
+    more information on <span class=\"caps\">CSS</span> selectors and assert_select
+    you can check assert_select’s cheat sheet at http://blog.labnotes.org/2006/09/04/assert_select-cheat-sheet/</p>\n\n\n\t<p>It
+    has certainly proved to be useful to me :)</p>"
+- date: 2007-01-29
+  author: Assaf
+  content: "<p>What Nicolas said.</p>\n\n\n\t<p>You can also use substitution values.
+    The substituted value can be a string or regexp:</p>\n\n\n\t<p>assert_select ”#nav
+    div a[href=?]”, url</p>\n\n\n\t<p>Choonkeat, you’re absolutely right. If you’re
+    testing a form,  checking the ID doesn’t guarantee you’ll be able to submit it.
+    Look for the field name, something like:</p>\n\n\n\t<p>assert_select “form[action=/login]”
+    do\n  assert_select “input<a href=\"type=text\">name=username</a>” \nend</p>"

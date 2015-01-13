@@ -1,0 +1,89 @@
+---
+layout: post
+title: Mongrel, SSL, and Apache 1.3
+post_id: 184
+categories:
+- Tips & Tricks
+date: 2006-10-03 09:46:00.000000000 -06:00
+author: Jamis
+permalink: 2006/10/03/mongrel-ssl-and-apache-1-3.html
+---
+
+<p>So, you’ve heard all about this <a href="http://mongrel.rubyforge.org/">mongrel</a> thing that has Rails programmers everywhere talking. You’re anxious to give the whole setup a try, but…</p>
+<p>You’re stuck on Apache 1.3, and you’ve got certain actions in your app that require <span class="caps">SSL</span> support.</p>
+<p>This happened to me recently. Parts of my app require <span class="caps">SSL</span>, and other parts do not. The general solution, if you are using Apache 2, is to set the X-FORWARDED-PROTO request header to “https” before proxying the (decrypted) request to mongrel. Unfortunately, Apache 1.3 has no mechanism for setting request headers!</p>
+<p>Here’s how I worked around it. I changed my vhost setting thus:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">&lt;VirtualHost a.b.c.d&gt;<tt>
+</tt>  ServerName       foo.bar.com<tt>
+</tt><tt>
+</tt>  ProxyPass        /  http://localhost:3000/<tt>
+</tt>  ProxyPassReverse /  http://localhost:3000/<tt>
+</tt>&lt;/VirtualHost&gt;<tt>
+</tt><tt>
+</tt>&lt;VirtualHost a.b.c.d:443&gt;<tt>
+</tt>  ServerName       foo.bar.com<tt>
+</tt><tt>
+</tt>  ProxyPass        /  http://localhost:3000/ssl/<tt>
+</tt>  ProxyPassReverse /  http://localhost:3000/ssl/<tt>
+</tt><tt>
+</tt>  ...<tt>
+</tt>&lt;/VirtualHost&gt;</pre></td>
+</tr></table>
+<p>In the first block, I define the proxy to just forward the request to port 3000, unaltered. (I’ve got a <a href="http://siag.nu/pen/">pen</a> process running on port 3000, which then balances requests across multiple mongrel instances.) In the second block, however, I configure the proxy to forward to the same port, but I append the path <code>/ssl/</code> to it. This, then, gives me a way to differentiate <span class="caps">SSL</span> requests from non-SSL requests in my app.</p>
+<p>I then make two tweaks to my app. For the first tweak, I add a new route:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">ActionController</span>::<span class="co">Routing</span>::<span class="co">Routes</span>.draw <span class="r">do</span> |map|<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt>  map.connect <span class="s"><span class="dl">"</span><span class="k">ssl/*suburi</span><span class="dl">"</span></span>, <span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">ssl_proxy</span><span class="dl">"</span></span>, <span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">reprocess</span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Then, I add a new controller, which will process (and forward) <span class="caps">SSL</span> requests:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">SslProxyController</span> &lt; <span class="co">ActionController</span>::<span class="co">Base</span><tt>
+</tt>  <span class="r">def</span> <span class="fu">reprocess</span><tt>
+</tt>    request.env[<span class="s"><span class="dl">"</span><span class="k">REQUEST_URI</span><span class="dl">"</span></span>] = <span class="s"><span class="dl">"</span><span class="k">/</span><span class="il"><span class="dl">#{</span>params[<span class="sy">:suburi</span>]<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt>    request.env[<span class="s"><span class="dl">"</span><span class="k">HTTPS</span><span class="dl">"</span></span>] = <span class="s"><span class="dl">"</span><span class="k">on</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>    controller = <span class="co">ActionController</span>::<span class="co">Routing</span>::<span class="co">Routes</span>.recognize(request)<tt>
+</tt><tt>
+</tt>    controller.process(request, response)<tt>
+</tt>    <span class="iv">@performed_render</span> = <span class="pc">true</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>This just sets the <code>REQUEST_URI</code> and <code>HTTPS</code> environment variables appropriately, requests routing to recognize the new path, and has the resulting controller process the request. I then tell Rails that a render was performed, just to prevent it from trying to render the non-existant <code>reprocess.rhtml</code> template.</p>
+<p>Now, this may or may not work for every situation, but it works well enough for what I need. Eventually I’ll be moving to Apache 2 and can throw this stop-gap code away, but it at least lets me get up and running with mongrel sooner, rather than later.</p>

@@ -1,0 +1,110 @@
+---
+layout: post
+title: Capistrano 2.3.0
+post_id: 54
+categories:
+- Announcements
+date: 2008-05-02 16:16:00.000000000 -06:00
+author: Jamis
+permalink: 2008/05/02/capistrano-2-3-0.html
+---
+
+<p>On <a href="http://weblog.jamisbuck.org/2008/2/16/dealing-with-project-overload">February 16</a> I set myself to travel a path that I hoped would eventually help me deal with the project overload I was feeling. Today I get to release Capistrano 2.3, which is very near to the end of that path!</p>
+<pre><code>gem install capistrano</code></pre>
+<p>Capistrano 2.3 is primarily significant in that it switches to the new Net::SSH v2 library, which is faster and slimmer than the older Net::SSH v1 library. It also pulls in Net::SFTP v2, and the new Net::SSH::Gateway and Net::SCP libraries.</p>
+<p>In addition to that, cap 2.3 adds several exciting (if I do say so myself) new features, and a few bug fixes that had lingered for far too long.</p>
+<p><strong><span class="caps">FEATURE</span></strong>: The :copy strategy has been significantly improved. Instead of doing a blind checkout/export, archiving the result, and copying it over, you can specify that a local cached copy of your repository should be used. If the cached copy does not exist, it is created (via a checkout), otherwise it is simply updated (a much faster operation than a checkout, typically). This functions much like the :remote_cache strategy, but locally. To use this, simply set the :copy_cache variable to true:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">set <span class="sy">:deploy_via</span>, <span class="sy">:copy</span><tt>
+</tt>set <span class="sy">:copy_cache</span>, <span class="pc">true</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>By default, the cached copy will be in your machine’s temporary directory (/tmp, for example), but you can specify your own location by setting :copy_cache to the desired path:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">set <span class="sy">:deploy_via</span>, <span class="sy">:copy</span><tt>
+</tt>set <span class="sy">:copy_cache</span>, <span class="s"><span class="dl">"</span><span class="k">/u/caches/</span><span class="il"><span class="dl">#{</span>application<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt></pre></td>
+</tr></table>
+<p>But wait! There’s more! Suppose you have certain files that you don’t want to deploy, like photoshop files or your .git directory. You can set the :copy_exclude variable to a file glob (or an array of globs):</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">set <span class="sy">:deploy_via</span>, <span class="sy">:copy</span><tt>
+</tt>set <span class="sy">:copy_cache</span>, <span class="pc">true</span><tt>
+</tt>set <span class="sy">:copy_exclude</span>, [<span class="s"><span class="dl">"</span><span class="k">.git</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">materials</span><span class="dl">"</span></span>]<tt>
+</tt></pre></td>
+</tr></table>
+<p>This should make your deploys faster than ever, especially using a tip I hope to share in the next day or two that uses this in conjunction with some vendor/rails symlinking.</p>
+<p><strong><span class="caps">FEATURE</span></strong>: Even though I strenuously believe it is a mistake to deploy anything that is not under source control, I’ve finally caved and added a dumb :none <span class="caps">SCM</span> module. It can be used to deploy a specific directory if used with the :copy strategy:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">set <span class="sy">:repository</span>, <span class="s"><span class="dl">"</span><span class="k">.</span><span class="dl">"</span></span><tt>
+</tt>set <span class="sy">:scm</span>, <span class="sy">:none</span><tt>
+</tt>set <span class="sy">:deploy_via</span>, <span class="sy">:copy</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Again, there are very, very few cases when I think use of this technique is justified, but because I ran into one myself a month ago, I decided it was worth adding.</p>
+<p><strong><span class="caps">FEATURE</span></strong>: Support was added for “depend :remote, file” to test for the existence of a specific file:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">depend <span class="sy">:remote</span>, <span class="s"><span class="dl">"</span><span class="k">/etc/syslog.conf</span><span class="dl">"</span></span></pre></td>
+</tr></table>
+<p>This is used in conjunction with the deploy:check task.</p>
+<p><strong><span class="caps">FEATURE</span></strong>: You can specify ssh_options per-server, now, simply by giving an :ssh_options key and corresponding hash with the server definition:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">role <span class="s"><span class="dl">"</span><span class="k">some.host</span><span class="dl">"</span></span>, <span class="sy">:ssh_options</span> =&gt; { <span class="sy">:keys</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">/path/to/key</span><span class="dl">"</span></span> }</pre></td>
+</tr></table>
+<p><strong><span class="caps">FEATURE</span></strong>: There are two new file transfer helpers, upload and download, which are much more powerful and resource-friendly than the old ‘put’ and ‘get’ helpers. You can use upload and download to transfer single files, or entire directory trees:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">upload <span class="s"><span class="dl">"</span><span class="k">/local/file</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">/remote/file</span><span class="dl">"</span></span><tt>
+</tt>download <span class="s"><span class="dl">"</span><span class="k">/remote/file</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">/local/file</span><span class="dl">"</span></span><tt>
+</tt></pre></td>
+</tr></table>
+<p>This will transfer to or from all active servers, which is particular tricky when using the download helper, since it will download the file simultaneously from all active hosts. To make this work, you need to make sure each is downloaded to a different location:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">Dir</span>.mkdir(<span class="s"><span class="dl">"</span><span class="k">destination</span><span class="dl">"</span></span>)<tt>
+</tt>download <span class="s"><span class="dl">"</span><span class="k">/remote/file</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">destination/file-$CAPISTRANO:HOST$</span><span class="dl">"</span></span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The above will download the file from each host to a file on the local host, where the local file includes the name of the source host. Tricky!</p>
+<p>Also, you can now specify that you want to upload or download via <span class="caps">SCP</span> instead of <span class="caps">SFTP</span>:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">upload <span class="s"><span class="dl">"</span><span class="k">local</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">remote</span><span class="dl">"</span></span>, <span class="sy">:via</span> =&gt; <span class="sy">:scp</span><tt>
+</tt>download <span class="s"><span class="dl">"</span><span class="k">remote</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">local</span><span class="dl">"</span></span>, <span class="sy">:via</span> =&gt; <span class="sy">:scp</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The default is :sftp.</p>
+<p>The less exciting (but still mildly titillating) things are the bug fixes and pleasure-enhancing behavioral changes:</p>
+<ul>
+	<li>The default run options are now mixed into the command options when executing a command from the capistrano shell.</li>
+		<li>The git <span class="caps">SCM</span> now uses git-ls-remote instead of git-rev-parse to resolve the revision of the checkout.</li>
+		<li>A trivial export method has been added to the git <span class="caps">SCM</span>.</li>
+		<li>The git <span class="caps">SCM</span> will include tags when it fetches.`</li>
+		<li>The sudo() helper now works nicely with complex and chained commands.</li>
+		<li>The deploy:setup task will now use sudo if :use_sudo is true (the default)</li>
+	</ul>
+<p>So, have at it! Remember to report bugs to <a href="http://capistrano.lighthouseapp.com">http://capistrano.lighthouseapp.com</a>. And patches are always welcome via git—just fork the capistrano repository at git://github.com/jamis/capistrano.git (thanks <a href="http://github.com">GitHub</a>!).</p>
+<p>Cheers!</p>

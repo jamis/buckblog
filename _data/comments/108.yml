@@ -1,0 +1,46 @@
+---
+- date: 2007-02-26
+  author: Piers Cawley
+  content: "<p>I prefer</p>\n\n\n<code>\nclass Symbol\n  def dereference(collection)\n
+    \   collection.send(self)\n  end\nend\n\nclass Object\n  def dereference(collection)\n
+    \   self\n  end\nend\n</code>\n\n\t<p>Class comparisons in conditional code raises
+    the hairs on the back of my head :)</p>"
+- date: 2007-02-26
+  author: Piers Cawley
+  content: "<p>Gah! Comment preview would be handy…</p>"
+- date: 2007-02-26
+  author: Jamis Buck
+  content: "<p>Jamis,</p>\n\n\n\t<p>I’m not clear on why you need to type-check the
+    “user” parameter in the login! method.  Wouldn’t it throw an error if you tried
+    using something that’s not a symbol, alterting you so you could fix it?</p>\n\n\n\t<p>I’m
+    sure I’m missing something obvious, but it seemed to me that if you were planning
+    on sending symbols as the parameter in all cases, would you need to type-check
+    it?  Would you write a test that sent a non-symbol to that method on purpose?</p>\n\n\n\t<p>Thanks,</p>\n\n\n\t<p>Jeff</p>"
+- date: 2007-02-26
+  author: Adam
+  content: "<p>Jamis,</p>\n\n\n\t<p>Talking to yourself again? :)</p>\n\n\n\t<p>Love
+    the site, keep up the good work.</p>"
+- date: 2007-02-26
+  author: Jamis
+  content: "<p>Jeff, the idea is that you could then do something like the following:</p>\n\n\n<table
+    class=\"CodeRay\"><tr>\n  <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt><strong>5</strong><tt>\n</tt>6<tt>\n</tt>7<tt>\n</tt>8<tt>\n</tt>9<tt>\n</tt><strong>10</strong><tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre><span class=\"r\">def</span> <span class=\"fu\">test_new_user_login</span><tt>\n</tt>
+    \ user = <span class=\"co\">User</span>.new(...)<tt>\n</tt>  login!(user)<tt>\n</tt>
+    \ ...<tt>\n</tt><span class=\"r\">end</span><tt>\n</tt><tt>\n</tt><span class=\"r\">def</span>
+    <span class=\"fu\">test_existing_user_login</span><tt>\n</tt>  login!(<span class=\"sy\">:jamis</span>)<tt>\n</tt>
+    \ ...<tt>\n</tt><span class=\"r\">end</span><tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>In
+    other words, I could pass either a real activerecord instance to the login! method,
+    or I could pass a symbol identifying the fixture load. I could even pass a mock
+    object in if I wanted, since it only tests on whether the parameter is a symbol
+    or not.</p>\n\n\n\t<p>Note that login! is <span class=\"caps\">NOT</span> a method
+    in the application itself; it is a method in the test harness, used to setup some
+    condition for subsequent tests.</p>"
+- date: 2007-02-26
+  author: Jeff Coleman
+  content: "<p>Jamis,</p>\n\n\n\t<p>That makes sense!  I didn’t think about branching
+    in the helper, based on whether you send it a record or a symbol.  I was thinking
+    it was just for error-checking, which would be a bit redundant.</p>\n\n\n\t<p>Thanks!</p>\n\n\n\t<p>Jeff</p>"
+- date: 2007-02-27
+  author: Jeff Coleman
+  content: "<p>By the way, I have no idea why I wrote your name on my last comment,
+    Jamis! :)</p>\n\n\n\t<p>Jeff</p>"

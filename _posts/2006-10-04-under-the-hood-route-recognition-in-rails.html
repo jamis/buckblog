@@ -1,0 +1,282 @@
+---
+layout: post
+title: 'Under the hood: route recognition in Rails'
+post_id: 182
+categories:
+- Under the Hood
+date: 2006-10-04 07:40:00.000000000 -06:00
+author: Jamis
+permalink: 2006/10/04/under-the-hood-route-recognition-in-rails.html
+---
+
+<p><a href="http://weblog.jamisbuck.org/2006/10/2/under-the-hood-rails-routing-dsl">Monday’s article</a> presented the implementation of Rails’ routing <acronym title="Domain Specific Language">DSL</acronym>. (If you haven’t read it yet, you ought to—this article assumes you’re familiar with at least as much of the routing code as that prior article explained.)</p>
+<div class="inset">
+Like any good code, the implementation of routing will change over time, as bugs are fixed, features are added, and new needs are discovered. This article describes the implementation as of <a href="http://dev.rubyonrails.org/browser/trunk/actionpack/lib/action_controller/routing.rb?rev=5169">revision 5169</a>.
+</div>
+<p>The <span class="caps">DSL</span> implementation of routes only scratches the surface. In this second installment, we’re going to delve even deeper. We’re going to lay bare the mysteries of <em>route recognition</em>.</p>
+<p>Route recognition is one of the very first tasks that a Rails application executes upon receiving a request. What it does is (conceptually) very simple: given a <span class="caps">URI</span> path, determine what controller and action should process the request, as well as what additional parameters should be passed in. In practice, however, there’s a lot of complexity hidden there.</p>
+<p>The journey begins in <a href="http://dev.rubyonrails.org/browser/trunk/railties/lib/dispatcher.rb">railties/lib/dispatcher.rb</a>, in <code>Dispatcher.dispatch</code>. First, the request and response objects are created, the application is “prepared” (with actions that vary depending on whether you are running in production mode or not), and then routing is asked to recognize the current path.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">request, response = <span class="co">ActionController</span>::<span class="co">CgiRequest</span>.new(cgi, session_options),<tt>
+</tt>  <span class="co">ActionController</span>::<span class="co">CgiResponse</span>.new(cgi)<tt>
+</tt>prepare_application<tt>
+</tt>controller = <span class="co">ActionController</span>::<span class="co">Routing</span>::<span class="co">Routes</span>.recognize(request)</pre></td>
+</tr></table>
+<p>With that innocent command, we leap into <a href="http://dev.rubyonrails.org/browser/trunk/actionpack/lib/action_controller/routing.rb">the routing code</a>. Feel free to follow along, beginning on line 1243 of <code>routing.rb</code>:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">recognize</span>(request)<tt>
+</tt>  params = recognize_path(request.path, extract_request_environment(request))<tt>
+</tt>  request.path_parameters = params.with_indifferent_access<tt>
+</tt>  <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span>params[<span class="sy">:controller</span>].camelize<span class="dl">}</span></span><span class="k">Controller</span><span class="dl">"</span></span>.constantize<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>That first line of the <code>recognize</code> method first extracts an “environment” hash from the request, and then invokes <code>recognize_path</code> with the path from the request, and the environment hash. This environment hash currently consists of only the request method, but if you are writing a routing extension that needs other information from the request (like the host name, or whether <span class="caps">HTTPS</span> is enabled) you can extend the <code>RouteSet#extract_request_environment</code> method to pull the additional data out. You’ll see (later) where that information is used in the recognition process.</p>
+<p>The <code>RouteSet#recognize_path</code> method simply iterates over all defined routes, asking each whether or not it can recognize the given path. As soon as one responds in the affirmative, the loop stops and the result is returned. If no route matches the given parameters, a <code>RoutingError</code> is raised.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">recognize_path</span>(path, environment={})<tt>
+</tt>  path = <span class="co">CGI</span>.unescape(path)<tt>
+</tt>  routes.each <span class="r">do</span> |route|<tt>
+</tt>    result = route.recognize(path, environment) <span class="r">and</span> <span class="r">return</span> result<tt>
+</tt>  <span class="r">end</span><tt>
+</tt>  raise <span class="co">RoutingError</span>, <span class="s"><span class="dl">"</span><span class="k">no route found to match </span><span class="il"><span class="dl">#{</span>path.inspect<span class="dl">}</span></span><span class="k"> with </span><span class="il"><span class="dl">#{</span>environment.inspect<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Here, then, is where things begin to get interesting. Go ahead and jump to <code>Route#recognize</code>, on line 464:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">recognize</span>(path, environment={})<tt>
+</tt>  write_recognition<tt>
+</tt>  recognize path, environment<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>“But wait!” you say. “There’s nothing there but a recursive call to <code>Route#recognize</code>!”</p>
+<p>“Ah,” I reply, “but note the call to <code>write_recognition</code>...”</p>
+<p>Thus we introduce one of the reasons the routing code is hard to grasp. <em>It rewrites itself on demand</em>, for optimization reasons. Basically, the first time a route is asked to recognize a path, it will take all of its component segments, and all of their requirements, and dynamically generate a new <code>recognize</code> method based on them. Subsequent calls to that route’s <code>recognize</code> method will use the dynamically generated version. This allows route recognition to be quite fast, even with many routes defined.</p>
+<p>That’s not much comfort, however, to the stalwart spelunker who wishes to understand how it all works.</p>
+<p>Let’s try to demystify this by looking first at what a few dynamically generated <code>recognize</code> methods look like. From there, we can better understand the steps which the routing code takes to actually <em>build</em> that code.</p>
+<p>Specifically, let’s consider the following three routes:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">ActionController</span>::<span class="co">Routing</span>::<span class="co">Routes</span>.draw <span class="r">do</span> |map|<tt>
+</tt>  map.connect <span class="s"><span class="dl">"</span><span class="k">/</span><span class="dl">"</span></span>, <span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">foo</span><span class="dl">"</span></span>, <span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">index</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>  map.connect <span class="s"><span class="dl">"</span><span class="k">/foo/:action</span><span class="dl">"</span></span>, <span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">foo</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>  map.connect <span class="s"><span class="dl">"</span><span class="k">/foo/:view/:permalink</span><span class="dl">"</span></span>, <span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">foo</span><span class="dl">"</span></span>,<tt>
+</tt>    <span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">show</span><span class="dl">"</span></span>, <span class="sy">:view</span> =&gt; <span class="rx"><span class="dl">/</span><span class="k">plain|fancy</span><span class="dl">/</span></span>,<tt>
+</tt>    <span class="sy">:permalink</span> =&gt; <span class="rx"><span class="dl">/</span><span class="k">[-a-z0-9]+</span><span class="dl">/</span></span>,<tt>
+</tt>    <span class="sy">:conditions</span> =&gt; { <span class="sy">:method</span> =&gt; <span class="sy">:get</span> }<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>If you could see the code that gets generated for that first route, you’d see that it’s new <code>recognize</code> method would look more or less like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">recognize</span>(path, env={})<tt>
+</tt>  <span class="r">if</span> (match = <span class="rx"><span class="dl">/</span><span class="ch">\A</span><span class="ch">\/</span><span class="k">?</span><span class="ch">\Z</span><span class="dl">/</span></span>.match(path))<tt>
+</tt>    params = parameter_shell.dup<tt>
+</tt>    params<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>In other words, match the path against the given regex (testing only to see if the string is empty, or a forward slash) and if it succeeds, return the route’s <code>parameter_shell</code>. (The parameter shell is the list of all non-regex requirements for a given route; in this case, it will be <code>:controller =&gt; "foo"</code>, <code>:action =&gt; "index"</code>, because those are the options that were given in the route’s definition.)</p>
+<p>That’s the simplest case. Moving to the next route, we can see how dynamic segments like <code>:action</code> get handled:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">recognize</span>(path, env={})<tt>
+</tt>  <span class="r">if</span> (match = <span class="rx"><span class="dl">/</span><span class="ch">\A</span><span class="ch">\/</span><span class="k">foo(?:</span><span class="ch">\/</span><span class="k">?</span><span class="ch">\Z</span><span class="k">|</span><span class="ch">\/</span><span class="k">([^</span><span class="ch">\/</span><span class="k">;.,?]+)</span><span class="ch">\/</span><span class="k">?)</span><span class="ch">\Z</span><span class="dl">/</span></span>.match(path))<tt>
+</tt>    params = parameter_shell.dup<tt>
+</tt>    params[<span class="sy">:action</span>] = match[<span class="i">1</span>] || <span class="s"><span class="dl">"</span><span class="k">index</span><span class="dl">"</span></span><tt>
+</tt>    params<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Again, the first thing that happens is the path is matched against a regex. The regex simply makes sure the path begins with ”/foo”, and is followed by an optional group that contains anything except path delimiters. (In this case, the group is optional, because the <code>:action</code> key is always defaulted to “index”. Other keys, as you’ll see, are not necessarily optional.)</p>
+<p>If the regex matches, we dup the parameter shell, and then set the <code>:action</code> parameter to either the first match, or “index”. Then, the parameters are returned.</p>
+<p>Pretty straightforward! Let’s move on to the third and final example, which looks like it might be a lot more complex. We’ve got two keys in the path (<code>:view</code> and <code>:permalink</code>), both of which have regex that restrict the set of values they can match. We also require that the route only match if the request method is <span class="caps">GET</span>. Behold:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">recognize</span>(path, env={})<tt>
+</tt>  <span class="r">if</span> (match = <span class="rx"><span class="dl">/</span><span class="ch">\A</span><span class="ch">\/</span><span class="k">foo</span><span class="ch">\/</span><span class="k">(plain|fancy)</span><span class="ch">\/</span><span class="k">([-a-z0-9]+)</span><span class="ch">\/</span><span class="k">?</span><span class="ch">\Z</span><span class="dl">/</span></span>.match(path)) &amp;&amp; conditions[<span class="sy">:method</span>] === env[<span class="sy">:method</span>]<tt>
+</tt>    params = parameter_shell.dup<tt>
+</tt>    params[<span class="sy">:view</span>] = match[<span class="i">1</span>] <span class="r">if</span> match[<span class="i">1</span>]<tt>
+</tt>    params[<span class="sy">:permalink</span>] = match[<span class="i">2</span>] <span class="r">if</span> match[<span class="i">2</span>]<tt>
+</tt>    params<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>It just doesn’t get much simpler than that, folks. We match the path against the regex, <em>and</em> we compare the request method that the route requires (in the <code>conditions</code> hash) against the request method that was actually used (in the <code>env</code> hash). If all is good, we populate the params with the <code>:view</code> and <code>:permalink</code> values that were extracted from the path, and return it.</p>
+<p>Boom! (<a href="http://youtube.com/watch?v=r8L39UwOS-Y">As Steve Jobs would say</a>.)</p>
+<p>So, now we have some idea of the code that we want to generate. The rest of this article will show how it is actually built.</p>
+<p>First, take a look at the <code>Route@write_recognition</code> method on line 370.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">write_recognition</span><tt>
+</tt>  body = <span class="s"><span class="dl">"</span><span class="k">params = parameter_shell.dup</span><span class="ch">\n</span><span class="il"><span class="dl">#{</span>recognition_extraction * <span class="s"><span class="dl">"</span><span class="ch">\n</span><span class="dl">"</span></span><span class="dl">}</span></span><span class="ch">\n</span><span class="k">params</span><span class="dl">"</span></span><tt>
+</tt>  body = <span class="s"><span class="dl">"</span><span class="k">if </span><span class="il"><span class="dl">#{</span>recognition_conditions.join(<span class="s"><span class="dl">"</span><span class="k"> &amp;&amp; </span><span class="dl">"</span></span>)<span class="dl">}</span></span><span class="ch">\n</span><span class="il"><span class="dl">#{</span>body<span class="dl">}</span></span><span class="ch">\n</span><span class="k">end</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>  method_decl = <span class="s"><span class="dl">"</span><span class="k">def recognize(path, env={})</span><span class="ch">\n</span><span class="il"><span class="dl">#{</span>body<span class="dl">}</span></span><span class="ch">\n</span><span class="k">end</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>  instance_eval method_decl, <span class="s"><span class="dl">"</span><span class="k">generated code (</span><span class="il"><span class="dl">#{</span><span class="pc">__FILE__</span><span class="dl">}</span></span><span class="k">:</span><span class="il"><span class="dl">#{</span><span class="pc">__LINE__</span><span class="dl">}</span></span><span class="k">)</span><span class="dl">"</span></span><tt>
+</tt>  method_decl<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>All it does is build up a string that contains the method definition, and then sends it to <code>instance_eval</code> to actually install the new method. It also returns the string, so you can debug your routes easily by doing something like:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="co">ActionController</span>::<span class="co">Routing</span>::<span class="co">Routes</span>.routes.each <span class="r">do</span> |route|<tt>
+</tt>  puts route<tt>
+</tt>  puts route.write_recognition<tt>
+</tt>  puts<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Go ahead and try that—it’s quite educational!</p>
+<p>The <code>write_recognition</code> method builds the method in three parts:</p>
+<ol>
+	<li>the “body” (what gets executed when the regex matches) via <code>recognition_extraction</code>.</li>
+		<li>the “conditions” (the regex and any other special conditions) via <code>recognition_conditions</code>.</li>
+		<li>the “method declaration” (the method name and parameters)</li>
+	</ol>
+<p>Let’s look at how the body gets built first. Go ahead and jump to line 401, <code>Route#recognition_extraction</code>.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">recognition_extraction</span><tt>
+</tt>  next_capture = <span class="i">1</span><tt>
+</tt>  extraction = segments.collect <span class="r">do</span> |segment|<tt>
+</tt>    x = segment.match_extraction next_capture<tt>
+</tt>    next_capture += <span class="co">Regexp</span>.new(segment.regexp_chunk).number_of_captures<tt>
+</tt>    x<tt>
+</tt>  <span class="r">end</span><tt>
+</tt>  extraction.compact<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>What this does is loop over all the segments that compose the route. Each segment is asked for a string containing Ruby code that will extract the necessary information for that segment. These snippets of code are then collected into an array, and <code>nil</code> entries eliminated (via <code>Array#compact</code>).</p>
+<p>I hate to do this to you, gentle reader, but let’s skip down one more level in the call stack and look at one of the <code>match_extraction</code> implementations. The default <code>Segment#match_extraction</code> method just returns <code>nil</code>—by default a segment encapsulates no parameter data. However, segments like <code>DynamicSegment</code> and <code>ControllerSegment</code> contain information that needs to be extracted. Let’s just look at <code>DynamicSegment#match_extraction</code> (on line 716):</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">match_extraction</span>(next_capture)<tt>
+</tt>  hangon = (default ? <span class="s"><span class="dl">"</span><span class="k">|| </span><span class="il"><span class="dl">#{</span>default.inspect<span class="dl">}</span></span><span class="dl">"</span></span> : <span class="s"><span class="dl">"</span><span class="k">if match[</span><span class="il"><span class="dl">#{</span>next_capture<span class="dl">}</span></span><span class="k">]</span><span class="dl">"</span></span>)<tt>
+</tt>  <tt>
+</tt>  <span class="c"># All non code-related keys (such as :id, :slug) have to be unescaped as other CGI params</span><tt>
+</tt>  <span class="s"><span class="dl">"</span><span class="k">params[:</span><span class="il"><span class="dl">#{</span>key<span class="dl">}</span></span><span class="k">] = match[</span><span class="il"><span class="dl">#{</span>next_capture<span class="dl">}</span></span><span class="k">] </span><span class="il"><span class="dl">#{</span>hangon<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Here, “hangon” is just a cute variable name for a snippet of code that trails the match assignment (like a default value, or a conditional capture). Note also the <code>next_capture</code> parameter; this is used to keep track of the which capture (or captures) to extract from the <code>match</code> parameter.</p>
+<p>Though I won’t go into them here, the <code>match_extraction</code> methods for both <code>ControllerSegment</code> and <code>PathSegment</code> are similar.</p>
+<p>One last thing to point out in <code>recognition_extraction</code>: the call to <code>Regexp#number_of_captures</code>. This method is defined near the top of the <code>routing.rb</code> file, and it simply returns the number of capture groups within the regular expression. This is used to determine which capture indexes to allocate to each segment (in <code>match_extraction</code>), since a segment cannot pull data from capture groups it did not define.</p>
+<p>Alright, following this so far? We’re almost done. Let’s next look at how the regex itself is constructed, and how conditions like the request method comparison are built.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">recognition_conditions</span><tt>
+</tt>  result = [<span class="s"><span class="dl">"</span><span class="k">(match = </span><span class="il"><span class="dl">#{</span><span class="co">Regexp</span>.new(recognition_pattern).inspect<span class="dl">}</span></span><span class="k">.match(path))</span><span class="dl">"</span></span>]<tt>
+</tt>  result &lt;&lt; <span class="s"><span class="dl">"</span><span class="k">conditions[:method] === env[:method]</span><span class="dl">"</span></span> <span class="r">if</span> conditions[<span class="sy">:method</span>]<tt>
+</tt>  result<tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">def</span> <span class="fu">recognition_pattern</span>(wrap = <span class="pc">true</span>)<tt>
+</tt>  pattern = <span class="s"><span class="dl">'</span><span class="dl">'</span></span><tt>
+</tt>  segments.reverse_each <span class="r">do</span> |segment|<tt>
+</tt>    pattern = segment.build_pattern pattern<tt>
+</tt>  <span class="r">end</span><tt>
+</tt>  wrap ? (<span class="s"><span class="dl">"</span><span class="ch">\\</span><span class="k">A</span><span class="dl">"</span></span> + pattern + <span class="s"><span class="dl">"</span><span class="ch">\\</span><span class="k">Z</span><span class="dl">"</span></span>) : pattern<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>What this does is first construct a regular expression to compare against the path. This is done by aggregating the patterns of each segment into a single regular expression (via the <code>recognition_pattern</code> method), and then appending the request method comparison (if relevant for this route). For those of you wanting to extend routing with your own custom conditions (like routes based on hostname and such), this is where you would add those conditions, based on the <code>conditions</code> hash.</p>
+<p>So! We’ve now generated the code for the route. Hiking back up the call stack, we find ourselves back in <code>write_recognition</code>, which evaluates the string and installs the new method into the route. Hiking up another level, we wind up back in the original <code>Route#recognize</code> method, where we make what appears to be a recursive call to <code>Route#recognize</code>. However, this will actually invoke the new method definition, recently installed by <code>write_recognition</code>, which will execute the newly generated code.</p>
+<p>And there you have it, ladies and gents, the route recognition code. It’s really not so much of a much, is it? Once you wrap your mind around run-time generation of code, it all flows together pretty well. There are some edge cases and such that I didn’t cover, but you’re encouraged to explore those on your own. “An exercise for the reader,” and all that. Especially, try investigating what a route looks like that has optional values (<code>:permalink =&gt; nil</code>), or which uses path segments. See what the recognition code for such routes consists of.</p>
+<p>By this point, you should have some grasp of about two-thirds of the routing code. The remaining third, route generation, will be covered in the next article, but be warned: it’ll be the hairiest of the three!</p>

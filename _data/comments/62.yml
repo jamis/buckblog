@@ -1,0 +1,92 @@
+---
+- date: 2008-03-23
+  author: Ezra
+  content: "<p>Nice work Jamis, I’ll be playing with the new net/ssh this week.</p>"
+- date: 2008-03-24
+  author: Brian
+  content: "<p>I thought by definition (at least according to http://en.wikipedia.org/wiki/Reentrant)
+    reentrant code was also thread-safe.</p>"
+- date: 2008-03-24
+  author: Jamis
+  content: <p>@Brian, you’re right. I’m not an expert on concurrency, and misused
+    the term. What I meant was, you can call <span class="caps">SSH</span> methods
+    from themselves (e.g., from within callbacks and such), with no negative consequences.
+    But you cannot safely call methods on the same connection from multiple threads
+    of execution without using mutexes or similar.</p>
+- date: 2008-03-24
+  author: Jamis
+  content: "<p>I’ve found (and fixed) a bug in Net::SSH v2 preview #2 that caused
+    forwarding a local port to fail with an exception. You can get the update via
+    github, if you don’t want to wait for preview #3. I’m working on plugging Net::SSH
+    v2 and friends into capistrano now, so we’ll see what else I bump against this
+    week. I’ll then bundle all the fixes into another set of preview releases at the
+    end of the week.</p>"
+- date: 2008-03-25
+  author: Steve Shreeve
+  content: '<p>Amazing stuff, Jamis! Really beautiful looking code as well. Two quick
+    questions: 1) Given your comments about threadsafe-ness, how should a separate
+    thread push data into the channel? I’ve been using the ‘channel.on_process’ callback
+    as a way to periodically inject data into my outbound stream, but I’ve got a select()
+    in there, which feels a little dirty; 2) On Windows XP the require will bomb unless
+    the <span class="caps">HOME</span> environment variable is set, could you allow
+    it to failover to <span class="caps">HOMEPATH</span> (which apparently is set
+    by default)? Thanks again!</p>'
+- date: 2008-03-25
+  author: Jamis
+  content: "<p>@Steve, for #1, I did the following (more or less) with Capistrano’s
+    gateway class, which runs in a thread but must allow other threads to begin connections
+    through the gateway:</p>\n\n\n<table class=\"CodeRay\"><tr>\n  <td title=\"click
+    to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt><strong>5</strong><tt>\n</tt>6<tt>\n</tt>7<tt>\n</tt>8<tt>\n</tt>9<tt>\n</tt><strong>10</strong><tt>\n</tt>11<tt>\n</tt>12<tt>\n</tt>13<tt>\n</tt>14<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre>require <span class=\"s\"><span class=\"dl\">'</span><span
+    class=\"k\">thread</span><span class=\"dl\">'</span></span><tt>\n</tt><tt>\n</tt><span
+    class=\"iv\">@mutex</span> = <span class=\"co\">Mutex</span>.new<tt>\n</tt><span
+    class=\"co\">Thread</span>.new <span class=\"r\">do</span><tt>\n</tt>  loop <span
+    class=\"r\">do</span><tt>\n</tt>    <span class=\"iv\">@mutex</span>.synchronize
+    { <span class=\"iv\">@gateway</span>.process(<span class=\"fl\">0.1</span>) }<tt>\n</tt>
+    \ <span class=\"r\">end</span><tt>\n</tt><span class=\"r\">end</span><tt>\n</tt><tt>\n</tt><span
+    class=\"iv\">@mutex</span>.synchronize <span class=\"r\">do</span><tt>\n</tt>
+    \ <span class=\"iv\">@gateway</span>.forward.local(<span class=\"i\">1234</span>,
+    <span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">remote-host</span><span
+    class=\"dl\">\"</span></span>, <span class=\"i\">22</span>)<tt>\n</tt><span class=\"r\">end</span><tt>\n</tt><tt>\n</tt>c
+    = <span class=\"co\">Net</span>::<span class=\"co\">SSH</span>.start(<span class=\"s\"><span
+    class=\"dl\">\"</span><span class=\"k\">localhost</span><span class=\"dl\">\"</span></span>,
+    <span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">user</span><span
+    class=\"dl\">\"</span></span>, <span class=\"sy\">:port</span> =&gt; <span class=\"i\">1234</span>)<tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>In
+    other words, run the event loop manually (by looping and calling Net::SSH::Connection::Session#process
+    manually), and wrap the #process call in a mutex. Then, any time you need to access
+    the session outside of a thread, employ the mutex again.</p>\n\n\n\t<p>As for
+    #2, which “require” is failing?</p>"
+- date: 2008-03-25
+  author: Steve Shreeve
+  content: "<p>Thank you for the very helpful tips!</p>\n\n\n\t<p>Regarding #1, I’m
+    now using something similar to what you suggested.</p>\n\n\n\t<p>Regarding #2,
+    I drilled down a bit and it’s actually the reference to “<sub>/.ssh/config” on
+    line 35 of net/ssh/config.rb. This causes Ruby on Windows to complain when running
+    Net::SSH.start() because the “</sub>” expects an environment variable called “HOME”,
+    which is not defined by default (at least on Windows XP). Assuming this isn’t
+    too terribly dirty, might this be inserted immediately after line 35 in config.rb?</p>\n\n\n\t<p><span
+    class=\"caps\">ENV</span>[‘HOME’] ||= <span class=\"caps\">ENV</span>[‘USERPROFILE’]
+    if <span class=\"caps\">RUBY</span>_PLATFORM.include?(‘win32’)</p>"
+- date: 2008-04-08
+  author: Thomas
+  content: "<p>Jamis,</p>\n\n\n\t<p>Thanks for your hard work on this and Capistrano,
+    it is much appreciated.</p>\n\n\n\t<p>Would you have any idea when we could hope
+    to see a Cap preview release with these new clients built in? The main reason
+    I am interested is because of the sftp / scp issue that leaves 0 length files
+    on the target host, but doesn’t actually copy when connected through a gateway.
+    From what I could gleam on the mailinglist this was something that these new libraries
+    would resolve. (I could of course be very wrong :))</p>\n\n\n\t<p>Regardless,
+    thanks again for all the effort you put into this.</p>"
+- date: 2008-04-10
+  author: Tomy
+  content: "<p>Jamis, I’m seeing something strange. I have passwordless ssh set up
+    between several machines. If the username on the remote machine is the same as
+    my local one, it works. However, if the remote username is different, I get a
+    auth failure.</p>\n\n\n\t<p>I verified that this works in the older packages:</p>\n\n\n\t<p>$
+    whoami\nthudson\n$ irb -rubygems\nirb(main):001:0&gt; gem ‘net-ssh’, ’=1.1.2’\n=&gt;true\nirb(main):002:0&gt;
+    require ‘net/ssh’\n=&gt; true\nirb(main):003:0&gt; Net::SSH.start(‘test-app04’,’wlnext’)</p>\n\n\n\t<p>This
+    succeeds, but using 1.99.2:\n$ whoami\nthudson\n$ irb -rubygems\nirb(main):001:0&gt;
+    require ‘net/ssh’\n=&gt;true\nirb(main):002:0&gt; \n=&gt; true\nirb(main):003:0&gt;
+    Net::SSH.start(‘test-app04’,’wlnext’)\nNet::SSH::AuthenticationFailed: wlnext\n
+    \       from /usr/local/lib/ruby/gems/1.8/gems/net-ssh-1.99.2/lib/net/ssh.rb:178:in
+    `start’\n        from (irb):2</p>\n\n\n\t<p>Any ideas?</p>"

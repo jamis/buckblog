@@ -1,0 +1,95 @@
+---
+- date: 2007-07-23
+  author: Ryan Allen
+  content: "<p>Ah, that is excellent. We’ll definitely be using this!</p>"
+- date: 2007-07-23
+  author: Gaius
+  content: "<p>And just days after I finally got my multistage deployment recipe working!</p>\n\n\n\t<p>Thanks
+    for the great work.</p>"
+- date: 2007-07-23
+  author: Ben Reubenstein
+  content: "<p>@Gaius – Ha ha! Me too.  I have a simple case statement that takes
+    an argument to switch up some variables for deployment to various spots.</p>"
+- date: 2007-07-23
+  author: Tom Ward
+  content: "<p>This looks excellent.  Great work (as is the rest of Capistrano).</p>\n\n\n\t<p>One
+    question though: why the need to explicitly state available stages in the recipe?
+    \ Can’t this be determined by the contents of config/deploy?</p>"
+- date: 2007-07-23
+  author: Jamis
+  content: "<p>Good point, Tom. I’ll see about making that more implicit in a future
+    release.</p>"
+- date: 2007-07-23
+  author: Capify Newbie
+  content: "<p>The line</p>\n\n\n\t<p>require ‘capistrano/ext/multistage’</p>\n\n\n\t<p>goes
+    in config/deploy.rb right?</p>"
+- date: 2007-07-23
+  author: joost
+  content: "<p>Brilliant. I know it’s easy to build by hand, but having this as an
+    official gem makes it much easier to use. Opinionated, so to speak. &lt;g&gt;</p>"
+- date: 2007-07-23
+  author: Jamis
+  content: "<p>@Newbie, yes.</p>\n\n\n\t<p>@joost, that was part of the motivation,
+    to provide a standard way of doing it, so that it was easier to troubleshoot issues
+    that arise. :)</p>"
+- date: 2007-07-24
+  author: Kent
+  content: "<p>This is excellent.  Thank you very much for this and all the work that
+    goes into Capistrano and the tool in general.  Top notch!</p>"
+- date: 2007-07-29
+  author: Ben
+  content: "<p>This looks interesting but I am not clear about what Multistage is
+    or what problem this solves.  Could someone elaborate a little?</p>\n\n\n\t<p>Thanks!</p>"
+- date: 2007-07-29
+  author: Jamis
+  content: "<p>Ben, if it doesn’t make sense to you, then you almost certainly don’t
+    need it. :) The idea is that for your applications, you’ll have your production
+    environment that is public facing. But then you might also have a “staging” environment,
+    where you can test in-house, maybe have a few beta testers hit, and so forth,
+    without exposing all those glorious new features (and nasty bugs) to your real
+    users. The multistage module this post announces is one way to configure Capistrano
+    so that you can deploy the same application to these different environments, with
+    a minimum of duplication.</p>"
+- date: 2007-08-09
+  author: nicholas a. evans
+  content: "<p>Thanks a lot for this!  I had been rolling my own version of it, and
+    yours is a fair bit more elegant.</p>\n\n\n\t<p>Not only is this nice for multiple
+    “staging” environments (qa, production, etc), but it’s also nice if you deploy
+    the same app to different clients: client_one-qa, client_one-production, client_two-nightly,
+    client_two-qa, client_two-production, etc.</p>"
+- date: 2007-08-15
+  author: Brian McQuay
+  content: "<p>This is exactly what I’ve been looking for. Thanks for that.</p>"
+- date: 2007-08-21
+  author: Hob
+  content: "<p>Very nice.  I was just getting to the point where I was going to have
+    to deal with just this issue.  Thanks Jamis.</p>\n\n\n\t<p>One question:  Is there
+    a method available in our recipes for determining the current stage?  Might help
+    <span class=\"caps\">DRY</span> out lines like:</p>\n\n\n\t<p>set :deploy_to,
+    ”/path/to/#{application}”/#{stage}</p>\n\n\n\t<p>Instead of having to put that
+    line in each deployment file.</p>"
+- date: 2007-08-21
+  author: Jamis
+  content: "<p>@Hob, that would work, just put the variable in a proc, so it is evaluated
+    lazily:</p>\n\n\n\t<p>set(:deploy_to) { ”/path/to/#{application}/#{stage}” }</p>"
+- date: 2007-09-17
+  author: David James
+  content: "<p>Hi Jamis, thanks for this handy write up.</p>\n\n\n\t<p>I think capistrano-ext
+    needs a small tweak to remove a deprecation message with Cap 2.0.</p>\n\n\n\t<p>`cap
+    deploy:setup` gives:\n[DEPRECATION] Capistrano.configuration is deprecated. Use
+    Capistrano::Configuration.instance instead</p>\n\n\n\t<p>I believe the deprecation
+    message comes from line 292 in monitor.rb in capistrano-ext-1.2.0.  Not sure if/where
+    there is a Trac for capistrano-ext…?</p>"
+- date: 2007-09-17
+  author: David James
+  content: "<p>On my last comment, I think I spoke too soon—it looks like you specifically
+    crafted the logic to work both with Cap 1.x and 2.0.  :)  I think I’ll just tweak
+    my local source code to get rid of the deprecation message.</p>"
+- date: 2007-09-17
+  author: David James
+  content: "<p>Ok, last post of the evening (crossing fingers).  recipes.rb of mongrel_cluster-1.0.2
+    was the real culprit, not capistrano-ext.  I changed the beginning of recipes.rb
+    to look like this (borrowing some code from capistrano-ext, thanks!):</p>\n\n\n\t<p>configuration
+    = Capistrano::Configuration.respond_to?(:instance) ?\n  Capistrano::Configuration.instance(:must_exist)
+    :\n  Capistrano.configuration(:must_exist)</p>\n\n\n\t<p>configuration.load do\n
+    \ set :mongrel_servers, 2\n  set :mongrel_port, 8000</p>\n\n\n\t<p>-DJ</p>"

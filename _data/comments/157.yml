@@ -1,0 +1,53 @@
+---
+- date: 2006-08-29
+  author: Jordan McKible
+  content: "I ran into the same exact problem.  I was finally exasperated enough to
+    post this thread on the textdrive forums \nhttp://forum.textdrive.com/viewtopic.php?id=11147\n\nIt
+    turns out typo is a real memory hog.  I ended up just switching to wordpress."
+- date: 2006-08-29
+  author: pate
+  content: Glad to hear you've made it safe and sound.  Hopefully the boise.rb is
+    treating you well.
+- date: 2006-08-29
+  author: Scott Chacon
+  content: |-
+    I had a bunch of problems with TextDrive recently too.  I was running rails apps fine for several months then everything went hinky.  I think they ratcheted down the per-process memory limits to just over what a rails process normally takes, so anything slightly bigger (aka, Typo) gets memory allocation errors constantly.
+
+    I moved to Site5 for some of my sites and PlanetArgon for my Typo blog and they are each much better.  I would personally recommend PlanetArgon.  I hear Rails Machines are great, too - but they're all sold out.
+
+    Have fun in Boise, I almost moved there once and it's really quite nice.
+- date: 2006-08-29
+  author: Zack
+  content: I just switched from typo to mephisto and am very impressed. Good luck
+    to you either way.
+- date: 2006-08-29
+  author: Larry Wright
+  content: 'If you''re not running a new-ish version of Typo, it''s likely the culprit.
+    Until I upgraded to 4.0, I was experiencing the same issues (though mine was crashing
+    twice a day, at least). Try upgrading to 4.0, it will likely solve the issue.  '
+- date: 2006-08-29
+  author: Jamis
+  content: |-
+    Yah, I'm on typo 4.0, and I'm about 99% sure it's not a memory issue. I've got a daemon running that restarts typo anytime it gets larger than some threshold, and it hasn't had to be restarted by the daemon since I upgraded to 4.0.
+
+    The thing that's wierd is that 90% of the time when my blog goes down, lighttpd goes down, too. I get no warning--just suddenly I'll go to pull up my blog and there's no response. I check, and sure enough, both typo and lighttpd are no longer running.
+
+    Other rails apps I run on the same host don't have this trouble, though, so it must be typo.
+
+    Kind of odd. I'm looking into mephisto, but the trouble with that is designing a theme that suits me. We'll see how it goes.
+- date: 2006-08-30
+  author: Eric Sendelbach
+  content: "Jamis, what is the threshold your daemon checks for? Textdrive's has a
+    per process limit of 48 megs and when that threshold is reached it will just whack
+    it without giving any sort of notification in the process_watchdog.log file. \n\nhttp://www.mail-archive.com/typo-list@rubyforge.org/msg02897.html"
+- date: 2006-08-30
+  author: keeran
+  content: Welcome back Jamis - look forward to reading your updates :)
+- date: 2006-08-31
+  author: Joe
+  content: Give mephisto a look.  You can import Typo into it.  It's so much better,
+    imo.
+- date: 2006-08-31
+  author: Jamis
+  content: Thanks, Joe, for the recommendation. I've been checking it out for acouple
+    weeks now--I just need to find the time to work up a theme for it.

@@ -1,0 +1,78 @@
+---
+layout: post
+title: Object#with_options
+post_id: 128
+categories:
+- Tips & Tricks
+date: 2007-01-24 08:23:00.000000000 -07:00
+author: Jamis
+permalink: 2007/01/24/object-with_options.html
+---
+
+<p>In <a href="http://weblog.jamisbuck.org/2007/1/22/named-explicit-routes">Named, explicit routes</a> I mentioned <code>Object#with_options</code> in passing, only to discover later that this super-useful method is not documented in Rails’ <span class="caps">API</span> docs! I’ve since corrected the situation in trunk, but the method is useful enough (particularly in conjunction with routing) that I figured it was worth blogging about.</p>
+<p>The pain point that inspired the method is this: suppose you have a bunch of method calls, all of which accept an options hash as the last parameter, and all of which share one or more of the same options. Route definitions are the canonical examples of this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">map.create_message <span class="s"><span class="dl">"</span><span class="k">/msg/create/:id</span><span class="dl">"</span></span>, <span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">message</span><span class="dl">"</span></span>, <span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">create</span><span class="dl">"</span></span><tt>
+</tt>map.delete_message <span class="s"><span class="dl">"</span><span class="k">/msg/delete/:id</span><span class="dl">"</span></span>, <span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">message</span><span class="dl">"</span></span>, <span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">delete</span><span class="dl">"</span></span><tt>
+</tt>map.message <span class="s"><span class="dl">"</span><span class="k">/msg/:id</span><span class="dl">"</span></span>, <span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">message</span><span class="dl">"</span></span>, <span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">get</span><span class="dl">"</span></span><tt>
+</tt><span class="c"># etc, etc, etc</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Ugly! And definitely not very <acronym title="Don’t Repeat Yourself">DRY</acronym>. One way around this is to define a separate variable that contains the hash of common options, and use <code>Hash#merge</code> to add in the difference in each call</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">common = { <span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">message</span><span class="dl">"</span></span> }<tt>
+</tt>map.create_message <span class="s"><span class="dl">"</span><span class="k">/msg/create/:id</span><span class="dl">"</span></span>, common.merge(<span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">create</span><span class="dl">"</span></span>)<tt>
+</tt>map.delete_message <span class="s"><span class="dl">"</span><span class="k">/msg/delete/:id</span><span class="dl">"</span></span>, common.merge(<span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">delete</span><span class="dl">"</span></span>)<tt>
+</tt>map.message <span class="s"><span class="dl">"</span><span class="k">/msg/:id</span><span class="dl">"</span></span>, common.merge(<span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">get</span><span class="dl">"</span></span>)<tt>
+</tt><span class="c"># etc, etc, etc</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Better, but still not very <span class="caps">DRY</span>. <code>Object#with_options</code> is Rails’ answer to this pattern:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">map.with_options <span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">message</span><span class="dl">"</span></span> <span class="r">do</span> |msg|<tt>
+</tt>  msg.create_message <span class="s"><span class="dl">"</span><span class="k">/msg/create/:id</span><span class="dl">"</span></span>, <span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">create</span><span class="dl">"</span></span><tt>
+</tt>  msg.delete_message <span class="s"><span class="dl">"</span><span class="k">/msg/delete/:id</span><span class="dl">"</span></span>, <span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">delete</span><span class="dl">"</span></span><tt>
+</tt>  msg.message <span class="s"><span class="dl">"</span><span class="k">/msg/:id</span><span class="dl">"</span></span>, <span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">get</span><span class="dl">"</span></span><tt>
+</tt>  <span class="c"># etc, etc, etc</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Ah! Duplication, be gone! Much nicer.</p>
+<p>Although I’ve personally used this primarily in route definitions, it can be used anywhere that option hashes appear as the last parameter…which describes most of the interfaces in Rails. Have a bunch of associations on a model, all of which are declared dependent on the parent?</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">Blog</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+</tt>  with_options <span class="sy">:dependent</span> =&gt; <span class="sy">:destroy</span> <span class="r">do</span> |parent|<tt>
+</tt>    parent.has_many <span class="sy">:authors</span><tt>
+</tt>    parent.has_many <span class="sy">:posts</span><tt>
+</tt>    parent.has_many <span class="sy">:themes</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Great stuff! (And yet another example of the power of <a href="http://weblog.jamisbuck.org/2007/1/19/blocks-rock">blocks in Ruby</a>.) For the curious, you read can read the implementation of <code>with_options</code> in Rails’ ActiveSupport project, <a href="http://dev.rubyonrails.org/browser/trunk/activesupport/lib/active_support/core_ext/object/misc.rb">here</a> and <a href="http://dev.rubyonrails.org/browser/trunk/activesupport/lib/active_support/option_merger.rb">here</a>. All told, it’s under 30 lines of code, so it’s pretty easy to grasp. (Props to <a href="http://sam.conio.net/">Sam Stephenson</a> for the beautiful implementation!)</p>

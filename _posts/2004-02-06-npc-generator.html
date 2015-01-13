@@ -1,0 +1,34 @@
+---
+layout: post
+title: NPC Generator
+post_id: 310
+categories:
+- Projects
+date: 2004-02-06 03:14:00.000000000 -07:00
+author: Jamis
+permalink: 2004/02/06/npc-generator.html
+---
+
+<p>About 3 years ago I wrote a <a href="http://www.aarg.net/~minam/npc.cgi">random <span class="caps">NPC</span> generator</a> for the then-brand-new 3rd edition of D&amp;D.  It was quite popular for a while (and still has a large following), but suffered from many defects. Eventually, I’d like to rewrite it, and do it exactly “right” this time.</p>
+<p>I’ve been thinking for a long time about how to go about doing it “right”.  I recently sent <a href="http://www.andargor.com">Andargor</a> an outline of several items that any good <span class="caps">NPC</span> generator must possess.  They are:</p>
+<ol>
+	<li>The requirements of any purely random or user-directed <span class="caps">NPC</span> generator must be clearly specified.  The kinds of inputs must be well-understood, in order to craft a generator that people will use.  The inputs may be absent (in the case of a purely random <span class="caps">NPC</span>), or all-encompassing (in the case of a user building a specific <span class="caps">NPC</span>).  They may also be specific (such as when a user says that an <span class="caps">NPC</span> must have a specific feat or skill), or general (like the concept of a “role”, i.e. a “blaster wizard”).  And there may be a generous mix of all of the above (“Give me a neutral good scholar that knows at least 1st level arcane spells, but can also pick locks, and make sure that he has some sort of craft or profession skill, but no more than one of each.”)  (90% of the challenge of this is coming up with a user-interface to specify all of the possible constraints.)</li>
+		<li>Given those (general) requirements, the generator should be goal-directed and incremental.
+
+	<p><strong>Goal-directed:</strong> the generator should begin with some “blank slate” and work towards the goal given by the constraints.  When a random value is needed to fill in some missing-but-critical constraint, the random value should be tailored somehow to be appropriate for the stated goal(s).  There must be some way to identify whether or not the stated criteria are contradictory or not (which may prove quite difficult).</p>
+
+
+	<p><strong>Incremental:</strong> the generator should save a snapshot of the <span class="caps">NPC</span> at appropriate “save points” along its progression.  (These save points will typically be each time a new level is computed for the <span class="caps">NPC</span>).  This allows the user to identify how the generator reached their stated goal, and also allows the user to tailor their initial criteria appropriately to refine their goal.</p>
+
+
+	<p>The incremental requirement also allows publishers (for instance) to provide snapshots of the <span class="caps">NPC</span> at selected points along their career (ie, “here’s Gorzak at level 1, and here he is at level 4, and here he is at level 8”).  (Such a feature is very useful for identifying how a character advances through a given class or prestige class).</p>
+
+
+	<p>The incremental requirement also includes the ability to restart the generator from some prior snapshot, thereby appending a new progression to an existing <span class="caps">NPC</span>.  This allows DM’s to take an existing villain and randomly add several levels to its progression.</p>
+</li>
+		<li>The ability for users to define their own data is critical.  This allows publishers to add their own prestige classes, or gamers to add their own custom monsters to the generator.  It has been assumed that a text file is the best way to do this (XML, <span class="caps">YAML</span>, etc.)<del>-which indeed is the most portable way.  However, parsing megabytes of text on each program invocation is not going to be efficient in the long run (since it will be slow to parse, and would require all of the data to be stored in <span class="caps">RAM</span>), so I propose that the text format (whatever it may be) be used only for distributing data.  The program itself should use some kind of relational database (sqlite would be ideal</del>-portable, small, and lightweight) for fast access.  This may also make it easier to design a user interface to allow users to add new data. (I would hate to require people to learn <span class="caps">XML</span> or <span class="caps">YAML</span> in order to add data to a program—the worst thing I ever did was with <a href="http://basiliskdb.sf.net">Basilisk</a> and my treasure generator, where I required people to be programmers in order to add data.)</li>
+		<li>Output should be customizable as well.  The generated characters should be printable, but also transmittable in various formats.  Where possible, generated characters should be interoperable with different programs (PCGen comes to mind).  Users should be able to create output templates to specify how the characters are saved, printed, and even displayed in-program.</li>
+		<li>It should be possible to export and share parts of the overall dataset.  This allows users to share portions of their dataset that they created with others.  Having some central database where users could upload and download data would be nice, too.  Even multiple online datasets would be nice-<del>that would allow publishers to provide their own data for easy access.  The export format should be flexible and portable</del>-I would recommend either <span class="caps">XML</span> or <span class="caps">YAML</span>.</li>
+		<li>The generator should be embeddable.  Other programmers should be able to access a well-specified <span class="caps">API</span> to use the <span class="caps">NPC</span> generator in their own programs (ie, a dungeon generator that populates the rooms, or a town generator that provides details on notable citizens.)  Making the generator embeddable would also allow for a web-based generator (such as currently exists), although the web-based version may necessarily be restricted in its functionality (since it may be difficult to create an intuitive web interface for specifying all possible constraints).</li>
+		<li>The generator should be localizable.  Internationalization should be considered from the very beginning, to make it easy for non-programmers to translate the program and the data to their (natural) language of preference.</li>
+	</ol>

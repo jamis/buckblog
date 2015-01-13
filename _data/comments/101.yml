@@ -1,0 +1,105 @@
+---
+- date: 2007-02-08
+  author: Eric Anderson
+  content: "<p>I remember reading about this in the Pickaxe book back when I was first
+    learning Ruby. I have never quite understood the need for this. Compare the following:</p>\n\n\n&lt;macro:code&gt;\nbegin\n
+    \ possibly_failable_action\n  run_this_only_when_success\nrescue SomeException\n
+    \ run_this_only_on_failure\nensure\n  run_this_no_matter_what\nend\n&lt;macro:code&gt;\n\n\t<p>vs.</p>\n\n\n&lt;macro:code&gt;\nbegin\n
+    \ possibly_failable_action\nrescue SomeException\n  run_this_only_on_failure\nelse\n
+    \ run_this_only_when_success\nensure\n  run_this_no_matter_what\nend\n&lt;macro:code&gt;\n\n\t<p>These
+    both should do the same thing but the first one gets by without the extra “else”
+    construct. So that although it is neat and arguably more clear in it’s meaning
+    I have always found myself doing the first method. Probably because other languages
+    don’t have the nifty “else” construct so my mind seems to always be pushing me
+    towards the first method.</p>"
+- date: 2007-02-08
+  author: Eric Anderson
+  content: "<p>Arg.. I guess I’m just going to give up on trying to use that nifty
+    ruby formatting. :)</p>"
+- date: 2007-02-08
+  author: Jamis
+  content: "<p>The closing tags needs to be &lt;/macro:code&gt;, and then it should
+    work fine. (That’s probably my fault; there was a typo in my previous explanation
+    of how this worked.)</p>"
+- date: 2007-02-08
+  author: Jamis
+  content: "<p>Eric, the difference between the former and the latter examples you
+    gave is this: in the first, any exception in “run_this_only_when_success” will
+    cause the rescue clause to be invoked, whereas when using the ‘else’, exceptions
+    in the else clause are not rescued.</p>\n\n\n\t<p>It’s a subtle difference, but
+    I found a need for it today and saw the light. :)</p>"
+- date: 2007-02-08
+  author: ry
+  content: "<p>I had the exact same reaction as Eric. Of course, that is probably
+    do to the way this is achieved in other languages that don’t have this construct.</p>\n\n\n\t<p>I
+    suppose the benefit of this is readability—the code that is evaluated only in
+    event of success is explicitly denoted as a conditional block.</p>"
+- date: 2007-02-08
+  author: Kevin Smith
+  content: "<p>Eric, I may be misunderstanding the use of the else, but I think the
+    key is that the code in the else part is not checked for exceptions. Any exception
+    that happens will bubble up the call stack as normal. I can’t see a super good
+    reason for this at the moment, but it is slightly different from your first code
+    snippet.</p>"
+- date: 2007-02-08
+  author: Kevin Smith
+  content: "<p>Jamis, What was your use case?</p>"
+- date: 2007-02-08
+  author: Adam T.
+  content: "I agree about the usefulness of the “else” clause in begin/end blocks.
+    It can turn a piece of code like this:\n<table class=\"CodeRay\"><tr>\n  <td title=\"click
+    to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt><strong>5</strong><tt>\n</tt>6<tt>\n</tt>7<tt>\n</tt>8<tt>\n</tt>9<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre><span class=\"r\">def</span> <span class=\"fu\">cancel</span><tt>\n</tt>
+    \ <span class=\"r\">begin</span><tt>\n</tt>    <span class=\"c\"># Some code that
+    might raise an exception</span><tt>\n</tt>  <span class=\"r\">rescue</span><tt>\n</tt>
+    \   <span class=\"r\">return</span> <span class=\"pc\">false</span><tt>\n</tt>
+    \ <span class=\"r\">end</span><tt>\n</tt><tt>\n</tt>  <span class=\"r\">return</span>
+    <span class=\"pc\">true</span><tt>\n</tt><span class=\"r\">end</span></pre></td>\n</tr></table>\n\n\n<table
+    class=\"CodeRay\"><tr>\n  <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt><strong>5</strong><tt>\n</tt>6<tt>\n</tt>7<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre><span class=\"r\">def</span> <span class=\"fu\">cancel</span><tt>\n</tt>
+    \ <span class=\"c\"># Some code that might raise an exception</span><tt>\n</tt><span
+    class=\"r\">rescue</span><tt>\n</tt>  <span class=\"r\">return</span> <span class=\"pc\">false</span><tt>\n</tt><span
+    class=\"r\">else</span><tt>\n</tt>  <span class=\"r\">return</span> <span class=\"pc\">true</span><tt>\n</tt><span
+    class=\"r\">end</span></pre></td>\n</tr></table>\n\n\n\t<p>It’s a matter of taste,
+    definitely, but I prefer the latter for cleanliness (that is, why explicitly use
+    the “begin” statement when it is done for you?).</p>"
+- date: 2007-02-08
+  author: Jamis
+  content: "<p>Beautiful, Adam, thanks for that example.</p>"
+- date: 2007-02-08
+  author: sri
+  content: "<p>I don’t think “else is pretty much the same as just putting code immediately
+    after the end”, without the ensure clause.</p>\n\n\n\t<p>Let’s say you catch an
+    exception but ignore it.\nThen your else part won’t run.\nWhereas if the else
+    part is after end,\nthen it will still run.</p>\n\n\n<pre><code>\nbegin\n '3'+3\nrescue
+    TypeError\n puts 'err'\nelse\n puts 'no err'\nend\n</code></pre>\n\n\t<p>isn’t
+    the same as</p>\n\n\n<pre><code>\nbegin\n '3'+3\nrescue TypeError\n puts 'err'\nend\nputs
+    'no err'\n</code></pre>"
+- date: 2007-02-08
+  author: Wes
+  content: "<p>I almost want to think of it as ‘sucess’ instead of ‘else’, because
+    it’s run when there’s a lack of an exception.</p>"
+- date: 2007-02-09
+  author: Eric I.
+  content: |-
+    <p>But how is Adam’s example different from this?&lt;/&gt;
+    </p>
+    <pre><code>
+    def cancel
+      # Some code that might raise an exception
+      return true # will get here if no exceptions raised
+    rescue
+      return false
+    end
+    </code></pre>
+- date: 2007-02-09
+  author: Jamis
+  content: <p>Eric, it’s not. The two are (semantically) identical, though Adam’s
+    makes it clearer what happens when no exceptions are raised. Some might prefer
+    it one way, some another. Ruby does, after all, follow the <a href="http://en.wikipedia.org/wiki/TIMTOWTDI"><span
+    class="caps">TIMTOWTDI</span></a> philosophy.</p>
+- date: 2007-02-10
+  author: Eric I.
+  content: |-
+    <p>I’m not sure that Ruby’s philosophy or set of goals explicitly includes <span class="caps">TIMTOWTDI</span>.  Matz has said that Ruby follows good user interface design.  And many have said that Ruby follows the Principle of Least Surprise.  You can read a bit more on the <a href="http://en.wikipedia.org/wiki/Ruby_language#Philosophy">Wikipedia section on Ruby’s philosophy</a>.</p>
+    <p>As for what’s clearer, that tends to be personal.  But when I read the block above the rescue blocks, I interpret that as what happens unless an exception occurs.  I don’t think breaking that up and spreading that out helps all that much.</p>

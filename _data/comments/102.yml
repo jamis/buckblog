@@ -1,0 +1,58 @@
+---
+- date: 2007-02-07
+  author: Anonymous Cow
+  content: "<p><span class=\"caps\">A RCR</span> for this has been added to 1.9/2.0,
+    fwiw:</p>\n\n\n\t<p>http://rcrchive.net/rcrs/5</p>"
+- date: 2007-02-07
+  author: coder_
+  content: "<p>Cool!  This blog is a great resource :)</p>"
+- date: 2007-02-07
+  author: Michael Marzec
+  content: "<p>Shouldn’t it rather be “include?(5)” ?</p>"
+- date: 2007-02-08
+  author: bobes
+  content: "<p>It would be great if this worked within conditions for find method.
+    Like this:</p>\n\n\n\t<p>User.find :all, :conditions =&gt; {:height =&gt; 150..Infinity}</p>"
+- date: 2007-02-08
+  author: Jamis
+  content: "<p>Michael, you’re right, my bad. I’ve corrected the article.</p>\n\n\n\t<p>Bobes,
+    I think it’s clearer to just say “height &gt;= 150”. The intention is more manifest,
+    and it’s even fewer characters to type. :)</p>"
+- date: 2007-02-08
+  author: Alex Wayne
+  content: "<p>Nice!</p>\n\n\n\t<p>I have stumbled on to this before, and couldn;t
+    figure out why sometimes I would get a <code>ZeroDivisionError</code> and sometimes
+    I would get <code>Infinity</code>.  I was even more confused when <code>Inifinity</code>
+    was an uninitialized constant.</p>\n\n\n\t<p>For clarification, an integer divided
+    by zero gives you an error, where a float divided by zero gives <code>Infinity</code>.</p>\n\n\n\t<p>Thanks
+    for not only helping me sort that out but also show how useful it is.</p>"
+- date: 2007-02-09
+  author: Wes
+  content: "<table class=\"CodeRay\"><tr>\n  <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt><strong>5</strong><tt>\n</tt>6<tt>\n</tt>7<tt>\n</tt>8<tt>\n</tt>9<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre><tt>\n</tt><span class=\"fl\">1.0</span>/<span class=\"i\">0</span><tt>\n</tt>=&gt;
+    <span class=\"co\">Infinity</span><tt>\n</tt><tt>\n</tt><span class=\"fl\">0.0</span>/<span
+    class=\"i\">0</span><tt>\n</tt>=&gt; <span class=\"co\">NaN</span><tt>\n</tt><tt>\n</tt><span
+    class=\"i\">0</span>/<span class=\"i\">1</span><tt>\n</tt>=&gt; <span class=\"i\">0</span><tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>I
+    never understood the incongruity in the way a float zero acts vs any other float
+    vs an integer float.  I can understand Infinity as a result and I can understand
+    0 as a result, but NaN for this one case?</p>"
+- date: 2007-02-09
+  author: Jamis
+  content: "<p>Wes, it’s the way that operation is defined. Mathematically speaking,
+    dividing any positive, non-zero value by zero will give you an infinitely large
+    number (you can prove this with limits; dividing some number by smaller and smaller
+    numbers, you get larger and larger quotients). Also, mathematically, dividing
+    any zero by any non-zero value will give you zero. However, zero divided by itself
+    is undefined—it is not a number, and so you get NaN when you try to do so on a
+    computer.</p>"
+- date: 2007-02-13
+  author: Tony Buser
+  content: "<p>Interesting, is there anyway to encode the concept of Infinity in a
+    database?  Looking at your example for storage_limits, it appeared to be possible.
+    \ (1.0/0).class =&gt; Float, so I tried creating a record in a mysql table with
+    a float field =&gt; Infinity thinking it would do some kind of magic value, but
+    ActiveRecord turned Infinity into an unescaped string in the sql call.</p>\n\n\n\t<p>ActiveRecord::StatementInvalid:
+    Mysql::Error: Unknown column ‘Infinity’ in ‘field list’: <span class=\"caps\">INSERT
+    INTO</span> bill_payments (`bill_id`, `paid_bill_id`, `payment`, `is_deleted`)
+    <acronym title=\"2, &lt;span class=\">VALUES</acronym></p>\n\n\n\t<p>Ok, maybe
+    a bad example, I’d like to see someone pay an infinite bill ;)</p>"

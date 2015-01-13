@@ -1,0 +1,33 @@
+---
+layout: post
+title: Dual Monitor Fun
+post_id: 292
+categories:
+- Odds & Ends
+date: 2004-03-24 15:30:00.000000000 -07:00
+author: Jamis
+permalink: 2004/03/24/dual-monitor-fun.html
+---
+
+<p>They got us a second monitor for use at work—a 17” Dell flat-panel beauty with a maximum resolution of 1280×1024. (Would have preferred 1600×1200 maximum resolution, but beggars can’t be choosers.)</p>
+<p>That was yesterday.  Thus the adventure began.</p>
+<p>Since these laptops come with <a href="http://www.nvidia.com">nVidia</a> cards in them, it was natural to try to use the TwinView feature on them first.  It’s the easiest thing to set up, and works almost out of the box (just need to add a few lines to the XF86Config file).</p>
+<p>I quickly realized that I <em>hate</em> TwinView.</p>
+<p>It makes the external monitor your primary one, which means that your laptop monitor becomes a mere extension of the external.  If they both had the same resolution, that would be fine, but they don’t; thus, when you have the external monitor attached and configure your desktop one way (icons, [<a href="http://www.gkrellm.net">gkrellm</a>], and so forth), and then you disconnect the external and run on a single monitor, your desktop gets hosed.  Suddenly the icons are in wierd places, gkrellm is no longer where you left it relative to the right edge of your screen, etc.  A real pain in the rear end.</p>
+<p>However, appendix “R” of the <a href="ftp://download.nvidia.com/XFree86/Linux-x86/1.0-5336/README">nVidia <span class="caps">README</span> file</a> hinted at another way.  The appendix was titled “configuring multiple X screens on one card.”  The ultimate effect of this is to have each monitor be it’s own X display, complete with its own desktop and everything.  <em>This</em> was exactly what I wanted to try.</p>
+<p>The appendix made it look easy enough.  Just add a second “monitor” section to your XF86Config file, a second “device” section, and a new “serverlayout” section.  It was all specified right there, in black and white.  Easy!</p>
+<p>So I hacked my XF86Config and made it look (more or less) like the partial examples given in the nVidia <span class="caps">README</span>.  I rebooted, and… ouch.  My computer locked up, hard.  I had to turn it off and on in order to reboot.  Not Good™.</p>
+<p>Thus began a long, tedious journey in the bowels of <span class="caps">XF86</span> configuration.  I learned all about input devices, video devices, monitors, screens, server layouts, and even a bit about <span class="caps">PCI</span> and bus ID’s.  I tried various combinations of options.  I turned off RandR.  I turned on RandR.  I turned off Xinerama.  I turned on Xinerama.</p>
+<p>I grew very, very frustrated.</p>
+<p>I tried upgrading my nVidia drivers, which kind of helped—my machine no longer locked up, but the nVidia splash screen instead become some kind of psychedelic plasma effect.  Very pretty, but not what I was looking for.</p>
+<p>For once in my life, <a href="http://www.google.com">Google</a> failed me—not a single query I ran came back with anything germane to what I was looking for.  It was bound to happen eventually.</p>
+<p>I became very good friends with the XF86Config.log file.  It indicated avenues of research and possible problems.  In fact, it was the log file that finally clued me in on what might be the problem.</p>
+<p>At first, there was a line saying that the video device section that I had set up for the flat-panel display was duplicated.  It wasn’t.  That remained a mystery for some time.  Eventually (after the upgrade of the drivers) I got a new error, “screen 0” and “screen 1” were “sharing io &amp; mem resources.”  This sounded suspciously like they were referring to the same physical monitor… Which would explain the bizarre drug-trip-of-a-splash-screen.</p>
+<p>So, my mind was turned to one of the options described under TwinView: ConnectedMonitor.  It is used with TwinView to say what the types of connected monitors were.  In desperation (and certainly not because anything I had read made me think it would work) I specified in the laptop monitor definition an option of “ConnectedMonitor” “DFP”, and in the external definition a monitor of “CRT”.</p>
+<p>I closed my eyes.</p>
+<p>I restarted X.</p>
+<p>I opened my eyes.</p>
+<p>It was a moment of supreme epiphany.  Tears would have come to my eyes if I hadn’t already shed them dry in frustration.  Happiness, pure and simple.</p>
+<p>I could move my mouse cursor between the screens.  It worked!</p>
+<p>The rest of the day was spent tweaking.  I discovered, for instance, that the Sawfish window manager didn’t like the dual monitor approach (it refused to decorate windows on the external monitor).  Metacity, on the other hand, worked great.  Also, desktop backgrounds can’t be set per-display, apparently… at least, I haven’t figured out how.</p>
+<p>It just goes to show you that Linux is a journey, and each stop on the trip teaches you something more, if you let it..</p>

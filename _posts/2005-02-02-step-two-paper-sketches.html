@@ -1,0 +1,47 @@
+---
+layout: post
+title: 'Step Two: Paper Sketches'
+post_id: 233
+categories:
+- Projects
+date: 2005-02-02 08:36:00.000000000 -07:00
+author: Jamis
+permalink: 2005/02/02/step-two-paper-sketches.html
+---
+
+<p>So, my wife and two kids are all sick today, giving me ample excuse to not go to work. They’re all napping right now, miraculously, and it seemed like a great opportunity to tinker on BudgetWise some more.</p>
+<p>If you’ll recall from <a href="http://jamis.jamisbuck.org/blog.cgi/programming/Taking%2037signals'%20Process%20for%20a%20Spi_20050130220429.tx">the last article</a>, BudgetWise is to be a web-based, budget-centric, financial management application. And I’m using it as a test-bed for some of the concepts preached by <a href="http://www.37signals.com">37signals</a> in their <a href="http://www.37signals.com/workshop-basecamp.php">Building of Basecamp</a> workshop.</p>
+<p>In this article, I’ll be showing the paper sketches of the login/logout screens. (I’m certainly no artist, but I think the sketches will be understandable enough. I’ll narrate them anyway.)</p>
+<h2>Login, Ideal State</h2>
+<p>Jason Fried suggested in the workshop that each page may have three different states:</p>
+<ul>
+	<li>The “ideal” state, in which the page works as advertised,</li>
+		<li>The “blank slate”, where a page that is supposed to present data to the user can’t, because there is no data to present, and</li>
+		<li>The “error” state, where something goes wrong and the user must be told.</li>
+	</ul>
+<p style="float:right"><img src="/images/psketch1/login-ideal.gif" title="Ideal Login State" alt="Ideal Login State"></p>
+<p>So, the first sketch shows the ideal login state, where the user is asked for their username and password. (Note that I’m omitting everything else on the page—there may be more outside of this box, but I’m trying to learn how to do <a href="http://www.37signals.com/svn/archives/000737.php">epicenter design</a>.)</p>
+<p>This is pretty self-explanatory, but just in case you can’t read my chicken-scratch, there is a link in the middle of the box in case the user has forgotten their user name or password, and a link in the bottom of the box to sign up to use BudgetWise.</p>
+<h2>Login, Error State</h2>
+<p style="float:left"><img src="/images/psketch1/login-error.gif" title="Error Login State" alt="Error Login State"></p>
+<p>This next sketch shows the error state for the login. (Of course, any number of things <em>can</em> go wrong, but the most common error will be a mistyped user name or password—which is why this example only demonstrates that one error.)</p>
+<p>A box at the top of the area displays the error message. It also demonstrates another technique that Jason taught: don’t just tell the user what went wrong, <em>help them figure out how to fix the problem</em>. In particular, it suggests that if the user has forgotten their user name or password, they can click a link and get help. (The wording can, of course, be much improved, but I’ll work on that when I get to the <span class="caps">HTML</span> mockup.)</p>
+<p>Everything else about this state is identical to the ideal state.</p>
+<h2>Logout, Session Timeout</h2>
+<p style="float:right"><img src="/images/psketch1/logout.gif" title="Logout Message" alt="Logout Message"></p>
+<p>I lumped the logout and session timeout scenarios into the same sketch-session as the login. Basically both of these scenarios are just messages displayed to the user, along with a link to the login page.</p>
+<p>I kind of puzzled over this with the logout message. A part of me would like to just have the user given the login page directly when they log out, but I thought it might be nice to give them a little more information. Logging out of a web application is always tricky to me—where do you take them after they log out? I figured a simple “you have been logged out” message would suffice, although I’m still not completely satisfied with it.</p>
+<p style="float:left"><img src="/images/psketch1/session-timeout.gif" title="Logout Message" alt="Logout Message"></p>
+<p>A user may be logged out through inactivity, as well. If they let their session sit open long enough, without sending any activity to the server, they will be logged out automatically. In that case, the next time they attempt to perform an action, they will be taken to the session timeout message.</p>
+<p>It is almost identical to the logout message, but it gives an explanation of why they were logged out. More verbage could be helpful, maybe… Perhaps a bulletted list of what the timeout criteria are. I’ll tinker with that in <span class="caps">HTML</span> as well.</p>
+<h2>Layout</h2>
+<p style="float:right"><img src="/images/psketch1/layout.gif" title="Intro Layout" alt="Intro Layout"></p>
+<p>The last sketch I did was a “big picture”, to get an idea of where the above epicenters would actually fit on the page.</p>
+<p>The problem I encountered here is that each of the bits described above are <em>small</em>. They don’t eat up very much screen real estate. So what do you do with the rest of the screen?</p>
+<p>I like what <a href="http://jamisbuck.projectpath.com">Basecamp</a> does, which is just to put the login in the middle of a neutral-colored screen. No distractions. It gets right to the point. I was tempted to just go that route, since I trust 37signals to know what they are doing. :)</p>
+<p>However, since this is my baby, and it’s all about experimenting, I thought I’d try something different. The page itself will still be pretty minimalistic, but instead of centering the login box, I want to try moving it slightly up and left of center. Then, a watermark of the name of the app, “BUDGETWISE”, would sit behind the box, and a colored bar would divide the screen into two unequal halves.</p>
+<h2>Conclusion</h2>
+<p>I’m amazed at how much this simple exercise has forced me to think about the interface of my application. Even something as trivial as the login box (which I selected first because it <em>was</em> trivial) was found to have several sticky issues that required some thought.</p>
+<p>I also found it really hard to focus on making the sketches. I kept wanting to jump into a text editor and start hacking away at <span class="caps">HTML</span>. The programmer in me kept thinking in terms of controllers and models.</p>
+<p>I think this is something I could get used to doing, though. And with practice, it would come much more quickly and naturally.</p>
+<p>Next up—the <span class="caps">HTML</span> mockups, and some more paper sketches of subsequent areas of the application!</p>

@@ -1,0 +1,28 @@
+---
+- date: 2008-08-26
+  author: Camillo Rosario
+  content: "<p>Thanks for doing this!  As a service (and not that it’s difficult to
+    figure out) could you give the gem command that one would issue to upgrade from
+    1.4.1 to 1.4.2?  It would make this post a true one-stop.</p>\n\n\n\t<p>Thanks!</p>"
+- date: 2008-08-26
+  author: Glenn
+  content: "<p>Thanks very much for this Jamis, I’ve a couple of legacy projects that
+    this will fall in place nicely for.</p>"
+- date: 2008-08-26
+  author: Jamis
+  content: "<p>To install cap 1.4.2:</p>\n\n\n\t<p>gem install capistrano -v 1.4.2</p>\n\n\n\t<p>It’s
+    that easy!</p>"
+- date: 2008-08-26
+  author: daxhuiberts
+  content: "<p>Dude, I just dropped my coffee on my lap! Only to realize that I’m
+    already on the Capistrano 2 bandwagon.</p>\n\n\n\t<p>But oh, I couldn’t blame
+    you, you’re doing a terrific job as it is. Anyway, if I ever meet you, I owe you
+    a beer, or two.</p>\n\n\n\t<p>- Dax. Not your biggest fan, but a fan nonetheless.</p>"
+- date: 2008-08-27
+  author: Sebastian
+  content: "<p>I will try 1.4.2 in my new project.</p>"
+- date: 2008-08-27
+  author: Jamis
+  content: "<p>@Sebastian, if you’re starting a new project, then I’d strongly encourage
+    you to use the latest Capistrano (2.4.3 right now, though a new release is imminent).
+    The 1.4.x series is not recommended for new projects.</p>"

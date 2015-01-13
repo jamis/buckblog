@@ -1,0 +1,42 @@
+---
+layout: post
+title: Capistrano 2.2.0 Preview
+post_id: 67
+categories:
+- Announcements
+date: 2008-02-22 21:30:00.000000000 -07:00
+author: Jamis
+permalink: 2008/02/22/capistrano-2-2-0-preview.html
+---
+
+<p>Alright, I’m almost ready to unleash this monster on the world, but I’d like a few brave souls to kick the tires. Especially, if you use git or bzr with Capistrano, you might want to give this new version a spin, since it includes a few changes to those <span class="caps">SCM</span> modules.</p>
+<p>Grab the latest beta gem thus:</p>
+<pre><code>gem install --source http://gems.rubyonrails.org capistrano</code></pre>
+<p>The significant changes in this release:</p>
+<p><strong><span class="caps">FEATURE</span>:</strong> Thanks to James Duncan Davidson, Cap 2.2.0 will sport an additional way to define roles. If you have servers that overlap roles, this can <span class="caps">DRY</span> things up:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">server <span class="s"><span class="dl">"</span><span class="k">host.name</span><span class="dl">"</span></span>, <span class="sy">:web</span>, <span class="sy">:app</span></pre></td>
+</tr></table>
+<p><strong><span class="caps">FEATURE</span>:</strong> Rob Holland submitted a patch that makes cap play more nicely with very large numbers of servers. If you had too many, cap would bog down, and you may even get errors from having too many simultaneous connections. You can now specify a <code>:max_hosts</code> option, and if a task needs to operate on more than that number of servers at once, the server list will be chopped up and fed through the task in pieces.</p>
+<p><strong><span class="caps">FEATURE</span>:</strong> David Masover gave us a way to define roles dynamically, by passing a block to the role macro:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">role <span class="sy">:app</span> <span class="r">do</span><tt>
+</tt>  [<span class="s"><span class="dl">"</span><span class="k">host1</span><span class="dl">"</span></span>, <span class="s"><span class="dl">"</span><span class="k">host2</span><span class="dl">"</span></span>]<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>This means that if you have a recipe that knows the roles, but won’t know the hosts until runtime (think <span class="caps">EC2</span> and such), you can more easily code for it.</p>
+<p><strong><span class="caps">GIT</span>:</strong> The git <span class="caps">SCM</span> module has the following changes:</p>
+<ul>
+	<li>Distributed git support for better operability with remote_cache strategy</li>
+		<li>Use checkout instead of merge for git <span class="caps">SCM</span> [nuttycom]</li>
+		<li>Add support for :git_enable_submodules variable, to enable submodules with the git <span class="caps">SCM</span>
+</li>
+	</ul>
+<p>And, of course, there are quite a few other smaller changes, too. Check out the <a href="http://dev.rubyonrails.org/browser/tools/capistrano/CHANGELOG"><span class="caps">CHANGELOG</span></a> for the full list.</p>
+<p>So, kick the tires and report back. If all looks good by the middle of next week or so, we’ll see an official release.</p>

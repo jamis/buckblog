@@ -1,0 +1,187 @@
+---
+- date: 2008-03-17
+  author: slaytanic
+  content: "<p>I believe any libraries targeted at a wide audience, like Net:SSH,
+    should be thread-safe.</p>"
+- date: 2008-03-17
+  author: Jamie Flournoy
+  content: "<p>Documentation and sample code can go a long way.</p>\n\n\n\t<p>Is it
+    feasible to provide a sample thread-safe client app to help with the fancy case,
+    and a simplified wrapper <span class=\"caps\">API</span> that contains a giant
+    lock to help with the basic case?</p>\n\n\n\t<p>At the very least, the documentation
+    should state that it’s not thread safe if that’s the case, with a sample of how
+    to use it safely in the typical case.</p>"
+- date: 2008-03-17
+  author: Anthony Richardson
+  content: <p>One option is to make it threadable (as apposed to thread-safe), that
+    is if a person wants to use <span class="caps">NET</span>:SSH in a thread it can,
+    but they still need to marshall all data in and out of that thread. This way if
+    someone wants to use <span class="caps">NET</span>:SSH in a threading environment
+    they don’t have to have it in the Main Thread.</p>
+- date: 2008-03-17
+  author: teki
+  content: "<p>I prefer non multithreaded libraries.</p>\n\n\n<blockquote>\n\t<p>I
+    believe any libraries targeted at a wide audience, like Net:SSH, should be thread-safe.</p>\n\n</blockquote>\n\n\n\n\n\t<p>I
+    hope that’s not the case. Clients should decide that the overhead of synchronization
+    is needed or not.</p>"
+- date: 2008-03-18
+  author: Nick Sieger
+  content: "<p>Please make it thread-safe. Some platforms, like JRuby on the Java
+    VM, can optimize away synchronization, and the cost is much less. Also, since
+    JRuby uses native threads, you’d be getting more bang for your buck (sorry for
+    the pun Jamis :).</p>\n\n\n\t<p>Do you have any evidence that synchronization
+    overhead is anywhere near significant when compared against connection establishment,
+    encryption and transport time?</p>"
+- date: 2008-03-18
+  author: MenTaLguY
+  content: "<p>As long as there is no unsynchronized global state (the easiest way
+    is not to have global state), I see no problem prohibiting threads from sharing
+    Net::SSH connections without providing their own synchronization.  In fact, I
+    think it’s preferable.</p>\n\n\n\t<p>Sometimes “thread-safety” can breed a false
+    sense of security: a user might not be able to “corrupt” a threadsafe object by
+    throwing multiple threads at it, but those threads can still sure confuse each
+    other pretty well.  I think this certainly applies to Net::SSH objects.</p>"
+- date: 2008-03-18
+  author: abcdefg
+  content: "<p>thread-safe please!</p>"
+- date: 2008-03-18
+  author: Michael
+  content: "<p>I don’t think it needs to be thread-safe at all. As teki said, it’s
+    up to clients to decide if the overhead is worth it.</p>"
+- date: 2008-03-18
+  author: Neil Wilson
+  content: "<p>I’d go for speed, and document any perceived shortcomings. I have a
+    feeling that the (over) use of threads is going to be seen as a premature optimisation
+    in years to come and that proper process forking is gong to come back into vogue
+    as the machines get more powerful and the memory sharing capabilities of the OS
+    get better.</p>\n\n\n\t<p>You Ain’t Gonna Need It.</p>"
+- date: 2008-03-18
+  author: Tim Carey-Smith
+  content: "<p>A clean library is always nice :)\nIf you don’t need the need at this
+    point, I believe that is a good sign that it is not necessary.</p>\n\n\n\t<p>To
+    those who are scared of client-side synchronisation, I would say controlling the
+    concurrency is better in your hands.</p>\n\n\n\t<p>I agree with Neil. Docs for
+    those cases which need thought.</p>"
+- date: 2008-03-18
+  author: zimbatm
+  content: "<p>I would follow MenTaLguY’s advice. Using threads in Ruby is often not
+    a good idea. They don’t have the benefits of shared processing like pthreads but
+    have the complexity on locking. This leaves them as an organisational/conceptual
+    role. People who want to use them should be knowledgable and won’t have a problem
+    wrapping your lib with some locks. Making it thread safe would equal to let newbies
+    shoot themselves in the foot :-p</p>"
+- date: 2008-03-18
+  author: Patrick Hurley
+  content: "<p>+1 MenTaLguY</p>"
+- date: 2008-03-18
+  author: ramanan
+  content: "<p>With C++ I’ll sometimes turn classes into monitors, with the mutex
+    a template parameter.  If people don’t need synchronization they can supply a
+    mutex whose every operation is a <span class=\"caps\">NOP</span>.  For a library
+    such as this something similar may make sense.</p>\n\n\n\t<p>Of course, there
+    really is no harm in leaving this all up to the client.</p>"
+- date: 2008-03-18
+  author: Ryan McGeary
+  content: "<p>I think the 80/20 rule answers this question.  Since 80% of people
+    will want to use this in single threaded environments,  stop there.  I might be
+    wrong, but I’d guess that the majority of net-ssh dependencies out there come
+    from people running capistrano. :)</p>\n\n\n\t<p>I suppose another question is,
+    what’s the canonical use case for multiple threads accessing the same ssh connection?
+    \  And  as a simple workaround in those scenarios, why can’t each thread just
+    establish their own connection?</p>"
+- date: 2008-03-18
+  author: Tobias Luetke
+  content: "<p>I don’t see any need for a utility library to concern itself with more
+    than its problem domain. As long as there is no global state it would actually
+    be preferable to avoid any (costly or not) threading related code.</p>\n\n\n\t<p>The
+    application which uses the library has to be context sensitive and if it the context
+    requires threading than its the responsibility of the application to deal with
+    this. The application cannot rely on libraries deep in the stack to clean up the
+    mistakes which happen on the top.</p>"
+- date: 2008-03-18
+  author: Jeremy
+  content: "<p>I have to admit that while I have been using Ruby for quite a long
+    time, I rarely use threading. Consequently, I too tend to agree with MenTaLguY
+    and Ryan. However, a library like Net::SSH is one that could benefit from multi-treading.
+    So what about making the core of the library thread-friendly (by avoiding global
+    state), but not necessarily thread-safe. Then create a thread-safe connection
+    adapter for the core library that would make is “simple” for threaded usage.</p>"
+- date: 2008-03-18
+  author: Adam Luter
+  content: "<p>I think here you want the term ‘reentrant’.  Reentrant means that threads
+    may call <strong>functions</strong> simultaneously.  This definition implies,
+    on different input data.  Or, since this is an OO language it means different
+    objects.</p>\n\n\n\t<p>To be reentrant you need only not use global data.</p>\n\n\n\t<p>‘Thread
+    safety’ indicates, at the strictest level that a function may be called on the
+    same data safely.  So this means the same object may be shared by multiple threads.</p>\n\n\n\t<p>If
+    you make your library reentrant then you make it no more or less thread safe than
+    the objects you depend on.  For instance, if you access files with non-thread
+    safe operations, then you are not thread safe with regards to those files.</p>\n\n\n\t<p>So,
+    my suggestion is, you make your code reentrant.  This most likely means you have
+    an object that depends on one or more non thread safe objects such as a network
+    connection or a file descriptor.  This just means someone using threads must have
+    his own mutex around your functions.</p>\n\n\n\t<p>This is the same as if they
+    were using the connection or file descriptor themselves—they would have to put
+    a mutex around it.  So, you are not giving threaded apps any more work than they
+    would have to do.</p>\n\n\n\t<p>Additionally, you can always provide that thread
+    safety as an optional abstraction layer, which simply puts a mutex around every
+    outside function call.</p>\n\n\n\t<p>So, no don’t make it thread safe.</p>\n\n\n\t<p>(Argument
+    slightly simplified for sake of sanity).</p>\n\n\n\t<p>-Adam</p>"
+- date: 2008-03-18
+  author: Hongli Lai
+  content: "<p>I agree with Mentalguy and Adam Luter. Make it reentrant, not thread-safe.
+    It gives you most of the benefits and none of the performance drawbacks. Asking
+    clients to do their own synchronization is not too much to ask.</p>"
+- date: 2008-03-18
+  author: Jamis
+  content: "<p>@Adam Luter, I think I really do mean thread-safety and not reentrancy.
+    (See <a href=\"http://en.wikipedia.org/wiki/Thread_Safe\">Thread-Safe on Wikipedia</a>
+    for the definition I’m working under).</p>\n\n\n\t<p>Thanks, all, for your input.
+    We’ll see if I can get away with requiring the client to do the synchronization
+    of critical sections. Capistrano uses Net::SSH, and threads, so if I can make
+    it work with a non-thread-safe Net::SSH, chances are I’ll have done it right.</p>"
+- date: 2008-03-18
+  author: Peter Jones
+  content: "<p>If the client needs to access the same <span class=\"caps\">SSH</span>
+    connection from more than one thread it should be up to the client the synchronize
+    access to the necessary objects.</p>\n\n\n\t<p>Good programming practices such
+    as avoiding global variables should allow the library to be used in mutli-threaded
+    applications.  As with any shared data, if the client wants to access the same
+    <span class=\"caps\">SSH</span> objects in more than one thread, mutexes must
+    be used in the client code.</p>"
+- date: 2008-03-18
+  author: eduardo
+  content: "<p>This might be asking for too much, but would it be possible for you
+    to have two versions of the library… using well thought out inheritance and probably
+    a bit of metaprogramming, that if the code saw that it was being called by two
+    different thread IDs it dispatched intelligently to a slower synchronized version
+    whereas if it saw the same requester over and over again it went through the fast
+    route?</p>"
+- date: 2008-03-18
+  author: Adam Luter
+  content: "<p>@Jamis:  Sorry, I didn’t mean to imply you didn’t know the difference
+    and thus suggesting you were using the <strong>wrong</strong> term.  I’ve reread
+    my post and I worded it quite badly, sorry about that.</p>\n\n\n\t<p>Also, I didn’t
+    want to presume you knew what reentrant was since you didn’t mention it.  (And
+    for the sake of our viewing audience)! ;)</p>\n\n\n\t<p>Good luck with your library!
+    \ (Reentrant for the win?)</p>"
+- date: 2008-03-18
+  author: Jamis
+  content: "<p>@Adam, no worries, no offense taken. I honestly appreciated your comment.
+    I’m anything but an expert on threading an reentrancy, and your comment made me
+    stop and read up a bit more to be sure that, yes, I really did mean thread safety.
+    :)</p>"
+- date: 2008-03-20
+  author: Paul
+  content: "<p>So in plainer terms, Net::SSH is capable of being used in multiple
+    threads, as long as the same instance isn’t used from more than one thread, right?</p>\n\n\n\t<p>That’s
+    all I, personally, would need.  Having multiple, simultaneous connections to many
+    servers is important to me.  But I’ve no need to pass them among threads.</p>\n\n\n\t<p>Paul</p>"
+- date: 2008-03-20
+  author: Jamis
+  content: "<p>@Paul, exactly.</p>"
+- date: 2008-03-21
+  author: gemmy
+  content: |-
+    <p>My use case is the same as Paul’s, I need to have threads of execution but each thread will have its own net/ssh object to a unique server.
+    is this available yet?</p>

@@ -1,0 +1,109 @@
+---
+- date: 2006-11-07
+  author: Victor Grey
+  content: <p>What is the meaning/usage of that “Populating items” statement before
+    the <span class="caps">SQL</span>?</p>
+- date: 2006-11-07
+  author: Jamis
+  content: "<p>Victor, the second parameter to <code>insert</code> (as well as the
+    other methods on the connection, like <code>execute</code>, <code>select</code>,
+    <code>update</code>, and <code>delete</code>) is a string that will be used to
+    prefix the query in the log. In other words, when that query shows up in the logs,
+    it will say “Populating items: [sql here]”.</p>"
+- date: 2006-11-07
+  author: rodney
+  content: "<p>Hi Jamis, I always felt a bit dirty doing it like that but you’ve made
+    it look made ok. Pfew thankfully i’m not throwing away 10 years of writing (pl/)sql
+    for a living :-) Great post.</p>"
+- date: 2006-11-07
+  author: Joe Ruby
+  content: <p>I guess if there’s absolutely no other way, but I don’t muck with <span
+    class="caps">SQL</span> much at all any more since it totally bypasses any before/after/validate/etc.
+    methods I may have in place.</p>
+- date: 2006-11-07
+  author: Jamis
+  content: <p>Joe, obviously, I’m not recommending a total wholesale move towards
+    raw <span class="caps">SQL</span>. :) Use ActiveRecord as much as possible. It
+    makes life easy for you, and that’s the entire point. But there may come a time,
+    at some point in your application’s lifecycle, and for some part of your application,
+    where ActiveRecord is doing things too inefficiently. When that happens, consider
+    reworking things in straight <span class="caps">SQL</span>.</p>
+- date: 2006-11-07
+  author: Joe Ruby
+  content: "<p>I’ll bet there’s a way to do this more efficiently in AR. ;)</p>"
+- date: 2006-11-07
+  author: david Altenburg
+  content: <p>Good post. I think it’s important to point out, though, that as soon
+    as you start doing this, you need to be very careful with the strings you use
+    within your <span class="caps">SQL</span> statement – specifically, none of them
+    should come from an untrusted source (like the user) without being scrubbed, first.</p>
+- date: 2006-11-08
+  author: Sean Cribbs
+  content: <p>I think you’re spot on.  Sometimes <span class="caps">SQL</span> is
+    the only reasonable answer.  I most use it on specialized finders that need to
+    join multiple tables but would be a royal pain in Ruby.  The best thing about
+    it is, if your <span class="caps">SQL</span> is well-formed, you don’t have to
+    worry too much about optimization because most <span class="caps">DBMS</span>
+    have built-in query optimizers.  Plus, it’s often more clear and concise than
+    long, drawn out conglomerations of .select, .collect and their brethren.</p>
+- date: 2006-11-08
+  author: Joe Ruby
+  content: "<blockquote>\n\t<p>I most use it on specialized finders that need to join
+    multiple tables but would be a royal pain in Ruby.</p>\n\n</blockquote>\n\n\n\n\n\t<p>Try
+    Rails sometime—:include makes totally short work of joins.</p>"
+- date: 2006-11-08
+  author: Jamis
+  content: "<p>For the record, I just spent this morning working with a friend, trying
+    resolve some real performance problems with :include (together with :order and
+    :limit). Yah, eager loading is nice, but it’s not a panacea, and anyone who thinks
+    it is will shoot themselves in the foot (or the face) sooner or later. Yes, use
+    what rails gives you for as long as you can. 90% of the time (or more), it is
+    sufficient for what you need. For the rest, though, don’t be afraid to drop to
+    the bare metal and make things performant.</p>\n\n\n\t<p>For those who weren’t
+    aware, Rails isn’t about making 100% of your tasks easier. It’s actually only
+    closer to 80%. The really common things are really easy. The less common things,
+    aren’t as easy. And the rare things, well, those you have to do manually  more
+    often than not.</p>\n\n\n\t<p>It’s a feature of rails. An intentional design decision.
+    If you’re fortunate enough to have your apps all fall in that 80% category, good
+    for you. That’s wonderful. But don’t <em>expect</em> that.</p>"
+- date: 2006-11-08
+  author: Sai Emrys
+  content: "<p><span class=\"caps\">FYI</span>: (http://saizai.livejournal.com/741866.html
+    for longer version of this)</p>\n\n\n\t<p>I’ve got a table that has 6 many-to-many
+    associations. My paginator loads them and gets these times (for 0 through 6 tables
+    in the :include):</p>\n\n\n\t<p><span class=\"caps\">SQL</span> query: 0.001,
+    0.004, 0.012, 0.12, 0.17, 0.8, 3.8\npagination proper: 0.091, 0.171, 0.168, 0.48,
+    1.2, 4, 5, 26.2</p>\n\n\n\t<p>While I’ve nerfed it for now the prereq to unnerfing
+    it will probably be to denormalize those tables some. Fortunately I don’t yet
+    need to resort to pure <span class=\"caps\">SQL</span> inserts.</p>\n\n\n\t<p>And
+    of course many thanks to Jamis for totally helping me figure that out. :-)</p>"
+- date: 2006-11-08
+  author: Azmeen
+  content: "<p>Using native <span class=\"caps\">SQL</span> is of course always the
+    fastest way to manipulate data. However, it comes with certain “intricacies” which
+    abstraction layers try to remove or at the very least reduce.</p>\n\n\n\t<p>I
+    agree wholeheartedly though that if you’re very sure of what you want to do and
+    very sure with the database structure and relationships, direct <span class=\"caps\">SQL</span>
+    statements is the way to go.</p>\n\n\n\t<p>Thanks for the pointers.</p>"
+- date: 2006-11-09
+  author: Iain Buckingham
+  content: <p>Is there any way you could programatically generate the expression,
+    rather than duplicating field names in the <span class="caps">SQL</span> string?
+    That way changes to database schema will be automatically picked up.</p>
+- date: 2006-11-09
+  author: Graham
+  content: <p>I don’t think <a href="http://www.firemoss.com/blog/index.cfm?mode=entry&amp;#38;entry=8F2D5D6A-3048-55C9-4315FAAD54617516">Joe</a>
+    would agree that this is a good idea.</p>
+- date: 2006-11-09
+  author: Jamis
+  content: "<p>Iain, you <em>could</em>, but the thing is, if the schema changes,
+    how will you know which columns are relevant here? If you change the name of,
+    for instance, the ‘content’ column, or remove it, you’ll probably have to change
+    more than just this one query to get your app to work with it.</p>"
+- date: 2006-11-11
+  author: Jay
+  content: "<p>I recently worked on a system where performance of a few key queries
+    also required that I drop into <span class=\"caps\">SQL</span> statements.  To
+    help make the code a bit easier to work with we wrote a simple <span class=\"caps\">SQL</span>
+    generating Ruby library.  I found it to be better than here docs with dynamic
+    pieces.  It may or may not be helpful to you when you are doing something similar.</p>\n\n\n\t<p>http://sqldsl.rubyforge.org</p>"

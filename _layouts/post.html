@@ -1,0 +1,54 @@
+---
+layout: default
+---
+
+{% assign post = page %}
+
+<div class="post">
+  <h2>{{ page.title }}</h2>
+
+  {% include post_summary.html %}
+
+  <div class="body">
+    {{ page.content }}
+  </div>
+
+  <div class="footer">
+    <table><tr>
+      <td class="previous">
+        {% if post.previous %}
+          &larr;
+          <a href="{{ post.previous.url }}">{{ post.previous.title }}</a><br />
+          ({{ post.previous.date | date: "%-d %b %Y" }})
+        {% endif %}
+      </td>
+      <td class="current">
+        Posted in<br />
+        {% for category in page.categories %}
+          <a href="/{{ site.category_dict[category].slug }}/">{{ site.category_dict[category].proper }}</a>{% if forloop.last == false %}, {% endif %}
+        {% endfor %}
+      </td>
+      <td class="next">
+        {% if post.next %}
+          <a href="{{ post.next.url }}">{{ post.next.title }}</a>
+          &rarr;<br />
+          ({{ post.next.date | date: "%-d %b %Y" }})
+        {% endif %}
+      </td>
+    </tr></table>
+  </div>
+
+  {% assign post_has_legacy_comments = post | has_legacy_comments %}
+  {% if post_has_legacy_comments %}
+    <div class="comments legacy">
+      <h2>Reader Comments</h2>
+      {% assign comments = post | legacy_comments %}
+      {% for comment in comments %}
+        <div class="comment{% if comment.author == "Jamis" %} author{% endif %}">
+          <div class="content">{{ comment.content }}</div>
+          <div class="byline">{{ comment.author }}<br />{{ comment.date | date: "%-d %b %Y" }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>

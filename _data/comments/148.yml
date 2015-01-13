@@ -1,0 +1,30 @@
+---
+- date: 2006-09-26
+  author: Mark Orr
+  content: This is great! Many thanks James.
+- date: 2006-09-26
+  author: Ryan
+  content: "I came across your site via Technorati.  I've immediately added it to
+    my list of feeds, as I am a huge fan of the entire 37signals team and your contributions
+    to the web.\r\n\r\nThe reason I'm posting is because I'm fairly new to deployment
+    with Capistrano.  I believe I have everything setup correctly, but after deployment,
+    my site just hangs there (it times out and FastCGI processes never start).  It
+    seems as though it's an environment issue, but I can't be so sure of that.  Do
+    you <a href=\"http://rpheath.com/blog/2006/09/25/deploying_with_capistrano_trying_to/\">have
+    any suggestions to this problem</a>?  You can leave a comment on my site or here
+    as well."
+- date: 2006-09-26
+  author: Jamis
+  content: Ryan, welcome! You might want to consider joining the Capistrano mailing
+    list and seeing if anyone can shed any light on it there. Either go to http://groups.google.com/group/capistrano,
+    or send an email to capistrano-subscribe@googlegroups.com.
+- date: 2006-09-27
+  author: ArthurGeek
+  content: "Hey man...\r\nNice blog!\r\nAre you using any mephisto-plugin or liquid-tag
+    to show these codes highlited?"
+- date: 2006-09-27
+  author: Jamis
+  content: ArthurGeek, it's actually a feature of typo, which mephisto also implements.
+    You use the typo:code tag, and specify the lang attribute for the type of the
+    content. It's hard to actually demonstrate in a comment, though, because it'll
+    get sucked in and interpreted!

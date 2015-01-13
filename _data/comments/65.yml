@@ -1,0 +1,35 @@
+---
+- date: 2008-03-03
+  author: Don
+  content: "<p>Hello Jamis,</p>\n\n\n\t<p>I’m new to RoR and Capistrano and I’m running
+    into some issues deploying my new application.</p>\n\n\n\t<p>A little background:\nmy
+    work station is Windows xp \n-I have svn command line and svn Tortoise installed\nI’m
+    deploying to a fedora 8 box (my test box)\nMy svn is on my test box</p>\n\n\n\t<p>my
+    deploy.rb file is pretty standard I have it prompt me for my svn password and
+    user name and password for ssh to my fedora box.</p>\n\n\n\t<p>the problem:</p>\n\n\n\t<p>when
+    I try to do a cold deploy IE cap deploy:cold Capistrano flips my slashes from
+    forward to back.</p>\n\n\n\t<p>C:\\Documents and Settings\\Don\\My Documents\\NetBeansProjects\\someSoftWare\n
+    \ * executing `deploy:cold’\n  * executing `deploy:update’\n ** transaction: start\n
+    \ * executing `deploy:update_code’\n<span class=\"caps\">SVN</span> Password:\nhttp:\\\\192.168.1.121\\svn\\someSoftWare\\trunk:
+    \ (Not a valid <span class=\"caps\">URL</span>)</p>\n\n\n\t<p>an additional concern:\nCapistrano
+    seem to mix up the parameters when it does its “svn info” call</p>\n\n\n\t<p>c:/ruby/lib/ruby/gems/1.8/gems/capistrano
+    – bla bla bla `query_revision’: tried to run `svn info—username xxx—password xxx—no-auth-cache
+    http://192.168.1.121/svn/someSoftWare/trunk/  -rHEAD’ and got unexpected result
+    ”” (RuntimeError)</p>\n\n\n\t<p>When I run it from svn command line it runs fine:</p>\n\n\n\t<p>C:\\&gt;svn
+    info http://192.168.1.121/svn/someSoftWare/Trunk -rHEAD—username xxx—password
+    xxx\nPath: Trunk\n<span class=\"caps\">URL</span>: http://192.168.1.121/svn/SomeSoftware/Trunk\nRepository
+    Root: http://192.168.1.121/svn\nRepository <span class=\"caps\">UUID</span>: 83f63d38-5a67-411b-a7a5-b180abd2e38f\nRevision:
+    64\nNode Kind: directory\nLast Changed Author: xxx\nLast Changed Rev: 64\nLast
+    Changed Date: 2008-03-02 20:36:54 -0700 (Sun, 02 Mar 2008)</p>\n\n\n\t<p>I read
+    about someone having a like problem and he solved it by Uninstalling svn Tortoise
+    which seems crazy to me.  Even it worked there has to be an alternative.  Did
+    I mention I’m very fond of svn Tortoise and its user interface.</p>\n\n\n\t<p>Thanks
+    for any advice in advance</p>\n\n\n\t<p>Don</p>"
+- date: 2008-03-03
+  author: Jamis
+  content: "<p>@Don, I’m afraid I cannot answer support questions here, but if you
+    query the mailing list you might have better luck.</p>"
+- date: 2008-03-06
+  author: dru
+  content: "<p>Thanks Jamis and team.  You guys rock!  I just started using cap and
+    its been a big time saver.</p>"

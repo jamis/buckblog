@@ -1,0 +1,26 @@
+---
+layout: post
+title: Disappointments in Ruby Land
+post_id: 316
+categories:
+- Essays and Rants
+date: 2004-12-30 09:54:00.000000000 -07:00
+author: Jamis
+permalink: 2004/12/30/disappointments-in-ruby-land.html
+---
+
+<p>My last article, <a href="http://www.jamisbuck.org/jamis/blog.cgi/programming/ruby/SQLite3%20Bindings%20for%20Ruby_20041219215155.tx">SQLite3 Bindings for Ruby</a>, mentioned some pure-Ruby bindings that I wrote for the SQLite3 database engine. Pure-Ruby, as in, “needing no compilation.” They use the Ruby/DL library that comes with Ruby, which allows Ruby programs to call directly into arbitrary C libraries. (See <a href="http://rubyforge.org/projects/sqlite-ruby">the SQLite/Ruby project page</a> if you’d like to try it out.)</p>
+<p>Alas, some things are too good to be true.</p>
+<p>The Ruby/DL stuff is cool—don’t get me wrong. <em>I</em> could never have written that library, not in a million years. It’s got more magic than Gandalf, and more glitz than Zsa Zsa Gabor.</p>
+<p>That said, it also has more trap doors than an Indiana Jones movie.</p>
+<p>The SQLite3 bindings <em>almost</em> work. For me, they run very well, unless I run them inside WEBrick, in which case I get deadlocks and segfaults. (I can’t really pin that on Ruby/DL, though, since I have nothing else to test it with.)</p>
+<p>However, the SQLite3 bindings don’t work on (for instance) the Mac. Why? Because sqlite3 uses 64-bit integers to represent row-ids, and thus the “last_insert_rowid” method returns an 8-byte integer value.</p>
+<p>Can Ruby/DL handle 8-byte integer values?</p>
+<p>No, sir.</p>
+<p>(I should say, here, that I <em>have</em> tried various work arounds. Having the method return a <code>char[8]</code> didn’t work, because the syntax was unrecognized. Returning a <code>double</code> and then doing some pack/unpack magic didn’t work either. Feel free to experiment with it yourself—maybe you’ll find a workaround.)</p>
+<p>So I just defined that method (and the few others that use 64-bit ints) as a traditional 32-bit integer, thus truncating the most-significant bytes for me. This worked fine, on my machine.</p>
+<p>But on a machine with the endianness reversed, the least-significant-bytes get thrown away. Which means that if the row-id is a 1 (0×0000000000000001), a zero gets returned. Just freaking lovely.</p>
+<p>Also, Ruby/DL has a compile-time limit of 10 callbacks (although you can change that number yourself if you compile Ruby manually). This means that if you have multiple libraries that all use Ruby/DL, you will have a very high likelihood of problems if many of those libraries try to register callback methods.</p>
+<p>Lastly, Ruby/DL is very susceptible to memory errors. You can declare a function as returning a “const char*”, and Ruby/DL will make sure the result is never freed by the Ruby interpreter. However, declare any other kind of “const” pointer return value, and the <code>const</code> is ignored, meaning that if you don’t manually remove the free handler from the pointer, you’ll get random crashes and segfaults. Not exactly consistent, and I hope you’d agree.</p>
+<p>All in all, this experience has demonstrated to me, more than anything, that Ruby/DL is <em>not</em> usable for anything more than a simple <span class="caps">DLL</span> call or two. It’s really just a toy, and cannot be relied on for any serious tasks.</p>
+<p>Which is too bad. The pure Ruby bindings to SQLite3 would have been a huge boon.</p>

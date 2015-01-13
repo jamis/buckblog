@@ -1,0 +1,139 @@
+---
+layout: post
+title: 'Jelly: Scripting for the Soulless'
+post_id: 271
+categories:
+- Essays and Rants
+date: 2004-06-10 05:52:00.000000000 -06:00
+author: Jamis
+permalink: 2004/06/10/jelly-scripting-for-the-soulless.html
+---
+
+<p>The more I learn about Java and Java-related technologies, the more I hate them. I am <em>convinced</em> that these things are developed by demons to torment righteous programmers.</p>
+<p>My latest gripe is with <a href="http://jakarta.apache.org/commons/jelly/">Jelly</a>, which advertises itself as “executable <span class="caps">XML</span>”. It flaunts this, in fact, as if it were actually a <em>desirable</em> feature. It’s like saying, “hey, look, we’ve got a burrito that you can actually <em>drive</em>!” Jelly, in my opinion, is one of the more insidious aspects of the Java world. It is finding its way into more and more widely-spread applications, most notably <a href="http://maven.apache.org">Maven</a>.</p>
+<p>If it weren’t for Maven, I’d never have to worry about Jelly. However, Maven uses Jelly to do all of its scripting. All of its plugins are built using Jelly, and if a developer wants to do any kind of custom task using Maven, it must be scripted using Jelly. I know this, because I was trying all morning to add a simple task to my Maven-based build system at work.</p>
+<p>All I wanted was this: <em>collect all of the variables in the Maven context, build them into a delimited string, and pass that string to an external program.</em></p>
+<p>That’s all! And after a morning of wrestling with the Beast, I managed to turn out 15 lines of Jelly script that did just that. Doesn’t sound like much, does it? At least, not until you understand that the exact same functionality can be done in a mere <em>2 lines of <a href="http://ruby-lang.org">Ruby</a> code!</em> And in writing those 15 lines of code, I came up with not one, not two, nor even three reasons why Jelly scripting ought to be made a punishable offense. I came up with <em>eight</em> reasons. That’s more than one reason per two lines of code.</p>
+<p>So, in an effort to persuade the unpersuadable and bring those straying programmers back to the light, here are <strong>Eight Reasons Why Executable <span class="caps">XML</span> Is an Evil-Sick-Wrong-Misbegotten Idea</strong>.</p>
+<h2>1. <span class="caps">XML</span> Entities</h2>
+<p>You want to do a test on acouple of conditions to see if they are both true. In Java, the syntax for the <code>and</code> conjunction is two ampersands, <code>&amp;&amp;</code>. However, just you <em>try</em> and use that in a Jelly expression! Won’t work, because Jelly is <span class="caps">XML</span>, remember? And in <span class="caps">XML</span>, the ampersand is a reserved character. You have to escape the ampersands using <span class="caps">XML</span> entities, like so:</p>
+<pre>
+  &lt;jelly:if test="${something.isTrue() &amp;amp;&amp;amp; somethingElse.isTrue()}"&gt;
+    ...
+  &lt;/jelly:if&gt;
+</pre>
+<h2>2. No <code>if/else</code> Logic</h2>
+<p>Programming languages are all, generally-speaking, very much alike. Certain constructs are shared between many of them, and one of the most common of all is the <code>if/elsif/else</code> construct. That’s a good thing because it makes it easier for a programmer who knows one language to learn another one, since much of the terminology carries right over.</p>
+<p>Welcome to <del>Hell</del> Jelly. There is, it is true, an <code>if</code> construct for Jelly. However, this construct has no <code>else</code> clause. Thus, if you want to do an <code>if/else</code> type of construct, you have to resort to one of two alternate approaches.</p>
+<p>The first is to use two <code>if</code> tags, the first testing for truth, and the second testing for falsehood, like this:</p>
+<pre>
+  &lt;jelly:if test="${something.isTrue()}"&gt;
+    ...
+  &lt;/jelly:if&gt;
+  &lt;jelly:if test="${!something.isTrue()}"&gt;
+    ...
+  &lt;/jelly:if&gt;
+</pre>
+<p>Ugly.</p>
+<p>The second approach is to use the <code>choose/when/otherwise</code> construct. (Great name, by the way. Took me a long time of just reading the docs to discover it, because it is <em>sooo</em> intuitive. Not.)</p>
+<pre>
+  &lt;jelly:choose&gt;
+    &lt;jelly:when test="${something.isTrue()}"&gt;
+      ...
+    &lt;/jelly:when&gt;
+    &lt;jelly:when test="${somethingElse.isTrue()}"&gt;
+      ...
+    &lt;/jelly:when&gt;
+    &lt;jelly:otherwise&gt;
+      ...
+    &lt;/jelly:otherwise&gt;
+  &lt;/jelly:choose&gt;
+</pre>
+<h2>3. <span class="caps">XML</span> (and therefore Jelly) is <span class="caps">VERBOSE</span>.</h2>
+<p>Ohmygosh. Can we please try saying <span class="caps">EVERYTHING EVERYTHING TWICE TWICE</span>?  This is one of my biggest gripes with the <span class="caps">XML</span> format in general, and why I much prefer the <a href="http://www.yaml.org"><span class="caps">YAML</span></a> format for things like configuration files. It is also why I think <span class="caps">XML</span> is a <em>lousy</em> choice for a programming language syntax.</p>
+<pre>
+  &lt;jelly:while test="..."&gt;
+    &lt;jelly:if test="..."&gt;
+      &lt;jelly:choose&gt;
+        &lt;jelly:when test="${...}"&gt;
+         ...
+        &lt;/jelly:when&gt;
+        &lt;jelly:when test="${...}"&gt;
+         ...
+        &lt;/jelly:when&gt;
+        &lt;jelly:otherwise&gt;
+         ...
+        &lt;/jelly:otherwise&gt;
+      &lt;/jelly:choose&gt;
+    &lt;/jelly:if&gt;
+  &lt;/jelly:while&gt;
+</pre>
+<h2>4. Error Reporting (and the Absence Thereof)</h2>
+<p>Error reporting in Jelly (and therefore Maven) is <em>awful</em>. Terrible. Miserable. Hateful. <em>Evil</em>.</p>
+<p>Either, (a) you get no errors and your problem statements just fail silently, or (b) your problem statements fail spectacularly and you wind up with reams of beautiful stack traces that tell you nothing at all.</p>
+<p>For example:</p>
+<pre>
+  &lt;jelly:set var="variable" value="hello" /&gt;
+  &lt;jelly:if test="${varable.equals('hello')}"&gt;
+    ...
+  &lt;/jelly:if&gt;
+</pre>
+<p>This will fail silently, leaving you wondering why the if statement isn’t being entered. Can you see the problem? Look carefully: the word “variable” is misspelled. And Jelly won’t tell you that; instead, it will just shrug it’s shoulders, mark the test as false, and move on.  Thanks for that, Jelly. You somehow read my mind and discovered exactly what I <em>didn’t</em> want you to do.</p>
+<p>Here’s an example of one that fails spectacularly:</p>
+<pre>
+  &lt;! -- returns an interator --&gt;
+  &lt;jelly:set var="names" value="context.getVariableNames()" /&gt;
+  &lt;jelly:while test="${names.hasNext()}"&gt;
+    &lt;! -- throws ConcurrentModification exception! --&gt;
+    &lt;jelly:set var="name" value="${names.next()}" /&gt;
+  &lt;/jelly:while&gt;
+</pre>
+<p>There, where it calls <code>names.next()</code>. Can you see what’s wrong? Can you figure out why an exception is thrown, which barfs all over my screen and gives me <span class="caps">EVERYTHING AND HIS SORRY EXCUSE FOR A DOG</span> back? Everything, that is, except what I really need to know, like <em>why the script is failing in the first place.</em></p>
+<p>Well, I’ll save you some grief and explain: it’s failing because on line 2, we grab an iterator that iterates over all of the variables in the current execution context. However, on line 5, we are <em>creating a new variable in that context</em>. This causes the iterator to complain about a concurrent modification. The solution? Declare “name” before you open the iterator. Thanks again, Jelly. You’re just lovely.</p>
+<h2>5. No Control Characters in Strings</h2>
+<p>In C, C++, Ruby, Python, Perl, and yes, even Java, you embed control characters in strings using <em>escaped character sequences</em>. For example, a newline is a backslash followed by an n: <code>\n</code>.</p>
+<p>Is it this way in Jelly, our friendly executable <span class="caps">XML</span> syntax? Of course not. You have to use <em><span class="caps">XML</span></em> syntax for control characters. What is <span class="caps">XML</span> syntax for this? Why, <span class="caps">XML</span> entities, of course:</p>
+<pre>
+  &lt;! -- WRONG --&gt;
+  &lt;jelly:set var="variable" value="first\nsecond" /&gt; 
+
+  &lt;! -- RIGHT --&gt;
+  &lt;jelly:set var="variable" value="first&amp;#10;second" /&gt;
+</pre>
+<p>To me, it looks like someone threw up in the middle of the string.</p>
+<h2>6. <span class="caps">XML</span> Comments</h2>
+<p>Forgive me, all you <span class="caps">XML</span> fans out there, but the <span class="caps">XML</span> comment is one of the ugliest structures on the planet:</p>
+<pre>
+  &lt;! -- here is the comment --&gt;
+</pre>
+<p>Come on! At least make the comment delimiters <em>brief</em>! But no—it needs 4 characters to introduce the comment, and 3 characters to end it. And there is no such thing as a simple one-line comment in <span class="caps">XML</span>. In Java and C++ you can have all text to the end of the line ignored by typing two forward slashes: <code>//</code>. Ruby, Perl and Python do even better and only require you to type a pound character: <code>#</code>. <span class="caps">XML</span> requires you to type <em>seven</em> characters for <em>every</em> comment, no matter how small.</p>
+<h2>7. <span class="caps">XML</span> Namespaces</h2>
+<p>Before you can use certain Jelly tags, you have to declare and name the corresponding namespace. Only maven and ant tags are “globally” accessible, everything else you have to prefix with a namespace. This only compounds the problem of excessive verbosity and redundancy in the scripts. And “good programming style” expects you to include the namespaces of the maven and ant tags, even though they are automatically accessible.</p>
+<pre>
+  &lt;project
+    xmlns:ant="jelly:ant" 
+    xmlns:jelly="jelly:core" 
+    xmlns:maven="jelly:maven" 
+    xmlns:util="jelly:util"&gt;
+
+    ...
+      &lt;jelly:if test="..."&gt;
+      &lt;/jelly:if&gt;
+    ...
+
+  &lt;/project&gt;
+</pre>
+<h2>8. Unpredicable Jelly Expressions</h2>
+<p>Jelly expressions are supposed to solve all problems, making life easier for developers.  In practice, it is <em>very</em> frustrating to use them, since if you mistype something, you get no feedback indicating that (see the “error” issue above), and not all Java expressions are valid. It’s hard to know what expressions are acceptible and which aren’t, without actually trying it, and even then, you never know if you may have accidentally mistyped something and it <em>would</em> have worked if you’d typed it right.</p>
+<p>For instance:</p>
+<pre>
+  &lt;! -- valid --&gt;
+  &lt;jelly:set var="something" 
+             value="${context.getVariable('line.separator')}" /&gt;
+
+  &lt;! -- invalid --&gt;
+  &lt;jelly:set var="something" 
+             value="${System.getProperty('line.separator')}" /&gt;
+</pre>
+<p>Well, there you have it. I’m convinced. “Choose you this day whom ye will serve…but as for me and my house, we will serve the <span class="caps">LORD</span>.” Jelly is obviously a tool of Satan and I will therefore refuse to use it.</p>
+<p>I’ll use Ruby, thank-you-very-much. It’s like a cool balm to a tortured programmer. If you have found yourself straying down the path of executable <span class="caps">XML</span>, it’s not too late to come back!</p>

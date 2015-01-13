@@ -1,0 +1,30 @@
+---
+layout: post
+title: Mazes in CoffeeScript
+post_id: 5
+categories:
+- Announcements
+- Projects
+date: 2011-02-09 09:30:00.000000000 -07:00
+author: Jamis
+permalink: 2011/02/09/mazes-in-coffeescript.html
+summary: >
+  The author introduces the code used to write the maze demos for the
+  previous algorithm blog posts
+---
+
+<p>Several people have asked how I did the Javascript demos in my <a href="http://weblog.jamisbuck.org/2011/2/7/maze-generation-algorithm-recap">maze algorithm articles</a>, and while I’ve answered them a couple of times in the comments, I thought it might be interesting enough to warrent its own post.</p>
+<p>The demos are actually implemented in <a href="http://www.coffeescript.org">CoffeeScript</a>, a really elegant little language that compiles to Javascript. CoffeeScript lets you ignore (most of) Javascript’s warts, while still enjoying all of Javascript’s strengths. I like.</p>
+<p>So, the CoffeeScript sources for my maze demos are at <a href="https://github.com/jamis/csmazes">https://github.com/jamis/csmazes</a>.</p>
+<p>I’ve tried to anticipate most questions about building, installation, and usage in the <a href="https://github.com/jamis/csmazes/blob/master/README.md">readme</a>, but in a nutshell:</p>
+<ol>
+	<li>You’ll need to install <a href="http://www.coffeescript.org">CoffeeScript</a> if you want to do anything with the code.</li>
+		<li>“cake build” will compile the sources to Javascript.</li>
+		<li>“examples/index.html” has widgets for all the implemented algorithms for you to play with.</li>
+		<li>“Maze.createWidget” is the quick-and-easy way to embed a maze somewhere.</li>
+		<li>You can do it the hard way, too, if you need more control: instantiate a maze with the algorithm of your choice, then call Maze#step until the maze is generated (or Maze#generate to do it all at once).</li>
+	</ol>
+<p>Note that the implementations there are optimized for animating the algorithms; the source code is <em>not</em> a good place to learn how a typical maze implementation might look. Every algorithm is broken down so that it can be called piecewise, one step at a time. If you were going to implement any of these for any “serious” purpose, odds are you’d do it much more efficiently, and without all the ceremony that csMazes requires.</p>
+<p>Still, if you just want to embed an animation of a maze algorithm on a web page, csMazes works quite well. Except for <span class="caps">IE7</span>. And probably other IE’s as well. (If you’re an IE guru, I’d appreciate patches, but please make sure your fixes don’t impact the animation performance on other browsers. I was able to make IE render the mazes okay, but then the animation performance on Chrome was abyssmal.)</p>
+<p>The code is in the public domain, so do with it what you will. If you do something fun with it, let me know!</p>
+<p><em>[Update 2015-01-10] I've updated the csMazes code to include a way to render the mazes using an HTML5 canvas. The older version, using HTML elements and CSS styling, is still supported, but I've updated all the demos on this site to use the new HTML5 canvas rendering instead. It's a lot less fragile!</em></p>

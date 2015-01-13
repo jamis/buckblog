@@ -1,0 +1,21 @@
+---
+layout: post
+title: 'Maintenance Releases: Capistrano, Net::SSH'
+post_id: 56
+categories:
+- Announcements
+date: 2008-04-30 14:42:00.000000000 -06:00
+author: Jamis
+permalink: 2008/04/30/maintenance-releases-capistrano-net-ssh.html
+---
+
+<p>With the impending releases of the improved Net::SSH family of libraries, and the next Capistrano release that will depend on them, it was time to go back and make sure that the oldies-but-goodies will still work along side these new-comers.</p>
+<p>To that end, I present:</p>
+<h3>Net::SSH 1.1.3</h3>
+<p>This maintenance release will <em>hopefully</em> fix the hangs that people have been reporting when dealing with long-running requests in Net::SSH, Net::SFTP, and Capistrano.</p>
+<pre><code>gem install net-ssh</code></pre>
+<p>It is strongly recommended that all Net::SSH users upgrade to this version.</p>
+<h3>Capistrano 1.4.2</h3>
+<p>This release merely adds an explicit dependency on Net::SSH and Net::SFTP versions less than 1.99.0, allowing you to use both cap1 and cap2 side-by-side after Net::SSH v2 (and friends) are released.</p>
+<pre><code>gem install --version 1.4.2 capistrano</code></pre>
+<p>If you are needing to run cap1 and  cap2 side-by-side (for instance, if you haven’t yet upgraded some recipes, but want to enjoy the cap2 goodies on newer projects), you should upgrade your cap1 installation to 1.4.2. If you are completely upgraded to cap2, you can safely ignore this release.</p>

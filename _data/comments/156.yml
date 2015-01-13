@@ -1,0 +1,62 @@
+---
+- date: 2006-08-30
+  author: David Rice
+  content: "Jamis,\n\nGreat to finally get some closure :) This question has been
+    lingering since I saw the keynote, and with your unfortunate blog experience I
+    couldn't find an address to ask you. \n\nWe use capistrano for most of our projects
+    at \"work\":http://www.designbyfront.com/ and frequently want to deploy to an
+    internal (QA), or external (Live) server but not both at the same time.\n\nIs
+    there a good way to do this?...  \n\nAt present we're just maintaining two seperate
+    deploy.rb files and doing the copy &amp; paste shuffle.\n\nLooking forward to
+    the update.\n"
+- date: 2006-08-30
+  author: Jamis
+  content: David, take a look at http://jamis.jamisbuck.org/articles/2006/01/03/using-switchtower-with-multiple-deployment-stages.
+    It addresses multiple deployment targets.
+- date: 2006-08-30
+  author: Ben Bleything
+  content: |-
+    Another (and IMHO, better) option for staging is to simply create new tasks that changes whatever you need to change and then calls the deploy action:
+
+    <table class="CodeRay"><tr>
+      <td title="click to toggle" class="line_numbers"><pre>1<tt>
+    </tt>2<tt>
+    </tt>3<tt>
+    </tt>4<tt>
+    </tt>5<tt>
+    </tt></pre></td>
+      <td class="code"><pre>task <span class="sy">:stage</span>, <span class="sy">:roles</span> =&gt; [<span class="sy">:app</span>, <span class="sy">:db</span>, <span class="sy">:web</span>] <span class="r">do</span><tt>
+    </tt>  set <span class="sy">:deploy_to</span>, <span class="s"><span class="dl">"</span><span class="k">/var/www/staging</span><span class="dl">"</span></span><tt>
+    </tt>  <tt>
+    </tt>  deploy<tt>
+    </tt><span class="r">end</span><tt>
+    </tt></pre></td>
+    </tr></table>
+
+
+    It's not as flexible as the env var method, but it's hard to argue with <code>cap stage</code> :)
+- date: 2006-08-30
+  author: Jamis
+  content: Ben, very nice! I like that, alot. You can even leave the :roles specification
+    off of the task, since when you call deploy, it'll use the roles for that task
+    anyway.
+- date: 2006-08-30
+  author: Hans
+  content: What about patches? I try not to guess what others need either, it's mostly
+    pointless. But if other developers with those needs were to contribute the features
+    that they need in my project in a way that didn't break it for me, then I'd accept
+    them. That seems like a way capistrano itself could grow in those directions -
+    not by your efforts (aside from the effort of accepting patches), but by the efforts
+    of those who want those features.
+- date: 2006-08-30
+  author: Jamis
+  content: |-
+    Hans, certainly I'd consider patches. I've already accepted many that add functionality that I'll probably never use. What I'm responding to in this article are people asking if I, personally, have plans to implement these things. I do not, but if others do, great!
+
+    Personally, I don't think some of the things Dave described can be done in the existing Capistrano code-base. I'd be happy to be proven wrong, though.
+- date: 2006-08-31
+  author: Paul Ingles
+  content: |-
+    Interesting, this was indeed one of the things myself and some other ThoughtWorkers were talking about in our hotel bar last night. Some of the guys who weren't familiar with Rails were asking about what it would take to get it accepted into more 'enterprise' environments. Being able to split the deployment roles (which, like you I also disagree with) was one of the points.
+
+    Coincidence is a funny thing :)

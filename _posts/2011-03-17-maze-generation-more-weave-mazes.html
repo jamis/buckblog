@@ -1,0 +1,172 @@
+---
+layout: post
+title: 'Maze Generation: More weave mazes'
+post_id: 4
+categories:
+- Under the Hood
+date: 2011-03-17 09:26:00.000000000 -06:00
+author: Jamis
+permalink: 2011/03/17/maze-generation-more-weave-mazes.html
+summary: >
+  A technique is demonstrated, giving finer configuration of weave density in
+  random mazes, courtesy of Kruskal's algorithm
+---
+
+<p>My <a href="http://weblog.jamisbuck.org/2011/3/4/maze-generation-weave-mazes">previous post</a> showed one way to create “weave mazes”, or mazes in which the passages weave over and under one another. The technique I showed was flexible, and could be implemented using several different maze algorithms, but it has (at least) one big drawback: it’s not predictable. You don’t know how many over/under crossings you’ll get until the maze has been generated, and for small mazes (5×5, for instance) you may very often get no crossings at all.</p>
+<p>In the <a href="http://weblog.jamisbuck.org/2011/3/4/maze-generation-weave-mazes#comments">comment thread</a> for that post, Robin Houston described an alternate algorithm. Instead of building the crossings as you generate the maze, you do it as a preprocessing step. You scatter crossings (either at random, or deliberately) across the maze, and then generate the maze so that they connect correctly.</p>
+<p>Sounds like it could be tricky, yeah? You’ve got all these <em>independent connections</em>, like little <em>graphs</em> floating around, all <em>disjoint</em>... If only there were a way to generate a maze by <em>connecting disjoint trees</em> into a single graph…</p>
+<p>What’s that? Oh, right! <a href="http://weblog.jamisbuck.org/2011/1/3/maze-generation-kruskal-s-algorithm">Kruskal’s algorithm</a> does just that! Let’s take a look at how easy Kruskal’s makes this.</p>
+<h2>Weave mazes via preprocessing</h2>
+<p>I’m not going to review Kruskal’s algorithm here. If you don’t remember the details, I strongly recommend you read (or re-read) my article on <a href="http://weblog.jamisbuck.org/2011/1/3/maze-generation-kruskal-s-algorithm">Kruskal’s algorithm</a>. Don’t worry, I’ll wait.</p>
+<p>Seriously, read it. The rest of this post won’t make much sense unless you understand how Kruskal’s works.</p>
+<p>Got it? Alright, let’s proceed.</p>
+<p>So, let’s assume you’ve got your blank grid, and you’ve set it up (just like Kruskal’s wants) so that each cell is the root of its own (one-node) tree. You’re about to generate the maze…</p>
+<p>First, though, we do the preprocessing step: let’s scatter over/under crossings about the grid. We have a few constraints:</p>
+<ol>
+	<li>no crossing can be placed on the edge of the grid (because that would imply a passage moving outside the grid).</li>
+		<li>no crossing can be placed immediately adjacent to another crossing (this just simplifies things—allowing adjacent crossings appears to introduce a surprising amount of complexity).</li>
+		<li>if the y-1 and y+1 (north and south) cells are already connected (in the same set), the crossing must not be allowed (because it would create a loop).</li>
+		<li>similarly, if the x-1 and x+1 (west and east) cells are already connected, the crossing must not be allowed.</li>
+	</ol>
+<p>So, we place a crossing. We randomly decide whether the over-passage is north/south or east/west, and then carve the appropriate values into the grid.</p>
+<table class="tiles">
+<tr>
+<td></td>
+<td><img src="http://jamisbuck.org/mazes/tiles/2-large.png" width="64" height="64"></td>
+</tr>
+<tr>
+<td><img src="http://jamisbuck.org/mazes/tiles/4-large.png" width="64" height="64"></td>
+<td><img src="http://jamisbuck.org/mazes/tiles/10-large.png" width="64" height="64"></td>
+<td><img src="http://jamisbuck.org/mazes/tiles/8-large.png" width="64" height="64"></td>
+</tr>
+<tr>
+<td></td>
+<td><img src="http://jamisbuck.org/mazes/tiles/1-large.png" width="64" height="64"></td>
+</tr>
+</table>
+<p>However, since we’re dealing with Kruskal’s algorithm, we also need to update the connection sets, and then remove the relevant edges from the edge set. Because we don’t allow adjacent crossings, we don’t ever have to worry about things connecting directly to the cross-over cells (this is why allowing adjacent crossings gets complicated). So, to update the sets, we just join the north/south cells, and the east/west cells. And then we remove the edges connecting the cross-over cell, and its adjacent cells.</p>
+<p>A lot of words, but not so much work, in practice!</p>
+<p>Once you’ve set all the over/under crossings, you’re ready to actually generate the maze. And the <em>ahem</em> amazing thing about Kruskal’s algorithm is, if you’ve correctly handled the edges and connections in the preprocessing step, you can run it without modification at this stage. The result will be a perfect, weave maze!</p>
+<p>For your enjoyment, here are some demos to play with. Try the different settings to see how the output changes: particularly, notice how Kruskal’s using the naive “weave as you go” approach generates far fewer crossings (on average) than the approach described here.</p>
+<script type="text/javascript" src="/javascripts/maze-minified.js"></script>
+<p style="margin-left: 20px; font-size: 80%"><strong>Recursive Backtracker (in-process weave):</strong></p>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("RecursiveBacktracker", 15, 15, { "class": "medium", id: "recursive", "watch": true, "padded": true, "weave": true, interval: 25 });</script>
+</div>
+<p style="margin-left: 20px; font-size: 80%"><strong>Kruskal's (in-process weave):</strong></p>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("Kruskal", 15, 15, { "class": "medium", id: "kruskal1", "watch": true, "padded": true, "weave": true, interval: 25 });</script>
+</div>
+<p style="margin-left: 20px; font-size: 80%"><strong>Kruskal's (pre-processed weave):</strong><br>
+Density: <select onchange="$('kruskal2').mazeReset()" id="weave_density"><option value="75">very</option>
+<option value="50">moderate</option>
+<option value="25">light</option>
+<option value="10">very light</option></select></p>
+<script type="text/javascript">function weaveDensity() { return $('weave_density').value; }</script>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("Kruskal", 15, 15, { "class": "medium", id: "kruskal2", "watch": true, "padded": true, "weave": true, "weaveMode": "twoPhase", "weaveDensity": weaveDensity, interval: 25 });</script>
+</div>
+<h2>Implementation</h2>
+<p>Since the only thing that changes between this weave technique and the non-weave <a href=":http://weblog.jamisbuck.org/2011/1/3/maze-generation-kruskal-s-algorithm">Kruskal’s algorithm</a> is the pre-processing step, I’m just going to go over the pre-processing step here.</p>
+<p>You will probably also want to use a rendering method that allows you to unambiguously show the over/under crossings, such as the method using unicode characters that I described <a href="http://weblog.jamisbuck.org/2011/3/4/maze-generation-weave-mazes">in my previous article</a>.</p>
+<p>Now, there are a lot of ways you could go about scattering crossings across the grid. For simplicity, I’m going to just iterate over each cell and randomly decide whether a crossing should be placed there. (This makes it easier to parameterize the process, allowing you to provide a “density” parameter to control how many crossings get placed.)</p>
+<p>So, the first thing I do is just iterate over the possible cells:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="i">1</span>.upto(height<span class="i">-2</span>) <span class="r">do</span> |cy|<tt>
+</tt>  <span class="i">1</span>.upto(width<span class="i">-2</span>) <span class="r">do</span> |cx|<tt>
+</tt>    <span class="c"># ...</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>We start at 1 and go to n-2, because of the first constraint: crossings cannot be placed on the grid boundary.</p>
+<p>Within the loop, I then use the “density” parameter (an integer from 0 to 100) to determine whether to skip this cell or not:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">next</span> <span class="r">unless</span> rand(<span class="i">100</span>) &lt; density</pre></td>
+</tr></table>
+<p>Next, I compute the coordinates of the adjacent cells, and then check to make sure the cell really is eligible for a crossing:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">nx, ny = cx, cy<span class="i">-1</span><tt>
+</tt>wx, wy = cx<span class="i">-1</span>, cy<tt>
+</tt>ex, ey = cx<span class="i">+1</span>, cy<tt>
+</tt>sx, sy = cx, cy<span class="i">+1</span><tt>
+</tt><tt>
+</tt><span class="r">next</span> <span class="r">if</span> grid[cy][cx] != <span class="i">0</span> ||<tt>
+</tt>  sets[ny][nx].connected?(sets[sy][sx]) ||<tt>
+</tt>  sets[ey][ex].connected?(sets[wy][wx])<tt>
+</tt></pre></td>
+</tr></table>
+<p>(Remember that <code>sets</code> is a two-dimensional array of Tree objects that allow us to quickly query and join sets.)</p>
+<p>If the grid at the chosen point is non-zero, then (by implication) we are adjacent to another crossing, and that isn’t allowed. And if the north and south sets are already connected, or the east and west sets, then we can’t allow a crossing here either (lest we introduce a loop into the graph).</p>
+<p>Now that the sets have been updated, we can carve the new passages into the grid:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">if</span> rand(<span class="i">2</span>) == <span class="i">0</span><tt>
+</tt>  grid[cy][cx] = <span class="co">E</span>|<span class="co">W</span>|<span class="co">U</span><tt>
+</tt><span class="r">else</span><tt>
+</tt>  grid[cy][cx] = <span class="co">N</span>|<span class="co">S</span>|<span class="co">U</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>grid[ny][nx] |= <span class="co">S</span> <span class="r">if</span> (grid[ny][nx] &amp; <span class="co">U</span>) == <span class="i">0</span><tt>
+</tt>grid[wy][wx] |= <span class="co">E</span> <span class="r">if</span> (grid[wy][wx] &amp; <span class="co">U</span>) == <span class="i">0</span><tt>
+</tt>grid[ey][ex] |= <span class="co">W</span> <span class="r">if</span> (grid[ey][ex] &amp; <span class="co">U</span>) == <span class="i">0</span><tt>
+</tt>grid[sy][sx] |= <span class="co">N</span> <span class="r">if</span> (grid[sy][sx] &amp; <span class="co">U</span>) == <span class="i">0</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Recall that the U constant is just used to indicate the presence of an “under” passage. Thus, “E|W|U” means an east/west passage with an implied north/south passage beneath it, and “N|S|U” means a north/south passage with an implied east/west passage beneath it.</p>
+<p>Further, we only carve on an adjacent passage if it doesn’t already have the “under” bit set. (If it does, then it is already a four-way crossing, and the passage we’re trying to add is already present, either explicitly or implicitly.)</p>
+<p>Finally, we just need to update the edge list, to account for the edges we’ve now implicitly processed by adding this crossing:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">edges.delete_if <span class="r">do</span> |x, y, dir|<tt>
+</tt>  (x == cx &amp;&amp; y == cy) ||<tt>
+</tt>  (x == ex &amp;&amp; y == ey &amp;&amp; dir == <span class="co">W</span>) ||<tt>
+</tt>  (x == sx &amp;&amp; y == sy &amp;&amp; dir == <span class="co">N</span>)<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Remember that the edge list is just a collection of 3-tuples, with each tuple consisting of the x and y coordinates of a cell, and the direction that the edge exits that cell. It only contains edges that exit cells to the west, or the north (otherwise, we’d get duplicate edges: west from cell x is the same edge as east from cell x+1).</p>
+<p>Thus, we’re deleting any edge connecting to the crossing cell itself, the west-facing edge from the eastern cell, and the north-facing edge from the southern cell.</p>
+<p>When these loops finish, you’ll have a grid containing randomly-scattered crossings, ready for Kruskal’s algorithm to finish up.</p>
+<h2>Conclusion</h2>
+<p>This approach allows you to have weave mazes with a much higher density of crossings than the in-process approach. However, while the in-process approach can generate weave mazes with adjacent crossings, the algorithm described here cannot. I’ve spent some time trying to fix this flaw, but quickly found myself mired in complexity: I’m hoping brighter minds than mine can find an elegant solution to this!</p>
+<p>Still, the biggest lesson I took away from this experience is this: it pays to know multiple different ways to solve a problem. I’m not a big fan of Kruskal’s algorithm in general (I don’t like the esthetic of the mazes it generates), but if I had never bothered to learn how Kruskal’s operates, I would never have been able to recognize it’s suitability for connecting the pre-processed crossings.</p>
+<p>Stated more generally: the key to appearing smart is not knowing <em>everything</em>, but rather knowing the <em>right</em> thing.</p>
+<p>Just because an algorithm may not be your favorite way of solving a problem most times, does not mean it won’t eventually be the <em>best</em> way to solve a problem. You just wait: one of these days I’ll encounter a problem while writing a web app that one of these maze algorithms will be perfect for!</p>
+<p>So, give this algorithm a try, if for no other reason than it’s good exercise! And we all know exercise is good for you. ;) My own implementation is given below:</p>
+<script src="https://gist.github.com/856138.js?file=kruskals-weave.rb"></script>
+<noscript>
+<a href="https://gist.github.com/856138">kruskals-weave.rb</a> on gist.github.com</noscript>
+<p>Enjoy!</p>

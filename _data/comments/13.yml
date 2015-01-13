@@ -1,0 +1,136 @@
+---
+- date: 2011-01-27
+  author: Tristan Leroux
+  content: "<p>Wow, this looks really neat and simple. I can’t wait to try and implement
+    something like this in my language. Experimenting is fun!</p>"
+- date: 2011-01-27
+  author: alex
+  content: "<p>Oh! Thanks for this  :)</p>"
+- date: 2011-01-27
+  author: Mark
+  content: "<p>Thanks for this series.  I have always been interested in maze generation
+    but had a hard time finding material.  Your articles make everything clear.</p>"
+- date: 2011-01-27
+  author: behindthecodes.com
+  content: "<p>Nice!</p>\n\n\n\t<p>What if you add a ‘counter’ variable to count the
+    number of ‘new’ cells visited? So if the counter == number of cells, it will short
+    circuit the algorithm, thus ending the program without cleaning up C (which I
+    think it’s not necessary).</p>\n\n\n\t<p>Just my 2 cents, but great article/explanation
+    anyway! :D</p>"
+- date: 2011-01-27
+  author: Jamis
+  content: "<p>@behindthecodes, yes, that would be a nice optimization! In general
+    though, I think you’ll find that the time saved will not be too significant (you
+    only notice it in the demo because there is a 0.2s delay between frames). But
+    if you were generating a lot of mazes, or very large mazes, that would be an optimization
+    worth considering.</p>\n\n\n\t<p>I’ve tried to avoid adding optimizations to the
+    code I’m demonstrating, to keep the algorithm clear and concise, but there is
+    no doubt that there are many, many ways to speed these algorithms up! Keep sharing
+    the ideas you have!</p>\n\n\n\t<p>(In fact, a series on ways to optimize these
+    algorithms could be interesting, if anyone’s looking for topics to write about.)</p>"
+- date: 2011-01-27
+  author: King Inky
+  content: "<p>Been following your articles covering maze generation for a couple
+    of weeks now. Keep ‘em coming—they’re great!</p>"
+- date: 2011-01-27
+  author: Jamis
+  content: "<p>Thanks, @King! I’ve got quite a few more in the pipeline (two more
+    about maze algorithms, and ideas for several related topics.) Stay tuned!</p>"
+- date: 2011-01-27
+  author: Mark
+  content: "<p>Very cool.  It reminds me of the algorith I’ve been using for various
+    maze projects over the years.  It is also pretty much how my maze algorithm worked
+    from the late 80s, when cycles and memory came at a premium.  Nice to see it written
+    up, good job!</p>\n\n\n\t<p>The only implementation I have is from a 512 byte
+    game competition in 2001; I changed the algorithm a bit to fit better with the
+    game and graphics generation logic.  Here is a write up on the <a href=\"&lt;/p\">game</a>&gt;\n\n\n\t</p>\n<p>http://www.burninghorizon.com/pub/c64/tinyrinth/tinyrinth.htm</p>"
+- date: 2011-01-27
+  author: Jamis
+  content: "<p>@Mark, that is very cool. :) Thanks for sharing that! My assembly-fu
+    has never been strong, but I’m going to make some time to read through your code.
+    Thanks for sharing!</p>"
+- date: 2011-01-27
+  author: Mark
+  content: "<p>Thanks Jamis, I also have implemented it in C, Java, VB, C# and many
+    other languages – I just never kept any of it.</p>\n\n\n\t<p>There is a complete
+    write-up about the code in that C=hacking link at the top of the tinyrinth page.
+    \ I think I describe the algorithm in there somewhere, but not as well as you
+    have here.  I also describe what all the machine code/assembly is doing.</p>\n\n\n\t<p>Thanks
+    again for the write-ups, I love mazes and was originally sad to not see something
+    describing the algorithm I had been using, but I was too lazy to do anything about
+    it.  Now you have, thanks.</p>"
+- date: 2011-01-27
+  author: Jonas
+  content: "<p>Thanks for a amazing series of maze posts! The Growing tree algorithm
+    is for sure one of the coolest.</p>\n\n\n\t<p>How about creating dungeons like
+    in Rogue/NetHack?</p>"
+- date: 2011-01-27
+  author: Jamis
+  content: "<p>@Jonas, I’m really not sure how they generate the dungeons in NetHack
+    (et al.) but you’ve got me curious. They are definitely circular, sparse mazes,
+    so if they’re using one of these algorithms they’re probably running a “sparsify”
+    phase afterward to cull dead-ends and then a “braid” phase to add circular connections.
+    I might take a look tonight to see how they’re doing it.</p>"
+- date: 2011-01-27
+  author: Jamis
+  content: '<p>For the curious: <a href="http://kuoi.com/~kamikaze/GameDesign/art07_rogue_dungeon.php">Roguelike
+    Dungeon Generation</a>. Guess that answers my question. :) It’s not one of the
+    algorithms I’ve covered, and seems well-suited to it’s purpose: sparse graphs
+    with circular connections. And rooms.</p>'
+- date: 2011-01-27
+  author: Pablo
+  content: "<p>Great post!</p>"
+- date: 2011-01-28
+  author: qball
+  content: "<p>I am actually interested how you created the demo. Did you actually
+    write the Javascript by hand and then condense it or did you use some extraction
+    framework which auto-generated the Javascript?</p>"
+- date: 2011-01-28
+  author: Jamis
+  content: <p>@qball, the demos are actually written in CoffeeScript, which compiles
+    to Javascript. The CoffeeScript sources are on Github, at <a href="https://github.com/jamis/csmazes">https://github.com/jamis/csmazes</a>.
+    The code is all public domain, so you can do with it what you will, but it should
+    be noted that the code is optimized for animating the algorithms, not for generating
+    mazes quickly. The code should be “fast enough” for most purposes, but if you
+    need lightning-fast maze generation, you’ll want to implement the algorithms yourself.</p>
+- date: 2011-01-29
+  author: Huevoos
+  content: "<p>Here is my implementation in Canvas, I’ll be trying the other algorithms
+    you explained later.</p>\n\n\n\t<p>Thanks for the explanations!</p>\n\n\n\t<p>http://www.javierparra.com.mx/experiments/maze/</p>"
+- date: 2011-01-29
+  author: Jamis
+  content: "<p>@Huevoos, thanks for sharing! The “animate” mode when the mazes get
+    large is pretty hypnotic to watch. Well done :)</p>"
+- date: 2011-01-30
+  author: J
+  content: "<p>I worry a touch that your Newest/Random 75/25 split maze generator
+    on this page isn’t working properly.  When I run ‘test.rb 15 15 newest:75,random:25’,
+    i get something qualitatively different.  Yours expands and looks like fairly
+    strict breadth-first search.  My test code sticks out long corridors and has many
+    moments of looking more like a backtracker than prim’s; the 15×15 example on this
+    page never does.</p>"
+- date: 2011-01-31
+  author: defsdoor
+  content: "<p>Another twist to this would be to delete cells that have no free routes
+    as they are blocked in also – i.e. adjacent to the path currently being plotted.
+    \ Should speed up the back tracking.</p>"
+- date: 2011-01-31
+  author: Jamis
+  content: "<p>@J, good catch! There was indeed a bug in the JS demo that caused the
+    25/75 and 75/25 splits to be weighted incorrectly. I’ve fixed that, and it should
+    be working fine now. (You may need to clear your browser’s cache to pick up the
+    fix.)</p>\n\n\n\t<p>@defsdoor, that might not be as much of an improvement as
+    you think, since the cost to determine whether a cell has any free sides will
+    be the same whether you do it immediately, or whether you wait and let the algorithm
+    pick up the cell later. Either way, all four sides need to be tested, and the
+    cell subsequently removed. Still, intuition is often wrong in these sorts of things;
+    if you try this, please let me know what you find out!</p>"
+- date: 2011-02-03
+  author: defsdoor
+  content: "<p>I’ve been programming mazes since I first saw a recursive back tracking
+    method in a type in from a magazine article (BBC Micro User).</p>\n\n\n\t<p>Every
+    new language I’ve learned I’ve programmed a maze in.</p>\n\n\n\t<p>Here’s a screenshot
+    of a very early one – 8086 assembler http://www.defsdoor.org/dosmaze.png .  The
+    blobs make it strangely mesmerizing and calming.</p>\n\n\n\t<p>My most recent
+    was good old fashioned C when I was learning a bit of openGL http://www.defsdoor.org/sdlmaze.png</p>\n\n\n\t<p>Absolutely
+    love this series of maze blogs.</p>"

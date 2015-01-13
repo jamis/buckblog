@@ -1,0 +1,22 @@
+---
+layout: post
+title: 'Refactoring Net::SSH: Part 7'
+post_id: 322
+categories:
+- Under the Hood
+date: 2004-11-21 14:01:00.000000000 -07:00
+author: Jamis
+permalink: 2004/11/21/refactoring-net-ssh-part-7.html
+---
+
+<p>The Great <a href="http://net-ssh.rubyforge.org">Net::SSH</a> Refactoring is nearing completion! I still need to add some unit tests for the KeyFactory class, but after that, it will be ready for a 0.5.0 release. One caveat—I’ll be releasing it <em>without</em> SFTP support.</p>
+<p>Before anyone keels over from suspense, let me clarify that last remark. I am <em>not</em> abandoning <span class="caps">SFTP</span> support. Instead, I’m refactoring it out of the core Net::SSH deliverable, into it’s own library. It will (of course) <em>depend</em> on Net::SSH, but Net::SSH itself will no longer ship with <span class="caps">SFTP</span> support.</p>
+<p>This isn’t as bad as it may seem, especially if you are using a package manager. If you are using a package manager, you’ll just go to install Net::SFTP, and <em>voila</em>, it will install Net::SSH as well (because that is a dependency).</p>
+<p>This makes my life easier, since Net::SFTP was rapidly growing in complexity. It makes it easier to manage if it is its own library. It also means I can release the new version of Net::SSH sooner, since Net::SFTP is going to take about a week (or two) longer to refactor and repackage.</p>
+<p>Besides that drastic side-effect of refactoring, I’ve also revisited how I did the transport, user-auth and connection layers. In particular, the transport session originally had to be explicitly opened after it was created. This was a side effect of when I had envisioned a single registry containing multiple Net::SSH connections—I’ve since abandoned that approach, and have required that a single registry contain no more than a single Net::SSH connection. (Well, if you’re clever you could still do multiple connections by managing namespaces right, but that would be more trouble than it’s worth.)</p>
+<p>So, now that the transport session is a singleton, it made no sense to require the <code>#open</code> call to be made explicitly. Instead, now the various connection parameters and options are registered as services, and the session is opened automatically when the service is created.</p>
+<p>This means that dependency injection can <em>really</em> shine, now. Consider the following scenario:</p>
+<p><em>Net::SSH::Session is asked to open a new connection. It instantiates a registry and registers all the necessary services. Then, it grabs the user-auth service, to authenticate the user. This has a dependency on the transport session, so Needle instantiates the transport session first (which makes the connection, negotiates the algorithms to use, and so forth), and</em> then <em>instantiates the user-auth service. It then invokes the <code>#authenticate</code> method, gets the active</em> connection <em>service and returns.</em></p>
+<p>I could have removed the explicit <code>#authenticate</code> call, as well, but I wanted to have more control over how a failed authentication is reported to the user. I suppose I could have registered some proc as a service, which when the authentication fails the proc gets called…but that’s complicating things unnecessarily.</p>
+<p>I like the system much better now.</p>
+<p>I’ll be releasing Net::SSH 0.5.0 next week, with any luck. Watch for it!</p>

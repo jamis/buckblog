@@ -1,0 +1,15 @@
+---
+layout: post
+title: The future of FuzzyFinder-TextMate
+post_id: 42
+categories:
+- Projects
+date: 2009-01-28 10:47:00.000000000 -07:00
+author: Jamis
+permalink: 2009/01/28/the-future-of-fuzzyfinder-textmate.html
+---
+
+<p>Back in October I released a Vim extension for <a href="http://weblog.jamisbuck.org/2008/10/10/coming-home-to-vim">mimicking TextMate’s cmd-T file lookup feature</a>. I use it heavily now, and it works great for me.</p>
+<p>Sadly, the author of the <a href="http://www.vim.org/scripts/script.php?script_id=1984">FuzzyFinder</a> Vim script, upon which my extension depends, keeps changing internal implementation details that I had to hook into to make my extension work. The result? Every few weeks my extension breaks with the latest FuzzyFinder.</p>
+<p>Needless to say, this is work I don’t need. The fuzzyfinder-textmate stuff works fine for me. It works fine for people on older versions of FuzzyFinder. And I really don’t care to support this anymore.</p>
+<p>If you’re passionate about this, please feel free to <a href="http://github.com/jamis/fuzzyfinder_textmate/tree/master">fork the project on GitHub</a> and release your changes independently. Feel free to post your changes on the vim script page, even! I hereby release that code into the public domain. Do with it as you please!</p>

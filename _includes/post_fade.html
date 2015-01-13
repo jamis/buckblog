@@ -1,0 +1,5 @@
+<div class="post fade l{{ forloop.index }}">
+  {% include calendar_tag.html %}
+  <h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
+  <h3>{{ post.date | date: "%-d %B %Y" }} &mdash; {{ post.content | minutes_to_read }}-minute read</h3>
+</div>

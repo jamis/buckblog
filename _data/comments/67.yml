@@ -1,0 +1,35 @@
+---
+- date: 2008-02-23
+  author: Tim Carey-Smith
+  content: "<p>I just posted a quick fix for the git deploy/scm module. \nA rather
+    crucial patch. [1]\nLooks to be some nice logical changes in the <span class=\"caps\">DCSM</span>
+    front.</p>\n\n\n\t<p>[1] http://dev.rubyonrails.org/ticket/11202</p>"
+- date: 2008-02-23
+  author: AkitaOnRails
+  content: "<p>I’m thrilled to see increasing capistrano support for Git. Great news!</p>"
+- date: 2008-02-24
+  author: akshay
+  content: "<p>Hey Jamis,</p>\n\n\n\t<p>I had a query regarding the integration testing
+    article on your blog… but that article probably has comments disabled… so posting
+    it here.</p>\n\n\n\t<p>I wanted to know the way to set session variables in integration
+    tests… as in just to bypass login filters… so you do not have to deal with login
+    altogether.\nCurrently I tried the following…</p>\n\n\n\t<p>get “user/something_to_initialize_sessions”
+    \nsession[:user_id] = user.id\nget “user/something_that_needs_a_session_variable_set”</p>\n\n\n\t<p>And
+    rails does not seem happy about it.\nI keep getting errors for the code above.</p>\n\n\n\t<p>I
+    have a <span class=\"caps\">CAS</span> login filter on my controllers… so i am
+    just trying to bypass it.</p>"
+- date: 2008-02-24
+  author: Jamis
+  content: "<p>@akshay, no, you can’t access the session that way in integration tests.
+    To be honest, it’s been a long time since I was in that code, so your best bet
+    will be to read the source and see how things are done there.</p>\n\n\n\t<p>Now,
+    back to our regularly scheduled programming… :)</p>"
+- date: 2008-02-25
+  author: Tom Copeland
+  content: |-
+    <p>Git support for RubyForge isn’t too far out:
+    http://rubyforge.org/tracker/index.php?func=detail&amp;aid=15457&amp;group_id=5&amp;atid=104
+    Everybody’s gittin!</p>
+- date: 2008-02-25
+  author: Jamis
+  content: "<p>Whoa, cool news, Tom! I suppose I had better start learning git. :)</p>"

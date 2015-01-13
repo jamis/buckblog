@@ -1,0 +1,19 @@
+---
+layout: post
+title: Net::SFTP
+post_id: 320
+categories:
+- Projects
+date: 2004-11-29 13:26:00.000000000 -07:00
+author: Jamis
+permalink: 2004/11/29/net-sftp.html
+---
+
+<p>So, I’ve started on Net::SFTP. I was originally planning to just refactor the original implementation out of <a href="http://net-ssh.rubyforge.org">Net::SSH</a> 0.1.0, but after reacquainting myself with the code, I decided a rewrite was in order. Yah, I frequently find myself disgusted with code that I wrote only months before, but I suppose that’s a good thing, since it means I’m always learning better ways of doing things.</p>
+<p>So, what’s wrong with the original implementation? Plenty.</p>
+<p>The entire <span class="caps">SFTP</span> protocol was implemented in a single class. (With the exception of one auxiliary class, anyway, but the auxiliary class was more of a glorified structure, with only a tiny bit of protocol-specific logic in it.) That alone may or may not sound bad to you, but if you consider that the class also supported three different versions of the <span class="caps">SFTP</span> protocol <em>simultaneously</em>... yah. You’re picturing it, I think. Lots of <code>if</code>, <code>case</code> and <code>unless</code> statements, sprinkled at seeming random throughout the code.</p>
+<p>The new version is not yet checked into <span class="caps">CVS</span>, but is coming along nicely. I’ve separated it into two layers: the <span class="caps">SFTP</span> protocol layer (which implements the low-level protocol itself), and the interface layer (which implements a more user-friendly presentation of the <span class="caps">SFTP</span> operations).</p>
+<p>The protocol layer is split into 5 different pieces, one for each existing version of the protocol. (Yup, Net::SFTP will support, in its nascent release, all 5 existing versions of the protocol!) This turned out pretty slick (if I do say so myself). Each subsequent protocol version inherits from the previous, extending and modifying as needed. It made for a very natural, very <em>extendible</em> implementation of the protocol spec. (This means that when version 6 of the <span class="caps">SFTP</span> protocol is solidified, it should be almost trivial to add to Net::SFTP.) It is still not a <em>complete</em> implementation of the specification, but it covers all the major operations. Certainly enough for an initial release.</p>
+<p>All told, the new version consists of about 20 classes, just in the protocol layer. I’m a bit more pleased with the architecture this time around.</p>
+<p>What is more, the protocol layer is completely unit-tested, with 100% code coverage. (I <em>love</em> dependency injection!) Over 1,500 individual tests! (I <em>love</em> code generation!)</p>
+<p>I’ve got about 30% of the interface layer written, with plans to work on it some more tonight (if I have time after setting up the Christmas tree). With any luck, I’ll have version 0.5.0 of Net::SFTP finished by the end of the week. With a little <em>more</em> luck, that may include a first pass at user manual. I may need to release an update to Net::SSH simultaneously, if I can’t get Net::SFTP implemented as I’d like with the existing 0.5.0 release. We’ll see.</p>

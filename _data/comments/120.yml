@@ -1,0 +1,28 @@
+---
+- date: 2007-01-06
+  author: James Adam
+  content: "<p>We’re using the render helper to produce a customised dispatch.fcgi,
+    so that the correct ruby binary is added at the top in the #! string, regardless
+    of which server we’re deploying too and how it might differ from our development
+    environments (we develop on Windows, Linux and Mac).</p>"
+- date: 2007-01-06
+  author: Jacob Atzen
+  content: "<p>I’ve recently built a recipe to create apache / mongrel / monit configurations
+    with the use of the render helper. It’s very sweet to be able to create new installations
+    without really having to touch the server. This was heavily inspired by work done
+    by members of Copenhagen.rb which have done something along the same lines.</p>"
+- date: 2007-01-10
+  author: John Topley
+  content: <p>Is there a way to link to your app’s stylesheet in the maintenance.rhtml
+    page? I get a Capistrano error if I try to use &lt;%= stylesheet_link_tag %&gt;
+    and using the straight <span class="caps">HTML</span> syntax fails too, presumably
+    because the Apache rewrite rules redirect all requests to maintenance.html…?</p>
+- date: 2007-01-10
+  author: Jamis
+  content: <p>John, the template is not evaluated using any Rails helpers, so the
+    stylesheet_link_tag helper isn’t available. If you want to use an external stylesheet,
+    you’ll need to use straight <span class="caps">HTML</span>, and then tweak your
+    apache rewrite rules to allow stylesheets to be accessed.</p>
+- date: 2007-01-10
+  author: John Topley
+  content: "<p>Thanks Jamis, that’s what I thought.</p>"

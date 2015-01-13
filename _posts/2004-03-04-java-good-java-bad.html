@@ -1,0 +1,20 @@
+---
+layout: post
+title: Java Good, Java Bad
+post_id: 286
+categories:
+- Essays and Rants
+date: 2004-03-04 14:19:00.000000000 -07:00
+author: Jamis
+permalink: 2004/03/04/java-good-java-bad.html
+---
+
+<p>I love Java.  I hate Java.  I’m so confused.  Why does this often-lovely language vex me so?  Why must it tempt me with phantom features of grace and elegance, only to laugh maniacally at my confused expression when it reveals its true form, that of a demon in disguise, a semantic succubus, a grammatical goblin?</p>
+<p><a href="http://www.byu.edu"><span class="caps">BYU</span></a> (my employer) is making the Big Transition: moving from a C-based web framework to that of one based on Java.  Yah, I can hear you moaning now, “you’re still coding web apps in <em>C</em>?” Yah, yah.</p>
+<p>The fact is, in researching Java, we’ve discovered that our (homegrown) C framework is at least as advanced and featureful as the Java frameworks we’ve investigated.  But the word has come down that “thou shalt use Java,” and we scurry to obey.</p>
+<p>So, here I am, technical lead of the team that is implementing our new Java web framework, and although I am not new to Java, I’ve certainly never been as deep into it.</p>
+<p>Naturally, it’s only when you get deep into a language that you discover its flaws.  It’s like examining a beautiful statue, only to discover that its really a mummified corpse wrapped in bandages of syntactic sugar.  Unwrapping the obfuscated carcass reveals kludge after kludge, much to the dismay of those whose mandate it is to make the best of an increasingly bad situation.</p>
+<p>Oh, it’s not really that bad.  Java has some really nice features: interfaces are nice (though they only exist in Java because of its designers’ stubborn refusal to support multiple inheritance), as are anonymous classes, threads, and, um…and…wow.  I really can’t think of anything else!  Don’t let that fool you, though—there are plenty of things about Java that I like, even though I can’t think of them at the moment. :)</p>
+<p>On the other hand, the list of things I [<em>dis</em>]like about Java is quite a bit longer.  Lack of MI(Multiple Inheritance) (though that’s pretty common among most <acronym title="Object Oriented Programming Language">OOPL</acronym>’s), the package system is absolutely <em>miserable</em> (and is currently an enormous source of grief for me), and the whole list of things that are missing until version 1.5 (lack of generics, lack of language metadata, the headache involved in using iterators, etc. etc.).  Truth be told, though, I’d be much happier if we could use <acronym title="Java Development Kit">JDK</acronym> 1.5, but that’s not likely to happen anytime soon.</p>
+<p>At any rate, we’ve hit upon <a href="http://jakarta.apache.org/tapestry">Tapestry</a> as the web framework of choice, and I have been quite impressed with its flexibility and extensibility.  It’s not perfect (just like any other piece of mummified carrion), but I have been pleasantly surprised by it.  In fact, it almost makes me want to code up a workalike in [<a href="http://www.ruby-lang.org">Ruby</a>]...</p>
+<p>But that’s a topic for another day…</p>

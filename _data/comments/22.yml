@@ -1,0 +1,43 @@
+---
+- date: 2010-12-20
+  author: Bradly Feeley
+  content: "<p>Hi Jamis.</p>\n\n\n\t<p>Do you know any good resources for reading
+    up on the maze algorithms you used? Thanks!</p>"
+- date: 2010-12-20
+  author: Jamis
+  content: <p>@Bradly, http://www.astrolog.org/labyrnth/algrithm.htm is a <span class="caps">TREMENDOUS</span>
+    resource. It doesn’t go into real depth as far as how things are done, but it’s
+    enough to set you thinking. Theseus uses a tweaked recursive backtracker to generate
+    the maze, and it works fast and well, but it would be cool to eventually allow
+    selection of the algorithm (e.g. Prim’s, Kruskal’s, etc.).</p>
+- date: 2010-12-20
+  author: Alex
+  content: "<p>I have absolutely no use for mazes but I just have to say Theseus looks
+    amazing!</p>\n\n\n\t<p>Next time I’m learning a new language, I’ll have to try
+    generating mazes. What to implement was always my main question when starting
+    out with a language.</p>"
+- date: 2010-12-22
+  author: Anthony Bailey
+  content: "<p>(Ooh, maze generation sounds like an excellent example domain for language
+    exploration. I may follow that thread myself.)</p>\n\n\n\t<p>Re <span class=\"caps\">TDD</span>
+    for this kind of thing: when I’m developing code that produces large and complicated
+    renderable structures whose details matter, I’ve found two testing techniques
+    to be particularly valuable: checking universal properties, and (tool-assisted)
+    content regression.</p>\n\n\n\t<p>Here’s a quick presentation in the context of
+    an example Ruby kata:</p>\n\n\n\t<p>http://anthonybailey.net/blog/2009/11/30/testing-with-less-manual-calculation</p>"
+- date: 2010-12-22
+  author: Jamis
+  content: "<p>@Alex, thanks for the kind words!</p>\n\n\n\t<p>@Anthony, thanks for
+    the insight into <span class=\"caps\">TDD</span>—that does give me some ideas.
+    I’ll have to explore that a bit.</p>"
+- date: 2010-12-31
+  author: Kent Beck
+  content: "<p>Another testing technique I would try is injecting a not-so-random
+    number generator. You can create a generator that returns 1, 0, 1, 0, or whatever
+    sequence exercises your code. If the random number generator is a function, you
+    can wrap it in an object, and then pass that object around wherever a random number
+    is needed.</p>"
+- date: 2010-12-31
+  author: Jamis
+  content: "<p>Thanks for chiming in, Kent! I’ll give that a shot and report back
+    how it goes.</p>"

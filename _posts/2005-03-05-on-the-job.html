@@ -1,0 +1,19 @@
+---
+layout: post
+title: On the job
+post_id: 224
+categories:
+- Life
+date: 2005-03-05 02:05:00.000000000 -07:00
+author: Jamis
+permalink: 2005/03/05/on-the-job.html
+---
+
+<p><a href="http://www.loudthinking.com">David Heinemeier Hansson</a>, my partner-in-crime at my new job with <a href="http://www.37signals.com">37signals</a>, <a href="http://www.loudthinking.com/arc/000415.html">just posted a great summary</a> of the insanity that comprised my first week on the job.</p>
+<p>But let me add a bit more information: David touched briefly on the utf-8 conversion issues. What he didn’t mention was that, after 4 hours spent converting all that data, I accidentally rolled back about 80% of the changes in an attempt to restart the script so we could take advantage of some concurrency while converting one particularly large table.</p>
+<p>Oops.</p>
+<p>Yah, but the kicker is, we didn’t realize what had happened until about 24 hours later, as reports began rolling in about garbled data. I was pulling my hair out, trying to understand why some data had been converted, and other data hadn’t. That, on top of all the server issues David described…imagine my frustration! It felt like the world was crashing down around us.</p>
+<p>Fortunately we discovered the problem and were able to rectify it. Some data is still a little garbled due to the use of <span class="caps">CP1252</span> by some customers (which adds characters to the “reserved” region of <span class="caps">ISO</span>-8859-1, the character encoding Basecamp originally used). But we’ve got a handle on that and will be running one more conversion script soon.</p>
+<p><em>(Lesson learned: if you think you might ever want to handle internationalized text, plan for unicode up front!)</em></p>
+<p>Oh, and on top of all of that, my wife and I were remodeling our bedroom at the same time! We were trying to make room for a small office area for me. Moving furniture, painting, painting, painting… To say I haven’t gotten much sleep over the last few days is an understatement. It’s been a pretty wild ride, in all.</p>
+<p>But you know what? It’s a pretty good sign when you can go through all of that during your first week on the job, and <em>still</em> be excited about the job. I’m looking forward to the weeks and months ahead! (I mean, it can’t possibly get any <em>worse</em>...can it?)</p>

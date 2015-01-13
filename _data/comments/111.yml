@@ -1,0 +1,256 @@
+---
+- date: 2007-02-02
+  author: Zack Chandler
+  content: "<p>Wow – this is great!  Timezones really are the worst.  I’m definately
+    looking forward to playing around with the plugin.  Does it depend on tz_info
+    and tzinfo_timezone?</p>"
+- date: 2007-02-02
+  author: Daniel Schierbeck
+  content: "<p>Generally, it would be nice if Ruby’s date and time classes were redesigned
+    completely.</p>"
+- date: 2007-02-02
+  author: coder_
+  content: "<p>Wow! That is neat! :D  Thanks a bunch :)</p>"
+- date: 2007-02-02
+  author: Jamis
+  content: "<p>Zack, yes, it depends on the tzinfo_timezone plugin, which in turn
+    requires the tzinfo gem.</p>"
+- date: 2007-02-02
+  author: gcnovus
+  content: "<p>Sweet!  Quite a life saver.</p>\n\n\n\t<p>But, uh, what’s the yield
+    in set_timezone for?  Under what circumstances would you pass a block to that
+    method?</p>"
+- date: 2007-02-02
+  author: atmos
+  content: "<p>Thank you Jamis.  We’ve been putting this off, now I’m glad we did.
+    :)</p>"
+- date: 2007-02-02
+  author: Tom
+  content: "<p>gcnovus: that’s how around_filter works.</p>"
+- date: 2007-02-02
+  author: Jamis
+  content: "<p>gcnovus, the around filter gets called with a block. When you yield,
+    the rest of the action occurs, thus letting you wrap code “around” the action.</p>"
+- date: 2007-02-02
+  author: Chris Mear
+  content: '<p>Film guide: Ride, Rubyo! (1950, <span class="caps">MGM</span>) – One
+    man has the courage to stand up for his community against the threat of inconsistent
+    and inefficient Rails practices. Starring Howard Keel as Jamis Cameron.</p>'
+- date: 2007-02-02
+  author: tobi
+  content: "<p>Shopify now runs on tztime plugin. It has been using tzinfo_timezone
+    since launch. Thanks a lot jamis for making my life much easier :)</p>"
+- date: 2007-02-02
+  author: Alex
+  content: <p>So if this uses the tzinfo gem would I be correct in thinking it takes
+    in to account daylight saving time for those timezones that <span class="caps">DST</span>
+    applies to?</p>
+- date: 2007-02-02
+  author: Jason
+  content: "<p>Jamis: This is great! Time zones aren’t fun to deal with, but I can’t
+    stand Daylight Savings Time.</p>\n\n\n\t<p>Thanks for making my life easier too!</p>"
+- date: 2007-02-02
+  author: jamis_im_a_guy
+  content: "<p>but i swear, i <em>will</em> hav your baby some day.</p>"
+- date: 2007-02-02
+  author: Jamis
+  content: "<p>Alex, correct, it will account for daylight savings, which is  another
+    huge reason for its existence.</p>\n\n\n\t<p>And, im_a_guy…I’m flattered, I think.
+    ;)</p>"
+- date: 2007-02-03
+  author: Rob
+  content: "<p>Does this plugin take into account the <span class=\"caps\">DST</span>
+    changes for 2007 that go into effect for the U.S.?</p>\n\n\n\t<p>Taken from a
+    random google hit via “2007 dst changes” :</p>\n\n\n\t<p>”....the federal government
+    announced a major change in Daylight Saving Time. In Aug. 2005, Congress passed
+    an energy bill that included extending Daylight Saving Time by about a month.
+    Beginning in 2007, <span class=\"caps\">DST</span> will start the second Sunday
+    of March and end on the first Sunday of November.”</p>"
+- date: 2007-02-03
+  author: Jamis
+  content: "<p>Rob, no, this plugin does not. However, the TZInfo lib, which this
+    plugin relies on, might. You’d need to check with that.</p>"
+- date: 2007-02-03
+  author: Dan Manges
+  content: "<p>Is this why you needed the acts_like method?  I thought I might see
+    usage of it in this after seeing your comment http://dev.rubyonrails.org/ticket/7059#comment:4
+    mentioning you needed it internally.</p>"
+- date: 2007-02-03
+  author: Jamis
+  content: |-
+    <p>Dan, yes, it allows you to assign a TzTime instance to an ActiveRecord and have it handled like a Time instance:</p>
+
+
+    <table class="CodeRay"><tr>
+      <td title="click to toggle" class="line_numbers"><pre>1<tt>
+    </tt></pre></td>
+      <td class="code"><pre>record.alert_at = <span class="co">TzTime</span>.now<tt>
+    </tt></pre></td>
+    </tr></table>
+- date: 2007-02-03
+  author: Kjell
+  content: "<p>Shouldn’t TzTime.at(Time.now) match TzTime.now, with both 6 hours ahead
+    of Time.now (CST)? Is there something that I’m not understanding, or should this
+    look different?</p>\n\n\n<blockquote>\n\t<blockquote>\n\t<p>TzTime.zone = TZInfo::Timezone._load(‘UTC’)\n\t=&gt;
+    #&lt;tzinfo::linkedtimezone:&gt;\n\tTzTime.now\n\t=&gt; 2007-02-04 03:20:25 <span
+    class=\"caps\">UTC</span>\n\tTzTime.at(Time.now)\n\t=&gt; 2007-02-03 21:20:31
+    <span class=\"caps\">UTC</span>\n\tTime.now\n\t=&gt; Sat Feb 03 21:20:47 -0600
+    2007</p>\n\n\t</blockquote>\n\n\n\n</blockquote>"
+- date: 2007-02-03
+  author: Kjell
+  content: "<p>ugh, have a look here: http://pastie.caboo.se/37774</p>"
+- date: 2007-02-03
+  author: Jamis
+  content: "<p>Kjell, that’s correct, because Time.now will be interpreted by TzTime.at(time)
+    as being in the <span class=\"caps\">UTC</span> time zone. <em>It is not converted
+    to <span class=\"caps\">UTC</span>, it is literally considered to be <span class=\"caps\">UTC</span>,
+    ignoring whatever time zone Ruby says the time instance has.</em> Thus, if it
+    is 14:00 in your time zone, and you do TzTime.at(Time.now), the result will be
+    a TzTime instance with a value of 14:00 in whatever zone is currently active for
+    TzTime.</p>\n\n\n\t<p>Make sense? In other words, TzTime.now is not guaranteed
+    to be the same as TzTime.at(Time.now), unless TzTime.zone is the same time zone
+    as the local host is currently configured for.</p>"
+- date: 2007-02-04
+  author: Phil Ross
+  content: "<p>Jamis, this looks great. It should prove helpful for a lot of TZInfo
+    users.</p>\n\n\n\t<p>Rob, all versions of TZInfo released so far have included
+    the new daylight savings rules for the US. I’d recommend always using the latest
+    version though in order to get the most up to date timezone definitions.</p>"
+- date: 2007-02-05
+  author: Adam Greene
+  content: "<p>Hi Jamis,\nfirst, this is <strong>awesome</strong>.  Thank you for
+    making this public.</p>\n\n\n\t<p>I’m not using the TzinfoTimezone because I need
+    the full list of timezones specified in TZInfo.  The only dependency on TzinfoTimezone
+    is in #period method.  If we change it we can allow TzTime.zone to accept either
+    a ‘TzinfoTimezone’ or a ‘TZInfo::DataTimezone’ object.  What do you think of this
+    change?</p>\n\n\n\t<pre><code>def period\n  @period ||= zone.is_a?(TzinfoTimezone)
+    ? zone.tzinfo.period_for_local(time) : zone.period_for_local(time)\nend</code></pre>\n\n\n\t<p>Thanks
+    again,\nAdam</p>"
+- date: 2007-02-10
+  author: Rudi Cilibrasi
+  content: "<p>After years of phobia, I finally feel ready to make a timezone-aware
+    application.  Thank you!</p>"
+- date: 2007-02-10
+  author: Tieg
+  content: "<p>Hey Jamis, thanks for all the useful plugins in the repository. They
+    always prove helpful.</p>\n\n\n\t<p>In the <span class=\"caps\">README</span>
+    example you originally convert the Task.alert_at time to <span class=\"caps\">UTC</span>
+    explicitly before creating the Task. After adding the TzTime plugin you convert
+    the Task.alert_at value to TzTime.at(self.alert_at), which should just give you
+    the given time with the user’s timezone attached if I understand correctly.</p>\n\n\n\t<p>So
+    in the first example you’ll store it as the correlating <span class=\"caps\">UTC</span>
+    time, and in the second example you’ll store it as the user’s time zone’s time?
+    Doesn’t that add some complexity to Unit tests for models that have any time-related
+    code? And doesn’t it make any kind of reporting or other types of queries more
+    copmlex because they’d rely on the time zone column of the user table (even though
+    it’s just a little more <span class=\"caps\">SQL</span>)? Is there a “best practice”
+    for the time zone in which you store data?</p>"
+- date: 2007-02-10
+  author: Jamis
+  content: "<p>Tieg, actually, the time is <span class=\"caps\">ALWAYS</span> stored
+    as <span class=\"caps\">UTC</span> in the database. TzTime#to_s(:db) will automatically
+    convert the time to <span class=\"caps\">UTC</span>, so even though it looks like
+    you are assinging a time in the user’s timezone to that attribute, underneath
+    it will be automatically converted to <span class=\"caps\">UTC</span> before being
+    saved.</p>\n\n\n\t<p>That’s one of the aspects of TzTime that make it so useful:
+    it helps make sure the times in the DB are always normalized to <span class=\"caps\">UTC</span>,
+    without you having to do anything special to ensure it.</p>"
+- date: 2007-02-10
+  author: Tieg
+  content: "<p>Ah, that makes sense now. Thanks for the explanation!</p>"
+- date: 2007-02-12
+  author: Justin
+  content: "<p>This is great for setting times in the correct TZ, but what about when
+    you get a time back from the database (UTC) and have to display it on a view in
+    the users local time zone?</p>\n\n\n\t<p>TzTime.zone.utc_to_local(Time.now.utc)
+    will give you the correct time, however the TZ will still be set to <span class=\"caps\">UTC</span>.</p>\n\n\n\t<p>Should
+    we be doing something like:\nTzTime.at(TzTime.zone.utc_to_local(Time.now.utc)</p>\n\n\n\t<p>Or,
+    as a helper:\ndef utc2local(time)\n  TzTime.at(TzTime.zone.utc_to_local(time)\nend</p>\n\n\n\t<p>Or
+    am I missing something completely about going back the other way?</p>"
+- date: 2007-02-14
+  author: Henry
+  content: "<p>I still can’t get my head wrapped around strftime as it relates to
+    TzInfo (and now, by extension, TzTime).  See below  ... why “UTC” and not “MST”?</p>\n\n\n<blockquote>\n\t<blockquote>\n\t<p>TzTime.zone
+    = TimeZone[“Mountain Time (US &amp; Canada)”]\n\t=&gt; #&lt;tzinfotimezone:0x2749e14&gt;\n\tmorning
+    = TzTime.now.beginning_of_day\n\t=&gt; 2007-02-14 00:00:00 <span class=\"caps\">MST</span>\n\tmorning.strftime(“%Z”)\n\t=&gt;
+    “UTC”</p>\n\n\t</blockquote>\n\n\n\n</blockquote>"
+- date: 2007-02-14
+  author: Jamis
+  content: "<p>Henry, that occurs because Ruby does not store the time zone with Time
+    instances. Or rather, it only lets you know whether the object is in <span class=\"caps\">UTC</span>,
+    or “local” (meaning, the time zone of the host machine). TZInfo, then, returns
+    all time objects with a time zone of <span class=\"caps\">UTC</span>, and requires
+    the caller to keep track of which time zone the record is <span class=\"caps\">REALLY</span>
+    in.</p>\n\n\n\t<p>The “%Z” argument to strftime, then, is pretty useless when
+    dealing with time zones, since it can only know about what the underlying Time
+    object reports.</p>\n\n\n\t<p>The better way is to use zone.period.abbreviation.to_s
+    to get at the time zone name, instead of <a href=\"&lt;/p\">%Z</a>&gt;\n\n\n</p>\n<table
+    class=\"CodeRay\"><tr>\n  <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre>time = <span class=\"co\">TzTime</span>.now.beginning_of_day<tt>\n</tt>p
+    time.strftime(<span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">%Y-%m-%d
+    %H:%M:S</span><span class=\"dl\">\"</span></span>) + <span class=\"s\"><span class=\"dl\">\"</span><span
+    class=\"k\"> </span><span class=\"dl\">\"</span></span> + time.period.abbreviation.to_s<tt>\n</tt><span
+    class=\"c\">#=&gt; \"2007-02-14 00:00:00 MST\"</span><tt>\n</tt></pre></td>\n</tr></table>"
+- date: 2007-02-14
+  author: Geoff B
+  content: "<p>Just to confirm, this plugin only works for Edge Rails, not the 1.2.2
+    gem version, correct?</p>"
+- date: 2007-02-15
+  author: Henry
+  content: "<p>Thanks, Jamis.  And of course thanks for a terrific and time saving
+    plugin.  (I have lots of apps using variations of the steps you describe above.)
+    \ On a sidenote, I noticed TzTime is at rev 6155.  How did that happen? Do you
+    auto commit or something?</p>"
+- date: 2007-02-17
+  author: Tom Smyth
+  content: "<p>I have several questions about this plugin:</p>\n\n\n\t<p>1) I echo
+    Geoff B’s question about the Rails version required for this plugin, because I’m
+    running Rails 1.2.1 and…</p>\n\n\n\t<p>2) When I do something like: MyObject.create(:foo_at
+    =&gt; t), where t is a TzTime object, t does not automatically get converted to
+    a DB compatible format (rather, Rails attempts to insert the <span class=\"caps\">YAML</span>-serialized
+    version of the object into the field).  I have to do time.utc or time.to_s(:db)
+    instead, explicitly.  If I understand the <span class=\"caps\">README</span> correctly,
+    I shouldn’t need to do that.</p>\n\n\n\t<p>3) I echo Justin’s question above on
+    how to convert a <span class=\"caps\">UTC</span> time fetched from the database
+    back to the user’s timezone.  Shouldn’t there be a TzTime.from_utc method or something,
+    since TzTime.at(t) assumes t is in the host’s timezone?  (And if this is the case,
+    .at seems like a bad name for that method—.from_local would be more helpful).
+    Maybe I’m missing something obvious here.  Please advise.</p>"
+- date: 2007-02-19
+  author: Jamis
+  content: "<p>Geoff/Tom: it works as advertised on edge rails only. It will work
+    with caveats in 1.2.x.</p>\n\n\n\t<p>Henry: TzTime shares a repository with Rails,
+    so the revno you see is the revno for the entire Rails repository, not just for
+    the TzTime plugin.</p>\n\n\n\t<p>Tom: for #1 and #2, you need edge rails. To convert
+    a <span class=\"caps\">UTC</span> time to user local time, I do TzTime.zone.utc_to_local(foo.created_at).
+    It would be trivial to wrap that up in a helper if you find that too verbose,
+    though.</p>"
+- date: 2007-02-21
+  author: Fred
+  content: "<p>Hi Jamis</p>\n\n\n\t<p>I just wondered if you tend to condition your
+    set_timezone code with TzTime.zone = current_user.time_zone unless current_user.nil?
+    \ or do you use skip_filter in the controllers where there is no current_user
+    (e.g. login or signup)</p>"
+- date: 2007-02-22
+  author: Jamis
+  content: "<p>Fred, it’s definitely easier to use a condition in the filter, but
+    the drawback of that is it can hide bugs. If you expect a particular call to have
+    set the current_user value, it’s nice to have that assumption tested as early
+    in the stack as possible.</p>\n\n\n\t<p>So, you have to find a balance. I’ve done
+    it both ways (condition vs. skip_filter).</p>"
+- date: 2007-02-22
+  author: Geoff B
+  content: |-
+    <p>Re: above question about <span class="caps">DST</span> changes for 2007, looks like this already handled by the latest version of the TzInfo gem:</p>
+
+
+    lib/tzinfo/definitions/America/Chicago.rb
+    <code>
+    ....
+    tz.transition 2006, 4, :o2, 1143964800
+    tz.transition 2006, 10, :o1, 1162105200
+    tz.transition 2007, 3, :o2, 1173600000
+
+    tz.transition 2007, 11, :o1, 1194159600
+    ....
+    </code>

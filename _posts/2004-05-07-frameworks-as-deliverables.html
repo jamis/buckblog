@@ -1,0 +1,17 @@
+---
+layout: post
+title: Frameworks as Deliverables
+post_id: 273
+categories:
+- Essays and Rants
+date: 2004-05-07 14:33:00.000000000 -06:00
+author: Jamis
+permalink: 2004/05/07/frameworks-as-deliverables.html
+---
+
+<p>I’ve been writing and maintaining a few different application frameworks for several  years, and I think I’ve had a few revelations about them. Especially recently, as we’ve been trying to incorporate a third-party application framework into our development environment at work.</p>
+<p>Here’s what I’ve realized: an application framework should be designed with the notion that the developers who will use the framework are its <em>consumers</em>, just as the developers of an application think of the users of the application as its consumers. This may sound ridiculously obvious, but I think many framework developers don’t consider this.</p>
+<p>For instance, a framework should be designed so that the common case is the easiest one to implement with it. A framework that makes even the common case difficult, confusing, or tedious is poorly concieved.</p>
+<p><em>Abstraction is the key</em>. As with most of programming, creating an acceptable abstraction is what makes software managable. If your application framework does not make the necessary abstractions, or implements them inappropriately, then you have failed as a framework designer.</p>
+<p>This is coming from a couple months’ worth of frustration over what I now percieve to be a framework with a poorly exposed <span class="caps">API</span>. The developers of this framework have done some amazing things, and they have solved a difficult problem, but the <span class="caps">API</span> they have exposed to users of the framework is nontrivial and complex, even for the common cases. This makes the framework difficult to use, hard to understand, and frustrating to learn.</p>
+<p>Some of you reading this will know exactly what framework I’m talking about. Those with ears to hear, etc, etc.</p>

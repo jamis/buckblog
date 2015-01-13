@@ -1,0 +1,21 @@
+---
+- date: 2006-05-03
+  author: zyje
+  content: yes i have to do it the same;) btw. nice blog - good work;)
+- date: 2006-07-27
+  author: hey
+  content: cool! typo is hard to install on debian! ruby 1.8.4 on debian is a pain!
+- date: 2006-08-01
+  author: Jamis
+  content: 'Ruby is only a pain on Debian because Debian breaks the single Ruby distro
+    into a multitude of tiny pieces, and then installs the wrong pieces by default. '
+- date: 2006-09-06
+  author: Andi
+  content: Got ruby working on a clean Debian sarge by self-compiling it to /usr/local
+    (gems is there as well). Just be sure you have zlib-dev package installed by apt.
+    Seems to work fine for now. And my debian stays ultra-clean-stable. In general
+    I don't like the Linux packet manager stuff. FreeBSD ports are way better to handle.
+    But... not always can we have it.
+- date: 2006-10-13
+  author: pittsbri@gmail.com
+  content: "<p>What is zlib-dev and how do I get it?</p>\n\n\n\t<p>Thanks.</p>"

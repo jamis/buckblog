@@ -1,0 +1,24 @@
+---
+- date: 2008-05-01
+  author: LoriO
+  content: "<p>How exactly does one run cap1 and cap2 side-by-side?  Do you just install
+    cap1, rename cap to cap1, then install cap2?   Because I need to do this.  I have
+    a project that is running in production, and we aren’t upgrading support libs
+    very fast on it, where I run cap1, and another project just under development,
+    where I run cap2.  Right now I’m using Locomotive to maintain a whole different
+    Ruby/Rails stack for the first project, but I’d like to get rid of that complication.</p>"
+- date: 2008-05-01
+  author: Jamis
+  content: "<p>@LoriO, if you’re using Rubygems to install capistrano, it’s really
+    simple:</p>\n\n\n<table class=\"CodeRay\"><tr>\n  <td title=\"click to toggle\"
+    class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt><strong>5</strong><tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre># to execute cap2<tt>\n</tt>$ cap deploy<tt>\n</tt><tt>\n</tt>#
+    to execute cap 1.4.2<tt>\n</tt>$ cap _1.4.2_ deploy<tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>The
+    “underscore version underscore” syntax is generally understood by scripts installed
+    via rubygems to mean that the given version of the library should be used.</p>"
+- date: 2008-05-01
+  author: LoriO
+  content: "<p>How did I miss that?  Oh, well.  Thank you, Jamis!</p>"
+- date: 2008-05-08
+  author: jan
+  content: "<p>Awesome, did fix our Net::SFTP hangs. Thanks, Jamis!</p>"

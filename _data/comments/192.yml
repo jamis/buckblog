@@ -1,0 +1,218 @@
+---
+- date: 2006-10-18
+  author: Christoffer Sawicki
+  content: "<p>Good write-up! I’d argue that pseudo_id makes more sense like a helper
+    method, just like dom_id in simply_helpful.</p>"
+- date: 2006-10-18
+  author: Geir
+  content: <p>Good stuff. “Where should I put this code” is a question I quite often
+    find myself asking when writing Rails code. Actually, it should get more attention
+    in the Agile Rails book <span class="caps">IMHO</span>.</p>
+- date: 2006-10-18
+  author: Nicolas Sanguinetti
+  content: "<p>Excellent! :P</p>\n\n\n\t<p>I was also guilty of writing ugly code
+    in my views before, as (almost) everyone has been, I’m sure. And I agree with
+    Geir: the question of “Where does this go?” comes up often enough, and is one
+    of the things that <strong>must</strong> be helped from early on.</p>\n\n\n\t<p>One
+    thing though, why would you filter by <code>address.nil?</code> in a <code>find(:recent)</code>?
+    \ (I mean, what do addresses have to do with  <strong>recent</strong>?) I’d leave
+    the controller action to something like:</p>\n\n\n<pre>\n  def index\n    @people
+    = People.find(:recent).reject { |p| p.address.nil? }\n  end\n</pre>"
+- date: 2006-10-18
+  author: zerohalo
+  content: "<p>Excellent write-up in helping beginners understand the principles of
+    Rails. Keep’m coming!</p>\n\n\n\t<p>As Christoffer said, pseudo_id could be a
+    helper, I think it fits fine in the model. I’m sometimes unsure whether to put
+    little functions like that as part of the model or as a helper. Personally, I
+    think helpers are better for things that are used beyond one particular model.
+    However, I do find myself wondering whether I should put a helper that applies
+    to a particular controller only in the controller file itself or in the helper
+    file tied to the controller. I sometimes wonder whether the controller-specific
+    helper files aren’t redundant, and that those helpers which are controller-specific
+    should go in the controller, with those that are global in the application_helper
+    file. Then you don’t have to look in both the controller and its helper file for
+    stuff. (Same for models.)</p>"
+- date: 2006-10-18
+  author: Rich
+  content: "<p>Wow!  Thanks a ton.  There’s a lot I can learn from this single post!
+    \ Being new to Rails I often wonder if there is a better way to do something that
+    I’m trying.  This convinced me that most of the time there is a more Rails-y way.</p>\n\n\n\t<p>I’d
+    agree with Geir on the Agile book including more “refactoring.”</p>"
+- date: 2006-10-18
+  author: Zsombor
+  content: "<p>Agreed! Unfortunately there are places where you cant have the clean
+    templates with @db_variables initialized in the controller as one aspires to.</p>\n\n\n\t<p>For
+    example if you want fragment caching to actually save work you need to call down
+    to the database from  the view. Best I could make in such cases is placing the
+    call to model method in a helper. But this just feels less intuitive. Am I missing
+    something?</p>"
+- date: 2006-10-18
+  author: Jamis
+  content: "<p>Naturally, there are exceptions to every rule. The idea described in
+    this article is something to aspire to, not to live religiously by. :)</p>\n\n\n\t<p>That
+    said, I’m not sure what you mean, Zsombor, about needing to call the DB from the
+    view for fragment caching to work. Backpack uses fragment caching extensively
+    and we don’t do any Model#find calls from the view there.</p>"
+- date: 2006-10-18
+  author: Bart Braem
+  content: "<p>Very good explanation, that’s really usable!</p>\n\n\n\t<p>Bart</p>"
+- date: 2006-10-18
+  author: Goynang
+  content: "<p>Good article – definitely knowledge that needs to be spread wide and
+    far. This stuff really makes your code better. Going to keep the link to this
+    handy when helping some people learn Rails in the near future.</p>\n\n\n\t<p>One
+    trivial question relating to the address.nil point raised by Nicolas but from
+    a different tack. Why is the nil address filtering being done in Ruby? Could that
+    not be done within the <span class=\"caps\">SQL</span> conditions so you avoid
+    bringing back records from the database you are only going to reject anyway?</p>"
+- date: 2006-10-18
+  author: Jamis
+  content: "<p>Yah, the whole address.nil? thing is very contrived. Sorry about that.
+    It was only there to try and demonstrate “other” things that are commonly put
+    in the view, which ought not to be. (sort, reject, select, etc.) With a little
+    more thought, I could probably have come up with a better example.</p>"
+- date: 2006-10-18
+  author: James
+  content: "<p>Good stuff. Other benefits of this approach are…</p>\n\n\n\t<p>- testing
+    domain logic in models is simpler &amp; clearer than testing it in controllers
+    and views</p>\n\n\n\t<p>- it makes your Rails console much more useful</p>\n\n\n\t<p>Like
+    the web user interface (with its controllers and views), both tests and the console,
+    should be considered as important clients to the domain model.</p>"
+- date: 2006-10-18
+  author: Tom Moertel
+  content: "<p>Jamis,</p>\n\n\n\t<p>Another great example.</p>\n\n\n\t<p>One thing,
+    though:  it doesn’t look like you’re escaping model data before you’re dropping
+    into the <span class=\"caps\">HTML</span> template.  You might want to sprinkle
+    some h() calls in there to guard against <span class=\"caps\">XSS</span> attacks
+    and broken <span class=\"caps\">HTML</span>.</p>\n\n\n\t<p>Cheers,\nTom</p>"
+- date: 2006-10-18
+  author: Jamis
+  content: "<p>Good catch, Tom. Definitely. &lt;%= h(person.name) %&gt; is your friend.</p>"
+- date: 2006-10-18
+  author: Joe Ruby
+  content: <p>Now to get rid of all those noisy &lt;% and %&gt;’s by switching to
+    Markaby or <span class="caps">HAML</span>. ;)</p>
+- date: 2006-10-18
+  author: Jamis
+  content: <p><span class="caps">HAML</span> certainly shows promise, but the last
+    I checked it didn’t support iterating or a few other things that I feel are necessary
+    in a template. Markaby, though…well, beauty is in the eye of the beholder, I suppose.
+    :)</p>
+- date: 2006-10-18
+  author: Joe Ruby
+  content: "<p>You don’t like Markaby? ;) (I do.)</p>\n\n\n\t<p>Yeah, <span class=\"caps\">HAML</span>
+    not supporting iterating is a deal-killer for me.</p>"
+- date: 2006-10-18
+  author: Mr_mister
+  content: "<p>Could somebody please write the Find statement with the  address conditions
+    rolled into it.</p>\n\n\n\t<p>Maybe this could be a final step in this tutorial?</p>"
+- date: 2006-10-18
+  author: Jon
+  content: "<p>Nice writeup!</p>"
+- date: 2006-10-18
+  author: Kevin Teague
+  content: "<p>the system ate my comment :(</p>\n\n\n\t<p>Anyways, the final view
+    is just a view, but erb still doesn’t look that much like <span class=\"caps\">HTML</span>.
+    The same view could be rewritten in a <span class=\"caps\">DSL</span> such as
+    <span class=\"caps\">TAL</span> which would take it from 53 non-alpahnumeric noise
+    characters down to just 35, and from 9 different alphanumeric characters to just
+    5 different ones, only one of which is not in standard <span class=\"caps\">HTML</span>.</p>"
+- date: 2006-10-19
+  author: Scott Stevenson
+  content: "<p>It’s so funny because something like this just came up on cocoa-dev.</p>\n\n\n\t<p>Just
+    from skimming this post, I think it’s basically the same issue. New Cocoa programmers
+    are constantly trying to figure all sorts of logic out through the view. It’s
+    often much simpler to add a few methods to the model objects, and talk to them
+    (instead of the view) when you need state information.</p>\n\n\n\t<p>It’s also
+    amazing how many people want to “load data” into the views by force. In reality,
+    the views pull data up through the data source, and the controller becomes much
+    more passive.</p>"
+- date: 2006-10-19
+  author: bodhi
+  content: "<p>I believe what Zsombor meant was that even if you cache your view output,
+    the controller is still going to (redundantly) call Person.find_recent.</p>"
+- date: 2006-10-19
+  author: johnpg
+  content: "<p>Nice write up. I’ve found I started to do exactly these sorts of things
+    (moving more and more into the model where it’s appropriate). I love how adding
+    a descriptive method to a model seems to change the entire dynamic of what you’re
+    doing syntactically. It makes the rest of the code read so much better and is
+    often very self documenting.</p>\n\n\n\t<p>Cheers,\nJohn</p>"
+- date: 2006-10-19
+  author: Joe
+  content: "<p>Thanks Jamis. This is the best post on Rails I’ve ever read. No kidding.</p>"
+- date: 2006-10-19
+  author: Andrey Tarantsov
+  content: "<p>This all looks perfect, expect one thing. I don’t like the pseudo_id
+    method, because it’s presentational.</p>\n\n\n\t<p>Some day or another, you decide
+    to make a link out of that “new”. Or maybe you want it in bold face, or maybe
+    you want to give it an id to replace later as a result of an <span class=\"caps\">AJAX</span>
+    call.</p>\n\n\n\t<p>Even without going that far, just consider internationalized
+    UI (able to switch the language of the UI for each user individually). How do
+    you know what language to give the word “new” in? That information is in a session
+    probably, and models can’t (and shouldn’t ever desire to) access sessions.</p>\n\n\n\t<p>So,
+    well, pseudo_id’s place is among helpers.</p>"
+- date: 2006-10-19
+  author: Bil Kleb
+  content: "<p>Top notch</p>"
+- date: 2006-10-19
+  author: Jamis
+  content: "<p>Actually, I disagree that pseudo_id is presentational. It is no more
+    presentational than id is; it simply handles the case where the record has not
+    been saved (record.id returns nil if the record has never been saved successfully).</p>"
+- date: 2006-10-19
+  author: Piggybox
+  content: "<p>A tiny question: have you considered “render :partial, :collection…”
+    to further clean the iteration in the view?</p>"
+- date: 2006-10-19
+  author: Jamis
+  content: "<p>Piggybox, yah, I thought about it, but within the context of this example,
+    it wouldn’t have been any cleaner, and would actually have server the opposite
+    purpose, further obfuscating things. In general, I recommend only using partials
+    when a view is either complex enough that it needs to be broken down into parts,
+    or when portions of a view need to be reused.</p>"
+- date: 2006-10-20
+  author: Amr Malik
+  content: "<p>Another excellent writup! I think the model’s need to do more of the
+    heavy lifting as I see a lot of code which brings in tons of records only to “reject”
+    them later on when they could have been eliminated at the <span class=\"caps\">RDBMS</span>
+    side (I realize this was a made up example)</p>\n\n\n\t<p>I think I am going to
+    start putting a list of links to these wonderful articles together for my reference
+    :)</p>\n\n\n\t<p>cheers,</p>\n\n\n\t<p>Amr</p>"
+- date: 2006-10-23
+  author: zsombor
+  content: "<blockquote>Backpack uses fragment caching extensively and we don’t do
+    any Model#find calls from the view there.</blockquote>\n\n\t<p>So I do miss something!
+    If Model#find calls are present in the view code either directly or indirectly
+    trough helpers, then how can you benefit from fragment caching? There will be
+    no database calls saved, and rendering html is usually fast leaving little to
+    save …</p>\n\n\n\t<p>What am I missing?</p>"
+- date: 2006-10-23
+  author: Jamis
+  content: "<p>zsombor, I understand now what you are saying. The fragment caching
+    we do only saves us the trouble of rerendering complex layout—we don’t actually
+    avoid DB queries. (Well, we avoid some, since we lazy-load the associations on
+    the page, but every request for a page will hit the DB for that page object.)</p>\n\n\n\t<p>I
+    still feel that hitting the DB from the view is nasty, but yah, I’m not sure how
+    you’d work around the issue with fragment caching.</p>"
+- date: 2006-10-24
+  author: zsombor
+  content: "<p>Thank you Jamis for following up, now it is much clearer.</p>"
+- date: 2006-10-27
+  author: Ron
+  content: "<p>I don’t understand how this line works:</p>\n\n\n\t<p>new_record? ?
+    “new” : id</p>\n\n\n\t<p>Could someone please render that in English, or leave
+    a link to an appropriate reference, please? It’s hard to google because it’s all
+    punctuation!</p>"
+- date: 2006-10-27
+  author: Jamis
+  content: "<p>Ron, that’s called the ‘ternary’ operator. Basically, if you have an
+    if/else statement like this:</p>\n\n\n<pre>\nif condition\n  x = positive_result\nelse\n
+    \ x = negative_result\nend\n</pre>\n\n\t<p>You can use the ternary operator to
+    condense that into a single line:</p>\n\n\n<pre>\nx = condition ? positive_result
+    : negative_result\n</pre>\n\n\t<p>Many languages use this same syntax. I’m not
+    sure where it originated, but I know it is in C.</p>"
+- date: 2006-11-17
+  author: Andy
+  content: "<p>I think this is the clearest description of the model, controller,
+    view concept I have come across.  Thanks.</p>"

@@ -1,0 +1,18 @@
+---
+- date: 2006-04-27
+  author: crispynews
+  content: "AWESOME. I have been looking around for this forever. \n\nIts 1000 times
+    better than the default template. It should seriously be included out of the box
+    w/ rdoc. \n\n"
+- date: 2006-12-05
+  author: cainlevy
+  content: "<p>I recently tweaked your Jamis rdoc template to use a two frame system
+    and the simplest dhtml. The left frame displays only one of the three indexes
+    at a time, but has a &lt;select&gt; to switch around. It also has a quick-search
+    function that uses regexp matching on link titles to toggle link visibility.</p>\n\n\n\t<p>Currently
+    I don’t have a good place to make the template available. Anyone interested is
+    welcome to contact me.</p>"
+- date: 2007-11-19
+  author: polypus
+  content: "<p>thanks a lot for the template. i’ve also been looking for it for a
+    while.</p>"

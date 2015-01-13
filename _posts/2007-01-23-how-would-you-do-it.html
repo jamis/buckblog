@@ -1,0 +1,15 @@
+---
+layout: post
+title: How would YOU do it?
+post_id: 129
+categories:
+- Projects
+date: 2007-01-23 13:05:00.000000000 -07:00
+author: Jamis
+permalink: 2007/01/23/how-would-you-do-it.html
+---
+
+<p>I’ve been working on rewiring parts of Capistrano, and I’m making some good progress in a few different areas. One thing that has continued to defy me is actually <em>unit testing</em> Capistrano. I openly admit the existing unit tests for Capistrano are remarkably lame, but I’m at a loss as to how to improve them.</p>
+<p>So, I’m opening the floor on this one. How would <em>you</em> do it? Specifically, allow me to point you to the <a href="http://dev.rubyonrails.org/svn/rails/tools/capistrano/lib/capistrano/gateway.rb">gateway implementation</a>, which uses Net::SSH and sockets, and which has proven particularly tricky for me to see my way through to unit testing. Other areas that I would appreciate suggestions are: what is a good way to go about testing the <a href="http://dev.rubyonrails.org/svn/rails/tools/capistrano/lib/capistrano/cli.rb"><span class="caps">CLI</span> (command-line interface) module</a>? What would be a technique for actually testing the <a href="http://dev.rubyonrails.org/svn/rails/tools/capistrano/lib/capistrano/recipes/standard.rb">standard tasks</a>? And how would you test the <a href="http://dev.rubyonrails.org/svn/rails/tools/capistrano/lib/capistrano/transfer.rb">file transfer abstraction</a> and the <a href="http://dev.rubyonrails.org/svn/rails/tools/capistrano/lib/capistrano/shell.rb">capistrano shell</a>?</p>
+<p>I know from experience that code which is hard to test is usually poorly designed, so I’m prepared to hear comments like “you’ve misdesigned this thing, you should have done X, Y, and Z.” Of course, the gentler you can break it to me, the happier I’ll be. ;)</p>
+<p>So, tell me, how would <em>you</em> do it?</p>

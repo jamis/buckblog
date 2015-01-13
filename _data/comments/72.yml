@@ -1,0 +1,417 @@
+---
+- date: 2008-11-17
+  author: Giles Bowkett
+  content: <p>I use vim from within <span class="caps">IRB</span>. Wrote a gem that
+    sets it up. It’s got a quirk or two but it’s very productive for hacks and experiments.
+    You go into <span class="caps">IRB</span>, type “vi”, pop into vi, edit your code,
+    exit back into <span class="caps">IRB</span>, it evals the code. Repeat as necessary
+    until you get the results you need. It’s a fun way to hack.</p>
+- date: 2008-11-17
+  author: Bill Mill
+  content: "<p>@Giles</p>\n\n\n\t<p>I wish irb was half the repl that ipython is,
+    where that ipython -&gt; vim -&gt; ipython workflow is explicitly supported. It
+    sure is nice. Have you published that source anywhere?</p>\n\n\n\t<p>@Jamis</p>\n\n\n\t<p>I
+    often have 9 splits open at a time, I use my 17” macbook for browser/terminal/etc
+    and all of my 19” widescreen for vim when coding. It’s super nice to have it all
+    open in front of me.</p>\n\n\n\t<p>You really should leave your python code with
+    expandtab, pep 8 is the canonical style guide for python and it says “Use 4 spaces
+    per indentation level.”</p>\n\n\n\t<p>There’s lots of good tips here: http://items.sjbach.com/319/configuring-vim-right
+    .</p>\n\n\n\t<p>My favorite personal bindings are:</p>\n\n\n\t<p>map &lt;c-j&gt;
+    &lt;c-w&gt;j\nmap &lt;c-k&gt; &lt;c-w&gt;k\nmap &lt;c-l&gt; &lt;c-w&gt;l\nmap
+    &lt;c-h&gt; &lt;c-w&gt;h</p>\n\n\n\t<p>which make maneuvering around splits much
+    easier.</p>"
+- date: 2008-11-17
+  author: Jamis
+  content: "<p>@Bill, thanks re: python indentation. I guess it never mattered since
+    I haven’t written python in 8 years, and only rarely need to read python. :) That
+    configuring-vim-right post is awesome, though. Thanks for the link!</p>"
+- date: 2008-11-17
+  author: Bob Martens
+  content: "<p>Awesome, thanks a ton for posting this.</p>\n\n\n\t<p>Right now I’m
+    just trying to figure out how I’m going to use Vim after using TextMate for years
+    … due to now running on Ubuntu exclusively.</p>\n\n\n\t<p>Overall, I have a similar
+    setup as you but with fewer plugins/scripts. The <span class=\"caps\">NERD</span>-tree
+    looks very interesting and I might work that in.</p>\n\n\n\t<p>Because I tend
+    to work on three separate machines at different times, I keep my .vim folder versioned
+    with git and on GitHub. That’s been very nice so far as it allows me to keep everything
+    the same across the three machines. I also keep my .vimrc file in there and then
+    link it to my home directory so that I can keep it versioned as well.</p>"
+- date: 2008-11-17
+  author: Mark Wilden
+  content: "<p>I’ve checked out NERDTree, but prefer the Project plugin as it’s more,
+    well, project-oriented. You use a project file that you can edit and refresh to
+    include just the files you want. One powerful capability is to grep those files.
+    rails.vim will create the file for you with the :Rproject command. Another feature
+    is the ability to list files “flatly” instead of hierarchically. This can be different
+    for each section of the project. Also, Project isn’t so cutesy-wutesy.</p>\n\n\n\t<p>FuzzyFinder
+    is great, but I tend to use its <span class=\"caps\">MRU</span> list more than
+    the file locator, which is why I haven’t given the Jamis version a try.</p>"
+- date: 2008-11-17
+  author: David Bolton
+  content: "<p>If you like the <span class=\"caps\">NERD</span>_tree plugin, it’s
+    also worth checking out Marty’s <span class=\"caps\">NERD</span>_commenter plugin.
+    \ I find the best place to track these is on GitHub rather than vimscripts.</p>\n\n\n\t<p>The
+    other big win recently was setting up standard vim for 256 colours (with the railscasts
+    theme).  With a better colour palette, it’s much more usable when doing those
+    little sysadmin tasks.</p>"
+- date: 2008-11-17
+  author: John Aughey
+  content: "<p>Great Post!  I love to see how other people get things done.  The Fuzzy
+    Finder ** plugins will really help me out a lot with my current project set.</p>"
+- date: 2008-11-17
+  author: Jean-Philippe M.
+  content: "<p>Why not using rak instead of ack ?\nhttp://rak.rubyforge.org/</p>\n\n\n\t<p>I
+    don’t know ack but I like rak features (like ignoring vcs files) which makes it
+    a nice replacement for grep imo.</p>"
+- date: 2008-11-17
+  author: Jamis
+  content: "<p>@Mark, I absolutely <span class=\"caps\">LOVE</span> that you call
+    <span class=\"caps\">NERD</span>_tree “cutesy-wutesy”. :) I don’t think there’s
+    anything about Vim that I’d call “cutesy-wutesy”; it’s all very industrial-with-the-pipes-showing
+    to me. :) I’ll check out the Project plugin, though I’m quite happy with <span
+    class=\"caps\">NERD</span>_tree.</p>\n\n\n\t<p>@Jean-Philippe, I went with ack
+    because it was recommended to me. It’s a pretty mature tool, and even Rak is “based
+    on the Perl tool” (ack). They appear to have very similar feature sets, too.</p>"
+- date: 2008-11-17
+  author: oelmekki
+  content: "<p>For what I’ve seen for now, there are two kinds of vim users : those
+    who love :set number (or :set nu) and those who don’t.</p>\n\n\n\t<p>If you love
+    :set nu, you’ll probably love :set cursorline too :)</p>"
+- date: 2008-11-17
+  author: Brennen
+  content: "<p>My experience of the Project plugin was that I wound up spending as
+    much time configuring it as actually using it. <span class=\"caps\">NERD</span>
+    tree is one of those things I almost never think about but use constantly. That
+    said, I don’t really have any projects that are too big to be easily navigable
+    via filesystem layout.</p>\n\n\n\t<p>ack (or ack-grep, as the package seems to
+    be called on Debian &amp; kin) is sufficiently awesome that I seldom use grep
+    on source code any more. rak may be equally nifty, but it does not appear to provide
+    a “—thppt”.</p>"
+- date: 2008-11-17
+  author: yvonne
+  content: "<p>I agree, I love seeing what other people use as plugins and config.
+    Let’s see.</p>\n\n\n\t<p>I don’t use either nerd_tree or project, at least partly
+    because, due to a weirdness with voiceover and macvim, I can’t use vertical windows.
+    When I arrow down, it reads the whole line, vertical windows included, &lt;grin&gt;.
+    More than a bit offputting.</p>\n\n\n\t<p>On the other hand, I usually know where
+    my files are, and if I don’t, a standard vim directory buffer does well enough.
+    Nerd_commenter for comments, vcscommand for version control, although I’m finding
+    with git it’s easier just to use a terminal.</p>\n\n\n\t<p>rails.vim, obviously.
+    snippetsemu, and a handful of others I can’t remember right now, although I’m
+    always experimenting. I’m trying to start using taglist, for example.</p>\n\n\n\t<p>Oh
+    yeah, and also a vim tail plugin, so I don’t have to switch between vim and a
+    terminal all the time to see failing test output. I’ve got most of my test runners
+    using sounds for success/fail, but I sometimes need to see <strong>why</strong>
+    it failed, &lt;grin&gt;.</p>"
+- date: 2008-11-17
+  author: Greg
+  content: "<p>you must try out tabs!\n:tabe to open a tab\ngt to switch</p>\n\n\n\t<pre><code>Also
+    there is NerdComment for commenting source</code></pre>"
+- date: 2008-11-17
+  author: Keith
+  content: '<p>I’m in my 3rd or 4th week of <span class="caps">VIM</span> (MacVIm)
+    and have not missed textmate at all, with one exception: I can’t seem to figure
+    out how to do mult-file search and replace. How do you pull that off in <span
+    class="caps">VIM</span>? (I’m using NerdTree, etc…)</p>'
+- date: 2008-11-17
+  author: Rick
+  content: "<p>When I made the move to vim full time it was because it had tab support
+    finally. After years of using things like eclipse, komodo, etc I thought they
+    were must haves.</p>\n\n\n\t<p>Then I got into how buffers worked and splits and
+    I never use tabs any more. Why would you need them?</p>\n\n\n\t<p>Thanks for the
+    tip on tCommenter. hadn’t seen that one and it seems to work well.</p>\n\n\n\t<p>Some
+    settings I love:</p>\n\n\n\t<p>hooked on using ctrl-s for saving a file:\n” shortcuts
+    for saving with ctrl-s\nnmap &lt;c-s&gt; :w&lt;cr&gt;\nvmap &lt;c-s&gt; &lt;esc&gt;&lt;c-s&gt;\nimap
+    &lt;c-s&gt; &lt;esc&gt;&lt;c-s&gt;</p>\n\n\n\t<p>Moving with splits a little easier:\n”
+    Shortcuts for dealing with splits easier {{{\nmap &lt;c-j&gt; &lt;c-w&gt;j&lt;c-w&gt;_\nmap
+    &lt;c-k&gt; &lt;c-w&gt;k&lt;c-w&gt;_\nmap &lt;c-l&gt; &lt;c-w&gt;l&lt;c-w&gt;
+    \nmap &lt;c-h&gt; &lt;c-w&gt;h&lt;c-w&gt;</p>\n\n\n\t<p>and a fix so hjkl move
+    ‘properly’ on wrapped lines like comments/emails/etc:\n” mapping to make movements
+    operate on 1 screen line in wrap mode {{{\nfunction! ScreenMovement(movement)\n
+    \  if &amp;wrap\n      return “g” . a:movement\n   else\n      return a:movement\n
+    \  endif\nendfunction\nonoremap &lt;silent&gt; &lt;expr&gt; j ScreenMovement(“j”)\nonoremap
+    &lt;silent&gt; &lt;expr&gt; k ScreenMovement(“k”)\nonoremap &lt;silent&gt; &lt;expr&gt;
+    0 ScreenMovement(“0”)\nonoremap &lt;silent&gt; &lt;expr&gt; ^ ScreenMovement(“<sup>“)\nonoremap
+    &lt;silent&gt; &lt;expr&gt; $ ScreenMovement(”$”)\nnnoremap &lt;silent&gt; &lt;expr&gt;
+    j ScreenMovement(“j”)\nnnoremap &lt;silent&gt; &lt;expr&gt; k ScreenMovement(“k”)\nnnoremap
+    &lt;silent&gt; &lt;expr&gt; 0 ScreenMovement(“0”)\nnnoremap &lt;silent&gt; &lt;expr&gt;
+    ^ ScreenMovement(“</sup>“)\nnnoremap &lt;silent&gt; &lt;expr&gt; $ ScreenMovement(”$”)</p>"
+- date: 2008-11-17
+  author: David
+  content: "<p>@Keith</p>\n\n\n\t<p>if you do something like</p>\n\n\n\t<p>:vimgrep
+    /SomethingToFind/ <strong>*/</strong>.java</p>\n\n\n\t<p>it will search all java
+    files from the current vim directory (whatever :pwd spits out) for the “SomethingToFind”
+    string.  You can then do</p>\n\n\n\t<p>:cn\n:cp\n:cc</p>\n\n\n\t<p>to cycle between
+    finds.  then do one find/replace by</p>\n\n\n\t<p>:s/find-string/replace-string/</p>\n\n\n\t<p>type
+    :cn to go to the next result\npress &amp; (the ampersand) to re-execute last substitution.</p>\n\n\n\t<p>that’s
+    how I currently accomplish a project-wide find/replace.  Anybody else want to
+    share how they do it?</p>"
+- date: 2008-11-17
+  author: David
+  content: "<p>Sorry, for some reason my comment got parsed weird.</p>\n\n\n\t<p>the
+    vimgrep command should be</p>\n\n\n\t<p>:vimgrep /SomethingToFind/ ’* * / * .
+    java’</p>\n\n\n\t<p>where the string in the single quotes should have no spaces
+    in it</p>\n\n\n\t<p>cheers!</p>"
+- date: 2008-11-17
+  author: Jeethu Rao
+  content: "<p>You could use the screen + vim ( http://technotales.wordpress.com/2007/10/03/like-slime-for-vim/
+    ) trick to directly execute code snippets from vim in irb.</p>"
+- date: 2008-11-17
+  author: Steve
+  content: "<p>NERDTree is wonderful, I prefer it to project.  tComment is great also.
+    \ I use the following commands to check syntax and run scripts from within vim.</p>\n\n\n\t<p>:autocmd
+    FileType php noremap &lt;c-m&gt; :w</p>\n<div><img alt=\"\"></div>/usr/bin/php
+    %&lt;cr&gt;\n:autocmd FileType php noremap &lt;c-l&gt; :!/usr/bin/php -l %&lt;cr&gt;\n\n\n\t<p>:autocmd
+    FileType ruby noremap &lt;c-m&gt; :!/usr/bin/ruby -w %&lt;cr&gt;\n:autocmd FileType
+    ruby noremap &lt;c-l&gt; :!/usr/bin/ruby -cw %&lt;cr&gt;</p>\n\n\n\t<p>:autocmd
+    FileType perl noremap &lt;c-m&gt; :!/usr/bin/perl -w %&lt;cr&gt;\n:autocmd FileType
+    perl noremap &lt;c-l&gt; :!/usr/bin/perl -cw %&lt;cr&gt;</p>\n\n\n\t<p>Also I
+    find the following status line useful:</p>\n\n\n\t<p>set statusline=<span>&lt;%f%h%m%r</span>=%b\\
+    0x%B\\ \\ %l,%c%V\\ %P</p>\n\n\n\t<p>Thanks for the idea of setting the leader
+    to a comma!  I used to use vimmate, but the file limits were getting in the way.
+    \ NERDTree is the best solution so far for me.</p>"
+- date: 2008-11-18
+  author: Scott
+  content: "<p>I’ve never understood what C-^ is useful for.</p>\n\n\n\t<p>Surely
+    you have something easy mapped for :bn and :bp? (I use &lt;left&gt; and &lt;right&gt;)
+    and along with C-O/C-I, toggling between two files or trying to remember a count-prefix
+    for C-^ always seemed not useful.</p>\n\n\n\t<p>Am I missing something?</p>"
+- date: 2008-11-18
+  author: seren
+  content: "<p>Ok,  I’m totally offtopic, but I oouldn’t add a response to your ontopic
+    post.  You probably don’t remember me, but we’ve corresponded about your gaming
+    apps.  Could you please send me the standalone version of the apps you made downloadable?
+    \ My old computer crashed, and it didn’t occur to me that they wouldn’t still
+    be around.  I miss them terribly.</p>\n\n\n\t<p>seren</p>"
+- date: 2008-11-18
+  author: George
+  content: <p>You’ve not mentioned anything about <span class="caps">SVN</span>/CVS
+    or any other source control integration, I’d be interested into finding out more
+    about this.</p>
+- date: 2008-11-18
+  author: Adam McCrea
+  content: "<p>Is getcwd() actually opening NERDTree in the current directory for
+    you?  I can’t get it to work.</p>"
+- date: 2008-11-18
+  author: Hans
+  content: "<p>Jamis, I’m selfishly glad you went to the dark side for awhile so you
+    could come back motivated to find all these gems and report them.</p>\n\n\n\t<p>As
+    for split windows, the key to getting the most awesome out of them, <span class=\"caps\">IMHO</span>,
+    is remapping ctrl-hjkl to window navigation.</p>"
+- date: 2008-11-18
+  author: Jamis
+  content: "<p>@Scott, I actually use FuzzyFinderBuffer instead of :bn and :bp. C-^
+    is super useful, though, for switching between the buffer you were just editing,
+    and the buffer you are editing now. In other words, you’re in one file, want to
+    check something quick in another, and then jump back. C-^ is great for that “jump
+    back” part.</p>\n\n\n\t<p>@seren, I’ve made the source code for those generators
+    available in the public domain (http://github.com/jamis, look for the dnd-* projects),
+    but I no longer support them. I do not have a windows build environment available
+    anymore for building standalone versions.</p>\n\n\n\t<p>@George, I hinted at it—the
+    vcscommand.vim plugin. But as I said, it’s not one I’ve used enough for it to
+    be really useful to me. I always have a terminal open anyway, so I just use that.</p>\n\n\n\t<p>@Adam,
+    yeah, it works for me, though I always start mvim after cd’ing to the root of
+    my project. Maybe that’s the key?</p>"
+- date: 2008-11-18
+  author: Spencer
+  content: "<p>Great post! I used the rails wiki article to help me get set up with
+    vim+rail, but this post, and the configuring-vim-right post, did wonders for my
+    vim set up! Thanks for the post, and thanks to all of the commenters; it was super,
+    super helpful.</p>"
+- date: 2008-11-18
+  author: Keith
+  content: "<p>@David – Thanks – I’ll try that. Still not as elegant as TM…. And,
+    I had forgotten about the &amp; command. Damn there are a lot of commands :-)</p>"
+- date: 2008-11-18
+  author: Jeramey
+  content: "<p>Argh! Don’t use ‘set tabstop=2’.</p>\n\n\n\t<p>What you <strong>mean</strong>
+    is: ‘set sts=2’</p>\n\n\n\t<p>Tabs should always be displayed as mod-8 horizontal
+    spaces so that your code looks the same in less/more as in your editor; not everyone
+    is going to be using the same tab width setting as you, so using ‘set sts’ to
+    get what you want for indentation is a much better strategy and will let other
+    people work with your code easily, too.</p>\n\n\n\t<p>:help ‘sts’</p>"
+- date: 2008-11-18
+  author: Jamis
+  content: "<p>Nice tip, Jeramey! I wasn’t aware of softtabstop (sts).</p>"
+- date: 2008-11-18
+  author: Jeramey
+  content: "<p>Glad to be helpful! Spread the good word about softtabstop; it’s one
+    of my favorite vim features. :-)</p>"
+- date: 2008-11-18
+  author: Mark Wilden
+  content: "<p>If you like Ctrl-^, you'll love Ctrl-W ^. That opens the previous file
+    in a new window.</p>\n\n\n\t<p>@Scott: Ctrl-^ is different from :bn. That goes
+    to the next buffer in the list, which is not necessarily the previously edited
+    file.</p>"
+- date: 2008-11-18
+  author: scrooloose
+  content: "<p>Howdy chum</p>\n\n\n\t<p>You dont need that autocommand to :set noet
+    for make, it should already be set in the make ftplugin in the vim runtime. Go
+    :e $VIMRUNTIME/ftplugin/make.vim  to see.</p>\n\n\n\t<p>Also, you can just go
+    :nnoremap &lt;leader&gt;d :NERDTreeToggle&lt;cr&gt;  (here http://pastie.org/318295
+    incase the formatting gets screwed up)</p>\n\n\n\t<p>No need for getcwd() since
+    it defaults to the current dir anyway.</p>\n\n\n\t<p>Been liking your fuzzyfinder_textmate
+    hax, I get a massive throbbing boner every time i activate it.</p>"
+- date: 2008-11-18
+  author: scrooloose
+  content: "<p>Also, you should make your ToggleScratch() function local to your vimrc
+    (or where ever you defined it), like this http://vim.pastey.net/102188. Better
+    not to add stuff to the global namespace unless you gawts to. &lt;/nit-pickz0r&gt;</p>"
+- date: 2008-11-18
+  author: Steve V
+  content: "<p>FuzzyFinderBuffer is pretty neat, but do you know if there’s a way
+    to make it go to the result? As it is for me now, it just opens the file/buffer
+    wherever I currently have focus, instead of going to whichever tab the file is
+    currently open on.</p>"
+- date: 2008-11-18
+  author: the_0ne
+  content: "<p>I gotta ask, because I can not seem to figure out how to use FuzzyFinderTextmate
+    to only search from the root of my project.</p>\n\n\n\t<p>For instance, I have
+    ~/Code/project1 open in NerdTree.  When I invoke FuzzyFinderTextMate I want it
+    to only search the files in ~/Cde/project1 and below, but can not seem to figure
+    out how to define a root in FuzzyFinder.  As of now it searches my entire drive,
+    which takes forever.  :(</p>\n\n\n\t<p>Is there a command to set the root so that
+    FuzzyFinder doesn’t go nuts and search my entire drive?</p>\n\n\n\t<p>Thanks.</p>"
+- date: 2008-11-19
+  author: Christoph
+  content: "<p>Hi,</p>\n\n\n\t<p>Just a quick question regarding FuzzyFinder.</p>\n\n\n\t<p>if
+    I enter ‘pr’ and get two results:\n34 projects/\n56 prz/</p>\n\n\n\t<p>How do
+    you select (get it into the cmd line) the first entry?\nIf I use cursors + enter
+    I open a file called projects\nIf I use ctrl-n or ctrl-u, it selects prz in the
+    command line</p>\n\n\n\t<p>Thanks</p>"
+- date: 2008-11-19
+  author: Martin DeMello
+  content: "<p>no mention of matchit.vim – does everyone just include it by default
+    and not bother mentioning it? anyway, if you do any sort of do/end type programming,
+    it’s indispensable.</p>\n\n\n\t<p>also, if you’re doing any sort of halfway-complex
+    regexp stuff, use :rubydo or :perldo and pcres – it’s a lot quicker than figuring
+    out the quirks of vim’s native regexps</p>"
+- date: 2008-11-19
+  author: jferrer
+  content: "<p>I’m a Ruby on Rails programmer and I don’t like TextMate. \n<span class=\"caps\">I
+    LOVE</span> Vim but I didn’t know MacVim, FuzzyFinder…\nI’m very happy with this!</p>\n\n\n\t<p>I’ll
+    read all the comments and try all things. Thanks for all.</p>"
+- date: 2008-11-20
+  author: Ben Pascoe
+  content: "<p>Hi Jamis. I looked for a way to contact you that wasn’t in a comment
+    box for an article that’s high above my head. Unfortunately, I couldn’t find an
+    e-mail address for you, so I hope you will forgive me.</p>\n\n\n\t<p>I am looking
+    for the <span class=\"caps\">INCREDIBLY</span> useful D&amp;D tools that you used
+    to have posted at http://www.aarg.net/~minam/dungeon.cgi\nI’m running a 3.5 game
+    while here at college and I used to use these generators a lot. Unfortunately,
+    the site that hosted them seems to have disappeared. Is there any way they could
+    be reposted somewhere, or perhaps I could get them in an e-mail attachment, etc.?</p>\n\n\n\t<p>Again,
+    apologies for putting this in a completely random place.</p>\n\n\n\t<p>-Ben</p>"
+- date: 2008-11-20
+  author: Jamis
+  content: '<p>@Ben, the source code for the generators is all in the public domain,
+    hosted at GitHub: <a href="http://github.com/jamis">http://github.com/jamis</a>
+    (look for the projects that start with dnd-*). Aside from that, I’m afraid I no
+    longer support them—but you’re welcome to do what you will with the source code.</p>'
+- date: 2008-11-21
+  author: Mark Wilden
+  content: "<p>I had to meantion another great rails.vim feature I just discovered:
+    :Rgenerate migration CreateFooTable. script/generate creates the file with the
+    long unwieldy timestamp, then rails.vim opens it for you. Also :Rpp which evaluates
+    one line of code in script/console.</p>"
+- date: 2008-11-21
+  author: Eric Duminil
+  content: "<p>Thanks for the post.</p>\n\n\n\t<p>I really love rails.vim, and couldn’t
+    live without “gf<a href=\"RTmodel\">,</a> MyModel<a href=\"AT\"> or</a>“</p>\n\n\n\t<p>Reading
+    the complete doc for this wonderful plugin is a must.</p>"
+- date: 2008-11-24
+  author: Andy Lester
+  content: "<p>Unless it’s greatly improved, rak is not nearly as featureful as ack,
+    although it is pretty slick.</p>\n\n\n\t<p>Now, if I can only get the tarball
+    searching working…</p>"
+- date: 2008-11-25
+  author: Swaroop C H
+  content: "<p>Hi Jamis,</p>\n\n\n\t<p>I’ve recently released a Creative Commons-licensed
+    book on Vim 7 which I thought might interest you – http://www.swaroopch.com/notes/Vim
+    , would greatly appreciate any feedback and comments :)</p>\n\n\n\t<p>Regarding
+    the settings I use, I’ve listed some of them at http://www.swaroopch.com/notes/Vim_en:Plugins#Customization_using_vimrc</p>\n\n\n\t<p>Regards,\nSwaroop</p>"
+- date: 2008-11-26
+  author: Ben
+  content: "<p>@Keith</p>\n\n\n\t<p>To search and replace across all open buffers
+    use</p>\n\n\n\t<p>:bufdo %s/search_term/replace_term/g</p>\n\n\n\t<p>More flexibility
+    of how to match terms can be had by using the :g command. :help :bufdo and :help
+    :g give more details.</p>"
+- date: 2008-11-28
+  author: Christoffer Klang
+  content: <p>just wanted to drop a line and thank you for the <span class="caps">EXCELLENT</span>
+    textmate mod of fuzzy_finder. This is getting me to seriously consider to move
+    back to Vim after a long while of jumping between editors like Emacs, Textmate,
+    Notepad++ (using wine) etc. Thanks!</p>
+- date: 2008-11-28
+  author: Christoffer Klang
+  content: "<p>Oh, I should mention that I took the liberty of extending your excellent
+    fuzzy_finder_textmate to enable users to provide a g:fuzzy_include in addition
+    to g:fuzzy_ignore. I work on a rather large project with a lot of different filetypes,
+    so it’s handy to be able to filter out source code in addition to ignoring certain
+    filepatterns.</p>\n\n\n\t<p>If anyone is interested in this mod, it’s available
+    here:</p>\n\n\n\t<p>http://dl-client.getdropbox.com/u/55205/fuzzy/fuzzy_finder_textmate.zip</p>"
+- date: 2008-11-29
+  author: Christoph
+  content: "<p>Hi,</p>\n\n\n\t<p>github-vim: http://github.com/solars/github-vim/tree/master\nand\ngist.vim:
+    http://www.vim.org/scripts/script.php?script_id=2423</p>\n\n\n\t<p>are really
+    useful when working with github</p>"
+- date: 2008-12-05
+  author: Steven Oliver
+  content: "<p>I’ve spent quite a lot of time making (g)Vim work exactly the way I
+    want it too. You can find all of it here:</p>\n\n\n\t<p>http://steveno.wordpress.com/vimrc</p>"
+- date: 2008-12-14
+  author: Christian Hellsten
+  content: "<p>Hi Jamis,</p>\n\n\n\t<p>Version 2.16 of fuzzyfinder.vim breaks fuzzy_finder_textmate
+    because:</p>\n\n\n\t<p>function! g:FuzzyFinderMode.Base.launch(initial_text, partial_matching,
+    prev_bufnr, tag_files)</p>\n\n\n\t<p>is now:</p>\n\n\n\t<p>function! g:FuzzyFinderMode.Base.launch(initial_text,
+    partial_matching)</p>\n\n\n\t<p>Version 2.13 works for me.</p>\n\n\n\t<p>-Christian</p>"
+- date: 2008-12-27
+  author: Matt Baron
+  content: "<p>Hi Jamis,</p>\n\n\n\t<p>Your fuzzy finder textmate plugin works great
+    on my machine but unfortunately I can’t use it on one of our servers at work because
+    the vim installation does not have ruby built in.  Any chance your forthcoming
+    solution on vim.org will not rely on ruby? ;)</p>\n\n\n\t<p>Matt</p>"
+- date: 2008-12-28
+  author: Jamis
+  content: "<p>@Matt, I’m afraid I have no plans to do a pure-vim version of this.
+    Please do feel free to port the code, though, if you’d like a pure vim version.</p>"
+- date: 2008-12-31
+  author: Matt Baron
+  content: "<p>@Jamis:  Thanks for the response.  Perhaps I will try once I get enough
+    vim fu.</p>\n\n\n\t<p>In the meantime, I made a small patch to your version that
+    makes it behave a bit more like the Textmate version.  Instead of stripping space
+    at the end of the pattern, I changed my version so it removes all spaces completely.
+    \ This behavior is a little more consistent with Textmate, and for whatever reason
+    i happen to hit space in my patterns sometimes.</p>\n\n\n\t<p>I submitted a pull
+    request to you on Github with the change.</p>\n\n\n\t<p>Matt</p>"
+- date: 2009-01-17
+  author: Wincent Colaiuta
+  content: "<p>Had a bit of trouble getting fuzzyfinder_textmate working. I’m working
+    with the current <span class=\"caps\">HEAD</span> version (b9d541db).</p>\n\n\n\t<p>When
+    it didn’t work with the latest version of Fuzzyfinder (2.19) I went back to 2.13
+    (reported above to work) and started working my way up to see what happened. Here
+    are the different errors I get on doing <a href=\"&lt;/p\">:FuzzyFinderTextMate</a>&gt;\n\n\n\t</p>\n<p>-
+    Fuzzyfinder 2.1.3: “E119: Not enough arguments for function: 104”</p>\n\n\n\t<p>-
+    2.1.4: same</p>\n\n\n\t<p>- 2.1.5: same</p>\n\n\n\t<p>- 2.1.6:</p>\n\n\n\t<p>Error
+    detected while processing function &lt;snr&gt;4_CompleteFunc..176:line 27:\nErrno::EACCES:
+    /Users/wincent/.vim/ruby/fuzzy_file_finder.rb:218:in `open’: Permission denied
+    – /Users/wincent/Applications/KisMAC.app/Contents/Resources/WLanDriver.kext</p>\n\n\n\t<p>-
+    2.1.7:</p>\n\n\n\t<p>Error detected while processing function &lt;snr&gt;4_CompleteFunc..176:line
+    3:\n<span class=\"caps\">E716</span>: Key not present in Dictionary: exists_prompt(a:base)
+    || len(self.remove_prompt(a:base)) &lt; self.min_length</p>\n\n\n\t<p>- 2.1.8:
+    same</p>\n\n\n\t<p>- 2.1.9: same</p>\n\n\n\t<p>In the end, the only version I
+    could get to work at all was 2.1.6, and only then by trashing the kext in the
+    KisMAC.app that it didn’t like.</p>"
+- date: 2009-01-20
+  author: Keith Woody
+  content: "<p>I had a similar issue to Wincent while trying to use FuzzyFinderTextMate
+    with gvim 7.1 on ubuntu 8.10.  I’m just posting to confirm that fuzzy_finder.vim
+    version 2.16 fixed it for me as well.</p>"
+- date: 2009-01-27
+  author: Niels
+  content: "<p>Yep, experiencing the same behaviour Wincent &amp; Keith are describing!</p>"
+- date: 2009-01-28
+  author: Jamis
+  content: "<p>All, please see http://weblog.jamisbuck.org/2009/1/28/the-future-of-fuzzyfinder-textmate.
+    I am no longer support this vim extension. It works fine for me, but if you need
+    updates please consider forking the project and adding them independently.</p>"

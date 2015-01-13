@@ -1,0 +1,53 @@
+---
+- date: 2006-10-04
+  author: Eric Hodel
+  content: 'What''s with the excessive use of #match?  Why not pull the matchdata
+    out of the global only when you need it to avoid the overhead of constructing
+    it when you don''t.'
+- date: 2006-10-04
+  author: Jamis
+  content: "Thanks for the suggestion, Eric. It'd be interesting to see a comparison
+    demonstrating the difference in performance. Route recognition is pretty snappy
+    currently--we'd love for it to be snappier still. If you have some time, I'd really
+    appreciate it if you could look into that.\r\n\r\nRoute recognition is rarely
+    the bottleneck--route generation (which will be the next topic) is where things
+    really tend to get clogged up. Routes are recognized only once per request, but
+    you may need to generate lots of URL's per page. Thus, we haven't spent a lot
+    of time optimizing the recognition process, yet."
+- date: 2006-10-05
+  author: Grant McInnes
+  content: "<p>Jamis, these articles are beyond amazing.  I never find the time to
+    go digging myself, but I do find the time to read these articles.  Long may you
+    run.</p>\n\n\n\t<p>I hope you realize you have a real talent for this kind of
+    exposition.   In my experience it’s very rare to find someone who can write at
+    just the right level of detail to explain code succinctly and clearly.  People
+    often get caught up in the beauty of their abstractions, or the intricate details
+    of the implementation.</p>\n\n\n\t<p>I’m off to throw some money in the paypal
+    pot now, and I hope everyone else who reads this does, ‘cause I’d selfishly like
+    to see these articles continue for a long time :)</p>\n\n\n\t<p>Cheers.</p>"
+- date: 2006-10-05
+  author: Jamis
+  content: "<p>Grant, many thanks for the kind words. I’m very happy that people are
+    enjoying these articles!</p>"
+- date: 2006-10-05
+  author: Lee Jensen
+  content: "<p>Jamis, this series has rocked. I recently started trimming my list
+    of blogs that I read because I was glossing over good articles such as these because
+    the list of crap was so long and I felt I had to read it all. I’m very glad I
+    did. Keep up the good work you’re doing an excellent service to the community.</p>"
+- date: 2006-10-12
+  author: Amr Malik
+  content: "<p>This is really cool (and amazing as to how much complexity is there
+    in just one  piece of Rails!) you core people are truly amazing!</p>\n\n\n\t<p>I
+    sure hope you would please continue with these, and if you ever decide to (self?)
+    publish these, I will be sure to purchase a copy of your Under the Hood book.</p>\n\n\n\t<p>Many
+    Thanks indeed!</p>"
+- date: 2006-11-01
+  author: dan
+  content: "<p>jamis\n  I’m pretty new to rails and have been writing a way of dynamically
+    generating objects at run-time and this blog was the last piece I was missing
+    ( doing source generation ).  Thanks for making it easy for someone like me to
+    follow. Keep the under the hood stuff coming.  Rails is one of those things that
+    at first glance looks anti-climatic because its so easy, but when you look at
+    the artful way the underlying code is written it really makes you sit up and take
+    notice.</p>\n\n\n\t<p>-d</p>"

@@ -1,0 +1,24 @@
+table.maze { border-collapse: collapse; margin-left: 20px; }
+table.maze th, table.maze td { padding: 5px; border: none; text-align: center; vertical-align: middle; font-size: 12px; line-height: 12px; }
+table.maze th { font-weight: normal; color: #777; padding-top: 0; }
+table.maze td { font-weight: normal; color: #999; width: 16px; height: 16px; }
+table.maze td.n { border-top: 1px solid black; }
+table.maze td.s { border-bottom: 1px solid black; }
+table.maze td.e { border-right: 1px solid black; }
+table.maze td.w { border-left: 1px solid black; }
+table.maze td.h { background-color: #ffc; }
+table.maze td.out { background-color: #777; }
+table.maze td.mark { background-color: #fdd; }
+table.maze td.out2 { background-color: #ccc; }
+
+.row .maze {
+  padding: 0 0 20px 20px;
+  display: inline-block;
+}
+
+.row .maze .grid { width: 210px; height: 210px; border: none; }
+.row .maze .grid.invert { border: 2px solid black; }
+
+.row .maze .operations { clear: both; text-align: center; padding-top: 5px; font-size: 12pt; }
+.row .maze .operations a { padding: 0px 5px; color: #00f; }
+.row .maze .operations a.disabled { color: #777; }

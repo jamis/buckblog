@@ -1,0 +1,76 @@
+---
+- date: 2007-01-04
+  author: John Bledsoe
+  content: <p>Hmm.. I’ve had no warnings using assert_select with <span class="caps">XML</span>
+    in 1.2rc1.  I’m not using resources or to_xml; just Builder templates.</p>
+- date: 2007-01-04
+  author: Dave Hoover
+  content: "<p>Thoughts on overriding the html_document method rather than assigning
+    to an instance variable?</p>\n\n\n\t<p>def xml_document\n  @xml_document ||= <span
+    class=\"caps\">HTML</span>::Document.new(@response.body, false, true)\nend\nalias
+    :html_document :xml_document</p>"
+- date: 2007-01-04
+  author: Jamis
+  content: "<p>John, you may be fine. It depends on the tags that are in your documents,
+    since <span class=\"caps\">HTML</span>::Document does some special casing with
+    tags when in <span class=\"caps\">HTML</span> mode. If you aren’t feeling any
+    pain, feel free to ignore this tip.</p>\n\n\n\t<p>Dave, you don’t want to do that,
+    since assert_select would then break on <span class=\"caps\">HTML</span> documents.
+    <span class=\"caps\">HTML</span> (and even <span class=\"caps\">XHTML</span>)
+    is not a true subset of <span class=\"caps\">XML</span>, so you can’t really use
+    the same rules on both.</p>"
+- date: 2007-01-04
+  author: Peter Marklund
+  content: <p>Thanks for the tip Jamis! I too have been using assert_select on <span
+    class="caps">XML</span> documents, VoiceXML in my case, without problems. I will
+    definetely keep this tip in mind though, seems like a more robust approach.</p>
+- date: 2007-01-04
+  author: Ryan Lowe
+  content: "<p>Hi Jamis—this new series is great, please keep it up.  :)</p>"
+- date: 2007-01-04
+  author: Assaf
+  content: "<p>assert_select will work with some <span class=\"caps\">XML</span> documents,
+    but fail the moment you use an <span class=\"caps\">HTML</span> tag that’s self
+    closing, e.g. link and meta. So as a general rule I recommend to not use it with
+    <span class=\"caps\">XML</span>.</p>\n\n\n\t<p>There was an assert_select_feed
+    in the original contribution, for dealing specifically with <span class=\"caps\">RSS</span>
+    and Atom, both of which break when parsed as <span class=\"caps\">HTML</span>.</p>\n\n\n\t<p>Maybe
+    we should add assert_select_xml to core … the code is simple to recreate, but
+    people are likely to fail not realizing the difference between the <span class=\"caps\">XML</span>
+    and <span class=\"caps\">HTML</span> parsing. That way, we can save them the time
+    and energy.</p>"
+- date: 2007-01-05
+  author: David
+  content: "<p>Jamis said: [XHTML] is not a true subset of <span class=\"caps\">XML</span></p>\n\n\n\t<p>Interesting.
+    Can you say why, or point me at an explanation?</p>"
+- date: 2007-01-05
+  author: Jamis
+  content: <p>David, sure. In <span class="caps">XML</span>, you can always use the
+    &lt;foo /&gt; syntax for closing empty tags. However, if you try and do that in
+    <span class="caps">XHTML</span> with a tag that requires an explicit closing tag,
+    you’ll find your page doesn’t render properly. For example, the “script” and “iframe”
+    tags.</p>
+- date: 2007-01-05
+  author: assaf
+  content: "<p><span class=\"caps\">XHTML</span> is based on <span class=\"caps\">XML</span>.
+    Whether an element allows content,  requires content, or must be empty is not
+    specified by <span class=\"caps\">XML</span>, but by the schema associated with
+    that document type. In this case, the <span class=\"caps\">HTML</span> spec tells
+    you whan an element can and cannot contain.</p>\n\n\n\t<p>In <span class=\"caps\">HTML</span>
+    the link element is always self-closing, no need for the slash, so the parser
+    looks at one tag and creates an element from it.</p>\n\n\n\t<p>In <span class=\"caps\">XHTML</span>
+    which is <span class=\"caps\">XML</span>, you must close the link element. And
+    it must be empty, no content is allowed. Since the <span class=\"caps\">HTML</span>
+    parser ignores the slash, it will parse most <span class=\"caps\">XHTML</span>
+    documents correctly.</p>\n\n\n\t<p>But in <span class=\"caps\">RSS</span>, the
+    link element contains the <span class=\"caps\">URL</span> of a post or a blog.
+    An <span class=\"caps\">XML</span> parser would treat that correctly, putting
+    any content beween the opening and closing tags into the element.</p>\n\n\n\t<p>But
+    an <span class=\"caps\">HTML</span> parser would create an element from the link
+    tag itself, and then parse the following content as part of the parent element.
+    So you can’t parse an <span class=\"caps\">RSS</span> feed with an <span class=\"caps\">HTML</span>
+    parser and except a correct document structure.</p>"
+- date: 2007-01-05
+  author: Dave Hoover
+  content: <p>Oh, but I’m just talking about about overriding it in that specific
+    TestCase where you’re only interested in asserting against <span class="caps">XML</span>.</p>

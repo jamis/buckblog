@@ -1,0 +1,228 @@
+---
+- date: 2009-03-24
+  author: Dave Spurr
+  content: "<p>That looks like a really good idea. I’ve never had much luck managing
+    budgets before using spreadsheets, but this approach could be quite nice.</p>\n\n\n\t<p>One
+    thing that might be cool is having it pick-up previous transactions, e.g. if I
+    have a bucket for gasoline and put in a transaction one week for Texaco at $25
+    and assign that to the gasoline bucket. Then next time I enter a new transaction
+    for Texaco it could automatically pick the last bucket used.</p>\n\n\n\t<p>Recurring
+    transactions would be nice too for utilities etc.</p>"
+- date: 2009-03-24
+  author: Geoffrey Grosenbach
+  content: "<p>Great screencast, Jamis!</p>\n\n\n\t<p>I wrote a small personal finance
+    system in Perl while in college. It helped me feel in control of my finances in
+    ways a pre-packaged copy of Quicken couldn’t. Now I’m using mint.com.</p>"
+- date: 2009-03-24
+  author: Jamis
+  content: "<p>@Dave, there are a lot of things I plan to implement eventually, and
+    “memorized” and “recurring” transactions are two of them. There will also be some
+    reporting features, and account reconciliation, etc. It’s not there yet, but I’m
+    in no hurry.</p>\n\n\n\t<p>@Geoffrey, I looked at mint (and all the other options
+    out there), but I am morally opposed to using any app that won’t let you use it
+    unless you give it the keys to your bank account. :)</p>"
+- date: 2009-03-24
+  author: Steve Eichert
+  content: "<p>Jamis,\nLooks good thus far! :)  I’ve been looking for a simple app
+    to do much of what it appears to be in Buckets.  If you end up opening it up at
+    all I definitely be interested in trying it out.  \n~ Steve</p>"
+- date: 2009-03-24
+  author: Bruno Mattarollo
+  content: "<p>Hi Jamis,</p>\n\n\n\t<p>Looks really good and simple. As I was watching
+    the screencast, I remembered that I had already seen a personal finance app using
+    the same term and yes, MoneyWell … http://nothirst.com/moneywell/ ... I haven’t
+    used it but the terminology is quite similar. I rather use a web-based app if
+    there was an <span class=\"caps\">API</span> and an iPhone app at some stage ;-)</p>"
+- date: 2009-03-24
+  author: Craig Buchek
+  content: "<p>I was highly interested in BudgetWise, and actually downloaded a copy
+    from somewhere. I was disappointed that it was not being maintained. I’d love
+    to get a copy of the latest incarnation, and see if it will meet my needs. I’ve
+    been thinking of writing my own simple app, since none of the available options
+    are to my liking. (And I want full control of my finances, so hosted apps are
+    generally out of the question.)</p>\n\n\n\t<p>I like that you’ve already got a
+    feature to split an expense between multiple buckets.</p>"
+- date: 2009-03-24
+  author: Bob Martens
+  content: "<p>Wow, I’m really impressed <span class=\"caps\">AND</span> really interested
+    to see where this goes.</p>\n\n\n\t<p>Count me as interested.</p>"
+- date: 2009-03-24
+  author: François Beausoleil
+  content: "<p>Hey Jamis, that’s great.  My personal experience is that you have to
+    be really diligent about putting your expenses in the system.  The easiest way
+    to do that is to import direct from the source: Quicken/CSV exports from the bank
+    accounts, and assign afterwards.</p>\n\n\n\t<p>I have a good start on that here:
+    http://github.com/francois/family_budget</p>\n\n\n\t<p>Unfortunately, my wife
+    won’t use it too much.  She still thinks it’s too complicated:  6-7 steps to get
+    the raw data from the bank into the application.</p>\n\n\n\t<p>Good luck though!</p>"
+- date: 2009-03-24
+  author: Kelly Harward
+  content: "<p>@Jamis, I use mint.com and understand your aversion to their requirement
+    that you entrust them with your account info in order to use the app. I had the
+    same concerns. However, my #1 requirement for any personal finance app (and I’ve
+    tried many of them) is that the app must eliminate the maintenance burden of recording
+    and categorizing each transaction. With something like Quicken, the amount of
+    time required to stay on top of this eventually outweighs the benefit you receive
+    from the app. Mint.com does such a good job of this (by automatically retrieving
+    this information from your online statements) and then accurately categorizing
+    each transaction that in the end I reluctantly surrendered my account credentials
+    because the value of the service they offer outweighed my hesitancy to trust them
+    with my sensitive personal information.</p>\n\n\n\t<p>If Buckets could provide
+    me that same benefit without requiring that I surrender my bank account credentials,
+    so much the better. I’d be willing to download my statements from my bank and
+    import them to Buckets. But Buckets would still need some functionality to do
+    the categorization for me. The ability to create categorization rules is a good
+    start (something mint.com does). Another approach would be to add some kind of
+    classification engine. Bayesian classifiers tend to work pretty well for this
+    kind of task. Especially where you are already categorizing each transaction manually
+    – if you plug in a Bayesian classifier and leverage that manual categorization
+    effort to train the classifier, then the app will (in theory) get better over
+    time at predictively categorizing your transactions. I’ve toyed a bit with this
+    concept using the Bishop Bayesian classifier (http://bishop.rubyforge.org/) and
+    found the results to be somewhat promising.</p>"
+- date: 2009-03-24
+  author: Jamis
+  content: "<p>@Francois and @Kelly: Buckets will never import from bank accounts.
+    That’s a feature I don’t want. I do not intend Buckets to take over the world—in
+    fact, I only intend for Buckets to be used by me, but if others find it useful,
+    great. However, auto-classification of transactions, bayesian filters, etc, etc…
+    that’s all way, way beyond the scope of this project.</p>\n\n\n\t<p>When the source
+    is available, you’re welcome to knock yourselves out on things like that.</p>"
+- date: 2009-03-24
+  author: Jordan Brough
+  content: "<p>Would love to try this out.  Please do post if you make it public on
+    github.</p>"
+- date: 2009-03-24
+  author: Ivan
+  content: "<p>Hi Jamis,</p>\n\n\n\t<p>Why do you wait for open sourcing it? I think
+    a lot of us could already benefit from it, and you could also get valuable contributions,
+    don’t you agree? Could you share your reasons for not opening to the world what
+    you have so far?</p>\n\n\n\t<p>I developed a very similar app for Rails Rumble
+    ‘08 (http://github.com/ivanvr/moneyrumble), but I didn’t take it further after
+    the event due to lack of time.</p>\n\n\n\t<p>Can’t wait for the first relase!</p>"
+- date: 2009-03-24
+  author: Mark
+  content: "<p>Capistrano is a really unique and needed tool.  A shame that you decided
+    to focus your talents on personal finance – something that is being done already
+    by Quicken, Mint, and many other tools.</p>"
+- date: 2009-03-24
+  author: Jamis Buck
+  content: "<p>@Ivan, the reason I’m holding it back still is because it’s not ready
+    for release yet. I really don’t want contributions at this point, or feature suggestions.
+    That’s not to say I’m waiting until the app is “done” to release it. Not at all:
+    I’ve got a list of things that I feel need to be done before I can open the app
+    up, but there is a long list of things I’d like to do after that, too.</p>\n\n\n\t<p>@Mark,
+    it’s a shame you think it’s a shame. :) I’ve decided I’m not out to please people
+    anymore—Capistrano killed me for that reason. I’m working on what I want to work
+    on, and if it’s disappointing to people, so be it. <span class=\"caps\">FWIW</span>,
+    I’ve tried “Quicken, Mint, and many other tools”, and was not impressed. I’m scratching
+    my own itch. If those other tools work for you, great! Buckets isn’t for you,
+    then. Nothing to see here!</p>"
+- date: 2009-03-24
+  author: Justin Blake
+  content: "<p>Great app! I’ve been looking for a good, simple, and flexible envelope-style
+    budgeting app and this looks perfect. It would be awesome if you made this public.</p>"
+- date: 2009-03-24
+  author: Ron Green
+  content: |-
+    <p>This looks great and it appears you do budgeting the same way I do.
+    Please let me know if you need beta testers. I would be glad to help.</p>
+- date: 2009-03-24
+  author: Tracey
+  content: "<p>No wait! You can’t tease me like this! My husband just sent me the
+    link to the video and I fell in love with this program instantly! I can’t believe
+    he’d send me a link to something that I can’t play with right now – he’s so mean.
+    If you want anyone else to help you play with this and test it I’m more then happy
+    to help – the sooner I can get my hands on this the happier I’ll be ;)</p>"
+- date: 2009-03-24
+  author: Fred Lee
+  content: "<p>Looks like a great little app.  I like it.  I used to do something
+    similar “virtually”.  I would keep a separate file (spreadsheet or whatever) to
+    move “in” and “out” funds into categories.  It never really worked for me because
+    it was too cumbersome.  I always thought that my online banking site should provide
+    this type of functionality.</p>\n\n\n\t<p>I am interested in seeing how you tackle
+    the potential UI and UX challenges.  I can envision logging receipts and expenses
+    getting too cumbersome for some.</p>\n\n\n\t<p>I agree with your decision to not
+    integrate with banks like Mint.  I have always felt that was too easy.  Making
+    it slightly difficult is part of being made aware of your spending habits.</p>\n\n\n\t<p>Good
+    luck.</p>"
+- date: 2009-03-24
+  author: ashwin
+  content: |-
+    <p>That looks great. I currently use a Numbers sheet to maintain the budget. The budgeting feature is limited, but it does give soem nice charts and helps in seeing the expense trends. I really like the flexibility of splitting an expense across multiple accounts. Can I be a testing member? :)
+    ashwinks @ github.</p>
+- date: 2009-03-25
+  author: John Topley
+  content: "<p>That’s a great-looking application, Jamis! As you know, I scratched
+    my own itch in the same sector with AssetsGraphed, although it’s not as good as
+    Buckets is already…</p>"
+- date: 2009-03-25
+  author: Johannes
+  content: "<p>Your app looks great! I am currently using some kind of outliner on
+    my mobile phone for expense tracking. Buckets looks like it would be worth a try
+    to use on the phone. Looking forward to try it :)</p>"
+- date: 2009-03-25
+  author: Louis Rose
+  content: "<p>Looks great already! I’ll certainly be trying Buckets when it’s released.</p>"
+- date: 2009-03-25
+  author: Alexis
+  content: |-
+    <p>I like it too. Especially to manage savings actually. Every month I transfer different amounts of money to a saving account for different goals: $75 for the 6-month car insurance bill, $150 for home improvement, $100 for the next vacations, and so on.
+    The bank account app does not keep track of the buckets, so I do it in a spreadsheet. But an app like your proto might do a much better job!
+    +1</p>
+- date: 2009-03-29
+  author: Mason
+  content: "<p>Okay… this is rather random, but it’s so weird that it had to be shared.</p>\n\n\n\t<p>I
+    was listening to Röyksopp’s new album. In particular, I was listening to track
+    5, Royksopp Forever. I saw your article in my newsreader, and decided to watch
+    the screencast.</p>\n\n\n\t<p>Then something weird happened. You started talking
+    during the <strong>perfect</strong> moment, and the tempo of your dialog was perfectly
+    in time with the music.</p>\n\n\n\t<p>I was freaking out to my girlfriend over
+    IM about how much more exciting the music was making your screencast. The music
+    got dramatic when you needed to withdraw funds from multiple buckets. When your
+    college friend dropped by, it was downright suspenseful.</p>\n\n\n\t<p>And then,
+    as if the universe was trying to screw with my head, your screencast ended at
+    the <span class=\"caps\">EXACT SAME TIME</span> as the song. Fade to black, fade
+    to mute.</p>\n\n\n\t<p>Basically, this experience has convinced me that if there
+    is a god, he wants me to use Buckets if it ever becomes available to the general
+    public.</p>"
+- date: 2009-03-31
+  author: andy
+  content: "<p>Jamis, I’m glad to see you’re doing stuff for yourself. People should
+    be doing more of that.</p>\n\n\n\t<p>To me some of the UI features felt very 37Signals-esque.
+    Under the covers are you using any internal 37Signals code or styles?</p>"
+- date: 2009-04-01
+  author: lbadura
+  content: "<p>I started working on a similar app called MoneyTracker. My goals are
+    also similar (it’s for mine and my wife’s personal use). Looking forward to the
+    release of Buckets. Looks good (simple and usable) now, keep up the good work.</p>"
+- date: 2009-04-01
+  author: Jamis
+  content: "<p>@Mason, that’s awesome! I’ll have to look into adding a sound track
+    for the next screencast. :)</p>\n\n\n\t<p>@andy, I’m not reusing any internal
+    37s code, though I am using some published plugins. None that touch the UI, though.
+    I’m not intentionally using any 37signals styles, though I suppose you can’t work
+    at a place like 37signals without some rubbing off on your own style. :)</p>"
+- date: 2009-04-02
+  author: Eric Davis
+  content: "<p>Jamis, I think it looks great.  I’m currently using KMyMoney (think
+    Quicken for Linux but with an open data format) to track our accounts and a sheet
+    of paper on the fridge for budgeting.  Buckets looks like it could replace the
+    most important 80% of our use right now.  Once you open source it, I’d be happy
+    to add in the other 20%.</p>\n\n\n\t<p>I feel the same way as you about mint.com,
+    I don’t want to hand over my bank account data to someone else.  I also want to
+    make sure I have control over my data, so I can move it to a new system if I need
+    to (or if a company changes).</p>\n\n\n\t<p>If you need a “beta” tester, I volunteer
+    to take a look at the system and the code.</p>"
+- date: 2009-04-03
+  author: Melvin Ram
+  content: "<p>Looks very nice Jamis. I can definitely see myself using something
+    like that.</p>"
+- date: 2009-04-03
+  author: Dave
+  content: "<p>Looks very useful! Can’t wait for you to open it up.</p>"
+- date: 2009-04-08
+  author: Felipe Coury
+  content: "<p>Hey, I really like the concept. If this ever become widely available,
+    I’d like to offer a translation to Brazilian Portuguese, since I find this very
+    useful!</p>"

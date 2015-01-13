@@ -1,0 +1,83 @@
+---
+layout: post
+title: Capistrano 2.0 Preview 2
+post_id: 90
+categories:
+- Announcements
+date: 2007-05-10 22:43:00.000000000 -06:00
+author: Jamis
+permalink: 2007/05/10/capistrano-2-0-preview-2.html
+---
+
+<p>The upcoming Capistrano 2.0 release continues to evolve! Remote administration of single servers and server clusters has never been easier. With Capistrano, you can:</p>
+<ul>
+	<li>Deploy web applications with a single command</li>
+		<li>Keep software in sync across multiple machines</li>
+		<li>Install entire servers with just a few keystrokes</li>
+		<li>Impress the ladies with your leet sysadmin skills</li>
+	</ul>
+<p>Ok, well, maybe not that last, unless she’s a <em>really</em> special lady. But the rest certainly apply.</p>
+<p>Capistrano 2.0 Preview Release 2 is now available (version 1.99.1). You can only grab it from the Rails beta gem server:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">gem install -s http://gems.rubyonrails.com capistrano</pre></td>
+</tr></table>
+<p><span class="caps">NOTE</span> that Capistrano 2.0 is not 100% backwards-compatible with Capistrano 1.x recipes. For more information on upgrading, check out <a href="http://www.capify.org/upgrade">http://www.capify.org/upgrade</a>.</p>
+<p>To install the preview release, you’ll need to make sure you’ve already got the following gems installed, too, which Capistrano depends on (and which can be found in the main Rubygems repository):</p>
+<ul>
+	<li>net-ssh</li>
+		<li>net-sftp</li>
+		<li>highline</li>
+	</ul>
+<p>Download it, install it, try it out. Kick the tires. Report what doesn’t work. We’re getting close to a general release!</p>
+<p>SO. Now that all of that is out of the way, let’s talk about what’s new in <span class="caps">PR2</span>. First, the bug fixes:</p>
+<ul>
+	<li>The “copy” deployment strategy now checks out the local copy to a temporary directory, rather than using the current working directory. This makes it possible to use with some picky <span class="caps">SCM</span>’s that don’t like checkouts being made into an existing checkout.</li>
+		<li>The “deploy:check” task was broken for some deployment strategies. It should work now for all of the pre-packaged strategies.</li>
+		<li>The “shell” task should actually work now.</li>
+		<li>The “desc” keyword will apply to the next defined task, regardless of which namespace the task is defined in.</li>
+		<li>Don’t retry failed connections when an explicit :auth_methods list is given via :ssh_options.</li>
+		<li>Fixed a few minor documentation typos.</li>
+	</ul>
+<p>Next, the new features:</p>
+<p><strong>Feature:</strong> The “deploy:cold” task will run migrations before starting the app. If it is the first time you’ve deployed your app, chances are the database needs setting up, too!</p>
+<p><strong>Feature:</strong> The old method of extending tasks (e.g., tasks named “before_deploy” and “after_deploy” extending the “deploy” task) is now discouraged (though not formally deprecated, yet). The new approach uses some new keywords:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">before <span class="sy">:deploy</span>, <span class="sy">:my_custom_task</span><tt>
+</tt>after  <span class="s"><span class="dl">"</span><span class="k">deploy:symlink</span><span class="dl">"</span></span>, <span class="sy">:do_this</span>, <span class="sy">:and_do_that</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>More generally, you can attach tasks of your own creation to arbitrary “events”, using the “on” keyword:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">on <span class="sy">:before</span>, <span class="sy">:my_custom_task</span>, <span class="sy">:only</span> =&gt; <span class="sy">:deploy</span><tt>
+</tt>on <span class="sy">:after</span>, <span class="sy">:do_this</span>, <span class="sy">:and_do_that</span>, <span class="sy">:only</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">deploy:symlink</span><span class="dl">"</span></span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The :before event gets triggered before any event is invoked, and :after gets called immediately after the event finishes successfully. There are four other events currently supported by Capistrano:</p>
+<ul>
+	<li>:start is triggered when a task is invoked via the command-line</li>
+		<li>:finish is triggered when a task invoked via the command-line finishes successfully</li>
+		<li>:load is triggered after all recipes have loaded, but before any tasks are executed</li>
+		<li>:exit is triggered after all tasks have been executed</li>
+	</ul>
+<p>You can even define your own events, and then trigger them using the “trigger” method.</p>
+<p><strong>Feature:</strong> The “deploy:app” namespace has been axed. The tasks that it contained now live in the “deploy” namespace directly. Thus, “deploy:app:start” and “deploy:app:stop” are now “deploy:start” and “deploy:stop”, respectively.</p>
+<p><strong>Feature:</strong> If your “scm_command” is set to a custom value because your <span class="caps">SCM</span> lives in a non-standard location on the remote host, you previously ran into problems if your <span class="caps">SCM</span> command did not live at the same location on your local host. Now, if you need different settings for the scm_command depending on whether it is being invoked locally or remotely, you have the option of specifying either one separately:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">set <span class="sy">:scm_command</span>, <span class="s"><span class="dl">"</span><span class="k">/opt/local/bin/svn</span><span class="dl">"</span></span><tt>
+</tt>set <span class="sy">:local_scm_command</span>, <span class="s"><span class="dl">"</span><span class="k">/usr/local/bin/svn</span><span class="dl">"</span></span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Note that if “scm_command” is set, “local_scm_command” will default to that value, but if “local_scm_command” is set, “scm_command” is unaffected.</p>
+<p><strong>Feature:</strong> Servers are now uniquely identified by Capistrano based on their full connection information, including hostname, username, and port. (Before, servers were only unique based on the hostname.) This makes it possible to use Capistrano in a <span class="caps">NAT</span>’ed environment, where all of your servers are using the same hostname, with different port numbers.</p>
+<p><strong>Feature:</strong> The “capify” command now understands the “-h” switch, which should make it behave a little more like people expect.</p>

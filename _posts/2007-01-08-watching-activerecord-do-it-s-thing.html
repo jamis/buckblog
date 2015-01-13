@@ -1,0 +1,63 @@
+---
+layout: post
+title: Watching ActiveRecord Do Its Thing
+post_id: 118
+categories:
+- Tips & Tricks
+date: 2007-01-08 11:45:00.000000000 -07:00
+author: Jamis
+permalink: 2007/01/08/watching-activerecord-do-it-s-thing.html
+---
+
+<p>ActiveRecord is cool and all, and it goes without saying that we all trust its judgment, but sometimes you just want to watch while it does its thing. For instance, just today, I wanted to verify that, in edge Rails, ActiveRecord no longer loads the entire collection when doing a scoped “create”.</p>
+<p>In other words, consider the following snippet:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">Account</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+</tt>  has_many <span class="sy">:people</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>account = <span class="co">Account</span>.find(<span class="sy">:first</span>)<tt>
+</tt>person = account.people.create <span class="sy">:name</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">Jamis Buck</span><span class="dl">"</span></span></pre></td>
+</tr></table>
+<p>Before Rails 1.2, that last line would actually load all of the people in that collection, before creating the new person. This was problematic if the collection had thousands of rows, because a simple insert suddenly became a monstrous resource sink.</p>
+<p>So, how to verify that the collection is no longer being loaded?</p>
+<p>Did you know you can install your own logger instances in Rails? Yah, you can. And yah, it’s pretty cool:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">$ script/console<tt>
+</tt>&gt;&gt; ActiveRecord::Base.logger = Logger.new(STDOUT)<tt>
+</tt>=&gt; #&lt;Logger:0x2814134 ...&gt;<tt>
+</tt>&gt;&gt; account = Account.find(:first)<tt>
+</tt>  Account Load (0.000346)   SELECT * FROM accounts LIMIT 1<tt>
+</tt>=&gt; #&lt;Account:0x2665478 ...&gt;<tt>
+</tt>&gt;&gt; account.people.create :name =&gt; "Jamis Buck"<tt>
+</tt>  Account Columns (0.000271)   SHOW FIELDS FROM accounts<tt>
+</tt>  Person Columns (0.000246)   SHOW FIELDS FROM people<tt>
+</tt>  SQL (0.000093)   BEGIN<tt>
+</tt>  SQL (0.000351)   INSERT INTO people (`account_id`, `name`) VALUES (1, 'Jamis Buck')<tt>
+</tt>  SQL (0.253635)   COMMIT<tt>
+</tt>=&gt; #&lt;Person:0x27cb628 ...&gt;</pre></td>
+</tr></table>
+<p>There you have it. Each call to ActiveRecord now logs all of its activity to <code>STDOUT</code> (e.g., the console), via your custom logger instance. The tale it tells is revealing, and reassuring: scoped creates do <em>not</em>, in fact, load the entire collection anymore.</p>
+<p>Yay!</p>
+<p>(One caveat: be sure to set up your logger <em>first</em>, before doing anything else, otherwise the default logger will get cached with no simple way to uncache it.)</p>

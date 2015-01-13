@@ -1,0 +1,28 @@
+---
+- date: 2007-03-27
+  author: John Topley
+  content: "<p>Jamis,</p>\n\n\n\t<p>Has the development/feature set of Capistrano
+    2 been driven by things you’ve needed at 37signals or is it more generalised?</p>"
+- date: 2007-03-27
+  author: Jamis
+  content: "<p>John, it is more generalized. Our needs at 37signals have been well
+    met by Capistrano 1.x, but the needs of the community have resulted in lots improvements
+    and extensions. In particular, cap2 will allow deployment by copy, instead of
+    just by checkout, and this is even something we’re eager to take advantage of
+    at 37signals. I’ll do a post or two in the near future outlining the changes and
+    improvements, as well as upgrade caveats (it’s not 100% backwards compatible).</p>"
+- date: 2007-03-28
+  author: Greg H
+  content: "<p>Hi Jamis,</p>\n\n\n\t<p>Are you considering supporting (i.e. including
+    in the capistrano base code itself) some of the “quick deployment” concepts that
+    Mike covers in his post “Managing Rails Versions with Capistrano”</p>\n\n\n\t<p>http://www.clarkware.com/cgi/blosxom/2007/01/18#ManagingVersionsWithCap</p>\n\n\n\t<p>Cheers\nGreg</p>"
+- date: 2007-03-28
+  author: Scott Barber
+  content: "<p>Can’t wait for 2.0!</p>\n\n\n\t<p>btw: what’s the status of capistrano
+    documentation?</p>"
+- date: 2007-03-29
+  author: Jamis
+  content: "<p>Greg, I would like to, certainly. I’m focusing on the core deployment
+    strategies first, and will then branch out and add some more Rails-specific ones.</p>\n\n\n\t<p>Scott,
+    that documentation would still be “nonexistent”, sadly. I won’t release cap2 without
+    some documentation, though, minimal though it may be.</p>"

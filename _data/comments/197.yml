@@ -1,0 +1,117 @@
+---
+- date: 2006-01-02
+  author: topfunky
+  content: Fantastic! Thanks, Jamis!
+- date: 2006-01-02
+  author: Tom Fakes
+  content: "This is cool. \n\nI have found one issue though - the *cleanup* task directly
+    calls sudo to delete the old directories.  I don't have sudo, so it fails for
+    me.  \n\nSince the directories were created by my switchtower user, they should
+    be able to be removed by that same use, so sudo shouldn't be necessary for this
+    task.\n\nThanks for a great tool."
+- date: 2006-01-02
+  author: MC
+  content: |-
+    Interesting.
+
+    Now, what is it?  (I'm not being snarky, I'm honestly curious; your post assumes the reader knows what this thing is.  Completely my opinion here, but I've always held that any announcement should at least include a short 1 sentence blurb as to what the thing being upgraded is/does/is for/etc.)
+- date: 2006-01-02
+  author: Jamis
+  content: |-
+    MC, apologies for not describing ST. I've been posting about it quite a bit for the last month or two and figured anyone following my blog would already know the details.
+
+    Basically, SwitchTower is a tool for automating tasks on multiple remote machines. It was designed specifically for deploying Rails applications, but can be used for much more than that. The manual for it is at <a href="http://manuals.rubyonrails.com/read/book/17">http://manuals.rubyonrails.com/read/book/17</a>, and should give much more information if you are interested.
+- date: 2006-01-02
+  author: Ezra Zygmuntowicz
+  content: Jamis- Thanks for all your hard work! Switchtower is one of the killer
+    features of rails for me and I am very appreciative.
+- date: 2006-01-02
+  author: Ryan Heneise
+  content: 'Jamis - Switchtower 0.10 rocks. I just had to do a rake rollback and boy
+    was I glad to have it. '
+- date: 2006-01-03
+  author: Piotr Usewicz
+  content: Yeeehaaa! :&gt;
+- date: 2006-01-03
+  author: Jack
+  content: Love it. I'm pleasantly suprised to see the update_current task. Silly
+    question, after upgrading to 0.10 I thought I'd try running `rake update_current`
+    but get "Don't know how to build task 'update_current'" Yet it shows in the output
+    of available tasks. I did allow the  switchtower --apply-to command to replace
+    the .tasks file. I'm obviously missing something, er, obvious. Thanks for SW.
+- date: 2006-01-03
+  author: Jamis
+  content: |-
+    Jack, for most ST tasks, you have to use the remote_exec task to access them:
+
+    <pre>
+      rake remote_exec ACTION=update_current
+    </pre>
+
+    This is because the rake tasks and the switchtower tasks are executed in two different realms, and rake only knows about the rake tasks. (The switchtower.rake file defines a few rake tasks for the commonly used switchtower tasks--you can always define more for those you use frequently.)
+- date: 2006-01-12
+  author: Dave Lehman
+  content: |
+    I'm trying to run ST 0.10.0 on WinXP.
+
+    I've run "switchtower --apply-to myapp" and edited deploy.rb.
+
+    But whenever I run:
+      rake remote_exec ACTION=blah
+
+    it says:
+      rake aborted!
+      don't know how to build task 'remote_exec'
+
+    What am I missing?
+- date: 2006-01-17
+  author: Jamis
+  content: Dave, what version of Rails do you have installed? Also, is there a file
+    in lib/tasks called switchtower.rake?
+- date: 2006-01-23
+  author: Sean
+  content: I echo Tom's comment about needing sudo for the cleanup task.  Why sudo
+    for this if the directory is created by the user in question?  I'm having difficulty
+    getting this particular piece to work because of it.
+- date: 2006-01-23
+  author: Jamis
+  content: |-
+    Sean,
+
+    In the next release, the use of sudo will be configurable. The reason it is there is because we (at 37signals) need it--either David or I may be deploying the app, so we can't be guaranteed to be able to delete the other's directories.
+- date: 2006-01-24
+  author: Eli
+  content: Jamis, I have 0.10.0 installed (says --version), but I don't have the "cleanup"
+    task defined anywhere ?
+- date: 2006-01-24
+  author: Jamis
+  content: Eli, note that the cleanup task is not available via "rake cleanup" in
+    0.10.0. You  need to do "rake remote_exec ACTION=cleanup".
+- date: 2006-01-24
+  author: Matt
+  content: |-
+    I get the "don't know how to build task 'remote_exec'" error also.  I do have the switchtower.rake file in lib/tasks, but rails -v returns 'unknown version'.  We're one or two releases behind on rails; is 'remote_exec' something that's fixed in later releases?
+
+    thanks
+- date: 2006-01-24
+  author: Jamis
+  content: It's not remote_exec that's broken in earlier releases--earlier releases
+    of rails didn't support the .rake extension files that switchtower uses. How large
+    (in bytes) is your Rakefile? It ought to be quite small, if you're using a supported
+    version of rails.
+- date: 2006-01-25
+  author: Matt
+  content: The rakefile is 1,361 bytes.
+- date: 2006-01-25
+  author: Jamis
+  content: |-
+    Matt, I'm guessing you're using an older version of Rails that doesn't work with the .rake extension files. My rakefile, for instance, is only 307 bytes. You'll need to upgrade your rails to take advantage of the rails/switchtower integration, but note that you can use switchtower with any rails version--you just have to use the switchtower command directly instead of via rake:
+
+    <pre>
+      switchtower -vvvv -r config/deploy -a deploy
+    </pre>
+
+    (Replace "deploy" with your command of choice. Use the "show_tasks" command to see all available SwitchTower tasks.)
+- date: 2006-01-25
+  author: Matt
+  content: Perfect, thanks

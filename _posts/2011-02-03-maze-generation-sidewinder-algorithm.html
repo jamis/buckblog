@@ -1,0 +1,572 @@
+---
+layout: post
+title: 'Maze Generation: Sidewinder algorithm'
+post_id: 7
+categories:
+- Under the Hood
+date: 2011-02-03 07:20:00.000000000 -07:00
+author: Jamis
+permalink: 2011/02/03/maze-generation-sidewinder-algorithm.html
+summary: >
+  The Sidewinder algorithm for maze generation is presented, walked through,
+  and animated. An implementation in Ruby is given
+---
+
+<p>Last of the (eleven!) maze algorithms on my list is the Sidewinder algorithm. With a name like that, it’s got to be cool, right?</p>
+<p>Well, possibly. It’s got its problems, but it’s quick and easy to implement, and allows arbitrarily tall mazes. It’s closely related to the <a href="http://weblog.jamisbuck.org/2011/2/1/maze-generation-binary-tree-algorithm">Binary Tree algorithm</a>, but manages to get away with only one side being spanned by a passage, instead of two.</p>
+<p>In a nutshell, it goes like this:</p>
+<ol>
+	<li>Work through the grid row-wise, starting with the cell at 0,0. Initialize the “run” set to be empty.</li>
+		<li>Add the current cell to the “run” set.</li>
+		<li>For the current cell, randomly decide whether to carve east or not.</li>
+		<li>If a passage was carved, make the new cell the current cell and repeat steps 2-4.</li>
+		<li>If a passage was <em>not</em> carved, choose any one of the cells in the run set and carve a passage north. Then empty the run set, set the next cell in the row to be the current cell, and repeat steps 2-5.</li>
+		<li>Continue until all rows have been processed.</li>
+	</ol>
+<p>So, while it’s related to the Binary Tree algorithm, it’s a bit more complicated. However, words don’t do it justice; it really is a lot more straightforward than it sounds.</p>
+<p>Let’s walk through an example.</p>
+<h2>An example</h2>
+<p>I’ll use a 4×4 grid, and I’ll move fairly quickly, so pay attention. (You in the back! Eyes to the front!)</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>I’ll start with the first (top) row, although the algorithm works just fine if you start with the last one and work up. Starting at the top lets us get the one special case out of the way: the entire first row must be a single passage (because you can’t carve north from the northernmost row):</p>
+<table class="maze">
+<tr>
+<td class="n s w"></td>
+<td class="n s"></td>
+<td class="n s"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>There, we’ve got that done with. Now, let’s get to the interesting bit. Let’s say we manage to carve 3/4 of the way across the row before we decide (randomly and arbitrarily) <em>not</em> to carve eastward:</p>
+<table class="maze">
+<tr>
+<td class="n s w"></td>
+<td class="n s"></td>
+<td class="n s"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w mark"></td>
+<td class="n s mark"></td>
+<td class="n s e mark"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>The cells in red are the current “run set”. Since we’ve ended the current run of horizontal cells, we now choose one of these cells at random, and carve a passage north. Thus:</p>
+<table class="maze">
+<tr>
+<td class="n s w"></td>
+<td class="n"></td>
+<td class="n s"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w mark"></td>
+<td class="s mark"></td>
+<td class="n s e mark"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>Then we clear out the run set:</p>
+<table class="maze">
+<tr>
+<td class="n s w"></td>
+<td class="n"></td>
+<td class="n s"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>Make the next cell the current cell:</p>
+<table class="maze">
+<tr>
+<td class="n s w"></td>
+<td class="n"></td>
+<td class="n s"></td>
+<td class="n s e"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+<td class="n s e w mark"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>And try to decide whether to carve eastward or not. However, at this point, we <em>can’t</em> carve east. It would take us outside the bounds of the maze, which is not allowed. So we have to end the run there, and choose one of the cells in the set to carve north from. The decision is out of our hands: with only a single cell in the set, we have to choose it. So we carve north:</p>
+<table class="maze">
+<tr>
+<td class="n s w"></td>
+<td class="n"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+<td class="s e w"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>Then we start the next row. Notice how each row is independent of the row preceding it, much like <a href="http://weblog.jamisbuck.org/2010/12/29/maze-generation-eller-s-algorithm">Eller’s algorithm</a>.</p>
+<p>For the next row, we decide immediately that we want to stop carving east on the very first cell:</p>
+<table class="maze">
+<tr>
+<td class="n s w"></td>
+<td class="n"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+<td class="s e w"></td>
+</tr>
+<tr>
+<td class="n s e w mark"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>So we stop, choose a cell from the run set (easy) and carve north:</p>
+<table class="maze">
+<tr>
+<td class="n s w"></td>
+<td class="n"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="n w"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+<td class="s e w"></td>
+</tr>
+<tr>
+<td class="s e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>Continuing, we connect the next two cells:</p>
+<table class="maze">
+<tr>
+<td class="n s w"></td>
+<td class="n"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="n w"></td>
+<td class="s"></td>
+<td class="n s e"></td>
+<td class="s e w"></td>
+</tr>
+<tr>
+<td class="s e w"></td>
+<td class="n s w mark"></td>
+<td class="n s e mark"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>Randomly choose one of them to carve north from:</p>
+<table class="maze">
+<tr>
+<td class="n s w"></td>
+<td class="n"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="n w"></td>
+<td class="s"></td>
+<td class="n e"></td>
+<td class="s e w"></td>
+</tr>
+<tr>
+<td class="s e w"></td>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>And continue:</p>
+<table class="maze">
+<tr>
+<td class="n s w"></td>
+<td class="n"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="n w"></td>
+<td class="s"></td>
+<td class="n e"></td>
+<td class="s e w"></td>
+</tr>
+<tr>
+<td class="s e w"></td>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="n s e w mark"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>And since we’re at the end of the row, we’re again forced to stop and carve north:</p>
+<table class="maze">
+<tr>
+<td class="n s w"></td>
+<td class="n"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="n w"></td>
+<td class="s"></td>
+<td class="n e"></td>
+<td class="e w"></td>
+</tr>
+<tr>
+<td class="s e w"></td>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="s e w"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>For the last row, let’s say we connect the first two cells:</p>
+<table class="maze">
+<tr>
+<td class="n s w"></td>
+<td class="n"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="n w"></td>
+<td class="s"></td>
+<td class="n e"></td>
+<td class="e w"></td>
+</tr>
+<tr>
+<td class="s e w"></td>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="s e w"></td>
+</tr>
+<tr>
+<td class="n s w mark"></td>
+<td class="n s e mark"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>Carve north and clear the set:</p>
+<table class="maze">
+<tr>
+<td class="n s w"></td>
+<td class="n"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="n w"></td>
+<td class="s"></td>
+<td class="n e"></td>
+<td class="e w"></td>
+</tr>
+<tr>
+<td class="s e w"></td>
+<td class="n w"></td>
+<td class="s e"></td>
+<td class="s e w"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>Then connect the last two cells:</p>
+<table class="maze">
+<tr>
+<td class="n s w"></td>
+<td class="n"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="n w"></td>
+<td class="s"></td>
+<td class="n e"></td>
+<td class="e w"></td>
+</tr>
+<tr>
+<td class="s e w"></td>
+<td class="n w"></td>
+<td class="s e"></td>
+<td class="s e w"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="n s w mark"></td>
+<td class="n s e mark"></td>
+</tr>
+</table>
+<p>And finish it off by adding a final northward connection:</p>
+<table class="maze">
+<tr>
+<td class="n s w"></td>
+<td class="n"></td>
+<td class="n s"></td>
+<td class="n e"></td>
+</tr>
+<tr>
+<td class="n w"></td>
+<td class="s"></td>
+<td class="n e"></td>
+<td class="e w"></td>
+</tr>
+<tr>
+<td class="s e w"></td>
+<td class="n w"></td>
+<td class="e"></td>
+<td class="s e w"></td>
+</tr>
+<tr>
+<td class="n s w"></td>
+<td class="s e"></td>
+<td class="s w"></td>
+<td class="n s e"></td>
+</tr>
+</table>
+<p>And that’s our maze, courtesty of the Sidewinder.</p>
+<p>Feel free to play with the following demos, to get a feel for how the Sidewinder works on larger grids. The single corridor spanning the top row is hard to miss, but see if you can spot any other properties of the algorithm.</p>
+<script type="text/javascript" src="/javascripts/maze-minified.js"></script>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("Sidewinder", 5, 5, { "class": "small" });</script>
+<script type="text/javascript">Maze.createCanvasWidget("Sidewinder", 15, 15, { "class": "medium", id: "sidewinder_medium", interval: 25 });</script>
+</div>
+<h2>Implementation</h2>
+<p>All this talk of “run sets” might make you think you actually need to use a set. Well, you can, sure, if you want to. No one’s going to stop you, right? But if you notice that each set consists of consecutive cells, you can take a short-cut and just keep track of the cell that started the run. The “set” is then implied as the sequence of cells between the start of the run, and the current cell.</p>
+<p>Aside from that, the algorithm has very few surprises. As you’d expect you need to iterate over each row:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">height.times <span class="r">do</span> |y|<tt>
+</tt>  run_start = <span class="i">0</span><tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>At the start of each row I initialize the beginning of the current run to the first cell.</p>
+<p>Then, within that loop, I iterate over each cell in the current row:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">width.times <span class="r">do</span> |x|<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Within <em>that</em> loop is where the magic really happens. There are basically two conditions:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">if</span> y &gt; <span class="i">0</span> &amp;&amp; (x<span class="i">+1</span> == width || rand(<span class="i">2</span>) == <span class="i">0</span>)<tt>
+</tt>  <span class="c"># end current run and carve north</span><tt>
+</tt><span class="r">elsif</span> x<span class="i">+1</span> &lt; width<tt>
+</tt>  <span class="c"># carve east</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Remember how the first row is always a single corridor? That “y &gt; 0” guard prevents us from ever ending the current run if we’re on the first row. Similarly, the “elsif” clause prevents us from carving east if we’re at the last cell in a row.</p>
+<p>The second condition in the first clause makes sure that we always end the current run at the end of the current row (x+1 == width), but also allows us to randomly end the current run (rand(2) == 0).</p>
+<p>Ending a run requires us to randomly choose a cell from the current run set, and carve north from it:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">cell = run_start + rand(x - run_start + <span class="i">1</span>)<tt>
+</tt>grid[y][cell] |= <span class="co">N</span><tt>
+</tt>grid[y<span class="i">-1</span>][cell] |= <span class="co">S</span><tt>
+</tt>run_start = x<span class="i">+1</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>We also reset the run set to begin at the next cell.</p>
+<p>The last bit of code, from the elsif clause, is simple: carving east is merely setting a bit:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">grid[y][x] |= <span class="co">E</span><tt>
+</tt>grid[y][x<span class="i">+1</span>] |= <span class="co">W</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>And that’s all there is to it. Like I said, it’s easier to implement than describe.</p>
+<h2>Conclusion</h2>
+<p>With a name like “Sidewinder” you can’t help but wish the algorithm was cooler than it is. I’m actually not sure where the name comes from; a Google search reveals a routing algorithm with the same name, but I wasn’t able to find any solid information to compare with the one I describe here. (If anyone has more information, I’m definitely curious.)</p>
+<p>The Sidewinder’s greatest “flaw”, if it can be called that, is that it is all but trivial to start at the bottom row of the maze, and work your way to the top. Any maze generated by the Sidewinder algorithm will never have any north-facing dead-ends, which means you can never get stuck when moving from south to north. (This is similar to the Binary Tree algorithm, which will never have any dead-ends in the direction of its bias.) And for quickly generating arbitrarily tall mazes, <a href="http://weblog.jamisbuck.org/2010/12/29/maze-generation-eller-s-algorithm">Eller’s algorithm</a> is probably better (with fewer drawbacks), but is harder to implement.</p>
+<p>Would I actually use the Sidewinder algorithm for anything? I’m not sure. I hesitate to say “never”, but I certainly can’t think of anything I’d use it for that another algorithm wouldn’t do better! But it was fun to implement, so it has entertainment value, if nothing else.</p>
+<p>Give it a try yourself and share how it goes! For reference, my complete implementation follows:</p>
+<script src="https://gist.github.com/761547.js?file=sidewinder.rb"></script>
+<noscript>
+<a href="https://gist.github.com/761547">sidewinder.rb</a> on gist.github.com</noscript>
+<p>Enjoy!</p>

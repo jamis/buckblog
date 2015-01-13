@@ -1,0 +1,65 @@
+---
+layout: post
+title: SQLite3 Bindings for Ruby
+post_id: 317
+categories:
+- Projects
+date: 2004-12-19 14:51:00.000000000 -07:00
+author: Jamis
+permalink: 2004/12/19/sqlite3-bindings-for-ruby.html
+---
+
+<p>One of my more popular contributions to the Ruby community has been the bindings <a href="http://rubyforge.org/projects/sqlite-ruby">I wrote</a> for the embeddable <a href="http://www.sqlite.org">SQLite</a> database engine. These bindings were developed for use with SQLite 2.8.x, which is unfortunate now that SQLite3 is out and gaining wider usage. One of the most common questions I get regarding my SQLite bindings is “will you create bindings for SQLite3?”</p>
+<p>I’ve got them. Sitting right here on my hard disk. Largely untested, but my ad-hoc, shoot-blindly-into-the-testing-space tests have been quite promising. Even better, <em>these SQLite3 bindings do not require any compilation</em>. They use the Ruby/DL library that comes standard with Ruby 1.8.x, and call directly into the SQLite3 binary, from Ruby.</p>
+<p>This was done largely in an attempt to learn Ruby/DL, but the bindings are working so well (so far) that I think I may actually release them. After some cleaning up and unit testing, of course.</p>
+<p>The interface for this SQLite3 module is very similar to my bindings for the older SQLite engine, but it is not identical. Changes in this new version include (and be forewarned—the list of changes may grow):</p>
+<ul>
+	<li>Database#query got the axe. If that bothers you, let me know.</li>
+		<li>ParsedStatement got the axe. SQLite3 supports prepared statements natively, so I don’t have to do it myself anymore. Nice.</li>
+		<li>You do not (in fact, cannot) close a ResultSet instance. Instead, you close the associated Statement. This means a Statement can have only one active ResultSet at a time.</li>
+		<li>Database#prepare takes an optional block.</li>
+		<li>The supported bind placeholder formats are fewer, since I’m now dependent on SQLite’s native bind variable support.</li>
+		<li>Blob support! Yup, you can insert strings will null-bytes into your database now. No more base64-encoding your serialized objects.</li>
+		<li>A more convenient interface to Database#create_aggregate.</li>
+		<li>
+<span class="caps">UTF</span>-16 support for many interfaces.</li>
+	</ul>
+<p>And many more less-visible changes.</p>
+<p>My favorite change, though, is that Database#prepare takes a block. Consider this for rapidly populating a database:</p>
+<pre>
+  require 'sqlite3'
+  include SQLite3
+
+  File.delete "test.db" rescue nil
+  db = Database.open( "test.db" )
+
+  db.execute_batch &lt;&lt;-SQL
+    create table foo (
+      id integer primary key,
+      name varchar(30) not null,
+      object blob,
+      description text
+    )
+  SQL
+
+  values = [
+    [ "foo", Blob.new( Marshal.dump :foo =&gt; "bar", :baz =&gt; "bump" ),
+      "A sample row for the database" ],
+    [ "bar", Blob.new( Marshal.dump :ping =&gt; "pong" ),
+      "Another row, with a smaller hash" ],
+    [ "baz", Blob.new( Marshal.dump :sword =&gt; "play", :day =&gt; "time" ),
+      "And another row, purely for demonstration purposes" ]
+  ]
+
+  db.prepare( "insert into foo " +
+    "( name, object, description ) " +
+    "values ( ?, ?, ? )" 
+  ) do |stmt|
+    values.each { |parms| stmt.execute *parms }
+  end
+
+  p db.execute( "select * from foo" )
+
+  db.close
+</pre>
+<p>Anyway, just wanted to let the world know that the SQLite3 bindings are being worked on, and should be available by the beginning of January if I can keep finding time to work on them. I’m liking this newer interface enough that I may even go back and bump the older bindings up a notch version-wise and try to use this same interface…</p>

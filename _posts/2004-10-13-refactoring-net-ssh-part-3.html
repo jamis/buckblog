@@ -1,0 +1,24 @@
+---
+layout: post
+title: 'Refactoring Net::SSH: Part 3'
+post_id: 337
+categories:
+- Under the Hood
+date: 2004-10-13 14:32:00.000000000 -06:00
+author: Jamis
+permalink: 2004/10/13/refactoring-net-ssh-part-3.html
+---
+
+<p>This is the next article in a series about the process I am taking as I refactor the <a href="http://net-ssh.rubyforge.org">Net::SSH</a> library to take advantage of dependency injection. In this installment, I’ll talk about what challenges I have faced as I’ve tried to refactor the “Key Exchange” algorithms, not only to make them “dependency injectable”, but also to make them unit-testable.</p>
+<p>There are two different versions of the key exchange algorithm that are supported by Net::SSH. The refactoring process is very similar for both of them, so this will deal with the simpler of the two: Diffie-Hellman Group 1 <span class="caps">SHA1</span>.</p>
+<h3>Refactoring the Buffer Implementations</h3>
+<p>The <a href="http://rubyforge.org/cgi-bin/viewcvs/cgi/viewcvs.cgi/net-ssh/lib/net/ssh/transport/kex/dh.rb?rev=1.6&amp;cvsroot=net-ssh&amp;content-type=text/vnd.viewcvs-markup">original implementation</a> had several explicit dependencies to the OpenSSL module, and part of the challenge was finding a good, clean way to decouple those dependencies. In particular, the algorithm relied heavily on the Net::SSH <a href="http://rubyforge.org/cgi-bin/viewcvs/cgi/viewcvs.cgi/net-ssh/lib/net/ssh/util/buffer.rb?rev=1.2&amp;cvsroot=net-ssh&amp;content-type=text/vnd.viewcvs-markup">buffer implementation</a>, which <em>also</em> had explicit dependencies on OpenSSL.</p>
+<p>So, the first order of business was to refactor the buffer implementation. This was actually pretty straight-forward.</p>
+<p>First, I removed the OpenSSL specific portions from the general buffer implementations, and put them in OpenSSL specializations of the buffer classes. Thus, I now had (for example) ReaderBuffer, and <span class="caps">OSSL</span>::ReaderBuffer, where <span class="caps">OSSL</span>::ReaderBuffer extended ReaderBuffer.</p>
+<p>Then, I created a new factory service, “buffer_factory”, and a new “factory factory” for buffers (“buffer_factories”). The factory factory would return buffer factories depending on the cryptography backend in use, and the corresponding buffer factory then returned buffer implementations specific to the chosen cryptography backend.</p>
+<p>Once the buffer implementation was refactored to my satisfaction, I turned my attention to the Diffie-Hellman algorithm.</p>
+<h3>Refactoring the Key Exchange</h3>
+<p>This was harder, becuase I had implemented the algorithm entirely in <a href="http://rubyforge.org/cgi-bin/viewcvs/cgi/viewcvs.cgi/net-ssh/lib/net/ssh/transport/kex/dh.rb?rev=1.6&amp;cvsroot=net-ssh&amp;content-type=text/vnd.viewcvs-markup">one method</a>. Additionally, the algorithm depended on a “session” reference for sending and receiving messages (presumably over a network).</p>
+<p>If my only goal was to make it “dependency injectable”, things would be simple. I merely had to create services for obtaining key and digest references, as well as for creating “bignum” instances appropriate for the cryptography backend in use. These all turned out to be trivially simple.</p>
+<p>However, my secondary goal was to make this unit-testable. As it was, unit testing it was problematic, since it involved a short dialog with a remote server. To make it more feasible to test, I broke the algorithm into 6 discrete pieces, each of which I implemented in a separate, independent, publicly accessible method. Then, the orignal <code>exchange_keys</code> method just invoked those six methods, in order.</p>
+<p>This allowed me to unit test each of those 6 pieces separately. It was still tricky-<del>perhaps the trickiest bit of unit testing I’ve written to date, requiring more than a few mock objects to stand in for the dependencies</del>-but it was at least possible. And for the first time, I feel confident in the key exchange code!</p>

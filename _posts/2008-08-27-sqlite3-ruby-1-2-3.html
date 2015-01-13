@@ -1,0 +1,24 @@
+---
+layout: post
+title: SQLite3-Ruby 1.2.3
+post_id: 45
+categories:
+- Announcements
+date: 2008-08-27 09:11:00.000000000 -06:00
+author: Jamis
+permalink: 2008/08/27/sqlite3-ruby-1-2-3.html
+---
+
+<p><a href="http://rubyforge.org/projects/sqlite-ruby">SQLite3-Ruby</a> version 1.2.3 is now available. It is a maintenance release, fixing just a few things:</p>
+<ul>
+	<li>The permissions on the database.rb and translator.rb files in 1.2.2 were incorrect, resulting in broken sqlite3-ruby installations for many *nix users. This is now fixed.</li>
+		<li>A few more Ruby 1.9 compatibility issues were patched.</li>
+		<li>Some optimizations were applied to speed up iterating over result sets.</li>
+	</ul>
+<p>To install or upgrade:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">  gem install sqlite3-ruby</pre></td>
+</tr></table>
+<p>Thanks!</p>

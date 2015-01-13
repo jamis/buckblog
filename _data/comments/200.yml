@@ -1,0 +1,63 @@
+---
+- date: 2005-09-24
+  author: Alan Francis
+  content: |
+    Seems to be an OpenSSL issue.
+
+    I installed via DarwinPorts, messed with symlinks and paths, reinstalled rubygems + all the gems.....and then saw Why's post about Ruby 1.8.3 being available.
+    Doh!
+
+    I promptly installed again from source, messed with symlinks and paths, reinstalled rubygems + all the gems :-)
+
+    Both the ports and source installs fixed the switchtower problem.
+
+    FWIW, it used to work.  I *have* deployed via Switchtower from my PB using the default ruby install.  I can only assume some update in the past while has broken it.
+- date: 2005-09-27
+  author: Alan Francis
+  content: "Hi Jamis,\r\n\r\nCould you give us a 5 minute tutorial on using the migration
+    from the get-go ?\r\n\r\nI've just started a project and have my schema in a .sql
+    file which I load with my own little populate_database script.\r\n\r\nBefore I
+    go any further, I'd rather switch and use the ActiveRecord stuff.  So assuming
+    I'm starting a brand new project, I do 'rails myproject'.  At the moment I start
+    editing my .sql file...what should I do instead ?\r\n\r\nAlan"
+- date: 2005-09-27
+  author: Alan Francis
+  content: oops.  2nd comment posted on wrong entry.  Doh!
+- date: 2005-09-29
+  author: mikkel
+  content: |
+    is this the error you talk about or is my install extra messed up:
+
+    ruby(2233) malloc: *** vm_allocate(size=1409417216) failed (error code=3)
+    ruby(2233) malloc: *** error: can't allocate region
+    ruby(2233) malloc: *** set a breakpoint in szone_error to debug
+    [update_code] transaction: rollback
+- date: 2005-09-30
+  author: Jamis
+  content: mikkel, that's one of the errors. There's that one, and there's one where
+    it will just hang without responding. In general, if you have a problem with SwitchTower
+    (or Net::SSH in general) on Mac OS, just reinstall Ruby.
+- date: 2005-10-25
+  author: Manfred
+  content: Why ohhh why did Apple screw the Ruby install up so much.
+- date: 2005-10-28
+  author: Gabe da Silveira
+  content: I think this stuff should go in the manual in a troubleshooting section
+    or something, I had to google to find this.
+- date: 2006-02-22
+  author: Alison
+  content: Any reason I should have to do this if I'm running Switchtower through
+    a Locomotive-launched terminal? I'm experiencing errors similar to these, but
+    I thought it would be using Locomotive's Ruby.
+- date: 2006-02-22
+  author: Jamis
+  content: Alison, you may be running into a problem with your path. What does typing
+    @which ruby@ into your console say? Also, which does @ruby -e 'p $LOAD_PATH.first'@
+    say? Those may give some clue as to whether the console is being launched using
+    locomotive's ruby, or the stock OSX ruby.
+- date: 2006-02-22
+  author: Alison
+  content: |-
+    I ran those commands and saw that indeed it was Locomotive's ruby which was being used.
+
+    So, I investigated further to find that my SVN server's setup was the culprit. Switchtower and Shovel are now working beautifully. Thanks for your help and a great application.

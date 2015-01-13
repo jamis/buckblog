@@ -1,0 +1,63 @@
+---
+- date: 2007-06-17
+  author: Duncan Robertson
+  content: "<p>Been using mercurial for a while using Marcus Ahnve’s plugin. Thanks
+    for this welcome addition.</p>"
+- date: 2007-06-18
+  author: Amr
+  content: "<p>I’m getting a Zlib buff error, and my gem system is uptodate 0.9.4
+    anyone else run into this? thanks,</p>"
+- date: 2007-06-18
+  author: Peter McLain
+  content: "<p>I had net-ssh 1.0.10 installed and was getting errors like:</p>\n\n\n\t<p>$
+    cap—help\n/usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:27:in `gem_original_require’:
+    no such file to load—net/ssh/service/agentforward/services (LoadError)</p>\n\n\n\t<p>I
+    updated to net-ssh 1.1.2 and cap started working.  You may want to update <span
+    class=\"caps\">SSH</span>_REQUIRED for the new version.</p>"
+- date: 2007-06-18
+  author: Jamis Buck
+  content: "<p>Peter, that bug has been fixed in cap edge, and cap2 final will run
+    fine against Net::SSH 1.0.10.</p>"
+- date: 2007-06-21
+  author: josh
+  content: "<p>Hmm, I’m also getting the same error as Amr.</p>\n\n\n\t<p>gem install
+    -s http://gems.rubyonrails.org capistrano</p>\n\n\n\t<p><span class=\"caps\">ERROR</span>:
+    \ While executing gem … (Zlib::BufError)\n    buffer error</p>\n\n\n\t<p>This
+    is on a windows machine with:\ncapistrano (1.99.1)\nhighline (1.2.8)\nnet-ssh
+    (1.1.2)</p>\n\n\n\t<p>gem—version\n0.9.4</p>"
+- date: 2007-06-21
+  author: Mike Diehn
+  content: "<p>Love the new cap, Jamis – thanks!</p>\n\n\n\t<p>I’m using it to automate
+    sysadmin tasks for a few Ubuntu 7.04 and Debian Etch servers.  Got stuck because
+    “cap deploy” kept bombing when I ran it on my Debian Etch administration server.
+    \ Finally figured it out:</p>\n\n\n\t<p>On the deploying host, capistrano’s “deploy”
+    needs to be able to execute</p>\n\n\n\t<pre><code>\"svn info -r\"</code></pre>\n\n\n\t<p>Debian
+    Etch’s version of Subversion is 1.1.x – too old for “-r” on svn info. Dash r appeared
+    in subversion 1.2.</p>\n\n\n\t<p>So, that seems like a dependency that folks on
+    Debian Etch or older will run into.</p>"
+- date: 2007-06-22
+  author: Amr
+  content: "<p>Hey Josh, looks like the XP side is out of luck until maybe the next
+    version of gem comes out. See Jamis’ response to my post on the capistrano newsgroup.</p>"
+- date: 2007-06-27
+  author: Jamis
+  content: "<p>For those of you having problems with RubyGems on Windows, you can
+    work around the issue by patching RubyGems yourself, as described here:</p>\n\n\n\t<p>http://groups.google.com/group/capistrano/msg/ca6161f30a9ebb70</p>\n\n\n\t<p>Hopefully,
+    that fix (or a similar one) will find its way into RubyGems itself eventually.</p>"
+- date: 2007-06-27
+  author: Anko
+  content: "<p>How long before version 2.0 comes out?</p>\n\n\n\t<p>Anko</p>"
+- date: 2007-06-28
+  author: Anko
+  content: "<p>That is to say, is there a roadmap? Sorry if I sounded pushy in that
+    last post!</p>\n\n\n\t<p>Anko</p>"
+- date: 2007-06-28
+  author: Jim
+  content: "<p>Consider this my vot to “hold you to that!” (http://weblog.jamisbuck.org/2007/6/12/capistrano-and-leopard)</p>\n\n\n\t<p>I’m
+    eager for Cap2 and its the end of the month ;-)</p>"
+- date: 2007-06-28
+  author: Jamis
+  content: "<p>@Anko, I just released preview release #4 tonight, and I plan to release
+    cap2 final next week, probably towards the end of the week, to let pr4 percolate
+    a bit.</p>\n\n\n\t<p>@Jim, thanks! I might miss the end of the month, but I’ll
+    hit the beginning of next. :)</p>"

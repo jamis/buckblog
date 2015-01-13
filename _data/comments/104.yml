@@ -1,0 +1,220 @@
+---
+- date: 2007-02-05
+  author: Damien McKenna
+  content: |-
+    <p>How about e.g. page numbers for portions of content?  e.g.:
+    2007 conference page 3 -&gt; /conference/2007/page/3
+    Would (manual or automatic) pagination be considered a special case?</p>
+- date: 2007-02-05
+  author: Jamis
+  content: '<p>Damien, I don’t think pagination fits in routing. Personally, I prefer
+    using the query string for that: ”/conference/2007?page=3”. The “third page of
+    the conference resource” is not itself a resource, <span class="caps">IMO</span>.
+    It’s a slice of the view of that resource, and using the query string makes it
+    more apparent that you’re simply filtering the view.</p>'
+- date: 2007-02-05
+  author: Ben Askins
+  content: "<p>You’re right Jamis, once you start deeply nesting resources you’re
+    creating a rod for your own back.  The convenience of being able to reference
+    comment_url(4) far outweighs the ‘purity’ of always having the refer to a comment
+    within the scope of it’s parent resource.</p>"
+- date: 2007-02-05
+  author: Tom
+  content: "<p>Thanks for this post. Good advice.</p>\n\n\n\t<p>As an aside, why is
+    there never any interest in accessing nested resources by an index into the collection
+    rather than the resource’s global id? For example, wouldn’t it be nice to have
+    /people/2/notes/5 go to the fifth note for person 2, rather than simply to Note.find(5)
+    (which, of course, might not even belong to Person.find(2))?</p>\n\n\n\t<p>It’s
+    not like it’s tricky to arrange, but I’m still always surprised that it’s never
+    suggested or explored in articles like this one.</p>"
+- date: 2007-02-05
+  author: Thijs van der Vossen
+  content: "<p>We’ve invented a second rule of thumb; resources should only be nested
+    for actions that really need the parent id (like ‘index’, ‘new’, and ‘create’).</p>\n\n\n\t<p>We
+    started using this for an application with a data model that’s almost entirely
+    hierarchical except where it’s not and it seems to work very nicely. Why keep
+    the parent resource in the url when the structure is not strictly hierarchical?</p>"
+- date: 2007-02-05
+  author: Tammer Saleh
+  content: "<p>We have an application that actually needs deeply nested resources
+    for security reasons.  We ended up adding helpers for each resource that climbs
+    up the hierarchy to determine what the url should be.  I don’t actually agree
+    that deeply nested resources create overly complicated urls, but these helpers
+    were definitely, um, helpful in keeping the code cleaner.</p>"
+- date: 2007-02-05
+  author: Jeff Coleman
+  content: "<p>Jamis,</p>\n\n\n\t<p>If you created a route such as person_url(1,2),
+    how would those be represented inside the controller?  With a single ID, I know
+    you’d reference params[:id], but how would you get the second ID?</p>\n\n\n\t<p>Thanks!</p>"
+- date: 2007-02-05
+  author: Eric Mill
+  content: "<p>I definitely agree about complicated URLs.  I believe that friendly,
+    understandable URLs are important in keeping the web as unintimidating as possible
+    to the layman.  It’s part of the inclusive culture we should be setting on the
+    Internet.  So, though I agree with this from the perspective of making it an easier
+    application to maintain as a developer, I also agree from an entirely different
+    perspective, of making the application less frightening for my grandmother.</p>"
+- date: 2007-02-05
+  author: ed
+  content: "<p>Tom:\nThe way I verify that (in your example) the Note belongs to Person.find(2)
+    is put a before_filter that sets @person.  So then in the #show method you do
+    something like:</p>\n\n\n\t<pre><code>@note = @person.notes.find(params[:id])</code></pre>\n\n\n\t<p>...thus
+    scoping the Notes to that Person.</p>"
+- date: 2007-02-05
+  author: Michael Raidel
+  content: "<p>@Jeff: in the case of person_url(1,2) you would reference the first
+    parameter with params[:account_id], the second with params[:id]</p>"
+- date: 2007-02-05
+  author: ian
+  content: "<p>Thanks for clearing this up. Besides pretty URLs, I could never understand
+    <strong>why</strong> you would want to nest resources so much.</p>\n\n\n\t<p>Also,
+    it gives you the illusion that your resources are not uniquely identifiable. Using
+    your example, /accounts/1/people/2/notes would perform exact same as /accounts/99/people/2/notes
+    since you are most likely just going to be looking at the person_id. The account_id
+    can and probably will be derived from the person_id.</p>"
+- date: 2007-02-05
+  author: Jeff Coleman
+  content: "<p>Thanks, Michael!</p>"
+- date: 2007-02-05
+  author: Adam Cooper
+  content: "<p>In your final case with the comment resource.  What happens in this
+    case</p>\n\n\n\t<p>note_comments_url(3)  #-&gt; /notes/3/comments\ncomment_url(4)
+    \       #-&gt; /comments/4</p>\n\n\n\t<p>Do these go to the same controller and
+    if so how is this handled in the controller?  Do you have extra logic to detect
+    a param[:id] and ‘know’ that it represents the note object id?</p>"
+- date: 2007-02-05
+  author: Aaron Schaefer
+  content: "<p>Also, what happens when someone goes to just plain /people?  Won’t
+    it try to load the index method, but there would be no way to have an account
+    associated with the call, and thus no way to determine which people to show?  How
+    can you differentiate the index function for /accounts/1/people and just plain
+    /people in the PersonController?</p>"
+- date: 2007-02-06
+  author: Lee Hericks
+  content: "<p>Adam and Aaron,</p>\n\n\n\t<p>I believe you are getting into why <span
+    class=\"caps\">DHH</span> said this will help you make better controllers.</p>\n\n\n\t<p>I
+    am working on a e-book for modelling <span class=\"caps\">REST</span> and resources
+    in Rails.  Right off the bat, you should be thinking about your use cases and
+    the flow of your application.</p>\n\n\n\t<p>Jamis, didn’t you blog something about
+    starting with a user interface first?</p>\n\n\n\t<p>In <span class=\"caps\">REST</span>,
+    you provide consistent URIs to your resources.  A RESTful request to the server
+    includes all the information it needs to dish out your resource, whatever it may
+    be.  In this case, a new comment needs the note_id that it belongs to.  You can
+    include the id in your <span class=\"caps\">POST</span> to create the comment.
+    \ Rails’ notion of a resource just puts the id in the <span class=\"caps\">URL</span>
+    and extracts it for you.  Think of <span class=\"caps\">POST</span> /notes/1/comments
+    as convenient and only used because you were given a named_route that made it
+    easy for you to use.  As I mentioned, normally you might be including all the
+    important information in your <span class=\"caps\">POST</span>.</p>\n\n\n\t<p>Which
+    leads to how did your client get that id?  In the case of a Rails application,
+    it may be because the client pulled up an account, then the account’s user, saw
+    a user note and went to comment on it.  The state of your application transfered
+    from page to page until you accomplished your goal (very RESTful).  Therefore,
+    you never needed to expose a /comments resource because your application didn’t
+    need it.</p>\n\n\n\t<p>You really need to consider how someone will access your
+    application.  Maybe it’s all running through <span class=\"caps\">XML</span> and
+    your client is caching the ids and can include them in the <span class=\"caps\">POST</span>.
+    \ As long as you receive them in a consistent manner (same name in your params)
+    you can use the same controller.  For comments, it makes absolutely no sense to
+    retrieve a list of all comments unbound from their associated notes.  If you feel
+    you need to make it accessible, you should provide the <span class=\"caps\">URI</span>
+    to the note with each comment to make it RESTful. (So a client can access the
+    notes and continue to crawl along the data)</p>\n\n\n\t<p>In the situation of
+    people, again you have to examine why the client is requesting that resource (if
+    necessary) and what it should return.  With <span class=\"caps\">GET</span> /people
+    you are requesting a list of all people resources.  This list is not associated
+    with an account.  People are simply a resource to use if your client is entering
+    your resources at that point rather than entering at the account point.  If you
+    expose a resource, you better have a reason for accessing it.  Maybe an admin
+    part of the application deals with people.  Maybe people can be a part of many
+    accounts.  So you want to access people first, then list their accounts.  Now,
+    do you really want to muck around with conditionals and test for an account_id
+    and dish out different information from the same action?  No.  Remember my reference
+    to <span class=\"caps\">DHH</span>’s keynote.  Maybe you want both functionalities,
+    but maybe they don’t belong together.</p>\n\n\n\t<p>map.resources :people # PersonController</p>\n\n\n\t<p>map.resources
+    :accounts do |account|\n  account.resources :people, :controller =&gt; “accounts_people”
+    \nend</p>\n\n\n\t<p>(Note: account_people may not be correct, but you want to
+    get to the AccountPersonController.  Basically a controller to that join relationship)</p>\n\n\n\t<p>Two
+    controllers for two different logical resources.  Sure, they access the same ActiveRecords,
+    <span class=\"caps\">BUT</span> they have a different purpose.  They are essentially
+    a different resource for a client to use, and the controllers will be much cleaner
+    and use-specific.  I have been questioning why nested resources don’t point to
+    a joined name controller. This is one of the issues I want to address in my book.</p>\n\n\n\t<p>Jamis,
+    if you are interested and have time, I’d love to talk with you more about resources
+    and discovering how to get people into a new mindset of application design and
+    developing with resources.  I don’t think it’s appropriate to view resources as
+    a direct proxy to an ActiveRecord class.  Unfortunately, I think some people may
+    think that way when first learning about <span class=\"caps\">REST</span> and
+    resources.  This is definitely a new area to explore in Rails and it is different
+    from normal <span class=\"caps\">MVC</span>.</p>"
+- date: 2007-02-06
+  author: Eric
+  content: "<p>Hi Jamis,</p>\n\n\n\t<p>I’m happy to wake up everyday, simply thinking
+    that there might be a new great tip on this blog!</p>\n\n\n\t<p>I work on a web-app
+    displaying annual, monthly or daily reports for a given weatherstation, and I
+    ended up using this piece of code in my routes.rb :</p>\n\n\n<code>\nmap.with_options
+    :controller =&gt; 'display', :id =&gt; /[0-9]+(\\-[a-z_]+)?/  do |report|\n  report.annual
+    'display/:id/:year',            :action =&gt; 'annual_report',   :year =&gt; /(19|20)\\d\\d/\n
+    \ report.monthly 'display/:id/:year/:month',    :action =&gt; 'monthly_report',
+    \ :year =&gt; /(19|20)\\d\\d/, :month =&gt; /[01]?\\d/\n  report.daily 'display/:id/:year/:month/:day',
+    :action =&gt; 'daily_report',    :year =&gt; /(19|20)\\d\\d/, :month =&gt; /[01]?\\d/,
+    :day =&gt; /[0-3]?\\d/ \nend\n</code>\n\n\t<p>Do you see possible improvement?</p>\n\n\n\t<p>thanks
+    again,</p>\n\n\n\t<p>Eric</p>"
+- date: 2007-02-07
+  author: Aaron Wheeler
+  content: "<p>I agree that simple URLs are nice.  But what about the example where
+    you want to be able to display continents, countries, and states?  So this is
+    an example with three levels of nesting.</p>\n\n\n\t<p>Without nesting routes
+    more than one deep, the route for countries would be declared twice – once nested
+    under continents, and once with states nested in it.  But what if we don’t want
+    countries existing as a top level route?  What if we prefer it to be nested?</p>\n\n\n\t<p>While
+    I haven’t dug into the source to confirm this, my testing has shown that nesting
+    resources is a glorified way automatically setting the :path_prefix option.  So
+    an alternative to what Jamis suggests is to keep your routes nested, but change
+    the :path_prefix, like so:</p>\n\n\n\t<p>map.resources :continents do |continents|\n
+    \ continents.resources :countries do |countries|\n    countries.resources :states,
+    :path_prefix =&gt; ’/countries/:country_id’\n  end\nend</p>\n\n\n\t<p>The implicit
+    :path_prefix for states is /continents/:continent_id/countries/:country_id, but
+    this is overwritten by the explicit :path_prefix above.</p>\n\n\n\t<p>This way
+    your routes are still easy to read, but the URLs will print with only one level
+    of nesting.</p>"
+- date: 2007-02-07
+  author: Jamis
+  content: "<p>Aaron, note that the reason I declare some of the routes twice is in
+    order to gain the named routes I want. I want (using the example in the article)
+    both note_url and people_notes_url, and you can’t get that with a single map.resource
+    call.</p>\n\n\n\t<p>In your countries example, the key line is “What if we prefer
+    it to be nested?” Then, by all means, nest them! :) Do what makes you happy. Long,
+    deeply nested routes make me sad, personally, so I avoid them using the tip posted
+    here.</p>"
+- date: 2007-02-08
+  author: Denis J. Cirulis
+  content: "<p>Jamis, I’ve tried to refactor my routes in my latest crm project :)
+    I had 4 or even 5 level nesting. Now it works like a charm, I mean urls are shorter
+    and parameter counts are shorter. Very good article !</p>"
+- date: 2007-02-14
+  author: Adam
+  content: "<p>One problem I see with this is that in most cases if you remove the
+    nesting, the URLs are no longer traversable. When I see /notes/3, I assume /notes
+    will list all of the notes I want to see. However, in this case I really want
+    /people/2/notes. If the <span class=\"caps\">URL</span> for the note was /people/2/notes/3
+    then the context I need would be already in the <span class=\"caps\">URL</span>.</p>\n\n\n\t<p>Several
+    browsers, such as Safari (cmd+click title bar), have this type of directory traversal
+    as a built in feature. Not to mention that it’s quite common for users to edit
+    the <span class=\"caps\">URL</span> by hand to achieve the same effect. So, I
+    believe it is important to keep the hierarchy intact whenever possible for the
+    usability aspect, if nothing else. Unless the situation says that requesting /notes
+    is preferred to /people/2/notes, the nesting should remain.</p>\n\n\n\t<p>I do
+    agree that person_path(a,b,c,d) is quite ugly, but there is no reason why calling
+    person_path(d) can’t resolve a, b, and c automatically.</p>"
+- date: 2007-02-16
+  author: Mike Schwab
+  content: "<p>It seems to me that the key to great resources is name_prefix.  This
+    way the nest coexists with the pure resources, and you get the best tool for every
+    situation.  In a crowded domain, I think it can be important to scope a collection
+    by two of its peers, or even three.  When the user gets back that long address,
+    at least it explains just what they’re looking at (as well as how they can bookmark
+    it or link others to just that info).</p>"
+- date: 2007-02-24
+  author: WOL
+  content: "<p>What happens with things like edit_xyz_path?</p>"

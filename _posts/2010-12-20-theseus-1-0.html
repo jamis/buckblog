@@ -1,0 +1,72 @@
+---
+layout: post
+title: Theseus 1.0
+post_id: 22
+categories:
+- Announcements
+- Projects
+date: 2010-12-20 08:29:00.000000000 -07:00
+author: Jamis
+permalink: 2010/12/20/theseus-1-0.html
+summary: >
+  A command-line app for generating mazes is introduced. Various mazes
+  are shown by way of demonstration
+---
+
+<p>Whenever I tackle a new programming language, I need a project to apply it to. Just experimenting with syntax isn’t enough; there has to be a real context for it, or it doesn’t stick. Some years ago I discovered a great “default” project: generating mazes.</p>
+<p>Mazes explore a lot of the nooks and crannies of a language: random numbers, decision making, recursion and/or iteration, and several data structures, at the very least. If you want to be able to tweak your mazes without changing code, you then need to learn about passing arguments via the command-line, or environment variables, or even configuration files. Add the possibilty of actually displaying the maze and you introduce string manipulation and console IO (if emitting <span class="caps">ASCII</span> art), or graphics libraries and file IO (if writing to an image file).</p>
+<p>The actual algorithms behind building a maze are pretty straightforward, which is ideal. You don’t want to waste time understanding algorithms when you’re trying to learn a new programming language.</p>
+<p>This has served me well for several years. C++, C#, Haskell, Erlang, Scala, Io, and even Prolog! But I realized I’d never actually tried it in my favorite language: Ruby.</p>
+<p>So, I gave it a try. And I had a blast. It kind of took on a life of its own, with features evolving as fast as I could implement them. The result: Theseus.</p>
+<p>I released Theseus 1.0 last night, and it is available for installation via RubyGems. (You’ll get syntax errors if you try it on Ruby 1.8, though, so beware.) Feel free to <a href="http://github.com/jamis/theseus">fork it on GitHub</a>, too. It’s in the public domain, so you can do whatever you want with it.</p>
+<p>I am rather ashamed of the lack of tests, though. I realized as I was building this out that I need a good lesson in real test-driven development. I had a difficult time seeing how to test something like this. I’m going to be reading Kent Beck’s book next, I think.</p>
+<p>Here are some examples of stuff that Theseus can do:</p>
+<div style="text-align: center">
+  <img src="http://jamisbuck.org/images/maze1.png" width="204" height="204" alt="simple orthogonal maze"><br>
+  A simple orthogonal (rectangular) maze
+</div>
+<div style="text-align: center; margin-top: 1em">
+  <img src="http://jamisbuck.org/images/maze2.png" width="204" height="204" alt="simple maze with solution"><br>
+  The same maze, but with the solution rendered
+</div>
+<div style="text-align: center; margin-top: 1em">
+  <img src="http://jamisbuck.org/images/maze3.png" width="424" height="404" alt="triangular delta maze"><br>
+  A delta maze (triangular tiles) with a triangular mask
+</div>
+<div style="text-align: center; margin-top: 1em">
+  <img src="http://jamisbuck.org/images/maze4.png" width="309" height="414" alt="sigma maze"><br>
+  A sigma maze (hexagonal tiles)
+</div>
+<div style="text-align: center; margin-top: 1em">
+  <img src="http://jamisbuck.org/images/maze5.png" width="309" height="309" alt="upsilon maze"><br>
+  An upsilon maze (octagonal and square tiles)
+</div>
+<div style="text-align: center; margin-top: 1em">
+  <img src="http://jamisbuck.org/images/maze6.png" width="494" height="94" alt="maze with custom mask"><br>
+  You can apply images as masks to constrain how the maze is shaped
+</div>
+<div style="text-align: center; margin-top: 1em">
+  <img src="http://jamisbuck.org/images/maze7.png" width="204" height="204" alt="weave maze"><br>
+  A weave maze has passages that move over and under other passages
+</div>
+<div style="text-align: center; margin-top: 1em">
+  <img src="http://jamisbuck.org/images/maze8.png" width="204" height="204" alt="braided maze"><br>
+  A braided maze has multiple solutions, due to circular loops in the graph
+</div>
+<div style="text-align: center; margin-top: 1em">
+  <img src="http://jamisbuck.org/images/maze9.png" width="204" height="204" alt="unicursal maze"><br>
+  A unicursal maze has only a single path, with no junctions
+</div>
+<div style="text-align: center; margin-top: 1em">
+  <img src="http://jamisbuck.org/images/maze10.png" width="214" height="214" alt="symmetrical maze"><br>
+  Theseus can generate mazes with x, y, xy, or radial symmetry. This maze shows radial symmetry.
+</div>
+<div style="text-align: center; margin-top: 1em">
+  <img src="http://jamisbuck.org/images/maze11.png" width="204" height="204" alt="wrapped maze"><br>
+  Theseus can wrap mazes in x, y, or xy. This maze is wrapped in x (cylindrically).
+</div>
+<div style="text-align: center; margin-top: 1em">
+  <img src="http://jamisbuck.org/images/maze12.png" width="204" height="204" alt="sparse maze"><br>
+  A sparse maze is one with unfilled areas in the field.
+</div>
+<p>Give it a try! All of these examples were generated using the command-line utility that is installed with the gem. It’s remarkably flexible.</p>

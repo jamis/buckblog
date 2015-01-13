@@ -1,0 +1,15 @@
+---
+layout: post
+title: Introducing SwitchTower
+post_id: 203
+categories: []
+date: 2005-08-05 17:43:00.000000000 -06:00
+author: Jamis
+permalink: 2005/08/05/introducing-switchtower.html
+---
+
+<p>[<strong>Update 03/05/2006:</strong> <a href="http://jamis.jamisbuck.org/articles/2006/03/06/switchtower-renamed">SwitchTower has been renamed Capistrano</a>]</p>
+<p>Word has been leaking out for a while now. About three weeks ago I <a href="http://jamis.jamisbuck.org/articles/2005/07/14/application-deployment-with-rails">blogged about application deployment with Rails</a>, and hinted that the utility I talked about would be released “soon”.</p>
+<p>Well, that utility was scrapped and completely rewritten, from the ground up, in the intervening weeks. Several members of the Rails core team tried the early version of it and gave lots of great feedback, and the utility just kept getting better and better. The result, called SwitchTower, is now bundled with Rails and is currently <a href="http://dev.rubyonrails.com/browser/trunk/switchtower/">publicly accessible in the Rails trunk</a>. (Or you can grab it <a href="http://dev.rubyonrails.org/svn/rails/trunk/switchtower/">via svn</a>.)</p>
+<p>So, what is SwitchTower? Well, it’s a lot more than a utility for deploying applications—it basically lets you execute commands on multiple remote servers, in parallel. It also lets you group your servers by role and specify tasks that should only be executed for certain roles. And oh, so much more.</p>
+<p>But don’t let me bore you with it here. You can read all about it on the brand new (and very roughly drafted) <a href="http://manuals.rubyonrails.com/read/book/17">SwitchTower: Automating Application Deployment</a> book at the Rails manuals site. Look it over, try it out, and give feedback. This is pretty much an alpha release right now, so don’t expect it to work perfectly. But it does work pretty well—we’re using it at 37signals to manage the deployment of <a href="http://www.tadalist.com">Tada Lists</a>, right now, and will be using it to manage <a href="http://www.basecamphq.com">Basecamp</a> and <a href="http://www.backpackit.com">Backpack</a> in the very near future.</p>

@@ -1,0 +1,41 @@
+---
+- date: 2006-01-22
+  author: Bjorn
+  content: I still use your generator exclusively, but by God it's down at the moment,
+    so I ended up here on a Google search to see if I could find another live copy.
+- date: 2006-11-05
+  author: Joe
+  content: <p>I also use your <span class="caps">NPC</span> generator quite a lot,
+    and am also sad that it is down.  Might it be coming back up in a new location,
+    or is it already up in some other location?</p>
+- date: 2006-11-06
+  author: Jamis
+  content: "<p>Joe,</p>\n\n\n\t<p>I’m afraid I’m not sure what’s up with the aarg.net
+    servers. They were working fine a few weeks ago, when I last checked them. I don’t
+    really have another place to host them, though.</p>"
+- date: 2006-12-09
+  author: Kevin
+  content: "<p>While I have used all of your generators the one I still use on a very
+    regular basis is the treasure generator. I am no programmer but I figured out
+    how to use Basilisk enough to add the items from a couple dozen more WotC books.
+    If those files would be useful for your upcomming <strong>nudge</strong> Ruby
+    version, or as add ons to your classic program please let me know.</p>\n\n\n\t<p>And
+    thanks for the wonderful tools.</p>"
+- date: 2007-02-18
+  author: J_L_Seagull
+  content: "<p>I love your <span class=\"caps\">NPC</span> generator and i use it
+    a lot (even though it is 3.0 and I use 3.5). Some things I would like to see implemented
+    though is the following.\n1. Upgrade it to 3.5 rules\n2. Put it together with
+    a treasure generator so that you get a complete character with treasure.\n3. If
+    possible, let the treasure (like a +1 sword) show up in the statistics of the
+    <span class=\"caps\">NPC</span>\n4. Also incorperate the <span class=\"caps\">NPC</span>
+    generator with templates and monster advancement. This way, greating a Huge Griffon
+    Zombie is only a a click away. With this updated engine I would never play the
+    game without it.</p>\n\n\n\t<p>Still though, thanks for a great supplement.</p>"
+- date: 2007-02-19
+  author: Jamis
+  content: '<p><span class="caps">J L</span> Seagull: a 3.5 port has been written
+    by Andargor. You can see it online at http://www.aarg.net/~minam/npc2.cgi. Other
+    suggestions are all great, but alas, I’m not much of a gamer these days. I’d love
+    to revisit the <span class="caps">NPC</span> generator in its entirety someday,
+    but other priorities keep getting int he way.</p>'

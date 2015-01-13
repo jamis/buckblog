@@ -1,0 +1,17 @@
+---
+layout: post
+title: 'Net::SFTP v2: done?!'
+post_id: 64
+categories:
+- Projects
+date: 2008-03-13 22:20:00.000000000 -06:00
+author: Jamis
+permalink: 2008/03/13/net-sftp-v2-done.html
+---
+
+<p>I <strong>think</strong>...I think I’m actually, <strong>done</strong>, more or less, with <a href="http://github.com/jamis/net-sftp/tree/master">Net::SFTP v2</a>!</p>
+<p>I <a href="http://github.com/jamis/net-sftp/commit/8a162edac058f9410cf17245afcab31f0bb265ba">just committed</a> a last bit of documentation tweaking, and although I’m sure there’s more of that to come, and bugs to fix and features to add, I’m calling this bit “good enough”, and I’m moving on now to <a href="http://github.com/jamis/net-scp/tree/master">Net::SCP</a>.</p>
+<p>I’m not actually <em>releasing</em> Net::SFTP v2 at this point—it’s pretty much useless without a corresponding <a href="http://github.com/jamis/net-ssh/tree/master">Net::SSH v2</a> release. So why am I saying anything about it right now? Because it’s the first significant milestone that I’ve completed in my track to complete the new Net::SSH suite of libraries! And I’m excited! And I’ve learned something significant by finishing Net::SFTP v2 before completely finishing Net::SSH v2: by completing a dependency of the primary library first, I saw first-hand where the deficiencies in the primary library were. This has resulted in a much tigher, much more useful <span class="caps">API</span> than the Net::SSH v1 and Net::SFTP v1 libraries.</p>
+<p>Now, there is no real release of Net::SSH v2 and friends, but that’s not to say that if you’re brave, and don’t mind exploring a bit, you couldn’t get the new Net::SSH and Net::SFTP to work. The new Net::SSH is actually mostly done—I just need to revisit the documentation and update a few things here and there. The code is all on <a href="http://github.com/jamis">github</a>. If you don’t have git, you can download a tarball directly from github, even.</p>
+<p>So, have at it, if you’re so inclined. (And if you’d like on the github bandwagon, I’ve still got two invites burning a hole in my pocket…email me at (my first name) at jamisbuck.org, and I’ll be happy to send you one.)</p>
+<p><strong>Update</strong>: my github invites are all gone. Sorry!</p>

@@ -1,0 +1,17 @@
+---
+layout: post
+title: Uses for Copland
+post_id: 265
+categories:
+- Projects
+date: 2004-09-19 14:33:00.000000000 -06:00
+author: Jamis
+permalink: 2004/09/19/uses-for-copland.html
+---
+
+<p>As part of my on-going preparations for my <a href="http://www.rubycentral.org/conference">RubyConf</a>, I’ve been trying to actually <em>use</em> <a href="http://copland.rubyforge.org">Copland</a> for various projects. This has proven quite educational, in many ways—for one, I’ve identified areas of improvement for Copland, but I’ve also learned more about the application of IoC/DI.</p>
+<p>Packrat, I’ve mentioned before (<a href="blog.cgi/programming/ruby/Copland%20Progress_20040916180523.tx">here</a>). Although almost too small of a project to <em>really</em> benefit from IoC, it nevertheless was a good exercise, and will hopefully be a good learning aid for people wanting to use Copland.</p>
+<p>Another experiment, Joplin, was an attempt to see how well IoC would work to support a database abstraction layer, like <a href="http://ruby-dbi.sourceforge.net/"><span class="caps">DBI</span></a>. I may come back to this one and flesh it out more eventually-<del>it showed a lot of promise</del>-but it would have required a lot more work than I had time for to create components for the more commonly-used databases. One thing that I really liked about this particular project was that it was much easier to create hooks for new databases than it is with <span class="caps">DBI</span>. Still, <span class="caps">DBI</span> has a large following in the Ruby community, and I don’t know that I’m up to the challenge of competing with it.</p>
+<p>My most recent experiment is called Faure, and is an object-relational mapping layer. There are already plenty of such projects in the community (<a href="http://activerecord.rubyonrails.org">ActiveRecord</a> being one of the most popular, currently), there are things about all of them that I don’t particularly like. Besides which, if I can get both Joplin and Faure working smoothly, I’d have half of a complete front-to-back web-application solution implemented around Copland! And that’s pretty attractive to me.</p>
+<p>The last piece to create, in that case, would be the presentation half. Hypothetically speaking, if I were to write such a thing, I would probably base it on <a href="http://jakarta.apache.org/tapestry">Tapestry</a>, since I’m reasonably familiar with that architecture, and there are many things about it that I like.</p>
+<p>Speaking purely hypothetically, of course. I’ve got far too much to do right now.</p>

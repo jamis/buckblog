@@ -1,0 +1,16 @@
+---
+layout: post
+title: Dragon
+post_id: 309
+categories:
+- Projects
+date: 2004-02-06 06:41:00.000000000 -07:00
+author: Jamis
+permalink: 2004/02/06/dragon.html
+---
+
+<p>I recently started hacking on my own [<a href="http://www.ruby-lang.org%5D-inspired">Ruby</a> scripting language, which I’m am tentatively calling “Dragon”.</p>
+<p>I’m staying pretty close to Ruby’s syntax, but the biggest difference between Dragon and Ruby is that Dragon will be prototype-based, whereas Ruby (and most other OO languages that I’m aware of) are class-based.</p>
+<p>It’s certainly been a fun (and challenging) project so far.  I’ve learned a ton about bison and flex, and garbage collection.  I’ve got the parser written, and it correctly generates an abstract syntax tree (AST) from valid input.  It can output the <span class="caps">AST</span> in <a href="http://www.research.att.com/sw/tools/graphviz/">dot</a> format, which allows me to generate images of the tree for inspection.  Good fun.</p>
+<p>The garbage collector has been fun to write, too.  I (again) followed Ruby by borrowing some of the techniques it uses in its own (mark-and-sweep) collector.  I then implemented a copying collector, to see what the pros and cons of the two approaches are.  Although I like the copying collector, I ran into a few issues with it that I’m not sure how to get around, so the current incarnation of Dragon uses a mark-and-sweep collector.</p>
+<p>Nothing, really, to present yet, but I’ll be posting source code and demos eventually.  It would be sooner rather than later except for the fact that I’ve got a week-old daughter that takes up a good deal of my time right now. :)</p>

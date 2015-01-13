@@ -1,0 +1,28 @@
+---
+layout: post
+title: Getting Started With ActiveRecord Migrations
+post_id: 199
+categories: []
+date: 2005-09-26 20:13:00.000000000 -06:00
+author: Jamis
+permalink: 2005/09/26/getting-started-with-activerecord-migrations.html
+---
+
+<p>Migrations have got to be one of the coolest aspects of <a href="http://www.rubyonrails.com">ActiveRecord</a>. They allow you to incrementally evolve your database schema, as you build your application. Bit by bit, you define the tables as you need them, add or remove columns, insert data, and so forth, preserving and migrating your data as you go. This has the added benefit of making it possible to keep the databases for multiple developers in various locations in sync—all each developer has to do is run <code>rake migrate</code> each time they update their code from the repository.</p>
+<p>However, if you have an existing application, you may be wondering how to start, given that you already have a potentially mature schema. True, you can just start building onto your existing schema incrementally, but where’s the starting point? How do you give your application to another developer and have them get their database to a point where the migrations are useful to them?</p>
+<p>Enter the <code>SchemaDumper</code>. This is a new addition to Rails, not yet released (except maybe in the very latest beta gems). It allows you to easily dump your existing schema to a file using the migration syntax. From there, you can either distribute the file and use it to recreate a database, or you can do a bit of copy-and-paste and use the file as the basis of your application’s first migration.</p>
+<p>So, assuming your application has no existing migrations, and you would like to start using them, the process might look something like this:</p>
+<ol>
+	<li>
+<code>rake db_schema_dump</code>. This will create a file called <code>db/schema.rb</code> that contains the definition for your current schema.</li>
+		<li>Open <code>db/schema.rb</code> and copy everything inside of the block attached to <code>ActiveRecord::Schema.define</code>.</li>
+		<li>Run <code>script/generate migration InitialSchema</code>. This should create a file called <code>db/migrate/1_initial_schema.rb</code>.</li>
+		<li>Edit <code>db/migrate/1_initial_schema.rb</code> and paste what you copied from <code>schema.rb</code> into the <code>self.up</code> method.</li>
+		<li>Save the file.</li>
+	</ol>
+<p>And that’s it. You’re set with an initial migration that will allow another developer to recreate your database schema in their own database. From this point on, when you need to modify the database, just use the migration generator to add a new migration file, putting the <span class="caps">DDL</span> statements in the <code>self.up</code> method. The generator makes sure new migrations are added in the right sequence, so all that is needed is a simple <code>rake migrate</code> to keep your schema in sync with other developers.</p>
+<p>It’s pretty slick!</p>
+<p>(<strong>Update</strong>: the above won’t work quite as advertised, unfortunately, because the first time you try to run <code>rake migrate</code>, the migration will die telling you that the tables already exist. There are various ways to work around this, but none of them very elegant. I’ll see if I can find a better way to manage this “first run” situation.)</p>
+<p>Alternately, if you’ve already been using migrations but want to take a snapshot of the current schema and use it when distributing your application, you can easily import that snapshot into another database. Just do <code>rake db_schema_import</code>, which will read the <code>db/schema.rb</code> file and suck it into the database defined in <code>config/database.yml</code>.</p>
+<p>Note that <code>schema.rb</code> is portable between databases. You can dump a mysql database schema and import it into postgres, for instance.</p>
+<p>No more maintaining multiple <span class="caps">SQL</span> schema definitions, one for each database you want to support. Just use the one <code>schema.rb</code> file and you’re good to go!</p>

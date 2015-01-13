@@ -1,0 +1,401 @@
+---
+- date: 2005-12-22
+  author: topfunky
+  content: |-
+    Switchtower is nearly perfect and can be easily modified with recipes (which I hope to distribute for the major shared hosting providers).
+
+    However, for Christmas I would like to be able to specify a non-standard SSH port for deploying to servers that don't use port 22.
+
+    I've patched it to do this for my own projects, but being able to put it in a recipe would be fantastic.
+
+    Thank you, Santa.
+- date: 2005-12-22
+  author: Hunter
+  content: |-
+    I wish there was a way to make it work with my OS X install.
+
+    If I have to reinstall Ruby then I have to re-do all my gems and everything.
+
+    Is the problem Apple? I would like to file a bug with them so they fix their problem. Can someone explain the problem with Ruby on Tiger?
+- date: 2005-12-22
+  author: Jamis
+  content: |-
+    topfunky, the good news is your wish will be granted (if not by Christmas). That feature is actually already in the edge version of ST.
+
+    Hunter, it's definitely Apple's problem, but I've not spent any time actually trying to track it down. It's a problem with the OpenSSL module for Ruby, as provided by Apple. Beyond that, I don't know specifics. (Believe me, I'd _love_ for this to be fixed. It's a support nightmare.)
+- date: 2005-12-23
+  author: motobass
+  content: 'Does it require subversion to be installed on the target servers?  I would
+    rather not have the repository there.  '
+- date: 2005-12-23
+  author: Ryan
+  content: |-
+    Hunter,
+
+    You should be able to get it to work by installing Ruby from "DarwinPorts":http://darwinports.opendarwin.org/, since I think the Ruby that comes with OS X has something wrong with it. Jamis talked about this problem on the "Rails weblog":http://weblog.rubyonrails.org/articles/2005/12/08/switchtower-problems-on-osx.
+- date: 2005-12-23
+  author: rabble
+  content: "I've just moved Odeo over to using Switchtower and i've had something
+    which were quite frustrating. \n\nIf it fails, it deletes everything in the rollback.
+    In theory it's the right thing to do, but in pratice it sucks. Because if it's
+    a test which ONLY fails on the deployed servers, then you have to either edit
+    your deploy.rb to comment out the transaction stuff, or manually do a deploy.
+    It was VERY frustrating.\n\nIt's hard to extend. For example, i wanted to make
+    it use svn export instead of svn co, for performance reasons, also we rarely make
+    small changes in the 37sigs way and would rather do a fresh checkout. Switchtower
+    is dificult to extend. I think it's the way you setup the classes, but it was
+    quite hard to over-ride a single method. The methods are longer than they need
+    to be, so rather than replacing a single thing, you end up having to replace a
+    dozen or more lines.\n\nIt's hard to do something useful other than print the
+    response to standard out. I've been working on extending it so on deploy it sends
+    an email with the subversion change long to an address. So  other people can know
+    that there are changes, and what they are. It's tricky, both to get AM to work
+    from within switchtower, and to capture the results of a 'run' command. It would
+    be nice to be able to capture the results of a given command and so something
+    with it.\n\nSpeeking of which. Switchtower is REALLY talky... Can we have log
+    levels or something. I haven't looked, maybe there is something. I do know it
+    uses the same rails logger, but i don't think you do a lot with the log levels.\n\nIn
+    general i've found that switchtower could be made more flexible. \n\nDon't get
+    me wrong, i like it, i'm enjoying using it, it's much better than what we were
+    using before. But it's really got a long ways to go as well.\n\nThanks for writing
+    it!"
+- date: 2005-12-23
+  author: Ryan Carver
+  content: |-
+    The only place it really falls down for our deployment is that we have two separate web apps that get deployed in parallel.
+
+    <a href="http://www.measuremap.com">www.measuremap.com</a> and tracker.measuremap.com
+
+    I did some hacking of roles to make this fly, as for the most part, tracker is an app role but it's also special.
+
+    <pre>
+    def copy_roles(roles, from, to)
+      role to, *roles[from].collect { |r| r.host }
+    end
+    copy_roles roles, :tracker,  :app   # make all tracker roles app roles
+    </pre>
+
+    Letting roles extend others like this might be helpful, for example a :code role could be defined and used to deploy code, then :app would extend :code. If this were the case I wouldn't have had to use :db just to get code on a host.
+
+    In general, I agree that if things were broken down in smaller pieces it would be easier to put together in unexpected ways.
+
+    But seriously, there's nothing we couldn't do yet, just maybe not as DRY as I'd like.
+- date: 2005-12-23
+  author: Mazdak Rezvani
+  content: |-
+    I wouldn't mind seeing a setup where I can do deployment on the live servers, as well as staging servers.
+
+    Thanks
+- date: 2005-12-23
+  author: James Duncan Davidson
+  content: |+
+    I agree with rabble in that transactions definitly feel like the way to go, but they can also be problematic. Maybe if it was moved to a "failed deploy" kind of directory? Or, maybe a failed deploy was left in place in the releases directory but not symlinked?
+
+    Rabble: Did you find all the hooks? Like "after_update_code" and the like? At first I was overridding methods, but now just provide the hooks and am much happier.
+
+    Notification email sending on deploy would be sweet. A nicely formatted email sent to a group saying "hey, this app has been deployed".
+
+    I don't mind the chatty, but then I figured out where to turn it down. Maybe it should be an option in the deploy.rb?
+
+    I also agree with Mazdak. Yes, there's the trick you outlined at <a href="http://jamis.jamisbuck.org/articles/2005/08/27/conditional-switchtower-configuration">http://jamis.jamisbuck.org/articles/2005/08/27/conditional-switchtower-configuration</a> but it'll be a frequent enough thing, I think, to want a staging server in the list.
+
+    It'd be nice if you could have it do the SVN co or export out to a local directory and then upload it. That would take care of any issues with not having SVN installed on the host server -or- any connectivity issue to the SVN server (in the case of locked down servers).
+
+
+- date: 2005-12-23
+  author: Matt Jankowski
+  content: |-
+    Many of these feature requests are actually requests for more thorough documentation and/or error handling and/or explanation of what's happening within the app.  It took me a while to feel out how everything was put together and how it was supposed to work.  Once I got there, everything made sense.  So...
+
+    * Allow different user/pass for SVN access than for SSH access
+
+    * Handle the SSH auth error that occurs when you don't have the remote hosts in your .ssh/known_hosts yet
+
+    * Either add documentation about needing ruby in the PATH on the machines you are connecting to, or go back to using hard-coded path to ruby in the script/process scripts.
+
+    * I think that 'run' might be a better assumption for running the reaper in the default restart task than 'sudo' - especially for people deploying into shared environments.
+
+    What's the best way to contribute improved docs?  I've learned things that would have been valuable to have known as I went along...
+- date: 2005-12-23
+  author: Matt Jankowski
+  content: Ah, also -- task to delete old release directories that are more than X
+    days or X releases old.  That disk space piles up pretty quickly if you release
+    often.
+- date: 2005-12-23
+  author: Michael Schoen
+  content: |
+    Here's what I use for cleaning up old releases, removes all but the last 5. Use at your own risk...
+
+    <pre>
+    desc "Removes old releases."
+    task :cleanup, :roles =&gt; [:app, :db, :web] do
+      keep = releases[(releases.length &gt; 5 ? -5 : -1 * releases.length) .. -1].join('|')
+      run &lt;&lt;-CMD
+        cd #{releases_path} &amp;&amp;
+        for i in `ls -d * | egrep -v "#{keep}"`; do
+          if [[ -a $i ]] then
+              rm -rf $i ;
+          fi;
+        done
+      CMD
+    end
+    </pre>
+- date: 2005-12-23
+  author: Windows Switchtower
+  content: |-
+    Switchtower on windows is a pain.
+
+    "http://www.economysizegeek.com/?p=775":http://www.economysizegeek.com/?p=775
+- date: 2005-12-23
+  author: Windows switchtower
+  content: |-
+    Sorry wrong  link above. The one below explains how to get it working on win.
+
+    "http://www.economysizegeek.com/?p=756":http://www.economysizegeek.com/?p=776
+- date: 2005-12-23
+  author: Jamie Hill
+  content: |-
+    I'm with Mazdak. I'd love to see an option to deploy to both a staging and live server. Something like rake deploy_staging and rake deploy_production.
+
+    I know this can be achieved with two separate recipes however 90% of the time, both staging and production servers are setup the same and a simple switch would be a really nice addition.
+
+    Just think how nice the workflow would be:
+
+    deploy to staging -&gt; seek client approval -&gt; deploy to production... beautiful :)
+- date: 2005-12-23
+  author: James Duncan Davidson
+  content: "Oh ya. Cleaning up old versions. That's a big one. I forgot to put that
+    into my list, but consider this a double-vote for that. :) \n\nMaybe keep the
+    last 5 by default, and of course have a configuration variable for it."
+- date: 2005-12-24
+  author: Piotr Banasik
+  content: |-
+    I'd love to see the ability to use diffrent credentials/deploy paths for diffrent servers, I have a case where my apps have a few components that are run by diffrent servers, or even diffrent users on same server, and they need to all be done at the same time, and they're part of the same app.
+
+    Ideally allowing to deploy to the same server twice with diffrent credentials/path.
+- date: 2005-12-24
+  author: James Duncan Davidson
+  content: The default :restart recipie in standard.rb uses sudo in front of it's
+    call to the reaper. On TextDrive, this is causing a problem because, well, I'm
+    running my application as me, not as any other user and don't have sudo rights.
+    This needs to be configurable to either do the sudo or not.
+- date: 2005-12-27
+  author: Glenn Vanderburg
+  content: 'Here''s a simple one: make the CLI#echo functionality easily accessible
+    from the recipe file.  At least make it a class method so it can be used without
+    creating a CLI instance; even better, provide a with_echo_suppressed method.  I
+    suspect it''s fairly common to prompt for database passwords from recipes, for
+    example.'
+- date: 2005-12-27
+  author: Daniel Morrison
+  content: |-
+    Does SwitchTower support svn+ssh access to my repository?  If not, then that is a feature that I'd love.
+
+    If it does, then that's a feature I'd love to see documented. :-)
+
+    I haven't found anyone who is using it this way, and I haven't had time to dig in for myself.
+- date: 2005-12-27
+  author: Jamis
+  content: Daniel, it does. All ST does is invoke the command-line "svn" utility,
+    so any repository URL format that svn supports, ST supports.
+- date: 2005-12-28
+  author: Lars Pind
+  content: 'A small thing: When you mistype the password for the sudo it does when
+    it calls reaper, you''re not prompted to type it again. Rather, the server aren''t
+    restarted, and you have to rake deploy again to make them update. Would be nice
+    if it was caught.'
+- date: 2006-01-09
+  author: Dylan
+  content: |-
+    Jamis, are you sure about the svn+ssh thing ?  My :repository is steup to be:  svn+ssh://myserver/#{application}/trunk
+
+    ... and I get a "connection refused".
+
+    If I run:
+    svn list svn+ssh://myserver/myapp/trunk
+
+    ... everything works fine.
+- date: 2006-01-09
+  author: Dylan
+  content: |-
+    ... and... let me promptly take that back as I needed to set the "ssh_options" to a different port number within the deploy.rb.
+
+    Doh !  Sorry.  BTW... Switchtower is absolutely fabulous... and my kid just started crawling a few months ago !
+- date: 2006-01-12
+  author: Anthony Eden
+  content: |-
+    OK, you asked for it... ;-)
+
+    1.) Documentation. I almost tore hair out trying figure out how to execute custom deploy.rb tasks. I finally deduced that I needed to use the format "rake remote_exec ACTION=mytask" but it was never explicitly stated in the docs, and that's how it is whenever you stray from the path of subversion + lighttpd.
+
+    2.) Executable bits on scripts are lost. I must be doing something wrong here because whenever I deploy the executable bits on all dispatch scripts as well as everything in scripts disappear. I've fixed it with a custom task which chmods everything that needs it, but that seems like something obvious which should be happening.
+
+    3.) Ruby paths should be handled automatically when switching platforms.
+
+    4.) Subversion is great, but CVS is currently much more widely used. Therefore the support for CVS needs to be rock solid, and right now it isn't (I've yet to successfully have switchtower pull from a CVS repository over SSH).
+
+    5.) And speaking of accessing the repository from the production server - there are a lot of cases where this just isn't possible. It'd be great to have a deployment option where everything would be packaged up into an installer for the remote system which could then be executed with a single command and do all of the remote work.
+
+    6.) Deployment to Windows servers is a must. Why so much depency on POSIX? Shipping shell scripts across the wire seems really silly, especially when Ruby has most if not all of that functionality built in. When deploying to Windows switchtower should fail quietly when possible, gracefully all other times.
+
+    7.) Rake is great, but you should have scripts specifically for switchtower, even if it delegates to rake.
+
+    8.) When things do fail the error messages are often cryptic and don't always help solve the problem.
+
+    9.) Did I mention we need better docs? :-) Where are all of the yummy deployment recipes which will help us do more with less.
+
+    In general, I don't yet get that "this rules!" feeling with Switchtower that I do with Rails, however it's a good start and could be really, really kick ass if done right.
+
+    Sincerely,
+    Anthony Eden
+- date: 2006-01-12
+  author: Jamis
+  content: |-
+    Anthony, thanks for the great list! A few things:
+
+    &gt; 1.) Documentation. I almost tore hair out trying figure out how to execute custom deploy.rb tasks.
+
+    I've made a note to document this point better. Are there other things that you feel need better documentation?
+
+    &gt; 2.) Executable bits on scripts are lost.
+
+    There is a feature in subversion for this, actually. If you aren't using subversion (as you later imply), then you need to figure out how (if?) your chosen SCM sets executable bits. If it doesn't, then you'll have to do as you are and use a ST hook. Regardless, I don't think ST can or should handle this--it's beyond its scope.
+
+    &gt; 3.) Ruby paths should be handled automatically when switching platforms.
+
+    Not sure what you mean by this. Do you mean that ST should rewrite shebang lines? If so, I disagree. Again, I think this is beyond the scope of ST itself, although if someone were to provide a helper method for doing that I wouldn't mind adding it to ST for people to make use of.
+
+    &gt; 4.) Subversion is great, but CVS is currently much more widely used. Therefore the support for CVS needs to be rock solid, and right now it isn’t (I’ve yet to successfully have switchtower pull from a CVS repository over SSH).
+
+    Not being a CVS user, I can guarantee that I won't be working any more on the CVS module myself. If the CVS module is to become usable, it will require people that _use_ CVS to hack on it and submit patches. I do agree that better CVS support is necessary, though.
+
+    &gt; 5.) And speaking of accessing the repository from the production server – there are a lot of cases where this just isn’t possible.
+
+    Yup, and a way to deploy without access to the repository is in my to-do list. Still not sure what the best way to do this is, but I'm thinking on it.
+
+    &gt; 6.) Deployment to Windows servers is a must.
+
+    I agree that people need to deploy to Windows, but if they do, ST is not the tool for them. I will not be adding Windows support to ST. ST's dependency on things like SSH and POSIX scripts is too deep, and changing that would require a fundamental shift in the way ST does it's stuff.
+
+    &gt; 7.) Rake is great, but you should have scripts specifically for switchtower, even if it delegates to rake.
+
+    Not sure what you mean by this? ST is a standalone utility. There are some rake tasks to make invoking ST easier from Rails apps, but the dependency chain in this case is "rake on ST", not "ST on rake".
+
+    &gt; 8.) When things do fail the error messages are often cryptic and don’t always help solve the problem.
+
+    Yup, and that's on my to-do list as well.
+
+    Thanks for the suggestions!
+- date: 2006-01-12
+  author: Anthony Eden
+  content: "&gt; Anthony, thanks for the great list! A few things:\n\n&gt; 1.) Documentation.
+    I almost tore hair out trying figure out how to execute custom deploy.rb tasks.\n&gt;\n&gt;
+    I’ve made a note to document this point better. Are there other things that you
+    feel need better documentation?\"\n\nThe main problem I had was just understanding
+    how I needed to invoke Rake in order to get my custom task to execute.  Another
+    problem was lack of CVS + switchtower docs (i.e. what is the format of the SCM
+    URL, does it work with :ext, etc.).\n\n&gt; 2.) Executable bits on scripts are
+    lost.\n&gt; \n&gt; There is a feature in subversion for this, actually. If you
+    aren’t using subversion (as you later imply), then you need to figure out how
+    (if?) your chosen SCM sets executable bits. If it doesn’t, then you’ll have to
+    do as you are and use a ST hook. Regardless, I don’t think ST can or should handle
+    this—it’s beyond its scope.\"\n\nI'm actually using subversion for the repository
+    since I couldn't get CVS to play nice. I will review the SVN docs to see if I
+    need to configure something special to keep the execute bit set.\n\n&gt; 3.) Ruby
+    paths should be handled automatically when switching platforms.\n&gt;\n&gt; Not
+    sure what you mean by this. Do you mean that ST should rewrite shebang lines?
+    If so, I disagree. Again, I think this is beyond the scope of ST itself, although
+    if someone were to provide a helper method for doing that I wouldn’t mind adding
+    it to ST for people to make use of.\n\nA helper method might be just the thing.
+    \n\n&gt; 4.) Subversion is great, but CVS is currently much more widely used.
+    Therefore the support for CVS needs to be rock solid, and right now it isn’t (I’ve
+    yet to successfully have switchtower pull from a CVS repository over SSH).\n&gt;\n&gt;
+    Not being a CVS user, I can guarantee that I won’t be working any more on the
+    CVS module myself. If the CVS module is to become usable, it will require people
+    that use CVS to hack on it and submit patches. I do agree that better CVS support
+    is necessary, though.\n\nWell I suppose it will come at some point. Not everyone
+    has the luxury of changing their SCM to fit the deployment tool. :-)\n\n&gt; 5.)
+    And speaking of accessing the repository from the production server – there are
+    a lot of cases where this just isn’t possible.\n&gt; \n&gt; Yup, and a way to
+    deploy without access to the repository is in my to-do list. Still not sure what
+    the best way to do this is, but I’m thinking on it.\n\nI'd love to see an \"offline\"
+    installer builder which packages up the switchtower recipe code which needs to
+    be executed, along with perhaps a copy of the repo into a bundled executable.
+    :-)\n\n&gt; 6.) Deployment to Windows servers is a must.\n&gt; \n&gt; I agree
+    that people need to deploy to Windows, but if they do, ST is not the tool for
+    them. I will not be adding Windows support to ST. ST’s dependency on things like
+    SSH and POSIX scripts is too deep, and changing that would require a fundamental
+    shift in the way ST does it’s stuff.\n\nThat's most unfortunate that you are going
+    to write off Windows like that. The dependency on SSH and POSIX really is a deficiency
+    in my opinion.\n\n&gt; 7.) Rake is great, but you should have scripts specifically
+    for switchtower, even if it delegates to rake.\n&gt; \n&gt; Not sure what you
+    mean by this? ST is a standalone utility. There are some rake tasks to make invoking
+    ST easier from Rails apps, but the dependency chain in this case is “rake on ST”,
+    not “ST on rake”.\n\nI mean that when I want to deploy I have to type \"rake deploy\"
+    whereas I should be typing \"switchtower deploy\" or something like that. When
+    I want to deploy with a custom task then I should be able to do \"switchtower
+    deploy mytask\" or something similar.\n\n&gt; Thanks for the suggestions!\n\nGlad
+    to help. As I continue forward with Switchtower perhaps I will provide patches.\n\nP.S.
+    You should mention somewhere that your comments accepts Markdown syntax. :-)"
+- date: 2006-01-12
+  author: Jamis
+  content: |-
+    Anthony,
+
+    &gt; I mean that when I want to deploy I have to type “rake deploy” whereas I should be typing “switchtower deploy” or something like that. When I want to deploy with a custom task then I should be able to do “switchtower deploy mytask” or something similar.
+
+    Ah, but you can:
+
+    <pre>
+      # execute the "deploy" task
+      switchtower -vvvv -r config/deploy -a deploy
+
+      # execute the "deploy" task, and then
+      # the "mytask" task.
+      switchtower -vvvv -r config/deploy -a deploy -a mytask
+    </pre>
+
+    (The @-vvvv@ just means "be very verbose", which is the default when running via rake.) The rake tasks used to do just this (though now they load switchtower directly).
+- date: 2006-01-12
+  author: Anthony Eden
+  content: |-
+    Ok, so regarding using switchtower directly, this a good place where a little bit of convention over configuration might be nice. So, for example, default to config/deploy for the recipe at minimum, and then allow the action to be specified as a non-switched argument:
+
+      switchtower -r config/deploy -a deploy
+
+    becomes:
+
+      switchtower deploy
+
+    Little things like this make a difference to new users and its what gives me that "this rules!" feeling when I use Rails. :-)
+- date: 2006-01-12
+  author: Jamis
+  content: |-
+    Anthony, how is this different from @rake deploy@?
+
+    Also, I hesitate to make SwitchTower default too much to Rails conventions, because it really is independent of Rails. Rake is where the closer ties to Rails are made, and I think that's the most appropriate place for it.
+- date: 2006-01-14
+  author: Anthony Eden
+  content: |-
+    The deploy task is a bad example. This is more for custom tasks. For example, if I make a custom task called mytask then to invoke it right now I have to do:
+
+      rake remove_exec ACTION=mytask
+
+    Or with switchtower directly
+
+      switchtower -r config/deploy -a mytask
+
+    Whereas I'd rather just say:
+
+      switchtower mytask
+
+    The point is to "do the right thing" and make it as easy to figure out as possible. I saw numerous people in #rubyonrails make the same mistake I did and try this:
+
+      rake mytask
+
+    Which won't work.
+
+    Regarding defaulting to Rails conventions, I suppose you are referring to defaulting to a recipe. Not much I can say for that I suppose except that the majority of people using Switchtower immediately associate it with Rails and will jump to their own conclusions about the conventions it follows.
+- date: 2006-02-13
+  author: Pat Maddox
+  content: The only thing I want is for it to work with csh.

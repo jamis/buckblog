@@ -1,0 +1,27 @@
+---
+layout: post
+title: Blogging with Vim
+post_id: 268
+categories:
+- Projects
+date: 2004-09-17 03:30:00.000000000 -06:00
+author: Jamis
+permalink: 2004/09/17/blogging-with-vim.html
+---
+
+<p><a href="http://www.vim.org">Vim</a> has long been my favorite text editor. They’re trying to get us to use an <span class="caps">IDE</span> at work for our Java development (<a href="http://www.eclipse.org">Eclipse</a>), but nothing seems to beat Vim (for me at least) when it comes to power and ease of use. (<em>Note</em>: I said nothing about ease of learning… Vim definately has a steep learning curve.)</p>
+<p>So, once I’d decided to return to the blogging scene, I had a few requirements:</p>
+<ol>
+	<li>The articles had to be editable <em>in-place</em>, meaning that no matter where I was, or what computer I was using, I could use a web interface to compose new articles (or edit existing articles—see the next bullet point).</li>
+	</ol>
+<ol>
+	<li>I needed the ability to have posts in either of two states: <em>draft</em>, or <em>published</em>. In the draft state, no one could see them but me. These were the posts that were still being composed; this allowed me to leave articles have written and return to them later. The published state was for articles that were publicly visible.</li>
+	</ol>
+<p>Rublog, out of the box, offered neither of these features. However, since it was written in Ruby (and very well-written, I must say), I was able to hack together some utilities that accomplished the above.</p>
+<p>So, all I needed now was to be able to compose and publish my articles directly from my favorite editor…</p>
+<h2>
+<span class="caps">XML</span>-RPC</h2>
+<p>Here’s where things got fun. I wrote a small <span class="caps">CGI</span> script in Ruby that acted as an <span class="caps">XML</span>-RPC server, accepting requests conforming to the <a href="http://www.xmlrpc.com/metaWeblogApi">MetaWeblog <span class="caps">API</span></a>. It handled such basic blogging tasks as posting a new article, editing an existing article, retrieving a specific article, and so forth.</p>
+<p>Then, I wrote a Vim/Ruby script. This was my first real use of Vim’s Ruby interface, and I must say it worked <em>very</em> well. Using Ruby’s built-in <span class="caps">XML</span>-RPC libraries, I was easily able to write an <span class="caps">XML</span>-RPC client that integrated with Vim, parsing the current buffer for hints as to category, title, blog, and so forth, and then invoking the remote procedure to actually post the text.</p>
+<p>In fact, <em>this very article</em> was composed in Vim and posted to my blog via <span class="caps">XML</span>-RPC!</p>
+<p>Ruby made this all <em>so easy</em>! The <span class="caps">XML</span>-RPC <span class="caps">CGI</span> server script was under 200 lines of code, and the Vim/Ruby script was just over 100. The scripts themselves are pretty hacked together, but if I have some time I’ll try to clean them up and generalize them to the point where other bloggers might find some use in them. Great fun!</p>

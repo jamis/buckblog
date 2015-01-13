@@ -1,0 +1,92 @@
+---
+- date: 2006-09-29
+  author: Christian Romney
+  content: "Hi Jamis,\r\n\r\nJust out of curiosity, what are your thoughts on Ruby's
+    TSort  stdlib. My understanding was that it was good at this sort of automated
+    dependency resolution. Of course, this stuff is out of scope so I'm not qualified
+    to make that assessment. I'd be interested in your thoughts on this."
+- date: 2006-09-29
+  author: Jamis
+  content: Christian, I haven't actually looked at any of Ruby's solutions. I kinda
+    wanted to get my feet wet with Prolog first. Once I get a handle on how this may
+    relate to my problem domain, I'm definitely going to investigate what Ruby has
+    to offer, though. I'll most likely be following up with another blog article eventually.
+- date: 2006-09-29
+  author: Joe
+  content: You are a huge nerd.  :-)
+- date: 2006-09-29
+  author: Gregg Irwin
+  content: There are a lot of ways to go with this kind of thing. I think using it
+    as incentive to learn some Prolog is great though. Topo sort is something else
+    to consider, certainly; and you could probably do it with a recursive DFS approach
+    as well (sort of pseudo-make).
+- date: 2006-09-29
+  author: Jamis
+  content: "Joe, haha! I choose to take that as a compliment! :)\r\n\r\nGreg, thanks
+    for the recommendations. I'll keep those in mind."
+- date: 2006-09-29
+  author: Christian Romney
+  content: I'm really looking forward to the next article. Incidentally, Brian Harvey
+    (of Simply Scheme fame) has a great Structure and Interpretation of Computer Programs
+    lecture series available as streaming RealMedia video or mp3 audio. You can find
+    it on the Berkeley website. Anyway, the last two lectures go into prolog a bit.
+    I find Brian's didactic style to be easy to follow, so you might want to look
+    into it.
+- date: 2006-09-29
+  author: Jeremy
+  content: "<p>I was reading through your article, and followed the wikipedia links,
+    and must say that you caught my interest.</p>\n\n\n\t<p>Over the past year I’ve
+    been programming in Ruby on Rails.  But prior to that I came from an environment
+    where I programmed in <span class=\"caps\">RPG</span> (ironically).  In my previous
+    job, we had a tool for determining if a group selected this insurance benefit
+    what was the next set of benefits they could select.</p>\n\n\n\t<p>Best luck,
+    I’ve started exploring how I would translate that system to Ruby.  Here is my
+    attempt based in large part from what I took away from my previous job.</p>\n\n\n<pre>\nclass
+    PrerequisiteSet &lt; ActiveRecord::Base\n  has_many :restrictions\n  has_many
+    :prerequisites\n\n  # If the restricted item has at least one of the prerequisites\n
+    \ # then it meets this particular prerequisite set\n  def has_prerequisite?(restricted)\n
+    \   prerequisites.detect { |p|  p.has_prerequisite?(restricted) }\n  end\nend\n\nclass
+    Prerequisite &lt; ActiveRecord::Base\n  belongs_to :prerequisite\n  belongs_to
+    :qualifying_prerequisite, :polymorphic =&gt; true\n\n  def has_prerequisite?(restricted)\n
+    \   restricted.has_qualifying_prerequisite?(qualifying_prerequisite)\n  end\nend\n\nclass
+    QualifyingPrerequisite\n  # is_abstract_class\n  has_many :qualifying_prerequisites,
+    :as =&gt; :qualifying_prerequisite\nend\n\nclass RestrictedEntity\n  # is_abstract_class\n
+    \ has_many :restrictions, :as =&gt; :restricted\n\n  # This isn't the end all
+    solution, and only looks at shallow relations, but the magic has to start somewhere\n
+    \ def has_qualifying_prerequisite?(prerequisite)\n    self.reflect_on_assocations.detect
+    { |assoc| prerequisite.class.to_s == assoc.class_name &amp;&amp; assoc.find(prerequisite.id)
+    }\n  end\n\n  # If a restricted entity meets all of its restrictions, then it
+    can be \"chosen\" \n  def meets_all_retrictions?\n    restrictions.detect do |r|
+    \n      return false unless r.meets_restriction?\n    end\n    return true\n  end\nend\n\nclass
+    Restriction\n  belongs_to :restricted_entity, :polymorphic =&gt; true\n  belongs_to
+    :prerequisite_set\n\n  # If the restricted entity has at least one element of
+    the prerequisite set, then\n  # this restriction has been met.\n  def meets_restriction?\n
+    \   prerequisite_set.has_prerequisite?(restricted)\n  end\nend\n&lt;pre&gt;</pre>"
+- date: 2006-10-09
+  author: Nicolas Sanguinetti
+  content: "<p>Heh, as Joe said, you’re a huge Nerd, bu t I <strong>mean it</strong>
+    as a compliment ;)</p>\n\n\n\t<p>I know you haven’t checked any ruby solutions
+    yet, but you might like to check out Luke Redpath’s ActiveSpec<sup><a href=\"#fn1\">1</a></sup>.
+    It’s an implementation of the Specification pattern, which borrows some concepts
+    from logic-programming :)</p>\n\n\n\t<p>Anyway, this <span class=\"caps\">DSL</span>
+    of yours is a great idea, can’t wait to see it!</p>\n\n\n\t<pre><code>http://www.lukeredpath.co.uk/2006/9/28/introduction-to-activespec</code></pre>"
+- date: 2006-10-18
+  author: Mark
+  content: "<p>When I read your article I realised I’d seen a discussion on Ruby and
+    Prolog before. With a bit of searching I rediscovered these:</p>\n\n\n\t<p>Parsing:
+    http://www.kdedevelopers.org/node/2369\nImplementation: http://www.randomhacks.net/articles/2005/10/11/amb-operator\nDiscussion
+    (in the comments): http://www.randomhacks.net/articles/2005/12/03/why-ruby-is-an-acceptable-lisp</p>\n\n\n\t<p>Hope
+    you find some of that useful.</p>"
+- date: 2006-10-18
+  author: Jamis
+  content: "<p>Mark, fantastic links! Thanks for digging those up and sharing them
+    here. Wonderful food for thought.</p>"
+- date: 2006-10-23
+  author: Niels
+  content: "<p>Hey Jamis,</p>\n\n\n\t<p>maybe you also want to look into the following
+    stuff (I started writing a traffic light controller tonight (yes, just for fun)):</p>\n\n\n\t<p>Monads
+    in Ruby (wip):\nhttp://moonbase.rydia.net/mental/writings/programming/monads-in-ruby/00introduction.html</p>\n\n\n\t<p>Jim
+    Weirich’s <span class=\"caps\">AMB</span> library:\nhttp://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/183846</p>\n\n\n\t<p>Other
+    solutions to the “Constraint processing” Ruby quiz:\nhttp://www.rubyquiz.com/quiz70.html</p>\n\n\n\t<p>A
+    “rule engine” (probably not too useful):\nhttp://www.talios.com/a_ruby_rule_engine.htm</p>\n\n\n\t<p>And
+    I can also highly recommend the links posted by Mark.</p>\n\n\n\t<p>Cheers,\nNiels</p>"

@@ -1,0 +1,36 @@
+---
+layout: post
+title: Side Effects of Deferred Instantiation
+post_id: 278
+categories:
+- Projects
+date: 2004-04-22 23:46:00.000000000 -06:00
+author: Jamis
+permalink: 2004/04/22/side-effects-of-deferred-instantiation.html
+---
+
+<p>I spent yesterday evening tracking down a bug.</p>
+<p>As I’ve mentioned in another article, my “Chump Change” financial manager will be web based, and it will take advantage of the Copland IoC framework that I created. Last night I came across an unforeseen side effect of one of Copland’s features.</p>
+<p>First, let me temporarily digress and describe something of Chump Change’s architecture—it’s necessary in order to understand exactly what happened here.</p>
+<h2>Chump Change</h2>
+<p>First of all, Chump Change (I’ll just write it “CC”, subsequently) is built on top of the <a href="http://www.webrick.org">WEBrick</a> web architecture. It is very much like the Java servlet framework, but for Ruby. Thus, the controller for the CC application (think <acronym title="Model View Controller">MVC</acronym>, here) is a WEBrick servlet.</p>
+<p>This servlet “listens” for various exceptions and tries to display meaningful error messages to the client. For example, it is aware of time-out errors (and prompts the user to log in again), <span class="caps">HTTP</span> status errors (used to redirect the client to another page), and so forth. In the general case, it simply displays a special page that renders the stack trace and session contents to the client.</p>
+<p>Because CC takes advantage of Copland, many of CC’s internals are implemented as services that are accessed via the Copland service registry. One of these services is a “page manager”, which keeps track of all of the different pages in the application. The CC servlet uses the page manager to determine which page to display based on the <span class="caps">HTTP</span> request path.</p>
+<p>When the page manager is initialized, it reads through its configuration and loads every page class that it knows about. It will <code>require</code> any necessary files and then dynamically find a reference the class for each page.</p>
+<h2>Copland</h2>
+<p>Now, time for another digeression—you need to understand something about Copland.</p>
+<p>Each Copland service implements one of several <em>service models</em>. These determine when and how a particular service gets instantiated. They range from <em>simple</em> (every request for the service returns a new instance), to <em>singleton</em> (every request returns the same instance), to <em>threaded</em> (every thread gets its own instance of a service). The default service model used in Copland is <em>singleton deferred</em>, which means that only one instance is ever created, but the instantiation is deferred until the first time a method is invoked on the service.</p>
+<p>To accomplish this trick, Copland uses a proxy object, which will instantiate the service the first time a method of the service is invoked. The proxy then delegates all method calls to the service.</p>
+<h2>The Bug</h2>
+<p>Here’s what I was seeing. I’m not a perfect programmer (big surprise), so I make mistakes sometimes, often in the form of syntax errors. When these syntax errors occurred in a page class, the page manager would fail to load that class (since it would be unable to load that file). However, instead of seeing the “syntax error” message that I would expect to see (and did indeed see if the error was in any other source file), I saw a Copland error indicating that the specified page class could not be located. A related, but non-identical, error. So why wasn’t I seeing the more helpful syntax error?</p>
+<p>After about 3 hours of tracking, it turned out to be this:</p>
+<p>1. The PageManager service was using the <em>singleton deferred</em> model, since that was the default.</p>
+<p>2. The servlet would get a reference to the PageManager. However, this was actually a reference to the deferring proxy, since the instantiation of the PageManager itself was deferred.</p>
+<p>3. The servlet would invoke the <code>get_page</code> method on the PageManager, to get the page that was requested by the user. This would result in the proxy attempting to instantiate the PageManager.</p>
+<p>4. The instantiation of the PageManager would fail, due to the syntax error inside of the file that was being required. This would raise an exception, which the servlet would catch.</p>
+<p>5. Remember, the servlet was trying to handle all errors gracefully. So, it would see that an error was raised, and it would try to get a reference to the “error” page from the PageManager. However, the PageManager was never actually instantiated by the first call, so the proxy object would try to instantiate it, <em>again</em>.</p>
+<p>6. This second instantiation would also be doomed to fail. However, the require would succeed this time (since Ruby always remembers when a file has been previously required, and will not try to require it again). Thus, processing would continue to the point where it tried to get a reference to the page class, and it would fail <em>there</em>, since the class was not defined.</p>
+<p>7. A new exception would be raised, containing the “page class not found” error.</p>
+<h2>The Solution</h2>
+<p>Obviously, I needed a way to determine whether or not a proxy had instantiated its service yet. So I added one, and then in the rescue clause in the servlet I first check to see if the page manager proxy had instantiated the page manager yet. If it hadn’t, then there was some more critical error and I just dumped it to the log. (This class of errors won’t be pretty printed to the user.) Otherwise, I grabbed the error page from the page manager and rendered it.</p>
+<p>It all works beautifully, now. However, it was a painful lesson: deferred instantiation of classes can have unexpected consequences!</p>

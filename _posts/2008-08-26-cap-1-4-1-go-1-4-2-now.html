@@ -1,0 +1,16 @@
+---
+layout: post
+title: Cap 1.4.1? Go 1.4.2. Now.
+post_id: 46
+categories:
+- Projects
+date: 2008-08-26 09:43:00.000000000 -06:00
+author: Jamis
+permalink: 2008/08/26/cap-1-4-1-go-1-4-2-now.html
+---
+
+<p>Are you currently using Capistrano 1.4.1? If so, drop everything (I mean it, do this <span class="caps">RIGHT NOW</span>) and install Capistrano 1.4.2.</p>
+<p>Why, you ask?</p>
+<p>Capistrano 1.4.1 will work just fine, right up until you decide you want to experiment with Capistrano 2. When you do that, Cap 2.3+ will install net-ssh 2.x, which kills Capistrano 1.4.1 in all kinds of really obscure ways.</p>
+<p>The good news is that Cap 1.4.2 is completely compatible with Cap 1.4.1. It adds no new features. The only “bug” it fixes is that if you ever install net-ssh 2.x, Cap 1.4.2 will still happily continue to work.</p>
+<p>Ultimately, an upgrade to Cap 2 is recommended, but I understand it’s not feasible for everyone. So, if you’re one of those who can’t go cap2 yet, please please please <span class="caps">PLEASE</span> <em><span class="caps">PLEASE FOR THE LOVE OF ALL THAT IS HOLY</span></em> upgrade to Cap 1.4.2. It’ll make your life easier, and it’ll make my life easier (because I won’t have to keep troubleshooting the same issues over and over). Thanks!</p>

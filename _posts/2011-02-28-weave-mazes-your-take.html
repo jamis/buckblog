@@ -1,0 +1,24 @@
+---
+layout: post
+title: 'Weave Mazes: Your Take?'
+post_id: 8
+categories:
+- Under the Hood
+date: 2011-02-28 09:34:00.000000000 -07:00
+author: Jamis
+permalink: 2011/02/28/weave-mazes-your-take.html
+summary: >
+  A challenge is given, urging the reader to consider how a maze might be
+  created in which passages weave over and under each other. A subsequent
+  article is foreshadowed
+---
+
+<p>Later this week I’m going to post an article about how you might implement “weave mazes”, like this one:</p>
+<div style="text-align: center"><img src="http://jamisbuck.org/images/maze7.png" width="204" height="204" alt="weave maze" style="background-color: #ddd;"></div>
+<p>This is a maze where some of the passages “weave” over or under other passages. It’s a type of 3D maze, but very constrained (mostly for esthetic reasons):</p>
+<ul>
+	<li>Passages may only move under or over each other when they are perpendicular to each other.</li>
+		<li>A passage may not terminate (dead-end) either under or over another passage.</li>
+		<li>Passages may not change direction either over or under another passage.</li>
+	</ul>
+<p>Before I post my implementation, though, I wanted to get you thinking: how would <em>you</em> implement a weave maze?</p>

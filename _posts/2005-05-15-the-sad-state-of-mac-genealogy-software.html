@@ -1,0 +1,33 @@
+---
+layout: post
+title: The Sad State of Mac Genealogy Software
+post_id: 216
+categories:
+- Reviews
+date: 2005-05-15 20:08:00.000000000 -06:00
+author: Jamis
+permalink: 2005/05/15/the-sad-state-of-mac-genealogy-software.html
+---
+
+<p>I’ve recently been experiencing a renewal of interest in family history research. About 4 or 5 years ago I did quite a bit of work on my genealogy, but what with kids (and Ruby!) I’ve only recently rediscovered that passion.</p>
+<p>Unfortunately, this renewal of interest coincides with my adoption of Mac <span class="caps">OS X</span>. I say unfortunately, because I have looked and looked for a decent genealogical program for <span class="caps">OSX</span> and am frankly astounded by the lack.</p>
+<p>“Lack” is probably too strong of a word. There are actually quite a few applications for the Mac, and a few of them are even free. But I have been less than impressed what what I’ve seen.</p>
+<ul>
+	<li>
+<a href="http://www.leisterpro.com">Reunion</a> by Leister Productions appears to be the suite of choice for most Mac-using genealogy enthusiasts. Unfortunately, it is also <em>butt-ugly</em>. I can’t emphasize that enough. I’m sure there are plenty of ugly Mac programs, but I can’t believe people would pay $100 for something <a href="http://123.backpackit.com/assets/1799/reunion-screenshot.png">this hideous</a>. It’s like they couldn’t decide on a color schema and so went for as many pastels as they could find. And the list of children, there at the bottom? What’s with the bizarre diagonal layout?</li>
+		<li>
+<a href="http://myheredis.com">Heredis</a> is a bit better—it at least <em>looks</em> like a Mac application. But it follows a philosophy of “make everything available in a single window”, which I found a bit overwhelming. It also took <em>forever</em> to import my database (20k individuals), which doesn’t exactly make me confident in its ability to handle large databases. Not something I’m willing to spend seventy bucks on.</li>
+		<li>
+<a href="http://www.onlymac.de/html/stammbaum4en.html">MacFamilyTree</a> is the most visually appealing of the three commercial apps I checked out—I was very impressed by its look. However, my impression of it is that it would make a very good application for a beginning genealogist, who has a very small database. It doesn’t handle rapid data entry well at all, and it cannot handle databases larger than a few thousand individuals. It also uses the <span class="caps">GEDCOM</span> file directly as the persistant storage, which <em>does not scale</em>. (A side-note: I cannot understand why so many programmers of genealogy software persist in thinking that a raw <span class="caps">GEDCOM</span> file is a good way to store genealogical data. <em>It is a data transfer format, for crying out loud!</em> Any program that uses the <span class="caps">GEDCOM</span> directly as the database is unsuitable for my uses, because the raw <span class="caps">GEDCOM</span> file as data storage mechanism <em>cannot</em> scale to tens of thousands of individuals. Figure it out, people!)</li>
+	</ul>
+<p>I also looked at several free applications for the Mac, and they either were extremely minimal, funtionally, or they used the <span class="caps">GEDCOM</span> file directly. (I’ll forego a second rant.)</p>
+<p>I know there are some decent apps that run under <span class="caps">X11</span> (like <a href="http://gramps-project.org/"><span class="caps">GRAMPS</span></a>), but (for one) I don’t want to have to install all the million little dependencies those have, and (for another) I’ve never found those apps very well suited for my style of research.</p>
+<p>Frankly, the only genealogy application I’ve ever really liked is the Personal Ancestral File versions 4 and 5, which only runs on Windows. I <em>really</em> don’t want to have to do all my research on Windows. <em>Really</em>. I cannot use Windows anymore without becoming extremely frustrated.</p>
+<p>So, unless someone can point out another option for the Mac that I haven’t already looked at, I’m thinking about writing my own. (This is one of the “need” applications I mentioned in my last post.) In general, web-based genealogical programs are very difficult to use for anything other than browsing one’s database, but I’ll probably use a simple Rails-based interface so I can work out the data model, and then I’ll try and learn ruby-cocoa in order to make a prettier UI.</p>
+<p>My requirements:</p>
+<ul>
+	<li>Scale to tens of thousands of individuals.</li>
+		<li>Easily navigate the database, not only from parent to child and child to parent, but jumping to specific individuals quickly.</li>
+		<li>An evidence system that isn’t just an afterthought. Sources are <em>critical</em> to genealogical research, a fact which too many apps seem to overlook.</li>
+	</ul>
+<p>Anyway, we’ll see what comes of this. Regardless, I’ve got to find <em>something</em>.</p>

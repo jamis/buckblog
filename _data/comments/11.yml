@@ -1,0 +1,12 @@
+---
+- date: 2011-02-03
+  author: Vojtech Salbaba
+  content: "<p>And if you make it 1 bigger then you need, shed the top and left sides,
+    you get it without top and left straight passages, without any markable increase
+    in time complexity (for a maze n x n have to make n^2 operations, additional 2n+1
+    is imho little price for better looking maze).</p>"
+- date: 2011-02-03
+  author: Jamis
+  content: "<p>@Vojtech, sadly, that would result in a maze where some cells are not
+    accessible from others; if you remove the long corridors, you need to also make
+    sure that each cell is still part of the same spanning tree somehow.</p>"

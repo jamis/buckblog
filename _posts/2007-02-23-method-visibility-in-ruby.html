@@ -1,0 +1,111 @@
+---
+layout: post
+title: Method visibility in Ruby
+post_id: 109
+categories:
+- Essays and Rants
+date: 2007-02-23 09:05:00.000000000 -07:00
+author: Jamis
+permalink: 2007/02/23/method-visibility-in-ruby.html
+---
+
+<p>A common point of confusion to even experienced Ruby programmers is the visibility of <code>public</code>, <code>protected</code>, and <code>private</code> methods in Ruby classes. This largely stems from the fact that the behavior of those keywords in Ruby is different from what you might have learned from Java and C.</p>
+<p>To demonstrate these differences, let’s set up a little script:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt>23<tt>
+</tt>24<tt>
+</tt><strong>25</strong><tt>
+</tt>26<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">Foo</span><tt>
+</tt>  <span class="r">def</span> <span class="fu">a</span>; <span class="r">end</span><tt>
+</tt><tt>
+</tt>  <span class="c"># call 'a' with explicit 'self' as receiver</span><tt>
+</tt>  <span class="r">def</span> <span class="fu">b</span>; <span class="pc">self</span>.a; <span class="r">end</span><tt>
+</tt><tt>
+</tt>  <span class="c"># call 'a' with implicit 'self' as receiver</span><tt>
+</tt>  <span class="r">def</span> <span class="fu">c</span>; a; <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">def</span> <span class="fu">safe_send</span>(receiver, method, message)<tt>
+</tt>  <span class="c"># can't use 'send' because it bypasses visibility rules</span><tt>
+</tt>  eval <span class="s"><span class="dl">"</span><span class="k">receiver.</span><span class="il"><span class="dl">#{</span>method<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt><span class="r">rescue</span> =&gt; e<tt>
+</tt>  puts <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span>message<span class="dl">}</span></span><span class="k">: </span><span class="il"><span class="dl">#{</span>e<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt><span class="r">else</span><tt>
+</tt>  puts <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span>message<span class="dl">}</span></span><span class="k">: succeeded</span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>visibility = <span class="pc">ARGV</span>.shift || <span class="s"><span class="dl">"</span><span class="k">public</span><span class="dl">"</span></span><tt>
+</tt><span class="co">Foo</span>.send(visibility, <span class="sy">:a</span>)<tt>
+</tt><tt>
+</tt>foo = <span class="co">Foo</span>.new<tt>
+</tt>safe_send(foo, <span class="sy">:a</span>, <span class="s"><span class="dl">"</span><span class="k">explicit receiver       </span><span class="dl">"</span></span>)<tt>
+</tt>safe_send(foo, <span class="sy">:b</span>, <span class="s"><span class="dl">"</span><span class="k">explicit 'self' receiver</span><span class="dl">"</span></span>)<tt>
+</tt>safe_send(foo, <span class="sy">:c</span>, <span class="s"><span class="dl">"</span><span class="k">implicit 'self' receiver</span><span class="dl">"</span></span>)<tt>
+</tt></pre></td>
+</tr></table>
+<p>Basically, the script just creates a class “Foo” with three methods: <code>a</code>, which we’ll invoke directly with an explicit, non-self receiver; <code>b</code>, which invokes <code>a</code> with <code>self</code> as receiver, and <code>c</code>, which invokes <code>a</code> with an implicit receiver of <code>self</code>. We’ll use the <code>safe_send</code> method to call each of those methods and log the result.</p>
+<p>So, first: the <code>public</code> keyword. In Ruby, <code>public</code> means that the method may be invoked just about any way you please; in technical terms, the <em>receiver</em> of the message may be either explicit (“foo.bar”), self (“self.bar”) or implicit (“bar”).</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">$ ruby demo.rb public<tt>
+</tt>explicit receiver       : succeeded<tt>
+</tt>explicit 'self' receiver: succeeded<tt>
+</tt>implicit 'self' receiver: succeeded<tt>
+</tt></pre></td>
+</tr></table>
+<p>The <code>protected</code> keyword puts a straitjacket around the method. Any method declared <code>protected</code> may only be called if the receiver is <code>self</code>, explicitly or implicitly. (<strong>Update</strong>: protected methods may actually be called any time the receiver is of the same class as ‘self’...and an explicit self as receiver is just a specific case of that. Modifying the script to demonstrate this condition is left as an exercise for the reader.)</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">$ ruby demo.rb protected<tt>
+</tt>explicit receiver       : protected method `a' called for #&lt;Foo:0x3fc18&gt;<tt>
+</tt>explicit 'self' receiver: succeeded<tt>
+</tt>implicit 'self' receiver: succeeded<tt>
+</tt></pre></td>
+</tr></table>
+<p>Lastly, the <code>private</code> keyword is the tightest setting of all. A private method cannot be called with an explicit receiver at all, even if that receiver is “self”.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">$ ruby demo.rb private<tt>
+</tt>explicit receiver       : private method `a' called for #&lt;Foo:0x3fc18&gt;<tt>
+</tt>explicit 'self' receiver: private method `a' called for #&lt;Foo:0x3fc18&gt;<tt>
+</tt>implicit 'self' receiver: succeeded<tt>
+</tt></pre></td>
+</tr></table>
+<p>Note that, unlike languages such as Java, inheritance plays absolutely no part in determining method visibility in Ruby. Subclasses can access both protected and private methods of the superclass without trouble, so long as they abide by the rules laid out above.</p>
+<p>The difference between protected and private is very subtle, as you can see, which explains why protected is rarely used by most Rubyists. If it is used at all, it is generally as a convention, to document methods that are internal to the class, but which lie closer to the public interface than others. In Rails, for instance, you might declare your controller filter methods and model validation methods as “protected” (because the framework will call those methods) and reserve the “private” designation for those methods that are only ever called from within your own model or controller code.</p>

@@ -1,0 +1,28 @@
+---
+- date: 2008-02-26
+  author: please fix this?
+  content: "<p><span class=\"caps\">ERROR</span>:  While executing gem … (Gem::RemoteFetcher::FetchError)\n
+    \   OpenURI::HTTPError: 404 Not Found reading http://gems.rubyforge.org/gems/net-sftp-1.1.1.gem\n
+    \       &lt;!DOCTYPE <span class=\"caps\">HTML PUBLIC</span> ”-//IETF//DTD <span
+    class=\"caps\">HTML 2</span>.0//EN”&gt;</p>\n\n\n&lt;html&gt;&lt;head&gt;\n\n&lt;title&gt;404
+    Not Found&lt;/title&gt;\n\n&lt;/head&gt;&lt;body&gt;\n\n<h1>Not Found</h1>\n\n<p>The
+    requested <span class=\"caps\">URL</span> /gems/net-sftp-1.1.1.gem was not found
+    on this server.</p>\n\n&lt;/body&gt;&lt;/html&gt;\n\n\t<p>the links on the page
+    referenced above are also missing (more 404’s).</p>\n\n\n\t<p>someone miss a sym
+    link?</p>"
+- date: 2008-02-26
+  author: Jamis
+  content: "<p>For future reference—that error simply means the gem hasn’t yet propogated
+    to the mirrors, and you should try again later. It should all be good now, for
+    instance.</p>"
+- date: 2008-02-27
+  author: Mark
+  content: "<p>What is the time frame for Net::SSH v2?</p>"
+- date: 2008-02-27
+  author: Jamis
+  content: "<p>@mark, when it’s done. :) I’ve stopped giving <span class=\"caps\">ETA</span>’s,
+    because they kept passing me by. As I stated <a href=\"http://weblog.jamisbuck.org/2008/2/16/dealing-with-project-overload\">in
+    this post</a>, I’m working on it (and other projects) an hour a day, so progress
+    is being made (and logged), and it will all be ready when it is ready.</p>\n\n\n\t<p>If
+    you want to play with it as it stands (which is actually pretty close to being
+    finished), you can check it out via subversion here: <a href=\"http://svn.jamisbuck.org/net-ssh/branches/v2\">http://svn.jamisbuck.org/net-ssh/branches/v2</a>.</p>"

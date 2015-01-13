@@ -1,0 +1,24 @@
+---
+- date: 2011-02-19
+  author: Simon Strandgaard
+  content: "<p>Your mazes are awesome. Will try it out. Thank you Jamis.</p>"
+- date: 2011-02-19
+  author: Joe Larson
+  content: "<p>Wow!  Almost worth re-installing Ruby to try it!  Do you have working
+    demos online beyond your pics above?</p>"
+- date: 2011-02-19
+  author: Jamis
+  content: '<p>@Joe, no online demos; it’s a pretty <span class="caps">CPU</span>-intensive
+    beast at the moment. And I’ll be honest: to make the pretty pictures, you’ll need
+    to wire in your own display routines. I used ChunkyPNG for the images above. The
+    library includes two demos (both of which use ChunkyPNG for display), one that
+    demonstrates the tricolor data, and one that draws (and solves) mazes.</p>'
+- date: 2011-02-22
+  author: cal
+  content: <p>I’m somehow gratified to learn that such an awesome rubyist (that’s
+    you) just did his first <span class="caps">TDD</span>.  Any tips?</p>
+- date: 2011-02-22
+  author: Jamis
+  content: "<p>@cal, ha :) for the record, I’ve been writing tests for years, just
+    never actually did things purely test-first before. My advice is to read Kent
+    Beck’s book, “Test Driven Development”. It made all the difference for me.</p>"

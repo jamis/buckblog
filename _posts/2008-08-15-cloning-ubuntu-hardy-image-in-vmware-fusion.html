@@ -1,0 +1,27 @@
+---
+layout: post
+title: Cloning Ubuntu Hardy image in VMWare Fusion
+post_id: 47
+categories:
+- Tips & Tricks
+date: 2008-08-15 16:50:00.000000000 -06:00
+author: Jamis
+permalink: 2008/08/15/cloning-ubuntu-hardy-image-in-vmware-fusion.html
+summary: >
+  The author's attempts to clone a VMWare Fusion image are documented, with a
+  solution described
+---
+
+<p>Having spent the better part of a day googling and struggling, I figured it would possibly benefit others if I took a minute to post the steps I took to clone a VMWare Fusion image. The image in question is of Ubuntu Server (Hardy). I’m using VMWare Fusion 2 (beta 2).</p>
+<p>Just find your “Virtual Machines” folder (should be in your Documents folder), and copy the image in question to a new location. (The images are actually folders; a simple “cp -R” worked fine for me.)</p>
+<p>Then, open the copied image in VMWare Fusion and boot it. VMWare Fusion will ask if you if you copied or moved the image—be sure to say you copied it (that let’s VMWare set up a new <span class="caps">MAC</span> address for your image).</p>
+<p>Go ahead and log in once the server boots. You’ll find networking is all hosed. To fix networking, this worked for me:</p>
+<ul>
+	<li>“sudo hostname blah”, to set the hostname. This doesn’t change it permanently, so you’ll also want to:</li>
+		<li>“sudo vim /etc/hostname”. Change the contents of the file to the hostname you want. Then:</li>
+		<li>“sudo vim /etc/hosts”. Replace all mentions of the old hostname with the new hostname.</li>
+		<li>“sudo vim /etc/udev/rules.d/70-persistent-net.rules”. There will be two entries in this file. The first points eth0 at the old <span class="caps">MAC</span> address, and the second points eth1 at the new. Go ahead and delete the first entry, and change “eth1” to “eth0” in the second (and now only) entry.</li>
+		<li>“sudo shutdown -r now” to restart your virtual machine.</li>
+	</ul>
+<p>Once your machine comes back up, you should have a network again! Now, if only VMWare Fusion could bake all this in somehow… :/</p>
+<p>(Related: <a href="http://www.gorillapond.com/2006/07/31/install-vmware-tools-on-ubuntu/">installing VMWare Tools on Ubuntu server</a>. It’s from 2006, but it still worked well enough for me, though I followed the instructions for tweaking the network that the VMWare Tools install gave at the end, rather than what this gent said.)</p>

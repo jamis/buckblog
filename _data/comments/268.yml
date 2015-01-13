@@ -1,0 +1,15 @@
+---
+- date: 2006-04-06
+  author: hbien@ucsd.edu
+  content: |-
+    I just stumbled on your blog while googling "ruby's interface to vim" (I'm pretty sure that's how most people stumble on blogs =P).
+
+    I'm a bigggg fan of Vim too and I wanted to write some scripts for it, but not in Vim-script, in Ruby!  If you get a chance, could you link me the Ruby/Vim interface or tutorial site, if there are any?
+
+    Thanks in advance if you get this comment!  I'd appreciate it verryyy much, as googling around for the past half hour has led me to nothing so far =/.
+- date: 2006-04-06
+  author: Jamis
+  content: |-
+    The best source of vim/ruby documentation I've seen is in the vim help pages.  Just do ":help ruby" and read away.
+
+    Hope that helps!

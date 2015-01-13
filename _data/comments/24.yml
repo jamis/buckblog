@@ -1,0 +1,26 @@
+---
+- date: 2010-11-04
+  author: Chris
+  content: "<p>You have clearly done something right with your marketing strategy,
+    this product is all over my ruby feeds!</p>"
+- date: 2010-11-04
+  author: Jamis
+  content: "<p>@Chris, that’s awesome, considering the only Ruby involved is in my
+    build system. :)</p>"
+- date: 2010-11-07
+  author: Janine Lennert
+  content: |-
+    <p>Hi Jamis I really appreciate this app idea and I am very much looking forward to it! Want to get it the moment it’s available and will give you immediate feedback!
+    Janine, Munich, Germany</p>
+- date: 2010-11-07
+  author: Jamis
+  content: "<p>Thanks, Janine! I look forward to your comments!</p>"
+- date: 2010-11-20
+  author: Andrew
+  content: "<p>My son and I have been looking forward to this for a while – we’re
+    excited about it. Any news? Hope it’s working out ok.</p>"
+- date: 2010-11-23
+  author: Jamis
+  content: "<p>Sorry for the silence, @Andrew. The approval process was long and arduous,
+    but the app is finally available, as of last night! I’m drafting an announcement
+    right now. Please let me know what you think of the app!</p>"

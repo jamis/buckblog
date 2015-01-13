@@ -1,0 +1,61 @@
+---
+layout: post
+title: Application Deployment with Rails
+post_id: 207
+categories:
+- Essays and Rants
+date: 2005-07-14 12:48:00.000000000 -06:00
+author: Jamis
+permalink: 2005/07/14/application-deployment-with-rails.html
+---
+
+<p><em><strong>Update:</strong> as <a href="http://seagecko.org/thoughts/in-the-past/2005/07/14/easy-deployment/">others</a> have pointed out, this article may sound as if this approach is unique to Rails. It isn’t. I openly acknowledge that. The purpose of the article is to <a href="http://www.patrickpeak.com/comments/patrick/Weblog/rails_where_are_the_implications">dispel the FUDdy claim</a> that being a Ruby/Rails programmer somehow means you don’t know what it means to follow good deployment practices.</em></p>
+<p>Picture this:</p>
+<blockquote>
+		<p>It’s late at night. You need to deploy an update to your production application <span class="caps">ASAP</span>. You type a (single!) command on your local development box which deploys your application to both of your application servers and restarts the fcgi processes for them. To your horror, though, you discover that the recent “fix” actually broke a few things! So, you type another (single!) command, and <em>voila!</em>, the update is rolled back and your app is running on the previous version again. You make the necessary corrections, type another (single!) command, and everything is beautiful.</p>
+	</blockquote>
+<p>Sound fun? Sound easy? Anyone want to take a guess at what environment we’re talking about?</p>
+<p>Certainly not Java. Nor .NET. Heaven forbid it should be anything so “enterprisey”.</p>
+<p>If you guessed <a href="http://www.rubyonrails.com">Ruby on Rails</a>, you’d be dead on. This is, in fact, the very way <a href="http://37signals.com">37signals</a> manages their application deployment.</p>
+<h2>How it works</h2>
+<p>37signals has developed (and will soon release) a “release manager” application, which they use in-house to do atomic, distributed deployment of their RoR applications. Both <a href="http://www.basecamphq.com">Basecamp</a> and <a href="http://www.backpackit.com">Backpack</a> are deployed using this tool.</p>
+<p>It allows you define a few simple configuration items in a yaml file, things like “hosts to deploy to”, “deployment path”, and even Ruby hooks to be executed at various points during the deployment.</p>
+<p>This is then hooked up into the rakefiles for those applications, so they can do things like:</p>
+<code>
+<pre>
+  rake deploy
+  rake rollback
+</pre>
+</code>
+<p>A <code>deploy</code> simply establishes an <span class="caps">SSH</span> connection to each box to deploy to, uploads a deployment script to that box, and executes it. This is done atomically, as well, so if the deploy fails on one box, it is automatically rolled back on all boxes. If the deploy succeeds, the fcgi’s are restarted and the application begins running on the new version.</p>
+<h2>Managing versions</h2>
+<p>Rolling back is possible because of the way the deployment works. Every production application has the following directory structure:</p>
+<code>
+<pre>
+  [approot]
+      +--- releases
+      |       +--- 1234
+      |       |      +--- app
+      |       |      +--- doc
+      |       |      +--- cache
+      |       |      +--- log --&gt; [approot]/shared/log
+      |       |      +--- public
+      |       |      +--- test
+      |       +--- 1245
+      |       +--- 1371
+      |       +--- 1511
+      |       ...
+      |       +--- 2713
+      +--- shared
+      |       +--- log
+      |       ...
+      +--- current --&gt; [approot]/releases/2713
+</pre>
+</code>
+<p>In this lovely ascii diagram, you see the <code>approot</code> has two subdirectories (<code>releases</code>, and <code>shared</code>) and one symbolic link (<code>current</code>). The <code>releases</code> subdirectory contains one subdirectory for each release, named for the subversion version number of that release. The <code>current</code> symlink always points to the most recent release in that directory.</p>
+<p>The web server is then configured so that the webroot of the application is <code>[approot]/current/public</code>.</p>
+<p>When a deployment occurs, the latest release is checked out of the svn repository into the <code>releases</code> directory (of all of the production app servers) and the <code>current</code> symlink is updated. If all goes well on the other deployment servers, the fcgi processes are then restarted on all servers.</p>
+<p>This makes rolling back to the previous version a snap. You just update the symlink, delete the bad version, and restart the fcgis.</p>
+<h2>Conclusion</h2>
+<p>As you can see, there need be nothing haphazard about application deployment in RoR. To be honest, I’ve used Java war files and ear files (alot) and <em>hated</em> them. They weren’t for me. I find the kind of agile deployment described in this article much more powerful, and simpler.</p>
+<p>And, hey, it’s all written in Ruby. What’s not to like about that?</p>

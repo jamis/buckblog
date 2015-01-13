@@ -1,0 +1,106 @@
+---
+layout: post
+title: Nesting resources
+post_id: 104
+categories:
+- Tips & Tricks
+date: 2007-02-05 13:00:00.000000000 -07:00
+author: Jamis
+permalink: 2007/02/05/nesting-resources.html
+---
+
+<p>The RESTful routes feature in Rails makes it really, really simple to nest resources within each other. Just give a block to the “map.resources” call, and define further resources on the value yielded to that block:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">map.resources <span class="sy">:accounts</span> <span class="r">do</span> |accounts|<tt>
+</tt>  accounts.resources <span class="sy">:people</span> <span class="r">do</span> |people|<tt>
+</tt>    people.resources <span class="sy">:notes</span> <span class="r">do</span> |notes|<tt>
+</tt>      notes.resources <span class="sy">:comments</span><tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>That monstrosity would allow you to define routes like:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">accounts_url         <span class="c">#-&gt; /accounts</span><tt>
+</tt>account_url(<span class="i">1</span>)       <span class="c">#-&gt; /accounts/1</span><tt>
+</tt>people_url(<span class="i">1</span>)        <span class="c">#-&gt; /accounts/1/people</span><tt>
+</tt>person_url(<span class="i">1</span>,<span class="i">2</span>)      <span class="c">#-&gt; /accounts/1/people/2</span><tt>
+</tt>notes_url(<span class="i">1</span>,<span class="i">2</span>)       <span class="c">#-&gt; /accounts/1/people/2/notes</span><tt>
+</tt>note_url(<span class="i">1</span>,<span class="i">2</span>,<span class="i">3</span>)      <span class="c">#-&gt; /accounts/1/people/2/notes/3</span><tt>
+</tt>comments_url(<span class="i">1</span>,<span class="i">2</span>,<span class="i">3</span>)  <span class="c">#-&gt; /accounts/1/people/2/notes/3/comments</span><tt>
+</tt>comment_url(<span class="i">1</span>,<span class="i">2</span>,<span class="i">3</span>,<span class="i">4</span>) <span class="c">#-&gt; /accounts/1/people/2/notes/3/comments/4</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Simple! However, in using RESTful routes more and more, I’m coming to realize that this is not a best practice. Rule of thumb: <em>resources should never be nested more than 1 level deep</em>. A collection may need to be scoped by its parent, but a specific member can always be accessed directly by an id, and shouldn’t need scoping (unless the id is not unique, for some reason).</p>
+<p>Think about it. If you only want to view a specific comment, you shouldn’t have to specify the account, person, and note for the comment in the <span class="caps">URL</span>. (Permission concerns can come into this, to some degree, but even then I’d argue that judicious use of the session is better than complicating your URLs.) However, if you want to view all comments for a particular note, then you <em>do</em> need to scope the request by that note. Given the above nesting of routes, I’m finding the following a better (if slightly more verbose) method:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">map.resources <span class="sy">:accounts</span> <span class="r">do</span> |accounts|<tt>
+</tt>  accounts.resources <span class="sy">:people</span>, <span class="sy">:name_prefix</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">account_</span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>map.resources <span class="sy">:people</span> <span class="r">do</span> |people|<tt>
+</tt>  people.resources <span class="sy">:notes</span>, <span class="sy">:name_prefix</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">person_</span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>map.resources <span class="sy">:notes</span> <span class="r">do</span> |notes|<tt>
+</tt>  notes.resources <span class="sy">:comments</span>, <span class="sy">:name_prefix</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">note_</span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>map.resources <span class="sy">:comments</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>You’ll notice that I define each resource (except accounts) twice: once at the top level, and once nested within another resource. For the nested resources, I also give a “name_prefix”—this gets tacked onto the front of the named routes that are generated.</p>
+<p>So, the above mappings give you the following named routes:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">accounts_url          <span class="c">#-&gt; /accounts</span><tt>
+</tt>account_url(<span class="i">1</span>)        <span class="c">#-&gt; /accounts/1</span><tt>
+</tt>account_people_url(<span class="i">1</span>) <span class="c">#-&gt; /accounts/1/people</span><tt>
+</tt>person_url(<span class="i">2</span>)         <span class="c">#-&gt; /people/2</span><tt>
+</tt>person_notes_url(<span class="i">2</span>)   <span class="c">#-&gt; /people/2/notes</span><tt>
+</tt>note_url(<span class="i">3</span>)           <span class="c">#-&gt; /notes/3</span><tt>
+</tt>note_comments_url(<span class="i">3</span>)  <span class="c">#-&gt; /notes/3/comments</span><tt>
+</tt>comment_url(<span class="i">4</span>)        <span class="c">#-&gt; /comments/4</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The <span class="caps">URL</span>’s are shorter, and the parameters to the named routes are much simpler. It’s an all-around win! I won’t go so far as to say that resources should <em>never</em> be deeply nested, but I will say that you should think long and hard before you go that route.</p>

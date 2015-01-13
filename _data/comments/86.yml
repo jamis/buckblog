@@ -1,0 +1,13 @@
+---
+- date: 2007-06-18
+  author: Jeff Dean
+  content: "<p>Does this change the way net-ssh reads the public key files?  After
+    upgrading I couldn’t get any cap tasks to work – they kept failing with a Net::SSH::HostKeyMismatch.
+    \ Reverting to the older version fixed things up.</p>"
+- date: 2007-06-18
+  author: Jamis
+  content: "<p>Jeff, you’re sure you installed 1.1.2, and not 1.1.1? 1.1.2 fixes problems
+    that 1.1.1 had with host key mismatches, and works flawlessly for me.</p>"
+- date: 2007-06-19
+  author: jeroen
+  content: "<p>Good stuff, works fine!</p>"

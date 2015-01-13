@@ -1,0 +1,76 @@
+---
+layout: post
+title: Helping ActiveRecord finders help you
+post_id: 180
+categories:
+- Tips & Tricks
+date: 2006-10-06 22:52:00.000000000 -06:00
+author: Jamis
+permalink: 2006/10/06/helping-activerecord-finders-help-you.html
+---
+
+<p>For an application I helped write a few months ago, I found myself needing a way to randomly display a single record from the database. I considered creating a new action that would do this, but I disliked that approach for two reasons:</p>
+<ul>
+	<li>it was almost exactly the same (code and view) as displaying a specific record by ID, and</li>
+		<li>adding the specialized action wasn’t very RESTful, which is something I’ve been trying hard to internalize</li>
+	</ul>
+<p>My action for displaying a single record looked something like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">show</span><tt>
+</tt>  <span class="iv">@thing</span> = <span class="co">Thing</span>.find(params[<span class="sy">:id</span>])<tt>
+</tt><tt>
+</tt>  respond_to <span class="r">do</span> |wants|<tt>
+</tt>    wants.html<tt>
+</tt>    wants.js<tt>
+</tt>    wants.xml { render <span class="sy">:xml</span> =&gt; <span class="iv">@thing</span>.to_xml }<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>This allowed my (RESTfully routed) application to happily respond to <span class="caps">URL</span>’s of the following format:</p>
+<ul>
+	<li><code>/things/15</code></li>
+		<li><code>/things/15.xml</code></li>
+		<li><code>/things/15.js</code></li>
+	</ul>
+<p>I realized that all I was wanting was a special case of the ID, the case where the ID is randomly selected. In other words, I wanted to be able to say:</p>
+<ul>
+	<li><code>/things/random</code></li>
+		<li><code>/things/random.xml</code></li>
+		<li><code>/things/random.js</code></li>
+	</ul>
+<p>But if I did that, the string “random” would be passed to the <code>Thing.find</code> method, and that would be bad, right?</p>
+<p>Well…</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">Thing</span> &lt; <span class="co">ActiveRecord</span>::<span class="co">Base</span><tt>
+</tt>  <span class="r">def</span> <span class="pc">self</span>.find(*args)<tt>
+</tt>    <span class="r">if</span> args.first.to_s == <span class="s"><span class="dl">"</span><span class="k">random</span><span class="dl">"</span></span><tt>
+</tt>      ids = connection.select_all(<span class="s"><span class="dl">"</span><span class="k">SELECT id FROM things</span><span class="dl">"</span></span>)<tt>
+</tt>      <span class="r">super</span>(ids[rand(ids.length)][<span class="s"><span class="dl">"</span><span class="k">id</span><span class="dl">"</span></span>].to_i)<tt>
+</tt>    <span class="r">else</span><tt>
+</tt>      <span class="r">super</span><tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>And voila! It all Just Works.</p>

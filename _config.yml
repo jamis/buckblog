@@ -1,0 +1,44 @@
+name: The Buckblog
+description: assorted ramblings by Jamis Buck
+markdown: redcarpet
+highlighter: true
+exclude: [public]
+url: http://weblog.jamisbuck.org
+
+redcarpet:
+  extensions: [ smart ]
+
+category_dict:
+  "announcements":
+    slug: announcements
+    proper: Announcements
+  "essays and rants":
+    slug: essays-and-rants
+    proper: "Essays and Rants"
+  "life":
+    slug: life
+    proper: Life
+  "metablog":
+    slug: metablog
+    proper: Metablog
+  "odds & ends":
+    slug: odds-and-ends
+    proper: "Odds & Ends"
+  "projects":
+    slug: projects
+    proper: Projects
+  "redirect":
+    slug: redirect
+    proper: Redirect
+  "reviews":
+    slug: reviews
+    proper: Reviews
+  "spotlight":
+    slug: spotlight
+    proper: Spotlight
+  "tips & tricks":
+    slug: tips-and-tricks
+    proper: "Tips & Tricks"
+  "under the hood":
+    slug: under-the-hood
+    proper: "Under the Hood"

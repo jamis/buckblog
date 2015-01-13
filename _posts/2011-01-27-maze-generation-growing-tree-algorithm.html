@@ -1,0 +1,307 @@
+---
+layout: post
+title: 'Maze Generation: Growing Tree algorithm'
+post_id: 13
+categories:
+- Under the Hood
+date: 2011-01-27 07:48:00.000000000 -07:00
+author: Jamis
+permalink: 2011/01/27/maze-generation-growing-tree-algorithm.html
+summary: >
+  The author admits to finding a new favorite maze algorithm, and proceeds
+  to describe, walk through, and animate it. Sample code is given
+---
+
+<p>Remember way back in the <a href="http://weblog.jamisbuck.org/2010/12/27/maze-generation-recursive-backtracking">first article of this series</a>, where I said that Recursive Backtracking was my favorite for generating mazes? Well, I changed my mind. My new favorite is the Growing Tree algorithm.</p>
+<p>This algorithm is pretty cool. Configured one way, it mimics the behavior of the <a href="http://weblog.jamisbuck.org/2010/12/27/maze-generation-recursive-backtracking">Recursive Backtracking algorithm</a>. Configured another, it works almost exactly like <a href="http://weblog.jamisbuck.org/2011/1/10/maze-generation-prim-s-algorithm">Prim’s algorithm</a>. Another trivial change, and you can generate mazes with attributes of both.</p>
+<p>It’s really pretty slick. Here’s how it works:</p>
+<ol>
+	<li>Let C be a list of cells, initially empty. Add one cell to C, at random.</li>
+		<li>Choose a cell from C, and carve a passage to any unvisited neighbor of that cell, adding that neighbor to C as well. If there are no unvisited neighbors, remove the cell from C.</li>
+		<li>Repeat #2 until C is empty.</li>
+	</ol>
+<p>Pretty straight-forward, really. But the fun lies in how you choose the cells from C, in step #2. If you always choose the newest cell (the one most recently added), you’ll get the recursive backtracker. If you always choose a cell at random, you get Prim’s. It’s remarkably fun to experiment with other ways to choose cells from C.</p>
+<p>Let’s look at a simple example.</p>
+<h2>An example</h2>
+<p>I’ll demonstrate the “choose newest” cell selection method, which will hopefully be enlightening enough that you can imagine on your own how the “choose random” method might proceed.</p>
+<p>The algorithm begins by adding an arbitrary cell to the list. We mark the cell as “in”; I’m also going to assign the cell a number, visually, to help keep track of the relative age of each cell. Also, cells in red are in the list of “live” cells; they’ll go white once they’ve been removed from the list.</p>
+<p>So, onward!</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w mark">1</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>Next step: we choose the newest cell from the list, randomly select one of its unvisited neighbors, carve a path to it, and add the neighbor to the list:</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n e w mark">1</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="s e w mark">2</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>Let’s do it again, once more choosing the newest cell from the list:</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n e w mark">1</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s w mark">3</td>
+<td class="s e mark">2</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>See the pattern? By always choosing the cell most recently added to the list, each subsequent step simply extends the passage one more step, effectively doing a random walk. But how does the algorithm behave when the passage cannot be extended any further?</p>
+<p>Let’s fast forward a bit and see what the behavior is. Here we are now, six iterations further along, and we’ve hit a dead-end at cell #9.</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n e w mark">1</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n w mark">3</td>
+<td class="s e mark">2</td>
+<td class="n w mark">7</td>
+<td class="n e mark">8</td>
+</tr>
+<tr>
+<td class="s w mark">4</td>
+<td class="n s mark">5</td>
+<td class="s e mark">6</td>
+<td class="s e w mark">9</td>
+</tr>
+</table>
+<p>At this point, the algorithm would select the newest cell (#9), and then try to find an unvisited neighbor cell. Alas, there isn’t one! So cell #9 is <del>voted off the island</del> removed from the list:</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n e w mark">1</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n w mark">3</td>
+<td class="s e mark">2</td>
+<td class="n w mark">7</td>
+<td class="n e mark">8</td>
+</tr>
+<tr>
+<td class="s w mark">4</td>
+<td class="n s mark">5</td>
+<td class="s e mark">6</td>
+<td class="s e w">9</td>
+</tr>
+</table>
+<p>Then the algorithm goes around again, grabbing the newest cell from the list. This time, that’s #8, and sure enough, there is an unvisited adjacent cell that we can move to:</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n e w mark">1</td>
+<td class="n s e w out"></td>
+<td class="n e w mark">10</td>
+</tr>
+<tr>
+<td class="n w mark">3</td>
+<td class="s e mark">2</td>
+<td class="n w mark">7</td>
+<td class="e mark">8</td>
+</tr>
+<tr>
+<td class="s w mark">4</td>
+<td class="n s mark">5</td>
+<td class="s e mark">6</td>
+<td class="s e w">9</td>
+</tr>
+</table>
+<p>Did you see that?! It backtracked!</p>
+<p>Not really. It wasn’t intentionally backtracking; it just happened that the algorithm’s choice of cell was the same one that the backtracking algorithm would have chosen. And it will continue to choose identically to the backtracker, clear up until every cell has been visited and it has to “backtrack” all the way back to the original cell. At that point, the list of cells will be empty, and the algorithm will terminate.</p>
+<p>Pretty cool!</p>
+<p>Take a moment and think about how the algorithm would change if, instead of choosing the newest cell each time, we chose one at random. I’ve already told you it would behave like Prim’s algorithm in this case, but can you see why? I hope so, because I’m not going to draw any more diagrams tonight. :)</p>
+<p>Instead, you can play with the following demo, which has presets for several different cell-selection methods. Choose a few different ones and compare how they behave.</p>
+<script type="text/javascript" src="/javascripts/maze-minified.js"></script>
+<p style="margin-left: 20px; font-size: 80%">
+Cell selection method: <select id="selection_methods" onchange="$('growtree_small').mazeReset(); $('growtree_medium').mazeReset();">
+<option value="newest">Newest (Recursive Backtracker)</option>
+<option value="random">Random (Prim's)</option>
+<option value="newest:75,random:25">Newest/Random, 75/25 split</option>
+<option value="newest;random">Newest/Random, 50/50 split</option>
+<option value="newest:25,random:75">Newest/Random, 25/75 split</option>
+<option value="oldest">Oldest</option>
+<option value="middle">Middle</option>
+<option value="newest;oldest">Newest/Oldest, 50/50 split</option>
+<option value="oldest;random">Oldest/Random, 50/50 split</option>
+</select>
+</p>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("GrowingTree", 5, 5, { "class": "small", id: "growtree_small", "watch": false, input: function() { return $F('selection_methods'); }});</script>
+<script type="text/javascript">Maze.createCanvasWidget("GrowingTree", 15, 15, { "class": "medium", id: "growtree_medium", "watch": false, interval: 25, input: function() { return $F('selection_methods'); }});</script>
+</div>
+<h2>Implementation</h2>
+<p>Implementation-wise, this is one of the simplest algorithms (another reason to love it!). In fact, in my own implementation, the most complex part came from code that I added that lets you specify the cell-selection method when the script is executed!</p>
+<p>It starts by selecting a random cell and adding it to the list:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">x, y = rand(width), rand(height)<tt>
+</tt>cells &lt;&lt; [x, y]<tt>
+</tt></pre></td>
+</tr></table>
+<p>The program them simply loops until the list is empty:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">until</span> cells.empty?<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Within the loop, we first select the cell to operate on. I’m going to mask my own program’s complexity here behind a simple “choose_index” method; it takes a number and returns a number less than that.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">index = choose_index(cells.length)<tt>
+</tt>x, y = cells[index]<tt>
+</tt></pre></td>
+</tr></table>
+<p>Next, we iterate over a randomized list of directions, looking for an unvisited neighbor. If no such neighbor is found, we delete the given cell from the list before continuing.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">[<span class="co">N</span>, <span class="co">S</span>, <span class="co">E</span>, <span class="co">W</span>].shuffle.each <span class="r">do</span> |dir|<tt>
+</tt>  nx, ny = x + <span class="co">DX</span>[dir], y + <span class="co">DY</span>[dir]<tt>
+</tt>  <span class="r">if</span> nx &gt;= <span class="i">0</span> &amp;&amp; ny &gt;= <span class="i">0</span> &amp;&amp; nx &lt; width &amp;&amp; ny &lt; height &amp;&amp; grid[ny][nx] == <span class="i">0</span><tt>
+</tt>    <span class="c"># ...</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt>cells.delete_at(index) <span class="r">if</span> index<tt>
+</tt></pre></td>
+</tr></table>
+<p>When a valid, unvisited neighbor is located, we carve a passage between the current cell and that neighbor, add the neighbor to the list, set <code>index</code> to nil (to indicate that an unvisited neighbor was found), and then break out of the innermost loop.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">grid[y][x] |= dir<tt>
+</tt>grid[ny][nx] |= <span class="co">OPPOSITE</span>[dir]<tt>
+</tt>cells &lt;&lt; [nx, ny]<tt>
+</tt>index = <span class="pc">nil</span><tt>
+</tt><span class="r">break</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>And that’s really all there is to it. Some possible implementations of the <code>choose_index</code> method might be:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">choose_index</span>(ceil)<tt>
+</tt>  <span class="r">return</span> ceil<span class="i">-1</span> <span class="r">if</span> choose_newest?<tt>
+</tt>  <span class="r">return</span> <span class="i">0</span> <span class="r">if</span> choose_oldest?<tt>
+</tt>  <span class="r">return</span> rand(ceil) <span class="r">if</span> choose_random?<tt>
+</tt>  <span class="c"># or implement your own!</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Try it out and see what new cell selection methods you discover!</p>
+<h2>Conclusion</h2>
+<p>Personally, I love the flexibility of this algorithm. It’s surprisingly easy—and addicting!—to try crazy new ideas for selecting cells, and the algorithm itself is almost trivially simple to implement. Performance-wise, the algorithm is one of the faster ones (assuming you can make removing a cell from the list reasonably fast), and while memory use is proportional to the size of the maze itself, that’s not unusual for most of these algorithms.</p>
+<p>Seriously, what’s not to like?!</p>
+<p>Give it a try and link to your implementations in the comments. Share your ideas for new cell selection methods, too—I’d love to see what you come up with!</p>
+<p>For reference, the complete source of my implementation, in Ruby, is below. Remember that most of the code in my implementation is for cell selection and displaying the maze; the algorithm itself is only the tiny bit at the end!</p>
+<script src="https://gist.github.com/760749.js?file=growing-tree.rb"></script>
+<noscript>
+<a href="https://gist.github.com/760749">growing-tree.rb</a> on gist.github.com</noscript>
+<p>Enjoy!</p>

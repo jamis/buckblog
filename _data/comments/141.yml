@@ -1,0 +1,75 @@
+---
+- date: 2007-01-12
+  author: Josh
+  content: "<p>Very cool.  Thanks for these updates—I’ve enjoyed them quite a bit.</p>"
+- date: 2007-01-12
+  author: Piotr Usewicz
+  content: "<p>I can see that loads of great posts are coming from you Jamis!</p>"
+- date: 2007-01-12
+  author: Chris
+  content: "<p>link_to_function supports inline rjs?!?  Jamis, you just blew my mind.</p>"
+- date: 2007-01-13
+  author: John Ward
+  content: "<p>Jamis, \nAnother gem!</p>\n\n\n\t<p>The information, quality and clarity
+    of your posts are fantastic. The best rails related blog by a mile in my opinion.</p>\n\n\n\t<p>Thanks,\nJohn</p>"
+- date: 2007-01-13
+  author: Brian
+  content: "<p>Awesome.</p>\n\n\n\t<p>I don’t really understand why excessive use
+    of inline <span class=\"caps\">RJS</span> is bad, does the generated Javascript
+    slow down the page rendering?</p>"
+- date: 2007-01-13
+  author: Jamis
+  content: "<p>Thanks, John!</p>\n\n\n\t<p>Brian, the JavascriptGenerator that <span
+    class=\"caps\">RJS</span> uses internally isn’t very lightweight right now, so
+    if you use it alot on a page it will significantly slow down the rendering of
+    your page. We had a page that was doing about 120 (very simple) calls to update_page,
+    and by removing those and replacing them with explicit javascript, we increased
+    the rendering speed by 10x (no exaggeration!). However, a handful of calls to
+    update_page will not significantly impact your render time.</p>"
+- date: 2007-01-13
+  author: zerohalo
+  content: "<p>Cool! Shouldn’t we always use helpers in such case, though? I thought
+    the Gods of Rails instruct us to stay away from such code in views?</p>"
+- date: 2007-01-13
+  author: gcnovus
+  content: "<p>This is a great post, but I’m confused by the line:\npage[:some_div].down(‘form’).reset</p>\n\n\n\t<p>Some
+    other people have used the “down” and “up” functions on <span class=\"caps\">DOM</span>
+    elements, but I can’t find a definition of those functions anywhere.  They don’t
+    seem to be part of standard javascript, nor of scriptaculous nor prototype.  Does
+    anybody know where I can find their definitions?</p>\n\n\n\t<p>-gcn</p>"
+- date: 2007-01-13
+  author: Jamis
+  content: "<p>gcnovus, they are in prototype.js. The “down” method, if given with
+    no parameters, returns the first child element. Likewise, “up” without parameters
+    returns the parent element. If a parameter is given, it is a <span class=\"caps\">CSS</span>
+    selector that describes the ancestor (for up) or descendant (for down) node to
+    select. In the example, it will return the first “form” tag that is a descendant
+    of the element with id “some_div”.</p>\n\n\n\t<p>It’s really one of the more amazingly
+    useful functions in prototype!</p>"
+- date: 2007-01-14
+  author: gcnovus
+  content: "<p>Thanks!  I love it when I find things I’ve already written 4 times
+    in open source code.  :)</p>"
+- date: 2007-01-14
+  author: gcnovus
+  content: "<p>A more on-topic question: is there an elegant way to make this degrade
+    for non-javascript browsers?</p>"
+- date: 2007-01-16
+  author: meekish
+  content: "<p>Autofocus the first form input on every page of your site:</p>\n\n\n\t<ul>\n\t<li>Give
+    the body tag in your application.rhtml an id of ‘application’</li>\n\t</ul>\n\n\n\t<ul>\n\t<li>Call
+    the following code using an onload, DOMLoaded (lowpro), or place it just before
+    the closing body tag (if you like to ignore best practices :):</li>\n\t</ul>\n\n\n\t<p>$(‘application’).down(‘input’).focus();</p>\n\n\n\t<p>down()
+    is just the thing I’ve been looking for to use on a small intranet app. Sweetness!</p>"
+- date: 2007-01-16
+  author: meekish
+  content: "<p>Would there be a way to autofocus the first input that’s wrapped in
+    a div with a class name of fieldWithErrors?</p>"
+- date: 2007-01-16
+  author: Jamis
+  content: "<p>meekish, you might try:</p>\n\n\n<table class=\"CodeRay\"><tr>\n  <td
+    title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre><tt>\n</tt><span class=\"gv\">$$</span>(<span class=\"s\"><span
+    class=\"dl\">'</span><span class=\"k\">div.fieldWithErrors input</span><span class=\"dl\">'</span></span>).first().focus();<tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>Note
+    that the above does no error checking (for instance, to see if there <span class=\"caps\">ARE</span>
+    any matching inputs), but it would be trivial to add such checking if needed.</p>"

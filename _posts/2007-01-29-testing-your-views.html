@@ -1,0 +1,72 @@
+---
+layout: post
+title: Testing your views
+post_id: 125
+categories:
+- Tips & Tricks
+date: 2007-01-29 13:42:00.000000000 -07:00
+author: Jamis
+permalink: 2007/01/29/testing-your-views.html
+---
+
+<p>Here’s a quick little “advice” tip: don’t use assertions to test the structure of your views.</p>
+<p>That is to say, don’t do this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c">#make sure the text field is in the table cell</span><tt>
+</tt>assert_select <span class="s"><span class="dl">"</span><span class="k">table td input[type=text]</span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt><span class="c"># make sure the person's name is in the h2 header tag</span><tt>
+</tt>assert_select <span class="s"><span class="dl">"</span><span class="k">h2</span><span class="dl">"</span></span>, person.name<tt>
+</tt></pre></td>
+</tr></table>
+<p>Why not? Because you want your views to be very fluid. You want to keep the cost of change is so low that you have no hesitation to jump in and rearrange things to make the view cleaner. If you are using explicit tag names in your tests, you reduce that fluidity. Your views become rigid, because your tests imply that using anything but a table to format your form is wrong. Want to use an h1 for the person’s name, or a div? Don’t you dare, <em>it’ll break the tests.</em></p>
+<p>The better way to test your views is to think about what you are really wanting to test. First of all, don’t test static content, like table structures and the order of form fields on a page. Instead, test the <em>dynamic</em> parts of your view, especially those parts that are subject to conditional rendering. Secondly, test <em>semantically</em>, not <em>syntactically</em>. That is to say, don’t base a test on the <em>type</em> of the tag, but rather on what you want the content to represent. Use <span class="caps">CSS</span> classes and <span class="caps">DOM</span> id’s instead of explicit tag names.</p>
+<p>Here’s a concrete example. Suppose you have a view like this:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="il"><span class="dl">&lt;%</span> <span class="r">if</span> <span class="iv">@user</span>.administrator? <span class="dl">%&gt;</span></span><tt>
+</tt>  Hi <span class="il"><span class="dl">&lt;%=</span> <span class="iv">@user</span>.name <span class="dl">%&gt;</span></span>! You appear to be an administrator.<tt>
+</tt>  <span class="il"><span class="dl">&lt;%=</span> link_to <span class="s"><span class="dl">"</span><span class="k">Click here</span><span class="dl">"</span></span>, admin_url, <span class="sy">:id</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">admin_link</span><span class="dl">"</span></span> <span class="dl">%&gt;</span></span><tt>
+</tt>  to see the admin stuff!<tt>
+</tt><span class="il"><span class="dl">&lt;%</span> <span class="r">end</span> <span class="dl">%&gt;</span></span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The only really significant thing you ought to be testing here is that the admin link only shows up for administrators. You <em>might</em> also want to test that the link points to where you expect it to, though that’s a lower importance.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">test_admin_sees_link</span><tt>
+</tt>  <span class="c"># set up session for an admin user first, and then:</span><tt>
+</tt>  get <span class="s"><span class="dl">"</span><span class="k">index</span><span class="dl">"</span></span><tt>
+</tt>  assert_select <span class="s"><span class="dl">"</span><span class="k">#admin_link</span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">def</span> <span class="fu">test_non_admin_does_not_see_link</span><tt>
+</tt>  <span class="c"># set up session for a normal, non-admin user first, and then:</span><tt>
+</tt>  get <span class="s"><span class="dl">"</span><span class="k">index</span><span class="dl">"</span></span><tt>
+</tt>  assert_select <span class="s"><span class="dl">"</span><span class="k">#admin_link</span><span class="dl">"</span></span>, <span class="pc">false</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Arranging your tests like this will make them less likely to break on cosmetic tweaks, which will increase your confidence in your tests and your willingness to tweak your views.</p>

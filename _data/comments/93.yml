@@ -1,0 +1,138 @@
+---
+- date: 2007-04-06
+  author: Alex MacCaw
+  content: "<p>Great trick. How would you do a ‘collect’ rather than each?</p>"
+- date: 2007-04-06
+  author: Jacob Fugal
+  content: "<p>Alex:</p>\n\n\n\t<p>Below is how I would implement collect, modeled
+    off the above (and with the same caveats).</p>\n\n\n\t<p>But remember—the reason
+    we’re introducing this hack is to prevent having an array of hundreds of thousands
+    or millions of ActiveRecord objects from one massive find. With the collect you’re
+    just recreating another array of the same size. Hopefully the items returned by
+    the block in the collect are more lightweight, so the size of the array will be
+    more lightweight. But also note that building a huge array through Array#concat
+    on several smaller arrays is probably going to reallocate memory for the array
+    many, many times, which can cause other problems…</p>\n\n\n\t<p>class &lt;&lt;ActiveRecord::Base\n
+    \ def collect(limit=1000)\n    results = []\n    rows = find(:all, :conditions
+    =&gt; [“id &gt; ?”, 0], :limit =&gt; limit)\n    while rows.any?\n      results.concat(rows.collect
+    { |record| yield record })\n      rows = find(:all, :conditions =&gt; [“id &gt;
+    ?”, rows.last.id], :limit =&gt; limit)\n    end\n    results\n  end\nend</p>"
+- date: 2007-04-06
+  author: Jacob Fugal
+  content: |-
+    <p>Sorry about the formatting above, hopefully this will work…</p>
+
+
+    <code>
+    class &lt;&lt;ActiveRecord::Base
+      def collect(limit=1000)
+        results = []
+        rows = find(:all, :conditions =&gt; [“id &gt; ?”, 0], :limit =&gt; limit)
+        while rows.any?
+          results.concat(rows.collect { |record| yield record })
+          rows = find(:all, :conditions =&gt; [“id &gt; ?”, rows.last.id], :limit =&gt; limit)
+        end
+        results
+      end
+    end
+    </code>
+- date: 2007-04-06
+  author: Jamis
+  content: "<p>Alex, as Jacob said, the point of this exercise is to avoid mapping
+    all of the rows into memory. If you need to use collect, you’re better of doing
+    like Jacob demonstrated, or even simpler, just doing <code>Foo.find(:all).collect
+    { ... }</code>.</p>"
+- date: 2007-04-06
+  author: Dr Nic
+  content: "<p>For DBs with inherent cursor support, could their adapters implement
+    #each, #collect, etc to utilise these cursors? The model + association implementations
+    of #each, et al, would need to delegate to the adapters to support this, I guess.</p>\n\n\n\t<p>I
+    should just go and look, but its so much easier to just ask :)</p>"
+- date: 2007-04-06
+  author: Giles Bowkett
+  content: "<p>I think the idea of adding each like that is a very good idea. How
+    much more complicated would it to be to add cursors for Postgres?</p>"
+- date: 2007-04-06
+  author: Jamis
+  content: "<p>Adding cursor support to ActiveRecord is non-trivial, but that shouldn’t
+    stop people from trying. :)</p>"
+- date: 2007-04-06
+  author: Dr Nic
+  content: "<p>@jamis – bah, your answer was as unhelpful :) as my question!</p>\n\n\n\t<p>Now
+    I’ll have to go investigate… :|</p>"
+- date: 2007-04-06
+  author: rise
+  content: "<p>Giles – most of our databases are small enough that returning the full
+    result set isn’t an issue and so far I’ve been able to narrow down the rest to
+    keep them efficient.  However, in the long run this is pretty interesting to me
+    and we’re a pure PostgreSQL shop with the luxury of dictating that’ll always be
+    the case barring a buyout.  I’m going to look into hacking this up with find_by_sql
+    and perhaps PL/Ruby’s cursor support instead of PL/pgSQL.  The biggest potential
+    issue I can see is that declaring cursors apparently needs to happen in single
+    transaction.</p>"
+- date: 2007-04-06
+  author: Michael Schuerig
+  content: "<p>Jamis, I think this time I’ve beat you to it :<del>) Alas, as nobody
+    reads my blog -</del> and why should they anyway?—it might have gone unnoticed
+    by the world.</p>\n\n\n\t<p>A cursor or offset/limit based implementation of Enumerable
+    for ActiveRecord</p>\n\n\n\t<p>http://schuerig.de/michael/blog/index.php/2007/02/03/ar-enumerable/</p>"
+- date: 2007-04-06
+  author: Jamis
+  content: "<p>Very nice, Michael! Kudos for the first write-up. :) And the nice implementation.</p>"
+- date: 2007-04-06
+  author: JGeiger
+  content: "<p>Isn’t this essentially what this plugin is being used for as well?
+    (Or at least his original use for it, now I just use it as a replacement for rails
+    paginator)</p>\n\n\n\t<p>http://cardboardrocket.com/pages/paginating_find</p>"
+- date: 2007-04-06
+  author: Jamis
+  content: <p>JGeiger, sort of. The implementation you linked to uses <span class="caps">LIMIT</span>
+    and <span class="caps">OFFSET</span>…and I wanted to specifically avoid an implementation
+    that used <span class="caps">OFFSET</span> because that becomes really, really
+    slow for large offsets. The solution I’m proposing here relies on MySQL’s ordering
+    of primary keys to provide a way to (effectively) mimic <span class="caps">OFFSET</span>
+    for a limited subset of queries, in a very efficient and fast manner.</p>
+- date: 2007-04-06
+  author: Sean Geoghegan
+  content: "<p>This is a pretty good work-around Jamis.  Although whoever is responsible
+    for the “all_hashes” method in the database adapter interface should get a stern
+    sideways glance.</p>\n\n\n\t<p>I’d really like a solution that made use of database
+    cursors and only created a single ActiveRecord object in memory at any one time
+    without needing a query for each row in the database, although I pretty much understand
+    that if I want that I should implement it and release it as a plugin, perhaps
+    I will get time one day.</p>"
+- date: 2007-04-06
+  author: Justin
+  content: "<p>So, what does the call to self there at the end do?</p>"
+- date: 2007-04-06
+  author: Jamis
+  content: "<p>Justin, it’s not a method call, it’s just making sure that the class
+    itself (Account, or whatever) is returned as the value of the call to “each”.
+    It’s a habit I’ve gotten into, to make it easier to chain method calls.</p>"
+- date: 2007-04-11
+  author: Pat Maddox
+  content: "<p>I wrote a paginator plugin about a week ago that people may find useful.
+    \ We have a lot of custom finder queries in our app, and it bugged me that I’d
+    have to duplicate stuff if I wanted to paginate over them.  So this plugin makes
+    it cake.</p>\n\n\n\t<p>http://evang.eli.st/blog/2007/4/4/arpaginator-easily-paginate-existing-query-methods</p>\n\n\n\t<p>Pretty
+    handy when you’ve encapsulated your wild finds, so you can just do</p>\n\n\n\t<p>paginate
+    { Account.find_all_belonging_to_heineken_drinkers_and_recovering_php_addicts }</p>"
+- date: 2007-04-13
+  author: dodik
+  content: "<p>This could be useful : http://cardboardrocket.com/pages/paginating_find</p>\n\n\n\t<p>(thanks
+    to Pat Maddox blog for pointing this).</p>"
+- date: 2007-04-16
+  author: Neal Bergstrom
+  content: "<p>Jamis,</p>\n\n\n\t<p>Several people have given me your name. I have
+    some questions about Provo-Salt Lake based Ruby on Rails developers for a project
+    <span class=\"caps\">I NEED</span> to finish fast. Can you contact me?</p>\n\n\n\t<p>N</p>"
+- date: 2007-04-29
+  author: Stephen Touset
+  content: "<p>paginating_find as mentioned earlier is very useful. Besides providing
+    pagination directly from a find (thus paginating over a group of objects matching
+    your :conditions), it provides implicit cursor support with :auto =&gt; true.</p>\n\n\n\t<p>However,
+    with regard to your example, this could be better done in your each by providing
+    a count of iterations to the each method itself, and using :offset in conjunction
+    with :limit. This would make your cursor support naturally support just about
+    every <span class=\"caps\">RDBMS</span>. Also, it would be nice to support an
+    options hash that gets passed along to the find.</p>"

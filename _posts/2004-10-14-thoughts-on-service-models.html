@@ -1,0 +1,70 @@
+---
+layout: post
+title: Thoughts on Service Models
+post_id: 336
+categories:
+- Projects
+date: 2004-10-14 17:06:00.000000000 -06:00
+author: Jamis
+permalink: 2004/10/14/thoughts-on-service-models.html
+---
+
+<p><a href="http://jakarta.apache.org/hivemind">HiveMind</a> (the only other DI container that I have any significant experience with) introduced me to the concept of <em>service models</em>. What a service model does is basically determine how and when a particular service is instantiated. For example, the “singleton” model (in HiveMind) ensures that a particular service is only instantiated once. It also makes sure that the service is not instantiated until the first time a method is invoked on it (“deferred” instantiation).</p>
+<p>I modeled the service models in both <a href="http://copland.rubyforge.org">Copland</a> and <a href="http://needle.rubyforge.org">Needle</a> on the approach taken by HiveMind. However, I’ve come to realize something:</p>
+<p><em>A single HiveMind service model manages two very different things.</em></p>
+<p>The first is the idea of “singleton” vs. “prototype”. That is to say, a service may be instantiated only once, or it may instantiated once for each request. Not knowing what the “proper” term for this concept might be, I’ll arbitrarily refer to it as a service’s <em>multiplicity</em>.</p>
+<p>The second idea is the idea of “deferred instantiation” vs. “immediate instantiation”. With the former, a service is not actually instantiated until the last possible moment—the moment when a client attempts to invoke a method on the service. With the latter, the service is instantiated at the moment it is requested. Again, not knowing what the proper term for this concept is, I’ll refer to it as a service’s <em>instantiability</em>.</p>
+<p>HiveMind (and, by inheritence, Copland and Needle) marry the combinations of <em>multiplicity</em> and <em>instantiability</em> into a set of predefined service models. For example, Copland supports the following models:</p>
+<table>
+		<tr>
+			<th>Model </th>
+			<th>Multiplicity </th>
+			<th>Instantiability </th>
+		</tr>
+		<tr>
+			<td> Prototype </td>
+			<td> 0..* </td>
+			<td> Immediate </td>
+		</tr>
+		<tr>
+			<td> Prototype-Deferred </td>
+			<td> 0..* </td>
+			<td> Deferred </td>
+		</tr>
+		<tr>
+			<td> Singleton </td>
+			<td> 0..1 </td>
+			<td> Immediate </td>
+		</tr>
+		<tr>
+			<td> Singleton-Deferred </td>
+			<td> 0..1 </td>
+			<td> Deferred </td>
+		</tr>
+		<tr>
+			<td> Threaded </td>
+			<td> 0..1 (<strong>) </strong>
+</td>
+			<td> Deferred </td>
+		</tr>
+	</table>
+<p>( The Threaded model is like the Singleton-Deferred model, except it allows up to one instance of the service <em>per thread</em>, instead of <em>per process</em>.)</p>
+<p>For convenience’s sake, it makes sense to marry them together. Why specify two values every time you want the “prototype-deferred” behavior? However, from an implementation perspective, I’ve begun to wonder if they shouldn’t be split apart.</p>
+<p>Specifically, what this implies is that to instantiate a service, a kind of pipeline is constructed and executed. Each element in the pipeline adds some additional logic to the process of instantiation. Thus, a simple “prototype-immediate” model would do nothing more than instantiate the requested service—a pipeline of length 1:</p>
+<pre>
+       +---------+
+  ...-&gt;+ service |
+       +---------+
+</pre>
+<p>The “service” element (shown) would perform the actual instantiation of the requested service.</p>
+<p>However, the “singleton-deferred” model would have three elements in the pipeline:</p>
+<pre>
+       +-----------+   +----------+   +---------+
+  ...-&gt;+ singleton +--&gt;+ deferred +--&gt;+ service |
+       +-----------+   +----------+   +---------+
+</pre>
+<p>The “singleton” element ensures that no subsequent element is ever called more than once. Thus, if the next element in the pipeline (whatever it might be) has never been called before, it is invoked and the result is cached. Otherwise, the cached result is automatically returned.</p>
+<p>The “deferred” element creates a proxy object that wraps the next element in the pipeline. This proxy object is immediately returned. The next element of the pipeline is not executed, then, until some method is invoked on the proxy, at which point the pipeline is resumed, the result obtained, and the method call delegated to that new object.</p>
+<p>Naturally, for convenience’s sake, you would want to be able to specify these pipelines as pre-defined packages. As I mentioned before, it would quickly become a burden to have to specify both the multiplicity and the instantiability when you nearly always want them in the same combination. But by <em>implementing</em> them separately, you would gain a smorgasbord of pipeline features that could be mixed and matched to create new packages. This would reduce code duplication between the service models, which is currently a (minor) problem in both Copland and Needle.</p>
+<p>Some combinations would not make sense, of course. You would never combine more than one multiplicity-enforcing pipeline element in the same pipeline (i.e., “singleton-prototype”). Nor would you combine multiple instantiability-enforcing elements (“deferred-immediate”). Packaging the elements into predefined models would help prevent such madness.</p>
+<p>Lastly, there may be additional unforeseen benefits to splitting them apart. The pipeline I described above might be used for more than just enforcing multiplicity and instantiability. I may just have to hack this approach into Needle and see what comes of it.</p>

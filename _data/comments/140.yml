@@ -1,0 +1,62 @@
+---
+- date: 2007-01-13
+  author: manveru
+  content: |-
+    <p>This is just great!
+    We’ll work to integrate this into Og <span class="caps">ASAP</span> :)</p>
+- date: 2007-01-13
+  author: Don
+  content: <p>Though installing <span class="caps">SWIG</span> is a good learning
+    experience, I’m glad the dependency is gone.  One less hurdle to convince coworkers
+    to use SQLite.  Thanks so much for your work on this library!</p>
+- date: 2007-01-14
+  author: Dieter Komendera
+  content: |-
+    <p>Great work Jamis! I pleased to see the <span class="caps">SWIG</span> dependency is gone!
+    You make our wold better! :)</p>
+- date: 2007-01-14
+  author: Tekin
+  content: "<p>Good work, thanks for the hard work on the blog, definitely one of
+    the best around.</p>\n\n\n\t<p>I have an sqlite3 related question – I’m using
+    it in my test environment, but have noticed that it’s not defaulting model attributes
+    to nil, instead setting them to 0, despite no default being set in the database
+    and allow null enabled. Any ideas why this might be?</p>"
+- date: 2007-01-14
+  author: Brandon Keepers
+  content: "<p>Jamis,</p>\n\n\n\t<p>Thanks for the bug fixes!</p>\n\n\n\t<p>One thing
+    I was hoping to see fixed-<del>and I don’t know if it’s a sqlite3-ruby isssue
+    or just the AR adapter</del>-is the obscure error messages.  MySQL gives a helpful
+    error message that says what problem was (or at least if it was an error with
+    the <span class=\"caps\">SQL</span> statement, a field doesn’t exist, etc.).  Is
+    this a something that can be fixed, or is it just an sqlite issue?</p>"
+- date: 2007-01-14
+  author: Jamis
+  content: "<p>Teken, it’s probably something in the Rails adapter for sqlite3, and
+    not in the sqlite3 bindings. Please do investigate and see what you can find.</p>\n\n\n\t<p>Brandon,
+    I’m not sure what you mean. Can you give an example?</p>"
+- date: 2007-01-15
+  author: weepy
+  content: <p>I also had a significant problem with sqlite3 in test environment. It
+    was converting my blank strings (as in ’’) into two quotes (as in ”’’”). It was
+    doing this on <span class="caps">OSX</span> and windows on both ruby 1.8.4 and
+    1.8.5, so I’m guessing it’s a rails problem. Unfortunately I couldn’t find anymore
+    info about it.</p>
+- date: 2007-01-15
+  author: chrisfarms
+  content: "<p>cool … should streamline new SQLite install a great deal.</p>\n\n\n\t<p>Thanx
+    for the effort</p>"
+- date: 2007-01-15
+  author: Brandon Keepers
+  content: "<p>Jamis,</p>\n\n\n\t<p>Here’s an example. If I have a mis-named fixture
+    when I run my tests, mysql raises this helpful error:</p>\n\n\n<pre>\nActiveRecord::StatementInvalid:
+    Mysql::Error: Unknown column 'first_nam' in 'field list': INSERT INTO users (`first_nam`,
+    `id`) VALUES ('Joe', 11)\n</pre>\n\n\t<p>Where as, sqlite raises this:</p>\n\n\n<pre>\n/opt/local/lib/ruby/gems/1.8/gems/sqlite3-ruby-1.2.0/lib/sqlite3/errors.rb:94:in
+    `check': SQL logic error or missing database (SQLite3::SQLException)\n</pre>\n\n\t<p>I
+    like to use sqlite when developing locally, but this bites me every time and usually
+    forces me to switch to mysql.</p>"
+- date: 2007-01-15
+  author: Jamis
+  content: "<p>Brandon, I can’t duplicate that second error using the sqlite3 adapter
+    with ActiveRecord. It’s probably a Rails issue, though, so if you post detailed
+    steps to reproducing the problem on the Rails bugtracker, there’s a better chance
+    of it getting fixed, or at least addressed.</p>"

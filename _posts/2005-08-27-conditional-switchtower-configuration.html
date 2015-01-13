@@ -1,0 +1,39 @@
+---
+layout: post
+title: Conditional SwitchTower Configuration
+post_id: 204
+categories:
+- Tips & Tricks
+date: 2005-08-27 12:59:00.000000000 -06:00
+author: Jamis
+permalink: 2005/08/27/conditional-switchtower-configuration.html
+---
+
+<p>The <a href="http://manuals.rubyonrails.com/read/book/17">SwitchTower</a> configuration language does not, by itself, support multiple configurations in the same recipe file. That is to say, SwitchTower does not provide a way to say “in this circumstance, this machine is an app server, and in this other circumstance, this other machine is an app server.”</p>
+<p>However, because the recipe files are simply Ruby scripts, you can take advantage of Ruby’s control structures to differentiate between multiple configurations based on (for instance) an environment variable:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">if</span> <span class="co">ENV</span>[<span class="s"><span class="dl">"</span><span class="k">STAGE</span><span class="dl">"</span></span>] == <span class="s"><span class="dl">"</span><span class="k">production</span><span class="dl">"</span></span><tt>
+</tt>  set <span class="sy">:deploy_to</span>, <span class="s"><span class="dl">"</span><span class="k">/var/www/prod</span><span class="dl">"</span></span><tt>
+</tt>  role <span class="sy">:app</span>, <span class="s"><span class="dl">"</span><span class="k">prod.example.com</span><span class="dl">"</span></span><tt>
+</tt><span class="r">else</span><tt>
+</tt>  set <span class="sy">:deploy_to</span>, <span class="s"><span class="dl">"</span><span class="k">/var/www/dev</span><span class="dl">"</span></span><tt>
+</tt>  role <span class="sy">:app</span>, <span class="s"><span class="dl">"</span><span class="k">dev.example.com</span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Then, you could just do:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">STAGE=production switchtower -r config/deploy -a deploy<tt>
+</tt></pre></td>
+</tr></table>
+<p>Coming soon, SwitchTower will support setting variables directly from the command line, so you could set the variable via some <code>-s</code> switch, and then query the variable in the recipe file.</p>

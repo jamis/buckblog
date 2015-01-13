@@ -1,0 +1,405 @@
+---
+layout: post
+title: LEGOs, Play-Doh, and Programming
+post_id: 70
+categories:
+- Essays and Rants
+date: 2008-11-09 04:46:00.000000000 -07:00
+author: Jamis
+permalink: 2008/11/09/legos-play-doh-and-programming.html
+summary: >
+  Play-Doh and LEGO are compared and constrasted, and then put forward
+  as a metaphor for comparing Ruby and Java. The reader is encouraged to
+  embrace the strengths of each environment
+---
+
+<p><em>This article is based on a talk I gave at the 2008 RubyConf in Orlando, Florida, entitled “Recovering from Enterprise: how to embrace Ruby’s idioms and say goodbye to bad habits”.</em></p>
+<p>The other day I went to Target with my son. Like most kids, I think, he’s convinced that Target is a toy store, which just happens to sell towels and shoes and cleaning supplies, too, so in his eyes it’d be criminal to not walk through the bare handful of toy aisles.</p>
+<p>Besides, the toy section is across from the electronics section, which all geeks know is where the <em>real</em> toys are.</p>
+<p>So, we went to the toy section and started browsing. I’ve always loved <span class="caps">LEGO</span> sets, and it’s a good thing they’re so expensive or I’d come home with a new box of bricks every time. At the Target near our home, they have half of an entire aisle devoted to boxes and boxes of <span class="caps">LEGO</span> sets. Need a battle-axe-wielding <span class="caps">LEGO</span> dwarf figure? <span class="caps">A LEGO</span> shark? How about a giant <span class="caps">LEGO</span> skull, a la Indiana Jones? And who could pass a <span class="caps">LEGO</span> Star Wars’ Star Destroyer model without a wistful thought or two?</p>
+<p>It struck me at that time, though, how incredibly <em>specific</em> so many of these pieces are. With all of those sets in your possession, you could build a secret agent headquarters with a boulder trap that crushes angry battle-axe-wielding dwarves as they drive by in Martian exploration buggies. Which themelves are adorned with flower beds and creeper vines. And you could do all that in under 10 <span class="caps">LEGO</span> bricks! (Or, maybe a few more than that.)</p>
+<p>Did you know that <span class="caps">LEGO</span> currently produces over 900 distinct <span class="caps">LEGO</span> pieces, or “elements” as they call them? Over the course of their history, there have been almost 13,000 distinct elements created. Now, that number includes variations in color and material, but even if you exclude those permutations, you’re still left with a staggering 2,800 different elements in the <span class="caps">LEGO</span> line.</p>
+<p>It’s interesting that <span class="caps">LEGO</span> tends to encourage the use of specific pieces, rather than letting you build those pieces from more fundamental parts. It means that in order to master <span class="caps">LEGO</span> brick building, you have to know all of the pieces available to you, and have a good intuitive feel for how and when they should be used. That’s…a lot of information to keep tabs on. Myself, I just keep to the standard rectangular blocks and plug an exotic or two on as an afterthought when I see one that looks cool.</p>
+<p>Also, if you’ve built up a model, and decide later that you want to change or extend some part of the model, you’ll often have to dismantle part (or all!) of it in order to do so. Kind of a pain.</p>
+<p>Regardless, I still love building with <span class="caps">LEGO</span> bricks, and I suspect I always will.</p>
+<h2>Play-Doh</h2>
+<p>Now, my son being all of 6 years old, his attention span requires us to spend no more than a few minutes in any one toy aisle. So, long before I was ready to tear my eyes away from the <span class="caps">LEGO</span> sets, we found ourselves in the next aisle over. This was a much more colorful aisle, with bright pastels coloring various pre-school toys. My son, though, has nothing against pre-school toys, and was more than willing to drag me through them.</p>
+<p>My eyes caught on the Play-Doh section.</p>
+<p>The Play-Doh section at this Target is small, maybe 8 different hangers and a few square feet of shelf-space. You can get Play-Doh in as many as 50 different colors, but regardless of color, it’s all still the same thing: a bucket of malleable dough that you can pound, press, pinch, roll, and sculpt. (And rub into the carpet. And hair. And clothes. But we won’t get into that.)</p>
+<p>Honestly, Play-Doh has a bad rap as a pre-schooler toy. It’s remarkably fun to play with. You can do all kinds of things with Play-Doh that you just can’t do with <span class="caps">LEGO</span> bricks. For example, the other day I built an arch out of cubes of Play-Doh that were held together only by friction. (You may not be impressed, but my 6-year-old was.)</p>
+<p>The best part is that it doesn’t require so much memorization to become proficient in Play-Doh, though it might require more of an artistic streak than <span class="caps">LEGO</span> bricks do. Since I’m more engineer than artist, my Play-Doh creations tend to come out blocky and functional, rather than elegant and designed, but then, so do my <span class="caps">LEGO</span> creations.</p>
+<p>Also, where <span class="caps">LEGO</span> models require significant work to alter or extend, Play-Doh models are dead-simple. If you want to add something to the base of your model, just graft more Play-Doh onto it. Want to change the shape of the keystone of your arch? Just pinch and mold in place. Simple!</p>
+<p>Interestingly, I’ve found that while you can’t build with <span class="caps">LEGO</span> bricks using Play-Doh construction techniques, you <em>can</em> build with Play-Doh using <span class="caps">LEGO</span> construction techniques. Just build bricks out of Play-Doh. It’s unwiedly and impractical, but it <em>can</em> be done. The real question is: why would you want to? It’s pretty obvious that to build with Play-Doh, you should just embrace Play-Doh’s own strengths and run with it.</p>
+<p>As obvious as that may seem, the lesson didn’t click for me for a long time. It’s not that I went about building Indiana Jones sets out of Play-Doh, one brick at a time. Rather, I didn’t realize that the same lesson applied to programming languages.</p>
+<h2>Java and LEGOs</h2>
+<p>Consider Java. Most would consider it the poster child of “enterprise” environments (though .NET is giving it a run for its money). And would you believe, Java and <span class="caps">LEGO</span> bricks have several things in common?</p>
+<p>As of Java 1.6, there are well over 11,000 different classes and interfaces available to programmers in the standard library. (That’s not even counting the inner and anonymous classes that are usually not publicly documented.) Eleven. Thousand. Classes.</p>
+<p>This is readily apparent when you consider the set of collection implementations that Java ships with.</p>
+<ul>
+	<li>Collection</li>
+		<li>Set</li>
+		<li>List</li>
+		<li>Queue</li>
+		<li>Deque</li>
+		<li>Map</li>
+		<li>SortedSet</li>
+		<li>SortedMap</li>
+		<li>NavigableSet</li>
+		<li>NavigableMap</li>
+		<li>BlockingQueue</li>
+		<li>BlockingDeque</li>
+		<li>ConcurrentMap</li>
+		<li>ConcurrentNavigableMap</li>
+	</ul>
+<ul>
+	<li>HashSet</li>
+		<li>TreeSet</li>
+		<li>LinkedHashSet</li>
+		<li>ArrayList</li>
+		<li>ArrayDeque</li>
+		<li>LinkedList</li>
+		<li>PriorityQueue</li>
+		<li>HashMap</li>
+		<li>TreeMap</li>
+		<li>LinkedHashMap</li>
+	</ul>
+<ul>
+	<li>WeakHashMap</li>
+		<li>IdentityHashMap</li>
+		<li>CopyOnWriteArrayList</li>
+		<li>CopyOnWriteArraySet</li>
+		<li>EnumSet</li>
+		<li>EnumMap</li>
+	</ul>
+<ul>
+	<li>ConcurrentLinkedQueue</li>
+		<li>LinkedBlockingQueue</li>
+		<li>ArrayBlockingQueue</li>
+		<li>PriorityBlockingQueue</li>
+		<li>DelayQueue</li>
+		<li>SynchronousQueue</li>
+		<li>LinkedBlockingDeque</li>
+		<li>ConcurrentHashMap</li>
+		<li>ConcurrentSkipListSet</li>
+		<li>ConcurrentSkipListMap</li>
+	</ul>
+<ul>
+	<li>AbstractCollection</li>
+		<li>AbstractSet</li>
+		<li>AbstractList</li>
+		<li>AbstractSequentialList</li>
+		<li>AbstractQueue</li>
+		<li>AbstractMap</li>
+	</ul>
+<p>Yes, that is <span class="caps">FORTY</span>-SIX different interfaces and implementations related to collections. Now, just like <span class="caps">LEGO</span> construction, having this volume of distinct elements on hand affects how you architect things. Writing software becomes more of a smorgasbord, where you pick and choose the specialized bricks you need, fitting them together just so. It also means that, in order to master Java, you need to have that intuitive grasp of how and when to use those thousands of classes. When do you use a HashSet versus a TreeSet? When would you use an ArrayDeque, and when would you want to subclass an AbstractQueue? It’s all part of the job.</p>
+<p>Also, <span class="caps">IDE</span>’s are popular with Java in part because of the pain of refactoring. If you want to extend or modify a Java application, it can involve (like <span class="caps">LEGO</span> models) a lot of dismantling and reassembling.</p>
+<h2>Ruby as Play-Doh</h2>
+<p>But if Java is the <span class="caps">LEGO</span> of programming languages, then it could be argued that Ruby is the Play-Doh. Just as Play-Doh has been typically considered a pre-school toy, so Ruby has had a bad rap as a “toy” language, not fit for the “real world”. Also, compared to Java’s library of 11,000 classes, Ruby’s meager 1,400 classes (which number <em>does</em> include internal and anonymous ones, but not modules) seems paltry. And collections! Look what Ruby has to offer:</p>
+
+<p>Modules:</p>
+
+<ul>
+  <li>Enumerable</li>
+  <li>Comparable (for elements within a collection)</li>
+</ul>
+
+<p>Classes:</p>
+
+<ul>
+  <li>Hash</li>
+  <li>Array</li>
+  <li>Set</li>
+  <li>SortedSet</li>
+</ul>
+
+<p>Just 6 options, to Java’s 46. What if you need a queue? Well, Ruby’s Array class has a queue-like interface; you <em>could</em> just use that. What about a sorted map? In that case, you might need to make do with a sorted set, or you could write your own, but it’s not hard. Most data structures are not rocket science, and for those that are, you can bet someone else has implemented it already.</p>
+<p>But when you need to extend or modify your application, Ruby is a dream. Like Play-Doh, you can often just “pinch and mold” in place, grafting new code on or pulling old code out.</p>
+<p>Ruby’s philosophy is like that of Play-Doh’s: provide a basic set of tools and make it relatively simple to build something complex with them. The very Ruby language itself is designed for this: closures, super-simple introspection of objects, runtime modification of existing objects, and the use of modules for extending classes and objects all tend to result in an environment that is simple, malleable, and extensible.</p>
+<p>And just as you cannot use Play-Doh construction techniques with <span class="caps">LEGO</span> bricks, you also really cannot use Ruby programming techniques with Java. Using closures for delayed execution, or iteration, is tricky (at best) in Java, when it’s possible at all. Extending objects at runtime typically requires bytecode modification. And Ruby’s use of modules to extend classes and objects, while similar to both inheritance and interfaces, is slightly different (and arguably more powerful) than either.</p>
+<p>You <em>can</em> write Ruby programs using Java programming techniques, but just as using <span class="caps">LEGO</span> techniques with Play-Doh is unwieldy and overcomplicated, so is mimicking Java in Ruby.</p>
+<p>This is the lesson that I was slow to learn.</p>
+<h2>Copland</h2>
+<p>Consider exhibit A, from my <a href="http://copland.rubyforge.org">Copland</a> library.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># copland/configuration/loader.rb (collapsed)</span><tt>
+</tt><span class="r">module</span> <span class="cl">Copland</span><tt>
+</tt>  <span class="r">module</span> <span class="cl">Configuration</span><tt>
+</tt>    <span class="r">class</span> <span class="cl">Loader</span><tt>
+</tt>      attr_reader <span class="sy">:search_paths</span><tt>
+</tt>      attr_reader <span class="sy">:loaders</span><tt>
+</tt><tt>
+</tt>      <span class="r">def</span> <span class="fu">initialize</span>( search_paths=[] )<tt>
+</tt>      <span class="r">def</span> <span class="fu">add_search_path</span>( *paths )<tt>
+</tt>      <span class="r">def</span> <span class="fu">add_loader</span>( loader )<tt>
+</tt>      <span class="r">def</span> <span class="fu">load</span>( options={} )<tt>
+</tt>      <span class="r">def</span> <span class="fu">load_path</span>( path, options )<tt>
+</tt>      <span class="r">def</span> <span class="fu">use_library</span>( name )<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Copland was my first stab at a dependency injection (DI) framework, and is more-or-less a feature-for-feature port of the <a href="http://hivemind.apache.org/">HiveMind</a> project in Java. (Ironically, it was the subject of my first presentation at a Ruby conference, in 2004!)</p>
+<p>It was designed to automatically scan directories in the load path for <span class="caps">YAML</span> configuration files (I’ll mention those shortly), and load them up and parse them. The thing is, I imagined a case where someone might want to use <span class="caps">XML</span> instead of <span class="caps">YAML</span>. I couldn’t just leave these folks behind! So I made the whole configuration loading framework extendible. Want <span class="caps">XML</span> config files? Fine! Just implement an <span class="caps">XML</span> parser system and register it with the configuration loader framework, and you’re good to go!</p>
+<p>That’s just wrong on so many levels. Always, always, <em>always</em> build just what you need, and only when you need it. You’re in Ruby, the Play-Doh of programming languages, and the cost of adding features later is really, really low. Remember <a href="http://en.wikipedia.org/wiki/YAGNI"><span class="caps">YAGNI</span></a>! Obviously, this principle holds in Java, too, but it really seems like the opposite philosophy has become the standard among many Java projects. It’s too bad, because it has contributed to a bad reputation that Java probably doesn’t entirely deserve.</p>
+<p>Here’s a classic Java pattern that just really doesn’t translate to Ruby:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt><strong>15</strong><tt>
+</tt>16<tt>
+</tt>17<tt>
+</tt>18<tt>
+</tt>19<tt>
+</tt><strong>20</strong><tt>
+</tt>21<tt>
+</tt>22<tt>
+</tt>23<tt>
+</tt>24<tt>
+</tt><strong>25</strong><tt>
+</tt>26<tt>
+</tt>27<tt>
+</tt>28<tt>
+</tt>29<tt>
+</tt><strong>30</strong><tt>
+</tt>31<tt>
+</tt>32<tt>
+</tt>33<tt>
+</tt>34<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="c"># copland/class-factory.rb</span><tt>
+</tt><span class="r">module</span> <span class="cl">Copland</span><tt>
+</tt>  <span class="r">class</span> <span class="cl">ClassFactory</span><tt>
+</tt>    include <span class="co">Singleton</span><tt>
+</tt><tt>
+</tt>    <span class="r">def</span> <span class="fu">initialize</span><tt>
+</tt>      <span class="iv">@pools</span>, <span class="iv">@constructors</span> = <span class="co">Hash</span>.new, <span class="co">Hash</span>.new<tt>
+</tt>    <span class="r">end</span><tt>
+</tt><tt>
+</tt>    <span class="r">def</span> <span class="fu">create_pool</span>( name, &amp;block )<tt>
+</tt>      block ||= proc { |k,*args| k.new( *args ) }<tt>
+</tt>      <span class="iv">@pools</span>[ name ] = <span class="co">Hash</span>.new<tt>
+</tt>      <span class="iv">@constructors</span>[ name ] = block<tt>
+</tt>    <span class="r">end</span><tt>
+</tt><tt>
+</tt>    <span class="r">def</span> <span class="fu">get_pool</span>( name )<tt>
+</tt>      pool = <span class="iv">@pools</span>[ name ] <span class="r">or</span> raise <span class="co">NoSuchPoolException</span>, name<tt>
+</tt>      <span class="r">return</span> pool<tt>
+</tt>    <span class="r">end</span><tt>
+</tt><tt>
+</tt>    <span class="r">def</span> <span class="fu">register</span>( pool_name, name, klass )<tt>
+</tt>      pool = get_pool( pool_name )<tt>
+</tt>      pool[ name ] = klass<tt>
+</tt>    <span class="r">end</span><tt>
+</tt><tt>
+</tt>    <span class="r">def</span> <span class="fu">get</span>( pool_name, name, *args )<tt>
+</tt>      pool = get_pool( pool_name )<tt>
+</tt>      klass = pool[ name ]<tt>
+</tt>      raise <span class="co">NoSuchRegisteredClassException</span>, <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span>pool_name<span class="dl">}</span></span><span class="k">:</span><span class="il"><span class="dl">#{</span>name<span class="dl">}</span></span><span class="dl">"</span></span> <span class="r">unless</span> klass<tt>
+</tt>      constructor = <span class="iv">@constructors</span>[ pool_name ]<tt>
+</tt>      <span class="r">return</span> constructor.call( klass, *args )<tt>
+</tt>    <span class="r">end</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>This is an implementation of a class factory. In Ruby. The HiveMind project had a class factory, so the Copland project needed one, too!</p>
+<p>But you know, class factories are absolutely pointless in Ruby. There are plenty of reasons for these in Java, but they just aren’t necessary in Ruby. Want a namespace? Declare the class in a module. Want the class to exist in multiple namespaces? Use constant assignment within whatever modules you desire. Need a dynamic lookup? Try #const_get. In the very worst case, just use a Hash if you need to map arbitrary strings to classes.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">module</span> <span class="cl">A</span><tt>
+</tt>  <span class="r">class</span> <span class="cl">B</span><tt>
+</tt>  <span class="r">end</span> <tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="c"># method #1, use const_get to dynamically look up classes</span><tt>
+</tt>name = <span class="s"><span class="dl">"</span><span class="k">B</span><span class="dl">"</span></span> <tt>
+</tt>klass = <span class="co">A</span>.const_get(name)<tt>
+</tt>object = klass.new<tt>
+</tt><tt>
+</tt><span class="c"># method #2, use a hash to map arbitrary strings to classes</span><tt>
+</tt>map = { <span class="s"><span class="dl">"</span><span class="k">bimpl</span><span class="dl">"</span></span> =&gt; <span class="co">A</span>::<span class="co">B</span> }<tt>
+</tt>map[<span class="s"><span class="dl">"</span><span class="k">bimpl</span><span class="dl">"</span></span>].new<tt>
+</tt></pre></td>
+</tr></table>
+<p>Seriously. You don’t need explicit class factories in Ruby, because anything can be a class factory, implicitly.</p>
+<p>I’ll mention one more painful Javaism that I ported to Copland. It’s so painful that I won’t even bother pasting it here—if you’re following along, look at examples/solitaire-cipher/lib/package.yml in the copland distribution.</p>
+<p>If you do, what you’ll see are 106 lines of <span class="caps">YAML</span> describing how different Ruby objects in a simple, 250-line program should be initialized and connected. Yes. 106 lines of <span class="caps">YAML</span>. For 250 lines of Ruby.</p>
+<p>Now, don’t get me wrong. <span class="caps">YAML</span> can be great for configuration. Rails, for instance, uses it for database connection information. The problem here, in Copland, was that I was using a static configuration for what would be better served with a block of code. Ruby reads elegantly; a <span class="caps">YAML</span> configuration file does not.</p>
+<p>Fortunately, those wiser than myself showed me the way.</p>
+<h2>RubyConf 2004</h2>
+<p>I still remember Rich Kilmer, sitting in the front row in the October 2004 RubyConf. As I wrapped up my presentation on Copland and dependency injection, I asked if there were any questions.</p>
+<p>Rich raised his hand. “Why didn’t you just use Ruby?”</p>
+<p>I was confused by his question, and he had to explain. Why did I use <span class="caps">YAML</span> instead of just doing the configuration in Ruby code?</p>
+<p>I think I mumbled something like “that would be a neat idea”. To me, it was a novel concept. I’d never heard of it before. You’d never see a Java program that was configured by writing Java code. That screams “hard coding”! But Ruby, you see, is different.</p>
+<p>Ruby lets you write these beautiful little mini-languages. You’ll hear them called “Domain Specific Languages”, or <span class="caps">DSL</span>’s. They are subsets of the Ruby language, and you’ll find them in Rake, Capistrano, rspec, shoulda, and more. They’re really everywhere in Ruby, to varying degrees.</p>
+<p>Although Rich tried to open my eyes, I think I would have continued to try and push Copland if it weren’t for Jim Weirich. Jim took the idea of a Ruby-ish <span class="caps">DSL</span> for dependency injection and made something concrete of it. A few days after the conference he forwarded me a draft of an <a href="http://onestepback.org/index.cgi/Tech/Ruby/DependencyInjectionInRuby.rdoc">article he was writing</a>, in which he described dependency injection and gave a very simple (and very elegant) implementation of a DI framework in Ruby. Instead of static configuration, he’d written a basic <span class="caps">DSL</span> for declaring how the dependencies related to each other.</p>
+<p>It was a moment of epiphany for me. Suddenly, I got it. I understood what <span class="caps">DSL</span>’s were about. I asked Jim for permission to take his simple implemention and build upon it.</p>
+<p>The result was <a href="http://needle.rubyforge.org">Needle</a>.</p>
+<h2>Needle</h2>
+<p>Now, I’m much prouder of Needle than of Copland, because it is much closer to Ruby’s philosophy than Java. There are some pretty cool designs in there, too, though I use the term “cool” here to mean “neat without having any real practical application.”</p>
+<p>Needle, though better, was still far from the mark.</p>
+<p>As an example of why it misses the mark, consider Needle’s “pipeline” concept. Conceptually, it allowed you to specify a sequence of post-processors that operated on an object, allowing you to wrap code around it and mimicking (among other things) <span class="caps">AOP</span>-like operations. It also let me (as the author of the library) easily implement things like deferred instantiation, singleton services, and the like.</p>
+<p>For example, suppose you wanted to declare a “deferred singleton” service, that logged all accesses to one of the methods. Underneath, Needle will create a pipeline of processors that operate on the service, returning a proxy object. The first time the proxy is accessed, it will check to see if the object has been instantiated yet. If it hasn’t, it’ll instantiate it (and cache it). The instantiation, though, actually just hands control to the next element in the pipeline, which in this case checks to see that the “singleton” constraint is enforced (e.g., all requests for this service return the same object, rather than instantiating a new object). The next pipeline element in the chain will wrap the interceptor code around the method in question, and yet another pipeline element would perform the actual object instantiation.</p>
+<p>Pipelines really were pretty slick in Needle.</p>
+<p>The problem, though, is that instead of leaving them as an implementation detail, I advertised them as one of Needle’s features. “Implement your own service models!” I cried. But, how often, really, is that likely to happen? Instead of exposing only the bare minimum of Needle’s <span class="caps">API</span>, I exposed as much of it as I could, <em>because</em> I could.</p>
+<p>That’s a bad idea. Expose only what you need. The rest can be there, available, but not formally exposed. Only when (and if) you discover a need to expose more, should you expose more. This helps for several reasons.</p>
+<ul>
+	<li>A smaller <span class="caps">API</span> is easier to describe, document, and support.</li>
+		<li>A smaller <span class="caps">API</span> is easier for people to learn.</li>
+		<li>A smaller <span class="caps">API</span> is easier for you to test.</li>
+		<li>Extending a small <span class="caps">API</span> is much less onerous on your users than changing or restricting a larger <span class="caps">API</span>.</li>
+	</ul>
+<h2>Net::SSH 1.x</h2>
+<p>Now, I’ve since come to my senses, but at one time I was completely head-over-heels in love with dependency injection. Like any schoolboy crush, it embarrasses me now to think about it, but there’s no denying it. The proof is everywhere in my project history.</p>
+<p>Net::SSH, in particular.</p>
+<p>At the time, I was looking for a good demonstration of the flexibility and power of dependency injection, and since Net::SSH was another of my pet projects at the time, it seemed like the perfect candidate.</p>
+<p>I was still stuck in the “just in case” mindset, though, and Net::SSH 1.x reflected that. Badly. For instance, I isolated all the OpenSSL crypto interfaces into their own module, because “what if someone wanted to plug in a different crypto lib?” Nevermind that there <em>was</em> no other crypto lib for Ruby (and still isn’t, 4 years later). But <span class="caps">WHAT IF</span>?!?</p>
+<p>Now, separation of concerns and modularity are good things, when used in moderation. But like any design pattern, it becomes evil when taken to extremes. Too much modularity and you wind up with component soup (and I hope you’re hungry, because you’re going to have a <em>lot</em> of it). With lots of tiny components, the interactions between those components can become difficult to test.</p>
+<p>It also fuzzes the line between the public, documented <span class="caps">API</span> and the internal, private <span class="caps">API</span>. When you have two large components, it is very easy to say “A is public, and B is private”, but when you have two <em>hundred</em> components, where do you draw the line? It’s far too easy to let the “public” boundary meander a bit further into “private” territory than it should.</p>
+<p>Even worse, when I added dependency injection to the mix, it became very, very difficult to follow the the flow of the program, and to understand the dependencies. Pull up Net::SSH 1.1.4, for instance, and find net/ssh.rb. Just <em>try</em> and figure out how a connection session is instantiated. It’s a mess. Unless you’re familiar with Needle, it’ll probably take you a long time to discover that the actual services are configured in the various services.rb files, but even after you figure that out, you still have to figure out how the different services interrelate. It’s a mess.</p>
+<p>But, isn’t that the opposite of what DI is supposed to do? Isn’t DI supposed to improve the maintainability and testability of your code? Yeah. The problem, though, was three-fold.</p>
+<p>First, Net::SSH, though complex in its way, was not really complex enough to need a dependency injection <em>framework</em>. DI itself adds complexity, and a framework for doing dependency injection adds even more, so before you go that route you need to be very sure that the trade-off in complexity is worth it. If your project is too small, you’ll actually <em>increase</em> the complexity of your project by adding a framework for doing DI.</p>
+<p>Secondly, I was using a DI framework at a level that was really too granular. I was using the framework to wire together <em>everything</em>. No component was too small! No object too insignificant! I was on the dependency injection horse, and riding it for all it was worth. If I’d taken the time to really understand the pattern, though, I would have learned that though the pattern itself may be applied at the micro level, using a framework to do so is like nuking a mosquito—it works, but it leaves a mess behind.</p>
+<p>Which leads to the last problem with Net::SSH’s use of Needle: it is really only appropriate for wiring together components of an <em>application</em>. Very, very few (Ruby) libraries will ever be complex enough, in themselves, to justify adding a dependency injection framework to them. Rather, let the application wire the libraries together as (and when) it needs to. Any more granular than that, and you’ll run into the same quagmire I did, I promise you.</p>
+<h2>Dependency Injection in Ruby</h2>
+<p>So, is there no room for DI in Ruby? There definitely is. I use DI nearly every day in Ruby, but I do <em>not</em> use a DI framework. Ruby itself has sufficient power to represent any day-to-day DI idioms you need. Consider this one:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">A</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">class</span> <span class="cl">B</span><tt>
+</tt>  <span class="r">def</span> <span class="fu">new_client</span>(with=<span class="co">A</span>)<tt>
+</tt>    with.new<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Here, B declares a factory method for generating new client objects. Because Ruby lets you declare default values for method arguments, you can let the default client implementation be A, which is the common case. But for testing, you can easily inject a mock into that method by passing an explicit parameter.</p>
+<p>For cases where that doesn’t work, you can use a second factory method:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">A</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">class</span> <span class="cl">B</span><tt>
+</tt>  <span class="r">def</span> <span class="fu">new_client</span><tt>
+</tt>    client.new<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  <span class="r">def</span> <span class="fu">client</span><tt>
+</tt>    <span class="co">A</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Then, in your tests, you can subclass B, overriding the <code>client</code> method to return your mock client implementation. It’s dependency injection, Jim, but probably not as you’ve known it.</p>
+<p>Hashes, too, are your friend. You can allow optional arguments via hashes to specify implementation classes, defaulting to the standard implementation classes but allowing clients to inject their own implementations where needed:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">A</span><tt>
+</tt><span class="r">end</span><tt>
+</tt><tt>
+</tt><span class="r">class</span> <span class="cl">B</span><tt>
+</tt>  <span class="r">def</span> <span class="fu">initialize</span>(options={})<tt>
+</tt>    <span class="iv">@client_impl</span> = options[<span class="sy">:client</span>] || <span class="co">A</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><tt>
+</tt>  <span class="r">def</span> <span class="fu">new_client</span><tt>
+</tt>    <span class="iv">@client_impl</span>.new<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>“Loose coupling” and “high cohesion” are terms you’ll hear bandied about in defense of dependency injection, and those traits are certainly desirable. But strike a balance with pragmatism. There will be some who call me heretic for saying this, but don’t be afraid to introduce tighter coupling when it makes sense. Loose coupling <em>everywhere</em> is what I had with Net::SSH 1.x, and the result was nearly unmaintainable.</p>
+<p>Be wise. You’re competent. Trust your instincts.</p>
+<h2>Lessons learned</h2>
+<p>If you read nothing else from this article, take to heart these bite-sized bullet-points:</p>
+<ul>
+	<li>
+<strong>Direct translations are rarely accurate.</strong> Try using the <a href="http://www.google.com/language_tools?hl=en">Google translator</a> to translate a paragraph from English, to Italian, to Japanese, and back to English, and you’ll see what I mean. The same is true of programming languages. Each language has it’s own idioms, and trying to take what works well in one language and force it directly into another language is doomed to fail, more often than not.</li>
+		<li>
+<strong>Use your environment efficiently.</strong> Try as you might, you’ll never make a ball out of a <span class="caps">LEGO</span> brick by rolling it between your hands. You’ll just bloody your palms. Learn what your environment is capable of. Reading other people’s code is a great way to do this.</li>
+		<li>
+<strong><span class="caps">DSL</span>’s, not static configuration.</strong> Ruby excels at representing <span class="caps">DSL</span>’s. Whenever you can, consider using a <span class="caps">DSL</span> instead of static configuration for your applications. You’ll find it will simplify a lot more than it complicates.</li>
+		<li>
+<strong>DI frameworks are unnecessary.</strong> In more rigid environments, they have value. In agile environments like Ruby, not so much. The patterns themselves may still be applicable, but beware of falling into the trap of thinking you need a special tool for everything. Ruby is Play-Doh, remember! Let’s keep it that way.</li>
+		<li>
+<strong>Just in time. Not just in case.</strong> Don’t play “what if” games when you’re coding. Practice discipline, and implement only what you need, when you need it. You’ll wind up with tighter, more testable code that is easier to maintain in the long run.</li>
+	</ul>
+<p>Learning to program is a journey, and I’m still learning, myself. I’m not perfect at applying the rules above, but I’ve found that when I do, I’m much happier. I think you will be, too.</p>

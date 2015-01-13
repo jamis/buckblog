@@ -1,0 +1,197 @@
+---
+layout: post
+title: 'Under the hood: ActiveRecord::Base.find, Part 2'
+post_id: 172
+categories:
+- Under the Hood
+date: 2006-11-20 07:19:00.000000000 -07:00
+author: Jamis
+permalink: 2006/11/20/under-the-hood-activerecord-base-find-part-2.html
+---
+
+<p>When working with Rails, it is tempting to conceptualize <code>ActiveRecord#find</code> into some genie that magically reaches into your database and pulls back the records matching the criteria you specified. The reality is a bit more complex, and sadly lacking in genies.</p>
+<p>To satisfy any request, <code>#find</code> works in two stages. First, it has to convert your criteria into <span class="caps">SQL</span>. Then, it has to take the results returned from the database and instantiate them as ActiveRecord objects.</p>
+<p>The process of converting criteria into <span class="caps">SQL</span> is surprisingly complex, even for the simple cases. Let’s walk through the code to get an idea of what happens for the most trivial of cases, <code>User.find(1)</code>.</p>
+<p>(I’m working off of edge rails here, which at the time of this writing was at <a href="http://dev.rubyonrails.org/browser/trunk/activerecord?rev=5585">revision 5585</a>. Code snippets given in this article will inevitably diverge from the latest edge. <em>Caveat lector!</em>)</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">find</span>(*args)<tt>
+</tt>  options = extract_options_from_args!(args)<tt>
+</tt>  validate_find_options(options)<tt>
+</tt>  set_readonly_option!(options)<tt>
+</tt><tt>
+</tt>  <span class="r">case</span> args.first<tt>
+</tt>    <span class="r">when</span> <span class="sy">:first</span> <span class="r">then</span> find_initial(options)<tt>
+</tt>    <span class="r">when</span> <span class="sy">:all</span>   <span class="r">then</span> find_every(options)<tt>
+</tt>    <span class="r">else</span>             find_from_ids(args, options)<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>For the case we’re investigating, <code>User.find(1)</code>, <code>args</code> will simply be <code>[1]</code>. The <code>extract_options_from_args</code> simply checks the last element of the array, and if it is a Hash, pops it off and returns it. For our example, we’ll just get an empty hash back.</p>
+<p>Then, we validate the options, making sure no bogus keys were passed in, and finally, we call <code>set_readonly_option!</code>, which does some scope-checking to make sure the <code>:readonly</code> option is set correctly.</p>
+<p>With all that out of the way, we check the first argument, which is neither <code>:first</code> nor <code>:all</code>, so we call <code>find_from_ids</code>.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">find_from_ids</span>(ids, options)<tt>
+</tt>  expects_array = ids.first.kind_of?(<span class="co">Array</span>)<tt>
+</tt>  <span class="r">return</span> ids.first <span class="r">if</span> expects_array &amp;&amp; ids.first.empty?<tt>
+</tt><tt>
+</tt>  ids = ids.flatten.compact.uniq<tt>
+</tt><tt>
+</tt>  <span class="r">case</span> ids.size<tt>
+</tt>    <span class="r">when</span> <span class="i">0</span><tt>
+</tt>      raise <span class="co">RecordNotFound</span>, <span class="s"><span class="dl">"</span><span class="k">Couldn't find </span><span class="il"><span class="dl">#{</span>name<span class="dl">}</span></span><span class="k"> without an ID</span><span class="dl">"</span></span><tt>
+</tt>    <span class="r">when</span> <span class="i">1</span><tt>
+</tt>      result = find_one(ids.first, options)<tt>
+</tt>      expects_array ? [ result ] : result<tt>
+</tt>    <span class="r">else</span><tt>
+</tt>      find_some(ids, options)<tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>The mumbo-jumbo at the top of that method just checks to see if an array of ids was passed to the method. If it was, we have to make sure and return an array, regardless of the number of rows returned. We, however, did not pass an array of ids, so <code>expects_array</code> will be <code>false</code>.</p>
+<p>Then, we flatten the list of ids (to expand nested arrays), compact it (to remove <code>nil</code> elements), and remove duplicate elements. For us, the resulting <code>ids</code> array will contain a single element (the number 1), so we take the second <code>when</code> clause, which calls <code>find_one</code>.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">find_one</span>(id, options)<tt>
+</tt>  conditions = <span class="s"><span class="dl">"</span><span class="k"> AND (</span><span class="il"><span class="dl">#{</span>sanitize_sql(options[<span class="sy">:conditions</span>])<span class="dl">}</span></span><span class="k">)</span><span class="dl">"</span></span> <span class="r">if</span> options[<span class="sy">:conditions</span>]<tt>
+</tt>  options.update <span class="sy">:conditions</span> =&gt; <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span>table_name<span class="dl">}</span></span><span class="k">.</span><span class="il"><span class="dl">#{</span>primary_key<span class="dl">}</span></span><span class="k"> = </span><span class="il"><span class="dl">#{</span>quote_value(id,columns_hash[primary_key])<span class="dl">}</span></span><span class="il"><span class="dl">#{</span>conditions<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>  <span class="r">if</span> result = find_every(options).first<tt>
+</tt>    result<tt>
+</tt>  <span class="r">else</span><tt>
+</tt>    raise <span class="co">RecordNotFound</span>, <span class="s"><span class="dl">"</span><span class="k">Couldn't find </span><span class="il"><span class="dl">#{</span>name<span class="dl">}</span></span><span class="k"> with ID=</span><span class="il"><span class="dl">#{</span>id<span class="dl">}</span></span><span class="il"><span class="dl">#{</span>conditions<span class="dl">}</span></span><span class="dl">"</span></span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Now we start seeing some actual work being done to generate <span class="caps">SQL</span>. In our case, though, the <code>options</code> hash has no <code>:conditions</code> keys, so all that happens (via the second line) is that we add a condition which searches based on the id we passed in (1, in our case).</p>
+<p>Then, we further the cause of lengthy stack-traces by calling <code>find_every</code>, and return the first record it returns. (This is safe, because finding by a unique primary key will always return only a single record, at most.)</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">find_every</span>(options)<tt>
+</tt>  records = scoped?(<span class="sy">:find</span>, <span class="sy">:include</span>) || options[<span class="sy">:include</span>] ?<tt>
+</tt>    find_with_associations(options) : <tt>
+</tt>    find_by_sql(construct_finder_sql(options))<tt>
+</tt><tt>
+</tt>  records.each { |record| record.readonly! } <span class="r">if</span> options[<span class="sy">:readonly</span>]<tt>
+</tt><tt>
+</tt>  records<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>With the <code>find_every</code> method, we’re getting closer to the database. It checks to see whether an <code>:include</code> criterion has been specified, and branches accordingly. If you specify one or more associations to load eagerly, you’ll take the considerably more complex branch with <code>find_with_associations</code>. Fortunately for us, we get to go the <code>find_by_sql</code> route. First, though, we jump into <code>construct_finder_sql</code> to build the actual <span class="caps">SQL</span> for our simple query:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt><strong>10</strong><tt>
+</tt>11<tt>
+</tt>12<tt>
+</tt>13<tt>
+</tt>14<tt>
+</tt>15<tt>
+</tt>16<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">construct_finder_sql</span>(options)<tt>
+</tt>  scope = scope(<span class="sy">:find</span>)<tt>
+</tt>  sql  = <span class="s"><span class="dl">"</span><span class="k">SELECT </span><span class="il"><span class="dl">#{</span>(scope &amp;&amp; scope[<span class="sy">:select</span>]) || options[<span class="sy">:select</span>] || <span class="s"><span class="dl">'</span><span class="k">*</span><span class="dl">'</span></span><span class="dl">}</span></span><span class="k"> </span><span class="dl">"</span></span><tt>
+</tt>  sql &lt;&lt; <span class="s"><span class="dl">"</span><span class="k">FROM </span><span class="il"><span class="dl">#{</span>(scope &amp;&amp; scope[<span class="sy">:from</span>]) || options[<span class="sy">:from</span>] || table_name<span class="dl">}</span></span><span class="k"> </span><span class="dl">"</span></span><tt>
+</tt><tt>
+</tt>  add_joins!(sql, options, scope)<tt>
+</tt>  add_conditions!(sql, options[<span class="sy">:conditions</span>], scope)<tt>
+</tt><tt>
+</tt>  sql &lt;&lt; <span class="s"><span class="dl">"</span><span class="k"> GROUP BY </span><span class="il"><span class="dl">#{</span>options[<span class="sy">:group</span>]<span class="dl">}</span></span><span class="k"> </span><span class="dl">"</span></span> <span class="r">if</span> options[<span class="sy">:group</span>]<tt>
+</tt><tt>
+</tt>  add_order!(sql, options[<span class="sy">:order</span>], scope)<tt>
+</tt>  add_limit!(sql, options, scope)<tt>
+</tt>  add_lock!(sql, options, scope)<tt>
+</tt><tt>
+</tt>  sql<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>In our simple case, there is no active scope, and only a single element in the <code>options</code> hash: <code>:conditions</code>. The only method here that we’ll call with any effect is <code>add_conditions!</code>, which appends the necessary conditions to the <code>sql</code> string:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">add_conditions!</span>(sql, conditions, scope = <span class="sy">:auto</span>)<tt>
+</tt>  scope = scope(<span class="sy">:find</span>) <span class="r">if</span> <span class="sy">:auto</span> == scope<tt>
+</tt>  segments = []<tt>
+</tt>  segments &lt;&lt; sanitize_sql(scope[<span class="sy">:conditions</span>]) <span class="r">if</span> scope &amp;&amp; scope[<span class="sy">:conditions</span>]<tt>
+</tt>  segments &lt;&lt; sanitize_sql(conditions) <span class="r">unless</span> conditions.nil?<tt>
+</tt>  segments &lt;&lt; type_condition <span class="r">unless</span> descends_from_active_record?        <tt>
+</tt>  segments.compact!<tt>
+</tt>  sql &lt;&lt; <span class="s"><span class="dl">"</span><span class="k">WHERE (</span><span class="il"><span class="dl">#{</span>segments.join(<span class="s"><span class="dl">"</span><span class="k">) AND (</span><span class="dl">"</span></span>)<span class="dl">}</span></span><span class="k">) </span><span class="dl">"</span></span> <span class="r">unless</span> segments.empty?<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Essentially, this will build an array of “segments” that need to be and’ed together to form the complete where clause of the <span class="caps">SQL</span> statement. It pulls conditions from the scope (if it exists), the <code>conditions</code> parameter (which in our case is just a simple comparison on the id), and the type condition (for classes that aren’t descended directly from <code>ActiveRecord::Base</code>).</p>
+<p>With that done, we pop back up the stack with our complete <span class="caps">SQL</span> statement, and invoke <code>find_by_sql</code>.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">find_by_sql</span>(sql)<tt>
+</tt>  connection.select_all(sanitize_sql(sql), <span class="s"><span class="dl">"</span><span class="il"><span class="dl">#{</span>name<span class="dl">}</span></span><span class="k"> Load</span><span class="dl">"</span></span>).collect! { |record| instantiate(record) }<tt>
+</tt><span class="r">end</span></pre></td>
+</tr></table>
+<p>Compared to the others, this one is ridiculously simple. Execute the sql, and then call <code>instantiate</code> for every record in the list. (That’s the second phase of <code>#find</code>, as you’ll recall: building ActiveRecord objects from the result of a query.) The resulting array is returned back up the stack, where it will eventually come out the top as a single ActiveRecord instance (or an exception, if no matching record was found).</p>
+<p>There you have it: the whirlwind tour. We’ll be examining more complex scenarios in subsequent posts, eventually delving into the eager loading code and scoping. For now, though, you should have a basic understanding of some of the complexity that <code>ActiveRecord#find</code> deals with on your behalf for every query you submit. It’s not magic, just a lot of code! And nary a genie in sight.</p>

@@ -1,0 +1,61 @@
+---
+layout: post
+title: Named, explicit routes
+post_id: 130
+categories:
+- Tips & Tricks
+date: 2007-01-22 13:36:00.000000000 -07:00
+author: Jamis
+permalink: 2007/01/22/named-explicit-routes.html
+---
+
+<p>Names routes are hotsauce. We are all forever indebted to <a href="http://project.ioni.st">Marcel Molina, Jr.</a> and his gift for elegant <span class="caps">API</span>’s. Without him, we’d still be stuck in the quagmire that is “map.connect”.</p>
+<p>These days, I don’t use map.connect at all. Named routes for everything. Does that seem too extreme?</p>
+<p>Let me clarify a bit. I don’t use map.connect with <em>implicit</em> routes. And just what is an implicit route? This is:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">map.connect <span class="s"><span class="dl">"</span><span class="k">:controller/:action/:id</span><span class="dl">"</span></span><tt>
+</tt></pre></td>
+</tr></table>
+<p>That’s an implicit route, because it <em>implicitly</em> maps any number of paths to any number of controllers and actions. Contrast that with an explicit route:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">map.connect <span class="s"><span class="dl">"</span><span class="k">/people/:id</span><span class="dl">"</span></span>, <span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">people</span><span class="dl">"</span></span>, <span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">show</span><span class="dl">"</span></span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The controller and action are now hardwired into the route. And if you’ve gone that far, you might as well go with a named route, too, since you can then access it directly:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">map.person <span class="s"><span class="dl">"</span><span class="k">/people/:id</span><span class="dl">"</span></span>, <span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">people</span><span class="dl">"</span></span>, <span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">show</span><span class="dl">"</span></span><tt>
+</tt></pre></td>
+</tr></table>
+<p>So, why do I favor explicit routes over implicit routes? Consider some of the issues with implicit routing:</p>
+<ul>
+	<li>If you want to temporarily “turn off” one of your controllers (say, you’re having problems with your <span class="caps">RSS</span> feeds and need to disable them for a bit), you have to somehow make sure the controller file can’t be found by the routing code, which means removing it, obfuscating it’s name, or some other hack. Using named routes, you just comment out the routes that point at the controller in question, and you’re all set.</li>
+		<li>Say your application is a year old or so (ancient!) and has an established base of users, who have all bookmarked various areas of your app. Now, you go and refactor things, so that an action that used to be in one controller is now in another, and so forth. With implicit routes, you’re hosed, but with explicit routes your users’ bookmarks will continue to function as before, since the route that gets recognized remains unchanged—it simply points to a different place now.</li>
+		<li>Implicit routes are extremely concise to define, but very verbose to use, since you often have to give the controller and action in the options to link_to, or url_for, or whatever you use. Sure, your routes.rb file is only one line long, but how much more did you have to type in your views?</li>
+	</ul>
+<p>Furthermore, I prefer named routes over unnamed routes, for a few reasons.</p>
+<ul>
+	<li>Route generation using implicit routes is ugly, both internally and externally. I mean, seriously, who wants to type “link_to(person.name, :controller =&gt; ‘person’, :action =&gt; ‘show’, :id =&gt; person)” when they can type “link_to(person.name, person_url(person))”. It gets even worse if you want to pass <span class="caps">HTML</span> options to link_to, because you have to use explicit curly braces around the route options in that case. Named routes are, as I said, hotsauce.</li>
+		<li>You can use named routes in functional and integration tests. Pretty cool! In functional tests, you can do “assert_redirected_to(person_url(people(:bob)))”. In integration tests, you can say “get person_url(people(:bob))”. This hearkens back to the refactoring issue—if you change where your actions are, your integration tests remain unaffected.</li>
+	</ul>
+<p>“But,” you say, “explicit route definitions are so much more verbose than implicit route definitions!”</p>
+<p>Sure, if you do it all long-hand. But if you use <code>Object#with_options</code>, it collapses nicely:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">map.with_options <span class="sy">:controller</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">people</span><span class="dl">"</span></span> <span class="r">do</span> |people|<tt>
+</tt>  people.people <span class="s"><span class="dl">"</span><span class="k">/people</span><span class="dl">"</span></span>,     <span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">index</span><span class="dl">"</span></span><tt>
+</tt>  people.person <span class="s"><span class="dl">"</span><span class="k">/people/:id</span><span class="dl">"</span></span>, <span class="sy">:action</span> =&gt; <span class="s"><span class="dl">"</span><span class="k">show</span><span class="dl">"</span></span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Using explicit, named routes, your routes.rb file now reads like a description of what your application can do. You have <span class="caps">ULTIMATE CONTROL</span> (mwa-ha-ha-ha) over what parts of your code visitors can hit, and how they hit it. And you can refactor with impunity, too!</p>
+<p>Think of it like this: a route is not <em>the name</em> of your action. It is <em>an alias</em> for your action, and as such need not have any relationship to the actual implementation.</p>

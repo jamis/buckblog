@@ -1,0 +1,13 @@
+---
+layout: post
+title: 'Inspecting a live Ruby process: Day 2'
+post_id: 150
+categories:
+- Tips & Tricks
+date: 2006-09-23 08:42:00.000000000 -06:00
+author: Jamis
+permalink: 2006/09/23/inspecting-a-live-ruby-process-day-2.html
+---
+
+<p>I knew when I posted yesterday’s article on <a href="http://weblog.jamisbuck.org/2006/9/22/inspecting-a-live-ruby-process">inspecting a live Ruby process</a> that I wasn’t the first to have done that with <span class="caps">GDB</span>—I just didn’t know of anyone else who had. But given that I’m not a <span class="caps">GDB</span> guru, and there are much brighter people than me playing with Ruby’s internals, I was sure it had been done before.</p>
+<p>I was not wrong, apparently. And not only had it been done before, it had been done <em>better</em>. I was delighted to see that Mauricio Fernandez has shared a collection of <span class="caps">GDB</span> helpers that make it <a href="http://eigenclass.org/hiki.rb?ruby+live+process+introspection">easy to cheat</a>. He defines a bunch of custom <span class="caps">GDB</span> functions that let you basically eval Ruby code right there from <span class="caps">GDB</span>! Really, really cool. Definitely give it a look.</p>

@@ -1,0 +1,21 @@
+---
+layout: post
+title: SQlite3-Ruby Windows Builds
+post_id: 69
+categories:
+- Projects
+date: 2008-12-06 22:16:00.000000000 -07:00
+author: Jamis
+permalink: 2008/12/06/sqlite3-ruby-windows-builds.html
+---
+
+<p>So, I’ve got a new sqlite3-ruby release pending (just a minor bug fix, is all), but I’ve learned my lesson about releasing a new version without a windows version pre-built.</p>
+<p>The problem is, I’m not a Windows guy. My build environment for Windows is cobbled together and painful to use, when it works at all. I’ve decided that I won’t put myself through that pain anymore.</p>
+<p>If you are a developer on Windows, and you have a sqlite3 build environment, and would be willing to compile the sqlite3-ruby extension for me, please do the following:</p>
+<ol>
+	<li>Add a comment to this post, indicating your name, and what platform you would be willing to build for (cygwin, native windows, whatever. I don’t even know the right names.)</li>
+		<li>Reload the page, and make sure no one commented before you, claiming those platforms.</li>
+		<li>Grab the latest version of sqlite3-ruby here: <a href="http://github.com/jamis/sqlite3-ruby/tree/master">http://github.com/jamis/sqlite3-ruby/tree/master</a>.</li>
+		<li>Build the extension, and email it to me at jamis at 37signals dot com.</li>
+	</ol>
+<p>Once I have a build of sqlite3-ruby for windows, I’ll release the new gem. (It amazes me how painful Windows makes this process. Mac <span class="caps">OS X</span>, Linux, <span class="caps">BSD</span>, etc. —you just gem install and build the source. No such luck in the Windows realm, apparently.)</p>

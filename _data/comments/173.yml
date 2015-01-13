@@ -1,0 +1,46 @@
+---
+- date: 2006-11-17
+  author: Brad Ediger
+  content: "<p>You mean the class method, right? ActiveRecord::Base.find() ?</p>\n\n\n\t<p>Keep
+    ‘em coming, Jamis. Loved your routing series.</p>"
+- date: 2006-11-17
+  author: Jamis
+  content: "<p>Gah, indeed I did mean the class method. Thanks for keeping me honest,
+    Brad! (Fixed.)</p>"
+- date: 2006-11-17
+  author: np
+  content: "<p>Routes were great and I can’t wait for find() !</p>\n\n\n\t<p>Thank
+    you so much for this unvaluable humanized-expert-documenting effort, Jamis!</p>\n\n\n\t<p>I
+    started programming (only did some xhtml/css) about six months ago with ruby and
+    rails (or was it rails and ruby) and these kind of in depth and easy to follow
+    explanations helps me greatly.</p>"
+- date: 2006-11-17
+  author: Tom
+  content: "<p>Especially looking forward to better understanding the relationship
+    with indexes!</p>"
+- date: 2006-11-17
+  author: Amr
+  content: "<p>This is so awesome! thanks for all your hard work and effort to make
+    people understand.</p>"
+- date: 2006-11-18
+  author: Hendy Irawan
+  content: "<p>Yes, I agree!</p>\n\n\n\t<p>I’m referring to “bite-sized”.</p>\n\n\n\t<p>I
+    have learned that this is very true, for almost any kind of printed/textual material.</p>\n\n\n\t<p>I’ve
+    been trying to write shorter and shorter articles, but I’ve failed most of the
+    time. Max-300 words (how long is that?) or 5 paragraphs is very unattainable for
+    me. Weird.</p>\n\n\n\t<p>Even in comments!! ;-)</p>"
+- date: 2006-11-18
+  author: John Topley
+  content: "<p>Wow Jamis, it seems you’re on fire with your articles here and The
+    Rails Way. We’re all learning lots from them, so long may it continue!</p>"
+- date: 2006-11-19
+  author: Sur
+  content: |-
+    <p>Thanks for the onblog rails tutorials Jamis.
+    We all are learning gr8 things with your gr8 posts.</p>
+- date: 2006-11-20
+  author: Sean Cribbs
+  content: "<p>I’d love to see this, especially since I spent a lot of time this weekend
+    writing some hefty dynamic query constructors.  Of course, mine had to deal with
+    joining multiple tables, but the beauty of ActiveRecord::Base.find() is how succinct
+    you can make queries…ooh the suspense.</p>"

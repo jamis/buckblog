@@ -1,0 +1,312 @@
+* {
+  font-family: Tahoma, Geneva, sans-serif;
+}
+
+pre, code {
+  font-family: "Courier New", Courier, monospace;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-size: 14pt;
+}
+
+.sitename {
+  background: #484;
+  margin: 0;
+  padding: 0.5em 0;
+  border-bottom: 2px solid #141;
+}
+
+.sitename h1 {
+  color: #efe;
+  font-family: "Courier New", Courier, monospace;
+  letter-spacing: 1pt;
+}
+
+.sitename h2 {
+  color: #efe;
+  font-family: "Courier New", Courier, monospace;
+  letter-spacing: 1pt;
+  font-weight: normal;
+  font-size: 100%;
+  padding-left: 5%;
+}
+
+body > .footer {
+  background: #484;
+  margin: 0;
+  padding: 10pt 0;
+  border-top: 2px solid #141;
+}
+
+body > .footer p {
+  margin: 0;
+  padding: 10pt 0;
+  color: #efe;
+  font-size: 90%;
+  font-weight: normal;
+}
+
+body > .footer a {
+  color: #7f7;
+}
+
+body > .footer .license {
+  text-align: center;
+}
+
+.post.featured {
+  margin-bottom: 50pt;
+}
+
+.post.featured h2 {
+  font-size: 150%;
+}
+
+.post.glimpse h2 {
+  font-size: 125%;
+  color: #444;
+}
+
+.post.glimpse .summary {
+  font-size: 90%;
+}
+
+.post.link h2 {
+  font-size: 100%;
+  color: #444;
+}
+
+.post.link h3 {
+  font-size: 90%;
+  font-style: italic;
+  color: #555;
+  margin-left: 12pt;
+}
+
+.post.fade h2 {
+  font-size: 80%;
+  color: #444;
+}
+
+.post.fade h3 {
+  font-size: 60%;
+  font-style: italic;
+  color: #555;
+  margin-left: 12pt;
+}
+
+.post.fade.l17 {
+  opacity: 0.93;
+}
+.post.fade.l18 {
+  opacity: 0.86;
+}
+.post.fade.l19 {
+  opacity: 0.80;
+}
+.post.fade.l20 {
+  opacity: 0.73;
+}
+.post.fade.l21 {
+  opacity: 0.66;
+}
+.post.fade.l22 {
+  opacity: 0.60;
+}
+.post.fade.l23 {
+  opacity: 0.53;
+}
+.post.fade.l24 {
+  opacity: 0.46;
+}
+.post.fade.l25 {
+  opacity: 0.40;
+}
+.post.fade.l26 {
+  opacity: 0.33;
+}
+.post.fade.l27 {
+  opacity: 0.26;
+}
+.post.fade.l28 {
+  opacity: 0.20;
+}
+.post.fade.l29 {
+  opacity: 0.13;
+}
+.post.fade.l30 {
+  opacity: 0.06;
+}
+
+.container, .sitename * {
+  margin: 0 auto;
+  width: 640px;
+}
+
+.navigation {
+  padding: 0.5em 1em 2em 0.75em;
+  margin-bottom: 9pt;
+  font-size: 80%;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+}
+
+.navigation a {
+  color: #070;
+}
+
+a.homelink, a.wizardlink {
+  font-weight: bold;
+}
+
+.articles {
+  margin: 9pt 0 20pt 0;
+}
+
+.articles .etc {
+  font-size: 26pt;
+  padding: 10pt 25pt;
+  color: #070;
+}
+
+.articles .calendar {
+  float: left;
+  width: 40pt;
+  margin-left: -50pt;
+  margin-top: -10pt;
+  font-weight: bold;
+  color: #bdb;
+  text-align: center;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  padding: 10pt 0;
+}
+
+.articles .archive {
+  margin: 5pt -5pt;
+  padding: 5pt 5pt;
+  background: #dfd;
+}
+
+.post {
+  margin-bottom: 25pt;
+}
+
+.post.link {
+  margin-bottom: 5pt;
+}
+
+.post.fade {
+  margin-bottom: 2pt;
+}
+
+.post h2 {
+  margin: 0;
+  padding: 0;
+}
+
+.post h2 a {
+  color: #070;
+}
+
+.post .body h2 {
+  font-size: 125%;
+}
+
+.post .body h3 {
+  font-weight: bold;
+  font-style: normal;
+}
+
+.post h3 {
+  margin: 0;
+  padding: 0.25em 0;
+  font-size: 100%;
+  font-weight: normal;
+  font-style: italic;
+}
+
+.post .summary {
+  margin: 12pt;
+  font-style: italic;
+  color: #777;
+}
+
+.post .tail {
+  padding: 5pt;
+  border-top: 1px solid #ccc;
+  font-style: italic;
+  font-size: 90%;
+  margin-bottom: 5pt;
+}
+
+.post .footer {
+  text-align: center;
+  background: #dfd;
+  border: 1px solid #ada;
+  padding: 5pt;
+}
+
+.post .footer table {
+  width: 100%;
+}
+
+.post .footer table td.previous {
+  text-align: left;
+  font-size: 80%;
+  width: 33%;
+}
+
+.post .footer table td.current {
+  text-align: center;
+  font-size: 90%;
+  width: 34%;
+}
+
+.post .footer table td.next {
+  text-align: right;
+  font-size: 80%;
+  width: 33%;
+}
+
+table.tiles {
+  border-collapse: collapse;
+}
+
+.comments {
+  margin-top: 15pt;
+}
+
+.comments h2 {
+  font-size: 125%;
+  color: #050;
+  margin-bottom: 10pt;
+}
+
+.comments .comment {
+  border: 1px solid #555;
+  padding: 5pt 15pt;
+  background-color: #cfc;
+  margin-bottom: 5pt;
+}
+
+.comments .comment.author {
+  background-color: #ada;
+}
+
+.comments .comment.author .byline {
+  color: #070;
+}
+
+.comments .comment .content {
+}
+
+.comments .comment .byline {
+  text-align: right;
+  font-size: 90%;
+  color: #777;
+  font-style: italic;
+}

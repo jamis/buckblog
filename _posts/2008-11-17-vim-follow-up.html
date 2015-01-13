@@ -1,0 +1,139 @@
+---
+layout: post
+title: Vim Follow-up
+post_id: 72
+categories:
+- Tips & Tricks
+date: 2008-11-17 12:09:00.000000000 -07:00
+author: Jamis
+permalink: 2008/11/17/vim-follow-up.html
+summary: >
+  The fallout from the author's return to Vim is recounted, with a review of
+  tips and plugins that have been found to be particularly useful
+---
+
+<p>So, it’s been over a month and a half since I <a href="http://weblog.jamisbuck.org/2008/10/10/coming-home-to-vim">switched back to Vim</a>, and I figured I’d post a bit about how things are going.</p>
+<p>I <strong>love</strong> it. Though the future is notoriously difficult to foretell, I think it’s safe to say that I won’t be switching editors again anytime soon. Vim is where it’s at, for me.</p>
+<p>Here’s the combination of plugins and such that I’ve found work best for me.</p>
+<h2>MacVim <span class="caps">FTW</span>
+</h2>
+<p>Any Vim will do, really, but if you’re on a Mac, you really ought to consider <a href="http://code.google.com/p/macvim/">MacVim</a>. Like any self-respecting Vim port, it does the command-line really well, but it also has a great <span class="caps">OS X GUI</span> interface.</p>
+<h2>Settings</h2>
+<p>I’ve got my &lt;Leader&gt; character (<code>:h mapleader</code>) mapped to the comma (since it’s easier to reach than the backspace character).</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">let mapleader = ","</pre></td>
+</tr></table>
+<p>I’ve installed <a href="http://petdance.com/ack">ack</a> and have configured Vim to use ack for grep.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">set grepprg=ack<tt>
+</tt>set grepformat=%f:%l:%m<tt>
+</tt></pre></td>
+</tr></table>
+<p>I’m a believer in spaces instead of tabs (let’s just agree not to go there), and I prefer a tab size of 2. I also like editors to try and guess the indentation level.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">set tabstop=2<tt>
+</tt>set smarttab<tt>
+</tt>set shiftwidth=2<tt>
+</tt>set autoindent<tt>
+</tt>set expandtab<tt>
+</tt>set backspace=start,indent<tt>
+</tt></pre></td>
+</tr></table>
+<p>But, some file types really do require explicit tabs, and not spaces:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">autocmd FileType make     set noexpandtab<tt>
+</tt>autocmd FileType python   set noexpandtab<tt>
+</tt></pre></td>
+</tr></table>
+<p>(<strong>Update</strong>: apparently, python can do tabs <strong>or</strong> spaces. All my python vimming for the last 8 years has been read-only, so it never actually came up.)</p>
+<p>I like my lines numbered, syntax highlighting on, and highlighted searches:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">set number<tt>
+</tt>set hlsearch<tt>
+</tt>syntax on<tt>
+</tt></pre></td>
+</tr></table>
+<p>I’ve got quite a few other things tweaked in my .vimrc, but those are the major biggest ones.</p>
+<h2>Plugins</h2>
+<h3>FuzzyFinder</h3>
+<p>The <a href="http://www.vim.org/scripts/script.php?script_id=1984">FuzzyFinder</a> and <a href="http://github.com/jamis/fuzzyfinder_textmate/tree/master">FuzzyFinder TextMate</a> plugins have become essential for me. For now, installation of the TextMate-like behavior is kind of painful, but I plan to get something up on the <a href="http://www.vim.org/scripts/index.php">Vim scripts index</a> in the nearish future.</p>
+<p>My settings for FuzzyFinder TextMate:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">let g:fuzzy_ignore = "*.log"<tt>
+</tt>let g:fuzzy_matching_limit = 70<tt>
+</tt><tt>
+</tt>map &lt;leader&gt;t :FuzzyFinderTextMate&lt;CR&gt;<tt>
+</tt>map &lt;leader&gt;b :FuzzyFinderBuffer&lt;CR&gt;<tt>
+</tt></pre></td>
+</tr></table>
+<h3>
+<span class="caps">NERD</span>_tree</h3>
+<p>Thanks to all who recommended the <a href="http://www.vim.org/scripts/script.php?script_id=1658"><span class="caps">NERD</span> tree plugin</a> by Marty Grenfell. It really is fantastic, definitely the best-of-breed of <span class="caps">VIM</span> project/directory explorers. I especially like that it is easily toggled away. I usually keep it hidden, and toggle it open only when I need to browse to something. (Thanks to the fuzzyfinder stuff, my need for a project browser is pretty small, but when I need one, <span class="caps">NERD</span>_tree works great.)</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">map &lt;leader&gt;d :execute 'NERDTreeToggle ' . getcwd()&lt;CR&gt;<tt>
+</tt></pre></td>
+</tr></table>
+<h3>rails.vim</h3>
+<p>The <a href="http://www.vim.org/scripts/script.php?script_id=1567">rails.vim</a> plugin is pretty extensive, and I’m currently only scratching the surface. I don’t use snippets at all (never did in TextMate, either), but the Rake integration is pretty handy, and I’ve used the migration generator pretty often lately.</p>
+<p>I need to spend some more time reading the docs for this one, and practicing some of the commands, since I’m sure it could turn into a real time-saver for programmers (like myself) who spend a good part of their day in Rails code.</p>
+<h3>scratch.vim</h3>
+<p>I’ve really come to love <a href="http://www.vim.org/scripts/script.php?script_id=664">scratch.vim</a>. Sometimes I just need to jot down some numbers, or paste the result of some query, or even take notes on a phone call. Writing any of that on a scrap of paper is a sure way to lose the info. The scratch plugin lets me take notes right where I am all day: in Vim. It doesn’t come with a way to toggle the scratch buffer (which is odd), so I wrote a quick one:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt>9<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">function! ToggleScratch()<tt>
+</tt>  if expand('%') == g:ScratchBufferName<tt>
+</tt>    quit<tt>
+</tt>  else<tt>
+</tt>    Sscratch<tt>
+</tt>  endif<tt>
+</tt>endfunction<tt>
+</tt><tt>
+</tt>map &lt;leader&gt;s :call ToggleScratch()&lt;CR&gt;<tt>
+</tt></pre></td>
+</tr></table>
+<h3>tComment</h3>
+<p>Maybe it’s just my own coding style, but I find myself commenting and uncommenting large blocks of code on a daily basis. The <a href="http://www.vim.org/scripts/script.php?script_id=1173">tComment</a> plugin from Tom Link is perfect for this. You can toggle comments by using the Vim motion operators, or just do a quick visual block followed by “gc”. Good stuff!</p>
+<h3>Others</h3>
+<p>There are a few other plugins I’m experimenting with (<a href="http://www.vim.org/scripts/script.php?script_id=1697">surround.vim</a>, <a href="http://www.vim.org/scripts/script.php?script_id=90">vcscommand.vim</a>), but which I use infrequently enough that they haven’t become muscle memory yet.</p>
+<h2>Workflow</h2>
+<p>Because I prefer the <span class="caps">GUI</span> version of MacVim, I typically have only one or two terminal windows open. I then type “mvim” to open vim from the root of whichever project(s) I’m working on, and then use ”,t” (my FuzzyFinder TextMate trigger) to search for and open files. I also use ”,b” (my FuzzyFinderBuffer trigger) to search my buffer list if I know the file is already open.</p>
+<p>Switching between buffers with the carat character ”^” is a huge time saver. I used to use :ls (to list open buffers) and :buffer (to jump to a buffer), but the FuzzyFinderBuffer has really taken the place of both of those.</p>
+<p>Ironically, split windows (which I missed most of all when I switched to TextMate) have taken me the longest to fit back into my workflow. TextMate trained them out of me. :) That said, I’m still trying to fit them back in, and when I remember to use them, I <strong>love</strong> them.</p>
+<h2>You?</h2>
+<p>So, that’s me. How does Vim fit in your own workflow? What settings do you prefer, and why? And what customizations are you using in your own setup?</p>

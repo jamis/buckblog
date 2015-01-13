@@ -1,0 +1,13 @@
+---
+- date: 2007-01-19
+  author: Blake Watters
+  content: "<p>I have produced a similar solution, except my setup provides a script
+    that you can use from outside of Capistrano and/or call from within a Capistrano
+    task. That way you can manage your dependencies on development machines and from
+    within Capistrano for the deployed servers.</p>\n\n\n\t<p>The script and installation
+    instructions are available at http://thatswhatimtalkingabout.org/news/2007/1/19/dead-simple-rails-dependency-management-with-install_gems</p>"
+- date: 2007-01-19
+  author: Roman
+  content: |-
+    <p>Blake, the end of the <span class="caps">URL</span> of your post is truncated with Firefox (not with Safari), here’s the tiny one:
+    http://tinyurl.com/348bxm</p>

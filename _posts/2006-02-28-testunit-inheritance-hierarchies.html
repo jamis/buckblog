@@ -1,0 +1,31 @@
+---
+layout: post
+title: TestUnit Inheritance Hierarchies
+post_id: 167
+categories:
+- Tips & Tricks
+date: 2006-02-28 09:58:00.000000000 -07:00
+author: Jamis
+permalink: 2006/02/28/testunit-inheritance-hierarchies.html
+---
+
+<p>One of the current design features of Ruby’s TestUnit class is that every subclass of TestUnit <em>must</em> have at least one test method implemented. If that isn’t the case, you get a runtime error.</p>
+<p>Sometimes, however, you’d like to use inheritance to set up a hierarchy of test “helpers”. For instance, you’d like to have some scaffolding to aid in integration testing, and you just want to inherit from IntegrationTest to make that scaffolding available.</p>
+<p>In those cases, your superclass (IntegrationTest, in this case) simply needs to redefine the <code>run</code> method as follows:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">class</span> <span class="cl">IntegrationTest</span> &lt; <span class="co">Test</span>::<span class="co">Unit</span>::<span class="co">TestCase</span><tt>
+</tt>  <span class="r">def</span> <span class="fu">run</span>(*args)<tt>
+</tt>    <span class="r">return</span> <span class="r">if</span> <span class="iv">@method_name</span> == <span class="sy">:default_test</span><tt>
+</tt>    <span class="r">super</span>   <tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>The redefinition of <code>run</code> as given above simply makes it so that the test/unit runners do not try to do anything with empty TestCase subclasses that extend IntegrationTest. I could now, for instance, have subclasses of IntegrationTest, without having to define bogus test methods in IntegrationTest.</p>

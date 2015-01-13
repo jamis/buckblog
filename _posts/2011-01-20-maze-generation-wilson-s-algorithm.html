@@ -1,0 +1,756 @@
+---
+layout: post
+title: 'Maze Generation: Wilson''s algorithm'
+post_id: 15
+categories:
+- Under the Hood
+date: 2011-01-20 07:15:00.000000000 -07:00
+author: Jamis
+permalink: 2011/01/20/maze-generation-wilson-s-algorithm.html
+summary: >
+  A second algorithm for generating uniform spanning trees is presented, with
+  an animation and sample code
+---
+
+<p>The last algorithm I mentioned, <a href="http://weblog.jamisbuck.org/2011/1/17/maze-generation-aldous-broder-algorithm">Aldous-Broder</a>, was (if you’ll recall) originally devised as a way to generate <em>uniform spanning trees</em> (UST). (Review: a <em>spanning tree</em> is a tree that connects all the vertices of a graph. A <em>uniform</em> spanning tree is any one of the possible spanning trees of a graph, selected randomly and with equal probability.)</p>
+<p>Aldous-Broder was effective, but inefficient. For this (the seventh!) article in my series on maze algorithms, I’ll focus on Wilson’s algorithm for selecting uniform spanning trees.</p>
+<p>The algorithm goes something like this:</p>
+<ol>
+	<li>Choose any vertex at random and add it to the <span class="caps">UST</span>.</li>
+		<li>Select any vertex that is not already in the <span class="caps">UST</span> and perform a random walk until you encounter a vertex that is in the <span class="caps">UST</span>.</li>
+		<li>Add the vertices and edges touched in the random walk to the <span class="caps">UST</span>.</li>
+		<li>Repeat 2 and 3 until all vertices have been added to the <span class="caps">UST</span>.</li>
+	</ol>
+<p>So, it’s still doing the random walk, but I think you’ll see that this algorithm converges much more rapidly than Aldous-Broder. It’s still annoying to watch an animation of the early stages of the process, but not nearly as bad as the other.</p>
+<p>As before, here’s a simple example of the algorithm in action.</p>
+<h2>An example</h2>
+<p>A 4×4 grid will suffice for this demo.</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>We begin by randomly adding a cell to the maze:</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>Then, we pick another unvisited cell at random and do a random walk until we encounter that first cell. Note that this random walk has a few constraints: although it can cross cells it has already walked (as long as they are not already in the maze), we don’t want to allow the final path to have any loops in it. Thus, we also record the direction most recently used to exit each cell, and will use those directions to form the final path once the walk encounters an “in” cell.</p>
+<table>
+<tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w h"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w h"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w mark">↑</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w h"></td>
+<td class="n s e w mark">←</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w mark">↑</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w h"></td>
+<td class="n s e w out"></td>
+<td class="n s e w"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w mark">↑</td>
+<td class="n s e w mark">←</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w mark">↑</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w mark">→</td>
+<td class="n s e w h"></td>
+<td class="n s e w"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w mark">↑</td>
+<td class="n s e w mark">←</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w mark">↑</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w mark">→</td>
+<td class="n s e w mark">↓</td>
+<td class="n s e w"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w mark">↑</td>
+<td class="n s e w h">←</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w mark">↑</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w mark">→</td>
+<td class="n s e w mark">↓</td>
+<td class="n s e w"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w mark">↑</td>
+<td class="n s e w mark">→</td>
+<td class="n s e w h"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w mark">↑</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w mark">→</td>
+<td class="n s e w mark">↓</td>
+<td class="n s e w h"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w mark">↑</td>
+<td class="n s e w mark">→</td>
+<td class="n s e w mark">↑</td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w mark">↑</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+</td>
+<td>
+</td>
+</tr>
+</table>
+<p>Once we reach a cell that is already part of the maze, the walk terminates. The next phase simply goes back to the cell at the beginning of the walk, and follows the arrows, adding vertices and edges to the maze as we go, until we reach the final cell of the walk.</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w mark">→</td>
+<td class="n s e w mark">↓</td>
+<td class="n e w"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w mark">↑</td>
+<td class="n w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="s e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>All the other cells that were visited during the walk, but which did not make the “final cut”, as it were, are simply reset to “out”.</p>
+<table class="maze">
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n e w"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="s e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>Now, we do it again. Notice that this time there are four cells in the maze, rather than just one, giving us many more targets for the walk to hit. This is what lets the algorithm converge more rapidly than Aldous-Broder: each pass through the algorithm increases the odds that the next pass will terminate sooner.</p>
+<p>Here we go, another pass. I’m going to “cheat” and let this one consume more cells than it might (probabalistically) do otherwise. Just to keep the article shorter. :)</p>
+<table>
+<tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w h"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n e w"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="s e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w mark">→</td>
+<td class="n s e w h"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+<td class="n e w"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="s e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w mark">→</td>
+<td class="n s e w mark">↓</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n s e w h"></td>
+<td class="n e w"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="s e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w mark">→</td>
+<td class="n s e w mark">↓</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w h"></td>
+<td class="n s e w mark">←</td>
+<td class="n e w"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="n w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="s e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w mark">→</td>
+<td class="n s e w mark">↓</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w mark">↓</td>
+<td class="n s e w mark">←</td>
+<td class="n e w"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w h"></td>
+<td class="n w"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="s e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+</td>
+<td>
+<table class="maze">
+<tr>
+<td class="n s e w mark">→</td>
+<td class="n s e w mark">↓</td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w mark">↓</td>
+<td class="n s e w mark">←</td>
+<td class="n e w"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w mark">→</td>
+<td class="n w h"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="s e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<p>Then we walk the path and add the vertices and edges to the maze, again:</p>
+<table class="maze">
+<tr>
+<td class="n s w"></td>
+<td class="n e"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n w"></td>
+<td class="s e"></td>
+<td class="n e w"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="s w"></td>
+<td class="n"></td>
+<td class="s e"></td>
+<td class="n s e w out"></td>
+</tr>
+<tr>
+<td class="n s e w out"></td>
+<td class="s e w"></td>
+<td class="n s e w out"></td>
+<td class="n s e w out"></td>
+</tr>
+</table>
+<p>By now you should be able to see the pattern emerging. Each pass would add another random “branch” to the tree, proceeding until all cells have been added to the maze.</p>
+<p>Try the following demos if you’d like to see an animation of the algorithm in action, or step through it more carefully:</p>
+<script type="text/javascript" src="/javascripts/maze-minified.js"></script>
+<div class="row">
+<script type="text/javascript">Maze.createCanvasWidget("Wilson", 5, 5, { "class": "small" });</script>
+<script type="text/javascript">Maze.createCanvasWidget("Wilson", 15, 15, { "class": "medium", id: "wilson_medium", interval: 25 });</script>
+</div>
+<h2>Implementation</h2>
+<p>Personally, I found Wilson’s algorithm to be one of the messiest to implement, mostly due to the necessity of keeping track of directions while doing the random walk. I’m sure there are cleaner ways to implement this. Yes, that is a challenge! (Admittedly, some of the complexity of my implementation is due to it trying to animate the algorithm; feel free to simplify your own attempt.)</p>
+<p>The algorithm begins by setting a random cell as “in”, and recording how many cells still remain outside:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">grid[rand(height)][rand(width)] = <span class="co">IN</span><tt>
+</tt>remaining = width * height - <span class="i">1</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Then, I simply loop until there are no more cells that are outside the maze:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">while</span> remaining &gt; <span class="i">0</span><tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Within the loop, the random walk is performed. For now, I’m going to wave my hands and we’ll move on, but I’ll describe the <code>walk</code> method more closely in a bit. It returns the path that was taken as an array of (x, y, direction) tuples:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">walk(grid).each <span class="r">do</span> |x, y, dir|<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>For each cell in the random walk, we add it to the maze (by applying the given direction bit to each cell in the path), and then decrement the number of remaining cells:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">nx, ny = x + <span class="co">DX</span>[dir], y + <span class="co">DY</span>[dir]<tt>
+</tt><tt>
+</tt>grid[y][x] |= dir<tt>
+</tt>grid[ny][nx] |= <span class="co">OPPOSITE</span>[dir]<tt>
+</tt><tt>
+</tt>remaining -= <span class="i">1</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Now, the <code>walk</code> method itself is the messy bit. It begins by looping until a random cell is selected that is not in the maze:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">def</span> <span class="fu">walk</span>(grid)<tt>
+</tt>  loop <span class="r">do</span><tt>
+</tt>    cx, cy = rand(grid[<span class="i">0</span>].length), rand(grid.length)<tt>
+</tt>    <span class="r">next</span> <span class="r">if</span> grid[cy][cx] != <span class="i">0</span><tt>
+</tt><tt>
+</tt>    <span class="c"># ...</span><tt>
+</tt>  <span class="r">end</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Once a starting point is found, I initialize a hash of visited cells (where I will record both the coordinates of each cell in the walk, as well as the direction last used to exit the cell). And then I start walking:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt>8<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">visits = { [cx, cy] =&gt; <span class="i">0</span> }<tt>
+</tt><tt>
+</tt>start_x, start_y = cx, cy <span class="c"># where the random walk started</span><tt>
+</tt>walking = <span class="pc">true</span><tt>
+</tt><tt>
+</tt><span class="r">while</span> walking<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Now, inside the walking loop, I first set <code>walking</code> to false (since I’m going to be optimistic and assume that the next move will hit an “in” cell). Then, I look at a randomized list of directions:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">walking = <span class="pc">false</span> <span class="c"># cross fingers!</span><tt>
+</tt>[<span class="co">N</span>,<span class="co">S</span>,<span class="co">E</span>,<span class="co">W</span>].shuffle.each <span class="r">do</span> |dir|<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>For each direction in the randomized list, we’ll compute the neighbor in that direction and then check that the neighbor is actually a valid cell (within the boundaries of the grid):</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">nx, ny = cx + <span class="co">DX</span>[dir], cy + <span class="co">DY</span>[dir]<tt>
+</tt><span class="r">if</span> nx &gt;= <span class="i">0</span> &amp;&amp; ny &gt;= <span class="i">0</span> &amp;&amp; ny &lt; grid.length &amp;&amp; nx &lt; grid[ny].length<tt>
+</tt>  <span class="c"># ...</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Once a valid neighbor is found, we immediately record that direction as the exit vector from the current cell.</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">visits[[cx, cy]] = dir</pre></td>
+</tr></table>
+<p>Then, if the neighbor cell is already in the maze, we get to break out of the loop (because we’ve finished the walk). Otherwise, we set the neighbor to be our current cell, and we continue walking:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">if</span> grid[ny][nx] != <span class="i">0</span><tt>
+</tt>  <span class="r">break</span><tt>
+</tt><span class="r">else</span><tt>
+</tt>  cx, cy = nx, ny<tt>
+</tt>  walking = <span class="pc">true</span><tt>
+</tt>  <span class="r">break</span><tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Once we’re done walking, we still need to convert the <code>visits</code> hash to a valid path, which we’ll return. I do this by following the visits from the start cell, through the direction used to exit visited cell, until the path ends:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt><strong>5</strong><tt>
+</tt>6<tt>
+</tt>7<tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }">path = []<tt>
+</tt>x, y = start_x, start_y<tt>
+</tt>loop <span class="r">do</span><tt>
+</tt>  dir = visits[[x, y]] <span class="r">or</span> <span class="r">break</span><tt>
+</tt>  path &lt;&lt; [x, y, dir]<tt>
+</tt>  x, y = x + <span class="co">DX</span>[dir], y + <span class="co">DY</span>[dir]<tt>
+</tt><span class="r">end</span><tt>
+</tt></pre></td>
+</tr></table>
+<p>Finally, we return the path, which the top-level loop uses to add the cells to the maze:</p>
+<table class="CodeRay"><tr>
+  <td class="line_numbers" title="click to toggle" onclick="with (this.firstChild.style) { display = (display == '') ? 'none' : '' }"><pre><tt>
+</tt></pre></td>
+  <td class="code"><pre ondblclick="with (this.style) { overflow = (overflow == 'auto' || overflow == '') ? 'visible' : 'auto' }"><span class="r">return</span> path</pre></td>
+</tr></table>
+<p>Whew!</p>
+<h2>Conclusion</h2>
+<p>Wilson’s is still not a very efficient algorithm: on large grids, the first walk can be excruciatingly slow. However, it’s much nicer than Aldous-Broder, and is still guaranteed to return a uniform spanning tree.</p>
+<p>I’m sure any of you could do a better job implementing this than I’ve presented here. In fact, I’d love for you to prove it. :) Give it a try and link to your implementations in the comments!</p>
+<p>For reference, the complete source for my own (Ruby) implementation is here:</p>
+<script src="https://gist.github.com/760704.js?file=wilsons.rb"></script>
+<noscript>
+<a href="https://gist.github.com/760704">wilsons.rb</a> on gist.github.com</noscript>
+<p>Enjoy!</p>

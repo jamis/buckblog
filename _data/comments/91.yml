@@ -1,0 +1,158 @@
+---
+- date: 2007-05-10
+  author: Jeroen
+  content: "<p>Good news! However I get this on Windows</p>\n\n\n\t<p>gem install
+    net-ssh\nNeed to update 37 gems from http://gems.rubyforge.org\n.....................................\ncomplete\n<span
+    class=\"caps\">ERROR</span>:  While executing gem … (Zlib::BufError)\n    buffer
+    error</p>\n\n\n\t<p>And local install too:</p>\n\n\n\t<p>gem install c:\\net-ssh-1.1.1.gem\n<span
+    class=\"caps\">ERROR</span>:  Error installing gem c:\\net-ssh-1.1.1.gem[.gem]:
+    buffer error</p>\n\n\n\t<p><span class=\"caps\">HTH</span></p>\n\n\n\t<p>jeroen</p>"
+- date: 2007-05-10
+  author: Chris Andrews
+  content: "<p>I think the host key verification trouble is down to slightly incorrect
+    handling of the different key types—attempting to match (say) a <span class=\"caps\">DSA</span>
+    key from the server with the same server’s <span class=\"caps\">RSA</span> key
+    in the known_hosts file results in a mismatch, not the adding of the new key.</p>\n\n\n\t<p>Patch
+    with a possible fix should be on the capistrano list.</p>\n\n\n\t<p>Chris.</p>"
+- date: 2007-05-10
+  author: Jamis
+  content: "<p>There is apparently something broken with Ruby’s zlib bindings on Windows.
+    For now, you can work around it by changing line 856 of c:\\ruby\\lib\\ruby\\site_ruby\\1.8\\rubygems\\package.rb
+    so that it compares on version 1.2.3 of Zlib, instead of 1.2.1:</p>\n\n\n<table
+    class=\"CodeRay\"><tr>\n  <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre><span class=\"r\">if</span> <span class=\"co\">Zlib</span>::<span
+    class=\"co\">ZLIB__VERSION</span> &lt;= <span class=\"s\"><span class=\"dl\">'</span><span
+    class=\"k\">1.2.3</span><span class=\"dl\">'</span></span><tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>(If
+    you’re not using the one-click installer, you’ll need to find package.rb wherever
+    it’s installed on your system.)</p>"
+- date: 2007-05-10
+  author: Jamis
+  content: "<p>Oops, that’s line 618, not 856.</p>"
+- date: 2007-05-10
+  author: joe
+  content: "<p>add type check to key matching:</p>\n\n\n\t<p>host-key-verifier.rb:</p>\n\n\n\t<pre><code>def
+    verify(arguments)\n    # first, find any matches on hostname+port\n   matches
+    = keys.select do |item|\n        host = item[:host] || arguments<a>:peer</a>\n
+    \       ip   = item[:ip]   || arguments<a>:peer</a>\n        port = item[:port]
+    || arguments<a>:peer</a>\n        type = item[:type] || arguments<a>:peer</a></code></pre>\n\t<pre><code>host
+    \ arguments<a>:peer</a> &amp;&amp;\n  ip    arguments<a>:peer</a>   &amp;&amp;\n
+    \ port  arguments<a>:peer</a> &amp;&amp;\n  type  arguments[:key].ssh_type\nend</code></pre>"
+- date: 2007-05-10
+  author: Assaf
+  content: "<p>I ran into the same ZLib problem, and apparently adding empty lines
+    at the end of one of the files cured it. I don’t remember where I read it, and
+    I have no clue why it would work. It just does.</p>"
+- date: 2007-05-10
+  author: Jamis
+  content: "<p>Assaf, yeah, that worked for me before, too, but not this time. I’ve
+    tried everything I can think of to change the size of the files, but the size
+    of the gem keeps changing in multiples of 256 bytes, and the buffer error keeps
+    occurring.</p>\n\n\n\t<p>I’ve been in touch with Chad Fowler, and he and Jim Weirich
+    will be releasing a new version of rubygems today sometime that fixes this issue.</p>"
+- date: 2007-05-10
+  author: Glenn Rempe
+  content: "<p>Hi Jamis,</p>\n\n\n\t<p>Here is a slightly more obscure one.  I am
+    using Dr. Nic’s GemsOnRails gem to freeze gems into my vendor dir.  If I freeze
+    net-ssh I am no longer able to run rake tasks, or start the included ./script/server,
+    or run my app via litespeed.</p>\n\n\n\t<p>http://drnicwilliams.com/2007/02/09/railsrally-2007-and-gemsonrails/</p>\n\n\n\t<p>Here
+    is the error I see.  Is this an issue with net-ssh you think? or with the gemsonrails
+    gem?  I have about 10 or so other gems frozen with no issues.  I’ll report it
+    to Dr. Nic as well.</p>\n\n\n\t<p>Here is my output:</p>\n\n\n\t<p><span class=\"caps\">FREEZE
+    NET</span>-SSH <span class=\"caps\">GEM</span></p>\n\n\n\t<p>macbook-pro:/usr/local/src/svk/APP/trunk/APP
+    glenn$ rake gems:freeze <span class=\"caps\">GEM</span>=net-ssh\n(in /usr/local/src/svk/APP/trunk/APP)\nUnpacked
+    net-ssh 1.1.1 to ‘net-ssh-1.1.1’</p>\n\n\n\t<p><span class=\"caps\">FAILS TO START</span></p>\n\n\nmacbook-pro:/usr/local/src/svk/APP/trunk/APP
+    glenn$ ./script/server \n=&gt; Booting Mongrel (use ‘script/server webrick’ to
+    force WEBrick)\n=&gt; Rails application starting on http://0.0.0.0:3000\n=&gt;
+    Call with -d to detach\n=&gt; Ctrl-C to shutdown server\n\t<ul>\n\t<li>Starting
+    Mongrel listening at 0.0.0.0:3000</li>\n\t\t<li>Starting Rails with development
+    environment…\nExiting\n/usr/local/lib/ruby/gems/1.8/gems/rails-1.2.3/lib/commands/servers/mongrel.rb:15:
+    warning: already initialized constant <span class=\"caps\">OPTIONS</span>\n/usr/local/lib/ruby/gems/1.8/gems/rails-1.2.3/lib/commands/servers/mongrel.rb:18:
+    undefined method `options’ for []:Array (NoMethodError)\n        from /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:32:in
+    `gem_original_require’\n        from /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:32:in
+    `require’\n        from ./script/../config/../vendor/rails/activesupport/lib/active_support/dependencies.rb:495:in
+    `require’\n        from ./script/../config/../vendor/rails/activesupport/lib/active_support/dependencies.rb:342:in
+    `new_constants_in’\n        from ./script/../config/../vendor/rails/activesupport/lib/active_support/dependencies.rb:495:in
+    `require’\n        from ./script/../config/../vendor/rails/railties/lib/commands/server.rb:39\n
+    \       from ./script/server:3:in `require’\n        from ./script/server:3</li>\n\t</ul>\n\n\n\t<p><span
+    class=\"caps\">UNFREEZE</span></p>\n\n\n\t<p>macbook-pro:/usr/local/src/svk/APP/trunk/APP
+    glenn$ rake gems:unfreeze <span class=\"caps\">GEM</span>=net-ssh\n(in /usr/local/src/svk/APP/trunk/APP)</p>\n\n\n\t<p><span
+    class=\"caps\">NOW IT WORKS</span></p>\n\n\nmacbook-pro:/usr/local/src/svk/APP/trunk/APP
+    glenn$ ./script/server \n=&gt; Booting Mongrel (use ‘script/server webrick’ to
+    force WEBrick)\n=&gt; Rails application starting on http://0.0.0.0:3000\n=&gt;
+    Call with -d to detach\n=&gt; Ctrl-C to shutdown server\n\t<ul>\n\t<li>Starting
+    Mongrel listening at 0.0.0.0:3000</li>\n\t\t<li>Starting Rails with development
+    environment…</li>\n\t\t<li>Rails loaded.</li>\n\t\t<li>Loading any Rails specific
+    GemPlugins</li>\n\t\t<li>Signals ready.  <span class=\"caps\">TERM</span> =&gt;
+    stop.  <span class=\"caps\">USR2</span> =&gt; restart.  <span class=\"caps\">INT</span>
+    =&gt; stop (no restart).</li>\n\t\t<li>Rails signals registered.  <span class=\"caps\">HUP</span>
+    =&gt; reload (without restart).  It might not work well.</li>\n\t\t<li>Mongrel
+    available at 0.0.0.0:3000</li>\n\t\t<li>Use <span class=\"caps\">CTRL</span>-C
+    to stop.\n^C** <span class=\"caps\">INT</span> signal received.\nExiting</li>\n\t</ul>\n\n\n\t<p>PS
+    : I also tried freezing net-ssh versions 1.1.0 and 1.0.10 and both behaved the
+    same so this is not a brand new regression.</p>\n\n\n\t<p>Thanks,</p>\n\n\n\t<p>Glenn</p>"
+- date: 2007-05-10
+  author: Jatinder Singh
+  content: "<p>I spent a <strong>few</strong> hours trying to find out why I was constantly
+    getting errors “address family for hostname not supported” on my Windows box while
+    trying to use Capistrano.\nhttp://www.ruby-forum.com/topic/107020 provides a tip
+    to add <span>systemroot</span>\\system32\\drivers\\etc\\services file,\nssh                22/tcp
+    \                          #SSH\nand which works like a charm.</p>\n\n\n\t<p>But
+    now I am sure I dont have the remember above step if I use <span class=\"caps\">NET</span>-SSH
+    1.1.1. Thanks Jamis!</p>"
+- date: 2007-05-11
+  author: Assaf
+  content: "<p>{expletive deleted}</p>\n\n\n\t<p>I’m also getting 256 increments on
+    the gem size, before and after the ruby-gem update. Do you know if the problem
+    is packaging or unpackaging Gems—which side deserves corporal punishment?</p>"
+- date: 2007-05-11
+  author: Assaf
+  content: "<p>After updating rubygems, net-ssh now installs correctly on XP.</p>\n\n\n\t<p>However,
+    you need to run gem update rubygems-update first. If I just run gem update, it
+    tries to update net-ssh first and fails.</p>"
+- date: 2007-05-15
+  author: David
+  content: "<p>Strange, net/ssh breaks when used in Rubyscrip2EXE-applications. I
+    have not yet found out why.</p>"
+- date: 2007-05-15
+  author: Remco
+  content: "<p>The host key verification problem, at my macbook, has to do with a
+    “broken” known_hosts file.  Some of the lines in my file don’t have the address
+    part, they start with a space.  Removing those lines works around the problem.
+    \ Maybe the load_keys_from method should use an regex on line 90 instead of split?</p>"
+- date: 2007-05-15
+  author: Jamis
+  content: "<p>Remco, could you propose a regex to use? It’s hard, because (as far
+    as I can tell) the known_hosts file format is not formally documented anywhere,
+    so it’s hard to know what all the possible permutations are. A patch would be
+    very welcome :).</p>"
+- date: 2007-05-18
+  author: Gabe
+  content: "<p>Jamis, I believe all you need to do to reproduce the key problem is
+    have an rsa key in your known_hosts file, but no dss key.</p>\n\n\n\t<p>When doing
+    `cap deploy` (with svn) against a blank known_hosts file it will fail because
+    svn writes an rsa key (well at least in my case it does).  However if you first
+    do a `cap restart` it will write the <span class=\"caps\">DSS</span> key and then
+    you are all good.</p>\n\n\n\t<p>Joe’s solution above works, but you can’t read
+    it because of the markup parsing (what is it anyway? Markdown?).  Basically I
+    just added type to the host/ip/port list of matching criteria.  It works, but
+    is it ideal?  I don’t know enough about <span class=\"caps\">SSH</span> to understand
+    whether it makes sense to request the public key type you want explicitly.</p>\n\n\n\t<p>What’s
+    the official word on this Jamis?  You’ve been strangely silent on the substantive
+    comments here.  Is a fixed version forthcoming?</p>\n\n\n\t<p>In other bugs: a
+    blank line in known_hosts will result in an attempted nil.split.</p>"
+- date: 2007-05-19
+  author: Remco
+  content: "<p>Regarding the broken known_hosts file, you could replace line 88 in
+    in host-key-verifier.rb:</p>\n\n\n\t<pre><code>host, type, key = line.chomp.split</code></pre>\n\n\n\t<p>with:</p>\n\t<pre><code>_,
+    host, type, key = <strong>line.chomp.match(/<sup>([</sup> ]</strong>) ([^ ]<strong>)\n([^
+    ]</strong>)$/)</code></pre>\n\n\n\t<p>This doesn’t fix the <span class=\"caps\">RSA</span>/DSA
+    problem Gabe writes about.</p>"
+- date: 2007-05-19
+  author: Remco
+  content: "<p>Grrr blackbox markup..</p>"
+- date: 2007-06-17
+  author: Werner Ramaekers
+  content: "<p>I had the same error and tried to fix it by edting the known_hosts
+    file but that didn’t work. \nHowever , the following solution fixes the problem
+    :\ndo a ‘cap setup ssh_keys’ after having set the ssh_options in your deploy.rb
+    to :\n‘ssh_options[:keys] = %w(/Users/@yourname/.ssh/id_rsa) #id rsa_pub’</p>"

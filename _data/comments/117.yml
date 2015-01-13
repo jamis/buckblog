@@ -1,0 +1,249 @@
+---
+- date: 2007-01-09
+  author: Matthijs Langenberg
+  content: "<p>Thanks for the tip! I was always using your last example (adding a
+    class method), but extending the associating is indeed a better thing to do. It
+    allows better method chaining.</p>"
+- date: 2007-01-09
+  author: newbie
+  content: "<p>Hey this is an interesting insight. I’m new to <span class=\"caps\">ROR</span>
+    and programming and I was just wondering what is “memoize” and “memoize the results”?
+    If you could explain it in non-computer term if that makes sense : )</p>\n\n\n\t<p>I
+    get the sense your saving time and possibly creating speed on querying by using
+    the “memoize” approach. It seems like something you would want to do when your
+    “refactoring” your code I’m guessing ?</p>"
+- date: 2007-01-09
+  author: Brian Buckley
+  content: "<p>How about reorganizing “memoized_finder” (maybe call it just “memoize”)
+    to follow the pattern used in the “memoize” gem, where original methods are left
+    untouched and memoization is applied declaratively, one line, very clean.  Setting
+    instance variables (@active and @inactive) not even needed.</p>\n\n\n\t<p>class
+    Project &lt; ActiveRecord::Base\n  has_many :tasks, :dependent =&gt; :delete_all
+    do\n    def active\n      find(:all, :conditions =&gt; “status = ‘active’”)\n
+    \   end\nend</p>\n\t<pre><code>def inactive\n    find(:all, :conditions =&gt;
+    \"status = 'inactive'\")\n  end\nend</code></pre>\n\n\n\t<pre><code>memoize :active,
+    :inactive</code></pre>"
+- date: 2007-01-10
+  author: K.Angel
+  content: "<p>A newbie question – in which file must be saved the declaration of
+    the  memoized_finder method?</p>"
+- date: 2007-01-10
+  author: Sandro Paganotti
+  content: "<p>Thanks for this awesome article that goes deeper into the problem the
+    guys at therailsway.com show us with ” AssetsGraphed: Part 1”.</p>\n\n\n\t<p>Very
+    clean and ninja solution !\nSandro</p>"
+- date: 2007-01-10
+  author: Silvio Gissi
+  content: "<p>Sandro, Jamis is, together with Koz, the therailsway.com editor, actually,
+    the “AssetsGraphed: Part 1” was written by Jamis himself :-)</p>\n\n\n\t<p>Jamis,
+    congratulations for another great article. Before reading your arguments to push
+    the active/inactive code into Project instead of Task, I would swear that the
+    best way was to have it under Task to keep the classes more atomic and decoupled.
+    You managed to change my mind on the last paragraph. Oh, the memoized_finder trick
+    was very nice, by the way.</p>"
+- date: 2007-01-10
+  author: Jamis
+  content: "<p>Angel, you can just throw that in config/environment.rb, though if
+    you find yourself putting lots of stuff there, it might be best to refactor it
+    out and put it in a file under lib/. You can then just require the file from config/environment.rb.</p>\n\n\n\t<p>Silvio,
+    Sandro, thanks!</p>"
+- date: 2007-01-10
+  author: UnderpantsGnome
+  content: "<p>Jamis- Is there a way to use the currently instantiated objects id
+    in the conditions? Say I want:</p>\n\n\n\t<p>has_many :foos do\n  memoized_finder
+    :contributed, ‘user_id = #{id}’\nend</p>\n\n\n\t<p>I’m currently doing this through
+    nested/inherited has_many through. Like:</p>\n\n\n\t<p>has_many :foos, :conditions
+    =&gt; “deleted_at <span class=\"caps\">IS NULL</span>” \nhas_many :contributed_foos,
+    :through =&gt; :foos, :conditions =&gt; ‘user_id = #{id}’</p>\n\n\n\t<p>By using
+    ’’ instead of ”” on the conditions it replaces id on the first call, not at compile
+    time.</p>\n\n\n\t<p>I probably shouldn’t even be posting this until I’ve had coffee…</p>"
+- date: 2007-01-10
+  author: Jamis
+  content: "<p>UnderpantsGnome (you <em>would</em> make me have to type that name),
+    you can get the same effect by explicitly escaping the hash character, like so:</p>\n\n\n<pre>\n
+    \ has_many :foos do\n    memoized_finder :contributed \"user_id = \\#{id}\" \n
+    \ end\n</pre>\n\n\t<p>The only difference single and double quotes (in Ruby) is
+    that the single quotes don’t evaluate embedded expressions. So if you have an
+    embedded expression in a double-quoted string that you don’t want evaluated, just
+    escape the hash character and you’ll be fine.</p>"
+- date: 2007-01-10
+  author: UnderpantsGnome
+  content: "<p>Jamis- I’ll assume you’re not a South Park fan. You can refer to me
+    as the post above if it’s less painful. ;)</p>\n\n\n<pre>\nhas_many :foos do\n
+    \ memoized_finder :contributed \"user_id = \\#{id}\" \nend\n</pre>\n\n\t<p>generates
+    the following, maybe I’m missing something?</p>\n\n\n<pre>\n...AND (foos.user_id
+    = #{id}))\n</pre>\n\n\t<p>It looks like using double quotes in a has_many :conditions
+    it evaluates at compile time and using single quotes it evaluates per instance.</p>\n\n\n\t<p>This
+    one works as it substitutes the #{id} for the current user. It’s not as pretty
+    as yours, but it does have the same effect of caching the results.</p>\n\n\n<pre>\nhas_many
+    :foos, :order =&gt; 'position',\n  :conditions =&gt; \"deleted_at IS NULL\" \n\nhas_many
+    :contributed_foos, :source =&gt; 'foo', \n  :through =&gt; :foos,\n  :order =&gt;
+    'position',\n  :conditions =&gt; 'foos.user_id = #{id}'\n</pre>"
+- date: 2007-01-10
+  author: Joshua Warchol
+  content: "<p>Jamis, I like to keep the extensions in an Extensions module inside
+    of the association’s class.</p>\n\n\n\t<p>class Task …\n  ...\nend</p>\n\n\n\t<pre><code>module
+    Extensions\n  def active\n   ...\n  end \nend</code></pre>\n\n\n\t<p>And then
+    do:</p>\n\n\n\t<p>has_many :tasks, :extend =&gt; Task::Extensions</p>\n\n\n\t<p>To
+    me it seems cleaner to keep the logic about what the different states of a task
+    are inside the task.rb file. It also makes it easier to reuse between other objects.</p>\n\n\n\t<p>I’ve
+    got an ongoing struggle though since it seems like I should be able to combine
+    association extensions and scopes so that I could get the sexy AssociationCollection
+    smart-queries. I long to do:</p>\n\n\n\t<p>@project.tasks.active.size (and have
+    it do <acronym title=\"*\">COUNT</acronym>), likewise @project.tasks.active.empty?</p>\n\n\n\t<p>Thanks
+    for the great article.</p>"
+- date: 2007-01-10
+  author: Jamis
+  content: "<p>UnderpantsGnome, you’ll also need to change the memoized_finder macro
+    so that it doesn’t do inspect on the conditions string:</p>\n\n\n<pre>\n  #...\n
+    \ @#{name} ||= find(:all, :conditions =&gt; #{String === conditions ? %(\"#{conditions}\")
+    ? conditions.inspect})\n  #...\n</pre>\n\n\t<p>Joshua, I’m glad you pointed out
+    that alternative. Thanks! I’ve considered that in the past, but it feels like
+    too much work when the module is only used in a single place. Also, it’s one more
+    indirection that someone reading your code has to follow. Still, if you are using
+    those extensions in more than one place, or if there are more than a few methods
+    that you’re defining, using an externally defined module to extend your association
+    is a great idea.</p>"
+- date: 2007-01-10
+  author: Joshua Warchol
+  content: "<p>Jamis, you’re right, using the :extend to a sub-module is a bit indirect
+    and I don’t do it for one or two methods either.</p>\n\n\n\t<p>Could you comment
+    on my idea of an AssociationCollection/extensions/scopes mashup? Since scopes
+    are how the association extensions work it seems like you should be able to define
+    additional scopes and then let the parent association collection do its magic.</p>"
+- date: 2007-01-10
+  author: Jason L.
+  content: "<p>Jamis – thanks for the great article. I read your other article at
+    the Rails Way on this subject and I wasn’t entirely convinced that doing these
+    custom associations was any better than using class-based finders and letting
+    the association scope it for you. After reading this article tho, I can see the
+    huge benefit now (like, smacking me in the face) that it could save some hits
+    to the database. Now I realize that the class finders aren’t going to give you
+    any kind of caching via association (e.g. if you define </p>\n<pre>Task.find_active</pre>,
+    <pre>some_project.tasks</pre> will get cached, but <pre>some_project.tasks.find_active</pre>
+    will not).\n\n\n\t<p>Joshua, the only thing I can think of to get the magic you’re
+    looking for would be to explicitly define memoized versions of those functions,
+    like:</p>\n\n\n<code>\n# (WARNING: this is just a guess, I didn't test it)\n  def
+    memoized_counter(name, conditions=nil)\n    class_eval &lt;&lt;-STR\n      def
+    #{name}(reload=false)\n        @#{name} = nil if reload\n        @#{name} ||=
+    count(#{conditions.inspect})\n      end\n    STR\n  end\n</code>\n\n\t<p>Or maybe
+    you don’t want it to be memoized, for something like count. I think I would have
+    a concern where I might have </p>\n<pre>some_project.tasks.active</pre> cached
+    and then if a task were deleted in another session, <pre>some_project.tasks.active_count</pre>
+    might return the wrong value, so personally I’d stick to <pre>some_project.tasks.active.size</pre>
+    (i.e. the size of the array rather than calling an <span class=\"caps\">SQL COUNT</span>)."
+- date: 2007-01-10
+  author: Jason L.
+  content: "<p>sorry about the formatting there – I transposed my ‘pre’ and ‘code’
+    tags…</p>"
+- date: 2007-01-10
+  author: Jamis
+  content: "<p>Joshua, for the multiple chained extensions thing, you’d need to implement
+    your own proxy objects. You <strong>might</strong> be able to find a way to just
+    use the proxy classes that ActiveRecord uses—might be an interesting project.
+    Regardless, there’s no support for that kind of thing built into AR.</p>"
+- date: 2007-01-11
+  author: Doug
+  content: "<p>I totally love this extension concept! I’ve been doing stuff like:</p>\n\n\n\t<p>@job.tasks.all?(&amp;:finished?)</p>\n\n\n\t<p>But</p>\n\n\n\t<p>@job.tasks.all_finished?</p>\n\n\n\t<p>is
+    so much nicer! Where is this documented? I couldn’t find any reference to it in
+    the <span class=\"caps\">API</span>.</p>\n\n\n\t<p>Thanks!</p>"
+- date: 2007-01-11
+  author: Jamis
+  content: <p>Doug, it’s in the <a href="http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html">ActiveRecord::Associations
+    docs</a>. Look for the section titled “Association extensions”. Don’t blame yourself
+    for not finding it, though—there’s a <span class="caps">LOT</span> of information
+    on that page.</p>
+- date: 2007-01-11
+  author: Dean
+  content: "<p>First of all, thanks for pointing this out! I just found this blog
+    a week or so ago, and I’ve already learned a bunch of great tips! Really excellent!</p>\n\n\n\t<p>Now
+    I’m going to ask for help ;)</p>\n\n\n\t<p>I was wondering if there is any way
+    to do something like this with the following. Right now I have:</p>\n\n\n<pre><code>\nclass
+    Person &lt; ActiveRecord::Base\n    has_many :received_gifts, :foreign_key =&gt;
+    'receiver_id', :class_name =&gt; 'Gift'\n    has_many :given_gifts, :foreign_key
+    =&gt; 'giver_id', :class_name =&gt; 'Gift'\nend\n\nclass Gift &lt; ActiveRecord::Base\n
+    \   belongs_to :giver, :foreign_key =&gt; 'giver_id', :class_name =&gt; \"Person\"
+    \n    belongs_to :receiver, :foreign_key =&gt; 'receiver_id', :class_name =&gt;
+    \"Person\" \nend\n</code></pre>\n\n\t<p>Can I somehow combine those <code>has_many</code>
+    associations so that I can get <code>@person.gifts.received</code> and <code>@person.gifts.given</code>?</p>"
+- date: 2007-01-11
+  author: Jamis
+  content: "<p>Dean, not easily. The reason is that this trick first requires that
+    there be an aggregated “gifts” collection, which in this case would be the set
+    of all gifts that Person has either given or received.</p>\n\n\n\t<p>You can fake
+    it, kind of, simply by renaming your associations to “gifts_received” and “gifts_given”.</p>"
+- date: 2007-01-11
+  author: Dean
+  content: "<p>Okay, thanks, Jamis. I guess that’s what I’ll have to do for now. Thanks
+    for the help!</p>"
+- date: 2007-01-15
+  author: Peter T. Brown
+  content: "<p>This is fantastic, thanks.</p>"
+- date: 2007-01-16
+  author: Doug
+  content: "<p>Jamis, another question for you: How would one go about making these
+    association extensions available for a collection of objects that aren’t related
+    to their parent? To use continue with your example, what if I’ve got some subset
+    of tasks? I’d love to be able to call “tasks.active” no matter where those tasks
+    came from. Any ideas?</p>\n\n\n\t<p>Thanks!</p>"
+- date: 2007-01-16
+  author: Jamis
+  content: "<p>Doug, I may be misunderstanding your question, but you can define your
+    extensions in a module somewhere (let’s just call it DougsCustomExtensions), and
+    then, in any model that has a ‘tasks’ association:</p>\n\n\n<table class=\"CodeRay\"><tr>\n
+    \ <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre>has_many <span class=\"sy\">:tasks</span>, <span class=\"sy\">:extend</span>
+    =&gt; <span class=\"co\">DougsCustomExtensions</span><tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>If
+    you find you have many unrelated models that all “has_many :tasks”, you can move
+    that to a module, too, and set up the association in the self.included hook of
+    the module… in fact, maybe I’ll write that trick up this week.</p>"
+- date: 2007-01-16
+  author: Doug
+  content: "<p>Jamis, I understand that part. I’ve refactored a bunch of code already,
+    thanks to this tip. But is there any way to achieve the same functionality that
+    these extensions give for collections in the context of the parent (e.g project.tasks.active)
+    on a “bare” collection?</p>\n\n\n\t<p>What if I end up with a bunch of Tasks that
+    are seperate from a single Project? I’d like to be able to apply active() to them
+    also (random_tasks.active), but can’t in this case because they are not attached
+    to a Project with the extension.</p>\n\n\n\t<p>I’d really like to just extend
+    Array with a variation of active(), but only have it apply to arrays of Task objects.
+    It’s not a major issue, but it would be nice to maintain consistency with the
+    project.tasks.active style. That make more sense?</p>"
+- date: 2007-01-16
+  author: Jamis
+  content: "<p>Ah, yes, I see. For one thing, note that you can assign the association
+    proxy to a variable, so you could do:</p>\n\n\n<table class=\"CodeRay\"><tr>\n
+    \ <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre>tasks = project.tasks<tt>\n</tt>p tasks.active<tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>However,
+    as you said, if you obtain the list of tasks any other way (e.g. <code>Task.find(:all)</code>)
+    you’ll get a vanilla Ruby array back, and you’d need to extend it with the helpers
+    you want.</p>\n\n\n\t<p>You can use <code>Object#extend</code> to help there:</p>\n\n\n<table
+    class=\"CodeRay\"><tr>\n  <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre>tasks = <span class=\"co\">Task</span>.find(<span class=\"sy\">:all</span>)<tt>\n</tt>tasks.extend(<span
+    class=\"co\">TaskListHelpers</span>)<tt>\n</tt>p tasks.active<tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>But
+    you wouldn’t be able to use the same module for that as you did for extending
+    associations, since vanilla arrays lack the infrastructure for searching the database.</p>"
+- date: 2007-01-17
+  author: Doug
+  content: "<p>Interesting. Thanks for doing a post on extending and working with
+    these associations. It seems like they don’t get as much attentions as other ActiveRecord
+    features, like find() and the relationship methods, but they’re every bit as important.</p>"
+- date: 2007-01-19
+  author: Adam T.
+  content: "<p>Jamis, I enjoy that you’re explaining these ideas because I believe
+    people should learn to love association extensions (seriously… everyone should
+    use them), but I have one question:</p>\n\n\nInstead of using memoization to do
+    a separate <pre>find</pre> call, couldn’t you do it like this to support eager
+    loading?\n<pre>\n<code>\nclass Project &lt; ActiveRecord::Base\n  has_many :tasks,
+    :dependent =&gt; :delete_all do\n    def active(reload = false)\n      @active
+    = nil if reload\n      @active ||= self.select { |task| task.status == \"active\"
+    }\n    end\n    ...\n  end\nend\n</code>\n</pre>\n\n\t<p>That way, if you haven’t
+    pre-loaded your association, Rails will automatically fetch the contents, but
+    if you’ve eager loaded the association, it will use that instead without the extra
+    query.</p>\n\n\n\t<p>I used to do </p>\n<pre>find</pre> calls, but I found this
+    to work the same way, but to also make use of eager loading, too.\n\n\n\t<p>If
+    I’m missing something, however, please let me know!</p>"
+- date: 2007-01-22
+  author: Adam Keys
+  content: "<p>Dear Jamis,</p>\n\n\n\t<p>You are a serious hoss.  Keep it coming.</p>\n\n\n\t<p>Sincerely,\nAdam
+    Keys</p>"

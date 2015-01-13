@@ -1,0 +1,54 @@
+---
+layout: post
+title: Now that's cool
+post_id: 325
+categories:
+- Tips & Tricks
+date: 2004-11-13 04:44:00.000000000 -07:00
+author: Jamis
+permalink: 2004/11/13/now-that-s-cool.html
+---
+
+<p><a href="http://kronavita.de/chris/blog">Christian Neukirchen</a> asked me a question this morning on <span class="caps">IRC</span>. He wanted to know if there was a way to pass parameters to a service’s constructor (in <a href="http://needle.rubyforge.org">Needle</a>) <em>at the moment the service was requested</em>. This is particularly useful for prototype services, where each request of the service returns a new instance—often, you will want to pass some context-specific data to the constructor of that service.</p>
+<p>The short answer is “no”, you can’t really do specifically <em>that</em> in Needle. When I’ve needed something like that, I’ve usually split the constructor in two—creating an “injectible” constructor, and a separate <code>#init</code> method that must be invoked manually after obtaining the service handle in order to pass in the context-specific stuff:</p>
+<pre>
+  class Foo
+    def initialize( bar )
+      @bar = bar
+    end
+
+    def init( baz )
+      @baz = baz
+      do_initialization
+      ...
+      self
+    end
+  end
+
+  registry.define.foo( :model =&gt; :prototype ) { |c,| Foo.new( c[:bar] ) }
+
+  foo1 = registry.foo.init( "hello" )
+  foo2 = registry.foo.init( "world" )
+</pre>
+<p>It works, but it is clunky.</p>
+<p>This morning, I found a better way, thanks to the power of Ruby’s closures.  Ladies and gentlemen, consider the following:</p>
+<pre>
+  class Foo
+    def initialize( bar, baz )
+      @bar = bar
+      @baz = baz
+      do_initialization
+      ...
+    end
+  end
+
+  registry.define.foo( :model =&gt; :prototype ) do |c,|
+    lambda { |baz| Foo.new( c[:bar], baz ) }
+  end
+
+  foo1 = registry.foo.call( "hello" )
+  foo2 = registry.foo.call( "world" )
+</pre>
+<p>I <em>love</em> closures! True, the invocation to <code>#call</code> is still a bit clunky, but there’s not really a way to get around it. Besides, if you think about it, what you’ve done is turned the <code>foo</code> service (above) into a <em>factory</em>, which accepts parameters and returns object instances tailored according to those parameters.</p>
+<p>I’ve already reworked portions of the <a href="http://net-ssh.rubyforge.org">Net::SSH</a> rewrite to take advantage of this approach—it’s <em>really</em> slick.</p>
+<p>(Oh, and speaking of Net::SSH…connections and channels work! You can now execute processes remotely and respond to events. Remaining to finish: the port forwarding manager, the process manager, and the <span class="caps">SFTP</span> subsystem. Whew!)</p>

@@ -1,0 +1,132 @@
+---
+- date: 2007-01-24
+  author: John Topley
+  content: "<p>Very nice!</p>"
+- date: 2007-01-24
+  author: Jamis
+  content: "<p>I should mention, I also love with_options because it adds a natural
+    grouping to things, like routes. Each of your routes is suddenly grouped by controller,
+    because with_options adds that block around them. Makes it really easy to get
+    your routes organized.</p>"
+- date: 2007-01-24
+  author: Jon Leighton
+  content: "<p>I’m not sure I like the has_many example. I agree with your above comment
+    that this encourages grouping of related statements, but the has_many example
+    groups the statements by something entirely irrelevant, making the code more complicated
+    to follow. I’m finding it hard to articulate what I mean but let’s just say you
+    have only one statement. You wouldn’t dream of doing this:</p>\n\n\n\t<p>with_options
+    :dependent =&gt; :destroy do |parent|\n  parent.has_many :authors\nend</p>\n\n\n\t<p>But
+    you may well do this (as it shows the structure of the route):</p>\n\n\n\t<p>map.with_options
+    :controller =&gt; “message” do |msg|\n  msg.create_message ”/msg/create/:id”,
+    :action =&gt; “create” \nend</p>"
+- date: 2007-01-24
+  author: Jamis
+  content: "<p>I hear you, Jon, and I agree to some extent, which is why I only really
+    use with_options in the routing definitions. Still, I don’t think I’d use with_options
+    just to define a single route. It obscures the intention, I think, and it’s more
+    to type. :)</p>"
+- date: 2007-01-24
+  author: Silvio Gissi
+  content: "<p>For me, the with_options look like a way to scope pretty much anything.
+    Just need to be careful, the more “magic” the most difficult to follow, again,
+    balance is everything.</p>\n\n\n\t<p>Nice tip Jamis!</p>"
+- date: 2007-01-24
+  author: RCB
+  content: "<p>What about the case where you want to a add options like :collection=&gt;{:recent=&gt;:get}
+    to every nested resource route?</p>\n\n\n\t<p>Using with_options would only apply
+    to the outermost resource block, so you would need to do a with_options on each
+    block.</p>\n\n\n\t<p>Applying options to all nested resource routes, would require
+    alias_method_chain( :resources, :custom_options ). Is that right?</p>"
+- date: 2007-01-24
+  author: Jamis
+  content: "<p><span class=\"caps\">RCB</span>, it would probably be easier to write
+    your own helper method to add common functionality to all sets of nested resources:</p>\n\n\n<table
+    class=\"CodeRay\"><tr>\n  <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt><strong>5</strong><tt>\n</tt>6<tt>\n</tt>7<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre>map.resources <span class=\"sy\">:people</span> <span
+    class=\"r\">do</span> |people|<tt>\n</tt>  decorate(people, <span class=\"sy\">:email_addresses</span>)<tt>\n</tt><span
+    class=\"r\">end</span><tt>\n</tt><tt>\n</tt>map.resources <span class=\"sy\">:companies</span>
+    <span class=\"r\">do</span> |companies|<tt>\n</tt>  decorate(companies, <span
+    class=\"sy\">:email_addresses</span>)<tt>\n</tt><span class=\"r\">end</span><tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>Something
+    like that, anyway.</p>"
+- date: 2007-01-24
+  author: Shalev
+  content: "<p>Jamis, you’re recent slew of posts have been incredibly helpful and
+    illuminating.  Thanks for taking the time to share your knowledge of the intricacies
+    of the framework.</p>\n\n\n\t<p>One minor styliing point:  In Safari the code
+    blocks don’t seem to handle horizontal overflow into your nav links.  Instead
+    of wrapping the block in a scroll box the text overlaps the nav section, making
+    it difficult to read (this doesn’t happen in FF).</p>"
+- date: 2007-01-24
+  author: Jamis
+  content: <p>Shalev, yah, I know about that Safari problem, but alas my <span class="caps">CSS</span>-fu
+    is not sufficient to figure out how to fix that in Safari. If anyone has any suggestions,
+    I’m all ears.</p>
+- date: 2007-01-24
+  author: Lyle
+  content: <p>Both Safari and <span class="caps">IE6</span> have this issue. If you
+    supply a fixed width to .CodeRay .code pre, it will fix this. About 38em should
+    do the trick.</p>
+- date: 2007-01-24
+  author: Jamis
+  content: "<p>Thanks, Lyle. It does some wierdness to the code snippets in comments
+    now, but I suppose that’s a fair compromise.</p>"
+- date: 2007-01-24
+  author: James H
+  content: "<p>Perhaps this is a bit of a newbish question, but with all this talk
+    about named routes, do you do this for all of your major controller actions, or
+    do you have another rule of thumb for their use?</p>"
+- date: 2007-01-24
+  author: Jamis
+  content: "<p>James, to be honest, I use RESTful routing, via “map.resources”. But
+    for the few oddball actions that don’t fit in map.resources, I define with an
+    explicitly named route. I don’t use implicit routes (named or otherwise) at all
+    these days.</p>"
+- date: 2007-01-25
+  author: Wayne
+  content: |-
+    <p><span class="caps">RCB</span>, One pattern I like with this question is to just use ruby:</p>
+
+
+    <pre><code>
+    [:users, :posts, :events].each do |resource|
+      map.resources resource, :collection=&gt;{:recent=&gt;:get}
+    end
+    </code></pre>
+- date: 2007-01-27
+  author: RCB
+  content: "<p>Wayne, I think that pattern would work great when the routes are not
+    nested.  However, if you have nested route blocks, you cannot use the pattern
+    and you would have to repeat the :collection opts to add :recent to every resource:</p>\n\n\n<code>\nopts
+    = {:collection=&gt;{:recent=&gt;:get}}\nmap.resources :schools, opts  do |s|\n
+    \ s.resources :teachers, opts do |t|\n    t.resources :classes, opts do |c|\n
+    \     c.resources :lessons, opts\n    end\n  end\n\n  s.resources :students,opts
+    do |s|\n    t.resources :classes, opts do |c|\n      c.resources :assignments,
+    opts\n    end\n  end\nend\n</code>\n\n\t<p>Applying with_options on the routes
+    above would only help for schools since s is referenced more than one.  Using
+    decorate() on the routes above is more trouble than just passing opts to each
+    :resources call.  You could argue this is a pathological example, but I actually
+    have something worse in a real project.</p>\n\n\n\t<p>Using alias_method_chain
+    on :resources to merge the :collection opts still appears like the best way to
+    add an action to all collections unless someone has a better idea.</p>\n\n\n\t<p>As
+    a related question: how would you remove one of the action routes that :resources
+    automatically defines (eg. edit)?</p>\n\n\n\t<p>I know you can omit/block/hide/redirect
+    the edit action in the controller, but the route would still remain, and could
+    still be generated by url_for.  Is there a clean way to remove the route to a
+    specific action on a resource?</p>"
+- date: 2007-01-27
+  author: Jamis
+  content: <p><span class="caps">RCB</span>, there is not a simple way of removing
+    a generated route. You can always go digging through the routing code itself to
+    see what arrays and hashes you would need to manipulate, but at the moment there
+    is no exposed <span class="caps">API</span> for removing routes.</p>
+- date: 2007-02-02
+  author: Mike
+  content: "<p>I don’t really understand the last example here. The one with :dependent
+    and has_many. Could you describe it in details ?</p>"
+- date: 2007-02-02
+  author: Jamis
+  content: "<p>Mike, it simply calls “has_many”, but appends the :dependent argument
+    to each call. The “parent” object is simply a proxy that wraps the “Blog” class,
+    and which knows to add the hash to all calls.</p>\n\n\n\t<p>It’s not really a
+    practical example, just a demonstration of how to use with_options in a non-routing
+    scenario.</p>"

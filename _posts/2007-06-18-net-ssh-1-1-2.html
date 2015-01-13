@@ -1,0 +1,26 @@
+---
+layout: post
+title: Net::SSH 1.1.2
+post_id: 86
+categories:
+- Announcements
+date: 2007-06-18 12:40:00.000000000 -06:00
+author: Jamis
+permalink: 2007/06/18/net-ssh-1-1-2.html
+---
+
+<p>Net::SSH 1.1.2 is now available! You can install it via RubyGems:</p>
+<pre><code>gem install net-ssh</code></pre>
+<p>Or download the source package of your choice from the project site:</p>
+<pre><code>http://rubyforge.org/frs/?group_id=274&amp;release_id=12444</code></pre>
+<p>Net::SSH is a pure-Ruby implementation of the <span class="caps">SSH2</span> client protocol. Version 1.1.2 is a bug-fix release, and addresses the following issues:</p>
+<ul>
+	<li>bug #6156 (ruby -w warnings)</li>
+		<li>bug #6667 (wrong <span class="caps">SOCKS 5</span> auth version)</li>
+		<li>bug #10818 (Exception in split_data_for_packet)</li>
+		<li>bug #11250 (host key verification problems when an <span class="caps">RSA</span> key appears in the known hosts file, but the server has both <span class="caps">DSS</span> and <span class="caps">RSA</span> keys)</li>
+		<li>bug #11270 (error when server uses some aes ciphers)</li>
+		<li>bug #11355 (typo in session.rb)</li>
+		<li>bug #11532 (Hang after <span class="caps">MSG</span>_CHANNEL_OPEN_FAILURE)</li>
+	</ul>
+<p>All users of Net::SSH 1.1.0 and 1.1.1 are encouraged to upgrade.</p>

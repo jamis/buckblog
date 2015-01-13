@@ -1,0 +1,189 @@
+---
+- date: 2007-01-22
+  author: Eric
+  content: "<p>I thought the point of that great implicit route was Convention over
+    Configuration. Isn’t that what <span class=\"caps\">DHH</span> has taught us?</p>\n\n\n\t<p>Is
+    the next evolution in routing going to be automatic creation of the “controller_url”
+    helpers for you with only a default implicit route?</p>"
+- date: 2007-01-22
+  author: James H
+  content: "<p>Maybe it’s because I’m sick today, but a good chunk of that went over
+    my head, and then you drop this on me:</p>\n\n\n<blockquote>\nI mean, seriously,
+    who wants to type “link_to(person.name, :controller =&gt; ‘person’, :action =&gt;
+    ‘show’, :id =&gt; person)” when they can type “link_to(person.name, person_url(person))”.\n</blockquote>\n\n\t<p>I
+    think it’s about time I pick up my Agile book again.</p>"
+- date: 2007-01-22
+  author: Jamis
+  content: "<p>Eric, sure. That’s what “map.resources” is all about. It puts a convention
+    around all of the above.</p>\n\n\n\t<p>But even for the places where it falls
+    apart (like some oddball controller that isn’t RESTful), I think it’s better to
+    be explicit than not. Convention over Configuration is great and all, but at some
+    point you need to take charge of your destiny, man! :)</p>\n\n\n\t<p>Seriously,
+    though, if none of the above arguments convinced you, then you’ve obviously felt
+    none of the pain I have with the implicit routes. I do what I do because of frustrations
+    I’ve had with the default route.</p>"
+- date: 2007-01-22
+  author: Jon Leighton
+  content: "<p>Wow, thanks for this, I never thought about that.</p>"
+- date: 2007-01-22
+  author: Martin S
+  content: "<p>You write so much great stuff you could print your blog and publish
+    it as a “rails tricks”-book. Thanks</p>"
+- date: 2007-01-22
+  author: Eric
+  content: "<p>Jamis, I wasn’t really intending to downplay the pain that is felt.</p>\n\n\n\t<p>The
+    thing that struck me was when you mentioned routes as being aliases to your actions—which
+    I think is true, but made me think of the Java world that was shunned for all
+    of its numerous layers of indirection.</p>\n\n\n\t<p>I don’t mean to say it isn’t
+    useful, or even that it shouldn’t be used, but it is intriguing to see that even
+    in rails there are places where indirection and explicit configurations are both
+    helpful.</p>\n\n\n\t<p>What I think all of this comes down to is that it shows
+    that rails has created a nice compromise as well as a nice migration path to allow
+    someone to start with a simple informal application and allow it to grow to something
+    much more structured when the time is right.</p>"
+- date: 2007-01-22
+  author: Jamis
+  content: "<p>Note that indirection (in moderation) is not a bad thing—it’s a crucial
+    part of building any software. Java has just made so many best-practices so hard
+    to do that they taste bad merely by association.</p>\n\n\n\t<p>And you have a
+    very good point, Eric: the default, implicit route is a great pedagogical aid,
+    since it allows newcomers to Rails to get up and moving without having to learn
+    anything about routing. There is definitely value there. I feel the same way about
+    scaffolding. However, as with any crutch, there comes a time when you need to
+    learn how to walk without it, and I guess that’s what I’m trying to communicate
+    with this post.</p>\n\n\n\t<p>Thanks for helping to clarify and focus my thesis!</p>"
+- date: 2007-01-22
+  author: Eric D
+  content: "<p>Hi Jamis!</p>\n\n\n\t<p>Let me please thank you for this wonderful
+    blog &amp; the railsway, I’ve got the impression that I never learned that much
+    about a language/framework. :)</p>\n\n\n\t<p>Though, I still don’t have the skill
+    to understand <code> map.with_options :controller =&gt; \"people\" do |people|
+    ... </code></p>\n\n\n\t<p>api.rubyonrails.org didn’t help me much on this one.\nCould
+    you please explain a bit more what are the corresponding <span class=\"caps\">URL</span>/params?</p>\n\n\n\t<p>Thanks
+    again,\nEric (another one)</p>"
+- date: 2007-01-22
+  author: Nate
+  content: "<p>Hotsauce?</p>\n\n\n\t<p>You don’t mean “steaksauce” do you?  You know,
+    it’s A1! :)</p>"
+- date: 2007-01-22
+  author: Jamis
+  content: "<p>Eric, very odd, looking in the ActiveSupport code it looks like the
+    with_options stuff has been nodoc’d, so it won’t show up in the <span class=\"caps\">API</span>
+    docs. I’ve removed that nodoc and added some documentation for with_options, so
+    in the <span class=\"caps\">NEXT</span> release, it’ll show up.</p>\n\n\n\t<p>A
+    quick rundown of how it works—basically it just lets you specify common options
+    and then yield to a block. The block recieves a proxy object, which passes all
+    methods through to the original receiver, and merges the options into any option
+    hashes.</p>\n\n\n\t<p>An example is worth a thousand words:</p>\n\n\n<table class=\"CodeRay\"><tr>\n
+    \ <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt><strong>5</strong><tt>\n</tt>6<tt>\n</tt>7<tt>\n</tt>8<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre>map.connect <span class=\"s\"><span class=\"dl\">\"</span><span
+    class=\"k\">/people</span><span class=\"dl\">\"</span></span>, <span class=\"sy\">:controller</span>
+    =&gt; <span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">people</span><span
+    class=\"dl\">\"</span></span>, <span class=\"sy\">:action</span> =&gt; <span class=\"s\"><span
+    class=\"dl\">\"</span><span class=\"k\">index</span><span class=\"dl\">\"</span></span><tt>\n</tt>map.connect
+    <span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">/people/:id</span><span
+    class=\"dl\">\"</span></span>, <span class=\"sy\">:controller</span> =&gt; <span
+    class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">people</span><span class=\"dl\">\"</span></span>,
+    <span class=\"sy\">:action</span> =&gt; <span class=\"s\"><span class=\"dl\">\"</span><span
+    class=\"k\">show</span><span class=\"dl\">\"</span></span><tt>\n</tt><tt>\n</tt><span
+    class=\"c\"># is the same as this:</span><tt>\n</tt>map.with_options <span class=\"sy\">:controller</span>
+    =&gt; <span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">people</span><span
+    class=\"dl\">\"</span></span> <span class=\"r\">do</span> |people|<tt>\n</tt>
+    \ people.connect <span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">/people</span><span
+    class=\"dl\">\"</span></span>, <span class=\"sy\">:action</span> =&gt; <span class=\"s\"><span
+    class=\"dl\">\"</span><span class=\"k\">index</span><span class=\"dl\">\"</span></span><tt>\n</tt>
+    \ people.connect <span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">/people/:id</span><span
+    class=\"dl\">\"</span></span>, <span class=\"sy\">:action</span> =&gt; <span class=\"s\"><span
+    class=\"dl\">\"</span><span class=\"k\">show</span><span class=\"dl\">\"</span></span><tt>\n</tt><span
+    class=\"r\">end</span><tt>\n</tt></pre></td>\n</tr></table>"
+- date: 2007-01-22
+  author: Eric D
+  content: "<p>Thanks again!</p>\n\n\n\t<p>So basically, it adds :controller =&gt;
+    “people” to everything inside the block. :)</p>\n\n\n\t<p>And if you change people.connect
+    to people.list, you’ll get “redirect_to list_url” available through ActionView/Controller,
+    right?</p>\n\n\n\t<p>Bye &amp; please keep up the good work!\nEric</p>"
+- date: 2007-01-22
+  author: Doug
+  content: "<p>Wait a sec, this person_url method: where did it come from? The named
+    route?? Could it be?</p>"
+- date: 2007-01-22
+  author: floyd
+  content: "<p>Doug, yes, map.person ‘people/:name’, :controller =&gt; “people”, :action
+    =&gt; “show” configures a route which can be generated with the method person_url.
+    \ Be careful, these can be overwritten.  I second the point of this article, and
+    to reiterate, named routes are sanctified as convention in 1.2 as ‘paths’.  Namely,
+    map.resource :people gets you a whole slew of pretty things like new_person_path.
+    \ See the recent announcements on the Rails weblog etc.</p>\n\n\n\t<p>These are
+    very pretty, but traditional named routes will continue to be relevant because
+    of the things Jamis says above.  As for the convention v. configuration issue,
+    I am surprised the issue of client requirements has not come up.  So called pretty
+    URLs  are nearly industry standard fare in the specs I’ve seen recently.  Named
+    routes let you do this easily:</p>\n\n\n<code>\nmap.login \"login\", :controller
+    =&gt; \"sessions\", :action =&gt; \"new\" \n\nlink_to \"Login!\", login_url\n</code>\n\n\t<p>Conventions
+    are great if you work for 37signals and get to invent requirements for your customers,
+    but for the rest of us configuration is going to figure heavily into any work
+    we do with Rails.  Luckily, named routes lets us do this elegantly while also
+    maintaining our restful, maintainable backend and stay happy.</p>"
+- date: 2007-01-22
+  author: Joe
+  content: "<p>This was a great write-up. I’ve also been in love with named URLs and
+    map.resources since I switched to Rails 1.2. About “switching off” controllers,
+    though – if you uncomment a named route, won’t all your views/controllers/tests
+    that the route_url method fail?</p>"
+- date: 2007-01-23
+  author: Paul O'Shannessy
+  content: "<p>I just started using named routes in combination with a RESTful app,
+    using them to shorten some URLs… login, logout, etc..  The <code>with_options</code>
+    thing was something I haven’t seen before and I’m glad you showed it.</p>\n\n\n\t<p>I’ve
+    been following your recent flurry of posts and they’ve all been really helpful.
+    \ Thanks a lot!</p>"
+- date: 2007-01-23
+  author: Jamis
+  content: "<p>Joe, true, and a good point. I could have done better illustrating
+    the cases where that is actually useful. A better use-case would be temporarily
+    pointing a <span class=\"caps\">URL</span> at some dummy action, rather than disabling
+    it entirely. That way the named routes will still exist, they’ll just be pointing
+    at a different location.</p>\n\n\n\t<p>Still, if you’re dealing with a <span class=\"caps\">URL</span>
+    that isn’t explicitly referenced in any views (like a hidden admin page, or a
+    web-service, etc.), it may be that disabling the route entirely is what you want
+    after all.</p>"
+- date: 2007-01-23
+  author: Doug
+  content: "<p>Great, thanks floyd, and thanks again Jamis for another great article.
+    Really enjoying these.</p>"
+- date: 2007-01-24
+  author: Adam T.
+  content: "<p>Named routes are great, but I still feel like you can get down into
+    a rabbit hole where you can see some obvious <span class=\"caps\">DRY</span> capabilities.</p>\n\n\n\t<p>Take,
+    for instance, this block of code:</p>\n\n\n<table class=\"CodeRay\"><tr>\n  <td
+    title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt><strong>5</strong><tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre><tt>\n</tt>map.with_options(<span class=\"sy\">:controller</span>
+    =&gt; <span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">people</span><span
+    class=\"dl\">\"</span></span>) <span class=\"r\">do</span> |person|<tt>\n</tt>
+    \ person.people(<span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">/people</span><span
+    class=\"dl\">\"</span></span>, <span class=\"sy\">:action</span> =&gt; <span class=\"s\"><span
+    class=\"dl\">\"</span><span class=\"k\">list</span><span class=\"dl\">\"</span></span>)<tt>\n</tt>
+    \ person.person(<span class=\"s\"><span class=\"dl\">\"</span><span class=\"k\">/people/:id</span><span
+    class=\"dl\">\"</span></span>, <span class=\"sy\">:action</span> =&gt; <span class=\"s\"><span
+    class=\"dl\">\"</span><span class=\"k\">show</span><span class=\"dl\">\"</span></span>)<tt>\n</tt><span
+    class=\"r\">end</span><tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>If you start
+    duplicating that (and let’s face it: having named routes for all our basic actions
+    would be great), you might be better off doing something like this:</p>\n\n\n<table
+    class=\"CodeRay\"><tr>\n  <td title=\"click to toggle\" class=\"line_numbers\"><pre>1<tt>\n</tt>2<tt>\n</tt>3<tt>\n</tt>4<tt>\n</tt><strong>5</strong><tt>\n</tt>6<tt>\n</tt>7<tt>\n</tt>8<tt>\n</tt>9<tt>\n</tt></pre></td>\n
+    \ <td class=\"code\"><pre><tt>\n</tt>[<span class=\"s\"><span class=\"dl\">\"</span><span
+    class=\"k\">person</span><span class=\"dl\">\"</span></span>, <span class=\"s\"><span
+    class=\"dl\">\"</span><span class=\"k\">item</span><span class=\"dl\">\"</span></span>].each
+    <span class=\"r\">do</span> |cntl|<tt>\n</tt>  eval <span class=\"s\"><span class=\"dl\">&lt;&lt;-STR</span></span><span
+    class=\"s\"><span class=\"k\"><tt>\n</tt>    map.with_options(:controller =&gt;
+    \"</span><span class=\"il\"><span class=\"dl\">#{</span>cntl.pluralize<span class=\"dl\">}</span></span><span
+    class=\"k\">\") do |obj|<tt>\n</tt>      obj.</span><span class=\"il\"><span class=\"dl\">#{</span>cntl.pluralize<span
+    class=\"dl\">}</span></span><span class=\"k\">(\"</span><span class=\"il\"><span
+    class=\"dl\">#{</span>cntl.pluralize<span class=\"dl\">}</span></span><span class=\"k\">\",
+    :action =&gt; \"list\")<tt>\n</tt>      obj.</span><span class=\"il\"><span class=\"dl\">#{</span>cntl<span
+    class=\"dl\">}</span></span><span class=\"k\">(\"</span><span class=\"il\"><span
+    class=\"dl\">#{</span>cntl.pluralize<span class=\"dl\">}</span></span><span class=\"k\">/:id\",
+    :action =&gt; \"show\")<tt>\n</tt>    end</span><span class=\"dl\"><tt>\n</tt>
+    \ STR</span></span><tt>\n</tt><span class=\"r\">end</span><tt>\n</tt></pre></td>\n</tr></table>\n\n\n\t<p>That
+    way, commenting out an entire controller’s worth of named routes is as easy as
+    commenting out one element in an array.</p>\n\n\n\t<p>P.S. I’m trying out Mephisto’s
+    syntax highlighting here… I pray it works like I want it to.</p>"

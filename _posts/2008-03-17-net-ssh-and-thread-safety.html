@@ -1,0 +1,14 @@
+---
+layout: post
+title: Net::SSH and Thread-safety
+post_id: 63
+categories:
+- Projects
+date: 2008-03-17 21:55:00.000000000 -06:00
+author: Jamis
+permalink: 2008/03/17/net-ssh-and-thread-safety.html
+---
+
+<p>Net::SSH 1.x is thread-safe. <a href="http://github.com/jamis/net-ssh/tree/master">Net::SSH v2</a>, as currently implemented in its pre-release state, is not.</p>
+<p>I’ve debated this long and hard with myself. Wrapping code in mutexes and doing all the other stuff that thread-safety requires adds a surprising amount of overhead, and it feels painful to me to have to add all that when the most common use-case of the library will be in single-threaded environments. However, without the mutexes and all that overhead, using Net::SSH in a multi-threaded environment (where multiple threads are hitting the same Net::SSH connection) will result in some rather ugly errors, and would require those programs to add their own mutexes and such to protect the integrity of the connection.</p>
+<p>I’m leaning towards leaving the library optimized for the single-thread experience, and requiring the people wanting multiple threads of execution to fend for themselves. However, in the interest of getting feedback from people who might actually use the library, I ask you: which would you prefer? A faster library in single-threaded programs? Or a simple program in multi-threaded ones? Is there a general best-practice in this case?</p>
