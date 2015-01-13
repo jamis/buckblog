@@ -4,6 +4,7 @@ markdown: redcarpet
 highlighter: true
 exclude: [public]
 url: http://weblog.jamisbuck.org
+permalink: /:year/:month/:day/:title
 
 redcarpet:
   extensions: [ smart ]
