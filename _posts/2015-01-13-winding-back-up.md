@@ -10,7 +10,7 @@ summary: >
   announces his latest project
 ---
 
-It's a little hard to believe that I [stopped blogging](http://weblog.jamisbuck.org/2011/09/01/shutting-down) more than three years ago. I was sure, at the time, that I was tired, that I was done, and that my blogging era was behind me. I exported my blog as static HTML pages, turned off my aging blog engine, and walked away.
+It's a little hard to believe that I [stopped blogging](http://weblog.jamisbuck.org/2011/9/1/shutting-down) more than three years ago. I was sure, at the time, that I was tired, that I was done, and that my blogging era was behind me. I exported my blog as static HTML pages, turned off my aging blog engine, and walked away.
 
 Funny, how "permanence" can be so impermanent.
 
@@ -20,7 +20,7 @@ In April, I left [Basecamp](http://basecamp.com), where I had worked for nine ye
 
 Since then, I've been busy trying to figure out what I want to be when I grow up. I've always enjoyed writing, so I took some ideas I had while on-call at Basecamp, and fleshed them out into a [quirky little novella](http://blog.jamisbuck.org) about a wizard and his manservant, and how algorithms saved the day. I even illustrated it myself---which, perhaps, you could have figured out simply by looking---but I learned a lot through that entire process. Most significantly, I learned that *consistent, regular effort pays off*. I also learned that almost everything looks like garbage while you're writing it, and the most powerful thing you can do is to *just get something down on paper*. You can't edit what you haven't written yet.
 
-Armed with those lessons, I set out for something bigger. I recalled my [maze algorithm posts](http://weblog.jamisbuck.org/2011/02/07/maze-generation-algorithm-recap) and remembered the comments of those who encouraged me to write a book about them. And I wondered...*maybe*...
+Armed with those lessons, I set out for something bigger. I recalled my [maze algorithm posts](http://weblog.jamisbuck.org/2011/2/7/maze-generation-algorithm-recap) and remembered the comments of those who encouraged me to write a book about them. And I wondered...*maybe*...
 
 So I went out on a limb, spent a couple of weeks putting together the best book proposal I could manage, sent it off to [The Pragmatic Bookshelf](http://pragprog.com), and hey presto! They accepted it!
 
