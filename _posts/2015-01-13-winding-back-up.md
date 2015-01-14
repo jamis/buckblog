@@ -10,7 +10,7 @@ summary: >
   announces his latest project
 ---
 
-It's a little hard to believe that I [stopped blogging](http://weblog.jamisbuck.org/2011/09/01/shutting-down) more than three years ago. I was sure, at the time, that I was tired, that I was done, and that my blogging era was behind me. I exported by blog as static HTML pages, turned off my aging blog engine, and walked away.
+It's a little hard to believe that I [stopped blogging](http://weblog.jamisbuck.org/2011/09/01/shutting-down) more than three years ago. I was sure, at the time, that I was tired, that I was done, and that my blogging era was behind me. I exported my blog as static HTML pages, turned off my aging blog engine, and walked away.
 
 Funny, how "permanence" can be so impermanent.
 
