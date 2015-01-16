@@ -8,7 +8,8 @@ summary: >
   A novel variation on a the Recursive Division maze generation algorithm, in
   which regions are defined by arbitrary clusters of cells instead of
   rectangular divisions of the grid. The algorithm is presented and
-  illustrated, and its benefits over the original algorithm are put forth
+  illustrated, and its benefits over the original algorithm are put forth.
+  A demonstration in JavaScript is provided
 ---
 
 This morning as I was getting ready for the day, I was thinking about the [Recursive Division algorithm](http://weblog.jamisbuck.org/2011/1/12/maze-generation-recursive-division-algorithm). (Maze algorithms are on my mind a lot these days.)
@@ -73,4 +74,38 @@ What we have here is a 50x50 maze generated using this "blobby" recursive divisi
 
 Another benefit of this variant is that it works out really well for any kind of grid topology, because walls simply follow the boundaries of cell regions.
 
-I'll see if I can work up a JavaScript demo of this in the near future, but I need to get back to work on my book. I just wanted to share this little discovery. It certainly made me smile this morning!
+It's particularly fun to watch in action. I've put together a few different sized grids that you can run the algorithm on, below. Click "run" to have the algorithm run to completion, or press "step" to move through the process incrementally.
+
+<script type="text/javascript" src="/javascripts/maze-minified.js"></script>
+<script type="text/javascript">
+  function resetMazes() {
+    for(var i = 0; i < arguments.length; i++) {
+      var id = arguments[i];
+      var element = document.getElementById(id);
+      element.mazeReset();
+    }
+  }
+
+  function blobbyThreshold() {
+    var s = document.getElementById('blobby_threshold');
+    return s.options[s.selectedIndex].value;
+  }
+</script>
+<p>
+  Room size: <select id="blobby_threshold" onchange="resetMazes('blobbydivision', 'blob_smallish', 'blob_bigger', 'blob_biggest');">
+    <option value="4">None (corridors only)</option>
+    <option value="10">Small</option>
+    <option value="25">Medium</option>
+    <option value="40">Large</option>
+  </select>
+</p>
+<div class="row">
+  <script type="text/javascript">Maze.createCanvasWidget("BlobbyDivision", 5, 5, { "threshold": blobbyThreshold, "watch": false, "class": "small", "styles": { "f": "#ffa" } });</script>
+  <script type="text/javascript">Maze.createCanvasWidget("BlobbyDivision", 10, 10, { "id": "blob_smallish", "threshold": blobbyThreshold, "watch": false, "class": "small", "styles": { "f": "#ffa" } });</script>
+  <script type="text/javascript">Maze.createCanvasWidget("BlobbyDivision", 21, 21, { "id": "blob_bigger", "threshold": blobbyThreshold, "watch": false, "class": "small", "styles": { "f": "#ffa" } });</script>
+  <script type="text/javascript">Maze.createCanvasWidget("BlobbyDivision", 42, 42, { "id": "blob_biggest", "threshold": blobbyThreshold, "watch": false, "class": "small", "styles": { "f": "#ffa" } });</script>
+</div>
+
+It strikes me just now, watching that last demo run, that this could also be used to draw random maps. Especially with the "room size" set to "huge", the grid in the bottom right looks remarkably like a map of counties!
+
+Anyway, I need to get back to work on my book, but I just wanted to share this little discovery. It certainly made me smile this morning!
