@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Jamis Buck</title>
+  <meta charset="UTF-8" />
+  <link href='http://fonts.googleapis.com/css?family=Cabin:400,700' rel='stylesheet' type='text/css'>
+  <style type="text/css">
+    * {
+      font-family: 'Cabin', sans-serif;
+      font-size: 14pt;
+    }
+
+    html, body {
+      margin: 0;
+    }
+
+    .container {
+      margin: 0 auto;
+      margin-bottom: 100pt;
+      width: 600px;
+    }
+
+    .availability {
+      text-align: center;
+      margin-bottom: 40pt;
+    }
+
+    .bundle {
+      height: 200px;
+      margin-bottom: 40pt;
+      padding-bottom: 40pt;
+      border-bottom: 1px solid #777;
+    }
+
+    .single {
+      text-align: center;
+      width: 400px;
+      margin: 0 auto;
+      margin-bottom: 40pt;
+    }
+
+    .bundle::after {
+      clear: both;
+    }
+
+    h1 {
+      font-size: 200%;
+      margin: 0;
+    }
+
+    .availability h1 {
+      font-size: 400%;
+      margin: 50pt 0 20pt 0;
+    }
+
+    p.hints {
+      margin: 0;
+    }
+
+    a {
+      color: blue;
+    }
+
+    .hints a {
+      padding: 0 5px;
+      font-size: 90%;
+    }
+
+    h2 {
+      font-size: 150%;
+      margin: 0;
+    }
+
+    .bundle .text {
+      width: 400px;
+    }
+
+    .bundle .graphic {
+      width: 200px;
+    }
+
+    .bundle > div:first-child {
+      float: left;
+      text-align: center;
+    }
+
+    .bundle > div:last-child {
+      float: right;
+      text-align: center;
+    }
+
+    img.bordered {
+      border: 2px solid black;
+    }
+
+    .callout {
+      text-align: center;
+      padding: 20px 0;
+      font-size: 400%;
+      font-weight: bold;
+      border-top: 4px solid black;
+      border-bottom: 4px solid black;
+    }
+
+    .answer {
+      font-size: 200%;
+      font-weight: bold;
+    }
+
+    .caveats {
+      font-style: italic;
+    }
+  </style>
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-718320-1', 'jamisbuck.org');
+    ga('send', 'pageview');
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="availability">
+      <h1>You Should Totally Hire the Heck Out of Me.</h1>
+    </div>
+
+    <div class="bundle">
+      <div class="text">
+        <h1>I'm Jamis Buck.</h1>
+        <p class="hints"><a href="http://weblog.jamisbuck.org">Blog</a> ~
+          <a href="http://twitter.com/jamis">Twitter</a> ~
+          <a href="http://github.com/jamis">GitHub</a> ~
+          <a href="mailto:jamis@jamisbuck.org">Email</a></p>
+        <p>I create things.<br />
+           Lots of things, in lots of ways.<br />
+           Some in software, some not.</p>
+        <p>It's what I love to do.</p>
+      </div>
+      <div class="graphic">
+        <img src="./images/me-portrait-small.jpeg" class="bordered" width="196" height="196" />
+      </div>
+    </div>
+
+    <div class="bundle">
+      <div class="graphic">
+        <img src="./images/me-rails-logo.png" width="200" height="200" />
+      </div>
+      <div class="text" style="padding-top: 20pt;">
+        <p>I am an <a href="http://rubyonrails.org/core/alumni/">alumnus</a><br />
+           of the <a href="http://rubyonrails.org">Ruby on Rails</a> core team.</p>
+      </div>
+    </div>
+
+    <div class="bundle">
+      <div class="text" style="padding-top: 20pt;">
+        <p>I spent nine years at <a href="http://basecamp.com">Basecamp</a><br />
+        (formerly 37signals),<br />
+        working with and learning from<br />
+        some of the world's<br />
+        best and brightest.
+      </div>
+      <div class="graphic">
+        <img src="./images/me-basecamp-small.png" width="200" height="200" />
+      </div>
+    </div>
+
+    <div class="bundle">
+      <div class="graphic">
+        <img src="./images/me-netssh.png" width="200" height="200" />
+      </div>
+      <div class="text" style="padding-top: 15pt;">
+        <p>I am the original author of<br />
+        <a href="http://capistranorb.com">Capistrano</a>,<br />
+        <a href="https://github.com/net-ssh/net-ssh">Net::SSH</a> for Ruby, and<br />
+        the <a href="https://github.com/sparklemotion/sqlite3-ruby">SQLite3-Ruby</a> bindings.</p>
+      </div>
+    </div>
+
+    <div class="single">
+      <p>I've written and shipped apps for<br />
+        <strong>PalmOS</strong>, <strong>Pocket PC</strong>, and <strong>iOS</strong>.</p>
+
+      <p>I've written<br />
+        web, desktop, terminal,<br />
+        and client/server apps,<br />
+        in C/C++, Java, Objective-C, and Ruby.</p>
+
+      <p>I've spent thousands of hours tinkering on side-projects, ranging
+        from<br />
+        <a href="https://github.com/jamis/kaleidoscope">uniform tilings</a>,
+        <a href="https://github.com/jamis/theseus">mazes</a>, and <a href="https://github.com/jamis/celtic_knot">celtic knots</a>,<br />
+        to <a href="https://github.com/jamis/bucketwise">personal finance</a>, <a href="https://github.com/jamis/piece-by-piece">genealogy</a>, and <a href="https://github.com/jamis/logic-engine">logic engines</a>.</p>
+
+      <p>I've experimented with grammars, parsers, interpreters, and compilers. I've written and played with ray-tracers and random generators. Syntax highlighters, document readers, logic puzzles, databases, web servers, layout engines&mdash;I've been up to my elbows in all of them.</p>
+    </div>
+
+    <p class="callout">~ Why? ~</p>
+
+    <div class="single">
+      <p class="answer">Because<br />
+        I love to learn.</p>
+
+      <p>I'm good at it.<br />
+        Set me a task, point me at a challenge,<br />
+        and I'll get to the bottom of it.</p>
+
+      <p>Out of sheer curiosity and a desire to explore,<br />
+        I've taught myself<br />
+        <a href="https://jamis.backpackit.com/pub/1226156-woodcarving-by-jamis-buck">wood-carving</a>, <a href="https://jamis.backpackit.com/pub/1807739-string-figures">string figures</a>,<br />
+        how to juggle, bind books,<br />
+        <a href="https://twitter.com/jamis/status/527854726512402432">draw</a>, and <a href="https://twitter.com/jamis/status/484376456655417345">bake bread</a>,<br />
+        how to make <a href="https://twitter.com/jamis/status/143358919887175682">bow ties</a>,<br />
+        chain mail juggling balls,<br />
+        <a href="http://twitpic.com/2vpxxj">kimchi</a> and <a href="https://twitter.com/jamis/status/125708128296771584">homemade marshmallows</a>.</p>
+
+      <p>I researched and learned how to generate <a href="http://weblog.jamisbuck.org/2011/2/7/maze-generation-algorithm-recap">random mazes</a>, I learned to play the guitar, and I'm on my way to learning the mandolin and ukulele.</p>
+
+      <p>Oh, and I'm currently writing a book<br />about maze algorithms.</p>
+
+      <p class="answer">Because<br />I love to learn.</p>
+
+      <blockquote class="twitter-tweet" lang="en"><p>The more I learn, the more I&#39;m convinced that there&#39;s nothing that can&#39;t be learned.</p>&mdash; Jamis Buck (@jamis) <a href="https://twitter.com/jamis/status/476372522573651968">June 10, 2014</a></blockquote>
+<script async src="http://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    </div>
+
+    <p class="callout">Hire me.</p>
+
+    <div class="single">
+      <p>Got a problem you need solved?<br />
+        Give me a try.<br /> Part-time, full-time, or contract, let's talk<br />
+        and see if we can make something work.</p>
+
+      <p>
+        Send a note to <a href="mailto:jamis@jamisbuck.org">jamis@jamisbuck.org</a>,<br />
+        and we'll get the ball rolling.
+      </p>
+
+      <p class="caveats">Remote offers only, please.<br />
+        Relocation is not currently an option.</p>
+    </div>
+  </div>
+</body>
+</html>
