@@ -5,19 +5,28 @@
   <meta charset="UTF-8" />
   <link href='http://fonts.googleapis.com/css?family=Cabin:400,700' rel='stylesheet' type='text/css'>
   <style type="text/css">
-    * {
+    html, body {
+      margin: 0;
       font-family: 'Cabin', sans-serif;
       font-size: 14pt;
     }
 
-    html, body {
-      margin: 0;
-    }
-
     .container {
       margin: 0 auto;
-      margin-bottom: 100pt;
       width: 600px;
+    }
+
+    .footer {
+      font-size: 80%;
+      text-align: center;
+      color: #777;
+      margin-top: 50pt;
+      margin-bottom: 25pt;
+    }
+
+    .footer a {
+      color: 77f;
+      font-size: 90%;
     }
 
     .availability {
@@ -93,18 +102,21 @@
       border: 2px solid black;
     }
 
-    .callout {
+    h1.callout {
       text-align: center;
       padding: 20px 0;
       font-size: 400%;
       font-weight: bold;
       border-top: 4px solid black;
       border-bottom: 4px solid black;
+      margin: 40pt 0;
     }
 
-    .answer {
+    h2.callout {
+      text-align: center;
       font-size: 200%;
       font-weight: bold;
+      margin: 20pt 0;
     }
 
     .caveats {
@@ -134,7 +146,7 @@
           <a href="http://twitter.com/jamis">Twitter</a> ~
           <a href="http://github.com/jamis">GitHub</a> ~
           <a href="mailto:jamis@jamisbuck.org">Email</a></p>
-        <p>I create things.<br />
+        <p>I make things.<br />
            Lots of things, in lots of ways.<br />
            Some in software, some not.</p>
         <p>It's what I love to do.</p>
@@ -149,18 +161,20 @@
         <img src="./images/me-rails-logo.png" width="200" height="200" />
       </div>
       <div class="text" style="padding-top: 20pt;">
-        <p>I am an <a href="http://rubyonrails.org/core/alumni/">alumnus</a><br />
-           of the <a href="http://rubyonrails.org">Ruby on Rails</a> core team.</p>
+        <h2>I helped make Ruby on Rails.</h2>
+        <p>I was a member of the <a href="http://rubyonrails.org/core/alumni/">core team</a><br />
+          from <a href="https://github.com/rails/rails/commits?author=jamis">2005&ndash;2007</a>.</p>
       </div>
     </div>
 
     <div class="bundle">
-      <div class="text" style="padding-top: 20pt;">
-        <p>I spent nine years at <a href="http://basecamp.com">Basecamp</a><br />
-        (formerly 37signals),<br />
+      <div class="text" style="padding-top: 10pt;">
+        <h2>I helped make Basecamp.</h2>
+        <p>I was at <a href="http://basecamp.com">Basecamp</a> (formerly 37signals),<br />
+        from <a href="https://signalvnoise.com/archives/001058.php">2005</a> (when it was just five people)<br />
+        to <a href="https://signalvnoise.com/posts/3754-what-jamis-left-behind-for-us">2014</a> (40+ people!)<br />
         working with and learning from<br />
-        some of the world's<br />
-        best and brightest.
+        some of the world's best and brightest.
       </div>
       <div class="graphic">
         <img src="./images/me-basecamp-small.png" width="200" height="200" />
@@ -172,6 +186,7 @@
         <img src="./images/me-netssh.png" width="200" height="200" />
       </div>
       <div class="text" style="padding-top: 15pt;">
+        <h2>I made some nifty tools.</h2>
         <p>I am the original author of<br />
         <a href="http://capistranorb.com">Capistrano</a>,<br />
         <a href="https://github.com/net-ssh/net-ssh">Net::SSH</a> for Ruby, and<br />
@@ -180,28 +195,47 @@
     </div>
 
     <div class="single">
-      <p>I've written and shipped apps for<br />
-        <strong>PalmOS</strong>, <strong>Pocket PC</strong>, and <strong>iOS</strong>.</p>
+      <h2 class="callout">I've made lots of things.</h2>
 
-      <p>I've written<br />
-        web, desktop, terminal,<br />
-        and client/server apps,<br />
-        in C/C++, Java, Objective-C, and Ruby.</p>
+      <p>I've written and shipped apps for <strong>iOS</strong>,<br />
+        as well as (once upon a time)<br />
+        <strong>PalmOS</strong> and <strong>Pocket PC</strong>.</p>
 
-      <p>I've spent thousands of hours tinkering on side-projects, ranging
-        from<br />
-        <a href="https://github.com/jamis/kaleidoscope">uniform tilings</a>,
-        <a href="https://github.com/jamis/theseus">mazes</a>, and <a href="https://github.com/jamis/celtic_knot">celtic knots</a>,<br />
-        to <a href="https://github.com/jamis/bucketwise">personal finance</a>, <a href="https://github.com/jamis/piece-by-piece">genealogy</a>, and <a href="https://github.com/jamis/logic-engine">logic engines</a>.</p>
+      <p>Over the last 20 years,<br />
+        I've written<br />
+        <strong>web</strong>,<br />
+        <strong>desktop</strong>,<br />
+        <strong>terminal</strong>, and<br />
+        <strong>client/server</strong> apps,<br />
+        in C/C++, Java, Objective-C, and Ruby.<br />
+        (And quite a few others.)</p>
+
+      <p>Aside from those,<br />
+        I've spent thousands more hours<br />
+        tinkering on side-projects ranging from<br />
+        <a href="https://github.com/jamis/kaleidoscope">uniform tilings</a>,<br />
+        <a href="https://github.com/jamis/theseus">random mazes</a>, and<br />
+        <a href="https://github.com/jamis/celtic_knot">celtic knots</a>,<br />
+        to<br />
+        <a href="https://github.com/jamis/bucketwise">personal finance</a>,<br />
+        <a href="https://github.com/jamis/piece-by-piece">genealogy</a>, and<br />
+        <a href="https://github.com/jamis/logic-engine">logic engines</a>.</p>
 
       <p>I've experimented with grammars, parsers, interpreters, and compilers. I've written and played with ray-tracers and random generators. Syntax highlighters, document readers, logic puzzles, databases, web servers, layout engines&mdash;I've been up to my elbows in all of them.</p>
+
+      <p>Every “side-project” I've done was because I was curious
+        about how something worked.</p>
+
+      <p>I wanted to explore it.</p>
+      
+      <h2 class="callout">I wanted to<br />
+        <u>understand</u> it.</h2>
     </div>
 
-    <p class="callout">~ Why? ~</p>
+    <h1 class="callout">So, I learn things.</h1>
 
     <div class="single">
-      <p class="answer">Because<br />
-        I love to learn.</p>
+      <h2 class="callout">Lots of things.<br />Eclectic things.<br />Quickly, and well.</h2>
 
       <p>I'm good at it.<br />
         Set me a task, point me at a challenge,<br />
@@ -216,21 +250,29 @@
         chain mail juggling balls,<br />
         <a href="http://twitpic.com/2vpxxj">kimchi</a> and <a href="https://twitter.com/jamis/status/125708128296771584">homemade marshmallows</a>.</p>
 
+      <p>I've read calculus texts because I wanted to, and books about Middle English because they sounded interesting.</p>
+
       <p>I researched and learned how to generate <a href="http://weblog.jamisbuck.org/2011/2/7/maze-generation-algorithm-recap">random mazes</a>, I learned to play the guitar, and I'm on my way to learning the mandolin and ukulele.</p>
 
       <p>Oh, and I'm currently writing a book<br />about maze algorithms.</p>
 
-      <p class="answer">Because<br />I love to learn.</p>
+      <h2 class="callout">Because<br />I love to learn.</h2>
 
       <blockquote class="twitter-tweet" lang="en"><p>The more I learn, the more I&#39;m convinced that there&#39;s nothing that can&#39;t be learned.</p>&mdash; Jamis Buck (@jamis) <a href="https://twitter.com/jamis/status/476372522573651968">June 10, 2014</a></blockquote>
 <script async src="http://platform.twitter.com/widgets.js" charset="utf-8"></script>
     </div>
 
-    <p class="callout">Hire me.</p>
+    <h1 class="callout">Hire me.</h1>
 
     <div class="single">
-      <p>Got a problem you need solved?<br />
-        Give me a try.<br /> Part-time, full-time, or contract, let's talk<br />
+      <p>Got a problem you need solved?</p>
+
+      <p>Maybe what you need is a another dedicated learner
+        working on it with you.</p>
+
+      <h2 class="callout">Give me a try.</h2>
+
+      <p>Part-time, full-time, or contract, let's talk<br />
         and see if we can make something work.</p>
 
       <p>
@@ -240,6 +282,10 @@
 
       <p class="caveats">Remote offers only, please.<br />
         Relocation is not currently an option.</p>
+    </div>
+
+    <div class="footer">
+      &copy;2015 Jamis Buck &lt;<a href="mailto:jamis@jamisbuck.org">jamis@jamisbuck.org</a>&gt;
     </div>
   </div>
 </body>
