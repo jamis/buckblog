@@ -272,6 +272,16 @@ a.homelink, a.wizardlink {
   width: 33%;
 }
 
+.post img.right {
+  float: right;
+  margin-left: 10pt;
+}
+
+.post img.left {
+  float: left;
+  margin-right: 10pt;
+}
+
 table.tiles {
   border-collapse: collapse;
 }
