@@ -12,6 +12,8 @@ summary: >
   A demonstration in JavaScript is provided
 ---
 
+{% include maze_book.html %}
+
 This morning as I was getting ready for the day, I was thinking about the [Recursive Division algorithm](http://weblog.jamisbuck.org/2011/1/12/maze-generation-recursive-division-algorithm). (Maze algorithms are on my mind a lot these days.)
 
 It's a neat algorithm, with some neat properties (like the ability to generate different sized "rooms" in a maze by controlling the depth of the recursion), but it suffers from at least one crippling flaw: glaringly obvious bottlenecks.

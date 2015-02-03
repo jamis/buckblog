@@ -11,6 +11,8 @@ summary: >
   The first article in a series about maze generation algorithms
 ---
 
+{% include maze_book.html %}
+
 <p>I’ve said before that generating mazes is a great default project when experimenting with a new programming language. I’ve yet to find a better one (but I’d love to hear recommendations). However, before you can dive into generating a maze (especially in a syntax you are unfamiliar with), you had better have a solid grasp of how the process works.</p>
 <p>With mazes, you can take your pick of a solid double-handful of algorithms: recursive backtracking, Prim’s, Kruskal’s, Eller’s, Aldous-Broder or Wilson’s algorithms, recursive division, hunt-and-kill, and more.</p>
 <p>My favorite, and the one I implement by default, is recursive backtracking. It is fast, easy to understand, and straightforward to implement. You’ll need sufficient memory to store the entire maze in memory, though, and it requires stack space again proportional to the size of the maze, so for exceptionally large mazes it can be fairly inefficient. But for most mazes, it works a charm.</p>

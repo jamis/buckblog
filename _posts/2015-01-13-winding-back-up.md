@@ -24,6 +24,8 @@ Armed with those lessons, I set out for something bigger. I recalled my [maze al
 
 So I went out on a limb, spent a couple of weeks putting together the best book proposal I could manage, sent it off to [The Pragmatic Bookshelf](http://pragprog.com), and hey presto! They accepted it!
 
+{% include maze_book.html %}
+
 *They accepted my book proposal!*
 
 So it is that I've been writing like crazy for the last four months, working to get this book out there. It's more than half done, and I'm really pleased with how it is turning out. With a bit of luck and a whole lot more hard work, it should be on bookshelves by the middle of the year.

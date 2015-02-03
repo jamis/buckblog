@@ -12,6 +12,8 @@ summary: >
   an animation and sample code
 ---
 
+{% include maze_book.html %}
+
 <p>The last algorithm I mentioned, <a href="http://weblog.jamisbuck.org/2011/1/17/maze-generation-aldous-broder-algorithm">Aldous-Broder</a>, was (if you’ll recall) originally devised as a way to generate <em>uniform spanning trees</em> (UST). (Review: a <em>spanning tree</em> is a tree that connects all the vertices of a graph. A <em>uniform</em> spanning tree is any one of the possible spanning trees of a graph, selected randomly and with equal probability.)</p>
 <p>Aldous-Broder was effective, but inefficient. For this (the seventh!) article in my series on maze algorithms, I’ll focus on Wilson’s algorithm for selecting uniform spanning trees.</p>
 <p>The algorithm goes something like this:</p>
