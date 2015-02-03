@@ -12,8 +12,6 @@ summary: >
   random mazes, courtesy of Kruskal's algorithm
 ---
 
-{% include maze_book.html %}
-
 <p>My <a href="http://weblog.jamisbuck.org/2011/3/4/maze-generation-weave-mazes">previous post</a> showed one way to create “weave mazes”, or mazes in which the passages weave over and under one another. The technique I showed was flexible, and could be implemented using several different maze algorithms, but it has (at least) one big drawback: it’s not predictable. You don’t know how many over/under crossings you’ll get until the maze has been generated, and for small mazes (5×5, for instance) you may very often get no crossings at all.</p>
 <p>In the <a href="http://weblog.jamisbuck.org/2011/3/4/maze-generation-weave-mazes#comments">comment thread</a> for that post, Robin Houston described an alternate algorithm. Instead of building the crossings as you generate the maze, you do it as a preprocessing step. You scatter crossings (either at random, or deliberately) across the maze, and then generate the maze so that they connect correctly.</p>
 <p>Sounds like it could be tricky, yeah? You’ve got all these <em>independent connections</em>, like little <em>graphs</em> floating around, all <em>disjoint</em>... If only there were a way to generate a maze by <em>connecting disjoint trees</em> into a single graph…</p>

@@ -13,8 +13,6 @@ summary: >
   provided
 ---
 
-{% include maze_book.html %}
-
 <p>This next algorithm is crazy, crazy simple. It also is the only one of the algorithms I’ve covered with the ability to generate a perfect maze without keeping any state at all. It can build the entire maze by looking at only a single cell at a time.</p>
 <p>Here’s how it works: for every cell in the grid, randomly carve a passage either north, or west.</p>
 <p>That’s it. You can mix it up if you want, and choose between other diagonal sets: north/east, south/west, or south/east, but whichever diagonal set you select must be used consistently throughout the entire maze.</p>
