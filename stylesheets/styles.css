@@ -341,10 +341,12 @@ table.tiles {
 .ad p {
   margin-top: 2pt;
   margin-bottom: 5pt;
+  color: #5a5;
 }
 
 p.exhortation {
   font-weight: bold;
+  color: black;
 }
 
 p.caveat {
