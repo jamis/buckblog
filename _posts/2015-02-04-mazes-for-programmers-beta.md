@@ -10,7 +10,7 @@ summary: >
   its completion by offering feedback, corrections, and suggestions
 ---
 
-I've been working on this book so long that I can hardly believe the end is almost in sight. Today marks the biggest milestone yet: [*Mazes for Programmers*](https://pragprog.com/book/jbmaze/mazes-for-programmers) is out in beta and is [available for purchase](https://pragprog.com/cart/add/skus?sku_id=785_786)!
+I've been working on this book so long that I can hardly believe the end is almost in sight. Today marks the biggest milestone yet: [*Mazes for Programmers*](https://pragprog.com/book/jbmaze/mazes-for-programmers) is out in beta and is available for purchase!
 
 That's not to say it's done yet, though. Oh, no. This is just a *beta* book, still---unfinished, lacking a few chapters, but good enough to start getting feedback from actual readers. (Wow. *Good enough to start getting feedback from actual readers!*)
 

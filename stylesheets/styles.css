@@ -338,6 +338,30 @@ table.tiles {
   margin-left: 1pt;
 }
 
+.ad a.product {
+  display: block;
+  width: 140;
+  text-align: center;
+  padding: 8px 5px;
+  background-color: #cec;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  text-decoration: none;
+}
+
+a.product:hover {
+  background-color: #aea;
+}
+
+a.product img {
+  border: 1px solid #575;
+  box-shadow: 3px 3px 8px #676;
+  -moz-box-shadow: 3px 3px 8px #676;
+  -webkit-box-shadow: 3px 3px 8px #676;
+}
+
 .ad p {
   margin-top: 2pt;
   margin-bottom: 5pt;
