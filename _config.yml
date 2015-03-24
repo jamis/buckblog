@@ -1,7 +1,7 @@
 name: The Buckblog
 description: assorted ramblings by Jamis Buck
-markdown: redcarpet
-highlighter: true
+markdown: kramdown
+highlighter: pygments
 exclude: [public]
 url: http://weblog.jamisbuck.org
 permalink: /:year/:i_month/:i_day/:title.html
