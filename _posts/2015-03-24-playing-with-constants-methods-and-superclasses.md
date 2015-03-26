@@ -10,7 +10,7 @@ summary: >
   knowing about
 ---
 
-File this one under "Ruby Tricks of Questionable Usefulness." Still, it ought to be admitted that even questionably-useful tricks can sometimes inspire unexpectedly-creative solutions. To that end, I present the following, which was inspired by something that Why the Lucky Stiff wrote years ago. (Alas, I can't remember the exact reference---possibly you do. If so, leave a comment, below!)
+File this one under "Ruby Tricks of Questionable Usefulness." Still, it ought to be admitted that even questionably-useful tricks can sometimes inspire unexpectedly-creative solutions. To that end, I present the following, which I first saw used years ago in Why the Lucky Stiff's [Camping](https://github.com/camping/camping) web microframework. _(Kudos to [@vinbarnes](https://twitter.com/vinbarnes/status/581126249730314240) for helping me remember that!)_
 
 Let's begin by observing the following (possibly unexpected) feature of Ruby. Did you know that you can have a constant and a method with the exact same name, and they won't collide?
 
