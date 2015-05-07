@@ -77,7 +77,7 @@ end
 
 # Draw the given L-system:
 # * canvas is a ChunkyPNG::Image instance
-# * x and y are the position to being drawing from
+# * x and y are the position to begin drawing from
 # * string is the starting state of the L-system
 # * order is how many times the string should be
 #   transformed
