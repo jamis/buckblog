@@ -288,6 +288,11 @@ a.homelink, a.wizardlink {
   margin-right: 10pt;
 }
 
+.post img.center {
+  display: block;
+  margin: 0 auto;
+}
+
 table.tiles {
   border-collapse: collapse;
 }
