@@ -4,6 +4,7 @@ title: Experimenting with L-Systems
 categories:
 - Projects
 author: Jamis
+comments: true
 summary: >
   An overview of L-system fractals, with a simple implementation in
   Ruby. An argument is given in favor of exploration, experimentation,
