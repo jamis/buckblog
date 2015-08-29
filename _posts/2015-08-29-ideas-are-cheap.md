@@ -36,4 +36,4 @@ See what I mean? Ideas are cheap! Generate a bunch of them! Dozens, hundreds, wh
 
 The craziest part of all, though? I think back now on those two or three ideas I had, the ones I once held so close because I thought they were too awesome to write. I'm a bit surprised to see that they're looking kind of meager these days. Some of the new ones I've come up with recently are much more exciting.
 
-I realy ought to buckle down and start writing some of them.
+I really ought to buckle down and start writing some of them.
