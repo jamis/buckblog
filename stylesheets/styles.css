@@ -417,3 +417,7 @@ p.caveat {
   color: #f55;
   margin-top: -3pt;
 }
+
+p.update {
+  font-style: italic;
+}
