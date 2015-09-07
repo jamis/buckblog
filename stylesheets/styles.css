@@ -397,6 +397,21 @@ p.exhortation {
   color: black;
 }
 
+.soldat {
+  font-size: 90%;
+  font-weight: normal;
+}
+
+.soldat a {
+  color: #00a;
+  opacity: 0.5;
+}
+
+.soldat a:hover {
+  color: #00a;
+  opacity: 1.0;
+}
+
 p.caveat {
   font-size: 75%;
   color: #f55;
