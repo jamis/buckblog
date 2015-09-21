@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+{% if page.title %}
+  <title>Buckblog: {{ page.title }}</title>
+{% else %}
   <title>{{ site.name }}</title>
+{% endif %}
   <meta charset="UTF-8" />
   <link href="/stylesheets/styles.css?v5" rel="stylesheet" type="text/css" />
   <link href="/stylesheets/maze.css?v1" rel="stylesheet" type="text/css" />
