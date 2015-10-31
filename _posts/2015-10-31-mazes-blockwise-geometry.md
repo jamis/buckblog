@@ -41,8 +41,8 @@ Then, because we're only considering south and east passages, we need to treat t
 
 Note that the maze remains exactly the same, topologically. Blockwise or linewise, it doesn't matter how you render it. Consider the following demonstration. All three mazes below are exactly the same, but the one on the left is rendered linewise, the one in the middle has linewise walls, and the one on the right is rendered blockwise:
 
-<script type="text/javascript" src="javascripts/mazes-20151031.js"></script>
-<script type="text/javascript" src="javascripts/demo-20151031.js"></script>
+<script type="text/javascript" src="/javascripts/mazes-20151031.js"></script>
+<script type="text/javascript" src="/javascripts/demo-20151031.js"></script>
 <img src="/images/try-me-tab.png" width="36" height="72" class="try-me" id="c20151031.1.try" />
 <canvas width="500" height="160" id="c20151031.1"></canvas>
 <script type="text/javascript">
