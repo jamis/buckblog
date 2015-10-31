@@ -297,6 +297,10 @@ a.homelink, a.wizardlink {
   margin: 0 auto;
 }
 
+.post img.try-me {
+  float: left;
+}
+
 .post p.images {
   text-align: center;
   white-space: nowrap;
