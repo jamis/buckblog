@@ -310,6 +310,18 @@ a.homelink, a.wizardlink {
   margin: 0 20px;
 }
 
+.post p .also {
+  font-size: 75%;
+}
+
+.post p .also::before {
+  content: "[ ";
+}
+
+.post p .also::after {
+  content: " ]";
+}
+
 table.tiles {
   border-collapse: collapse;
 }
