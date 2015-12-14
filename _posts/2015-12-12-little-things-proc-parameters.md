@@ -39,7 +39,7 @@ circle = {
   # ...
 }
 
-area = circle.using { |radius| 2 * Math::PI * radius }
+area = circle.using { |radius| Math::PI * radius**2 }
 {% endhighlight %}
 
 (Admittedly, these examples are a bit contrived, but I'm really quite in love with this idea. Hopefully I get to share the _real_ use case eventually!)
