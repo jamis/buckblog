@@ -7,7 +7,7 @@
   <title>{{ site.name }}</title>
 {% endif %}
   <meta charset="UTF-8" />
-  <link href="/stylesheets/styles.css?v7" rel="stylesheet" type="text/css" />
+  <link href="/stylesheets/styles.css?v8" rel="stylesheet" type="text/css" />
   <link href="/stylesheets/maze.css?v1" rel="stylesheet" type="text/css" />
   <link href="/stylesheets/syntax-legacy.css?v1" rel="stylesheet" type="text/css" />
   <link href="/stylesheets/syntax.css?v1" rel="stylesheet" type="text/css" />
@@ -35,12 +35,14 @@
   <div class="container">
     <div class="navigation">
       <a href="/" class="homelink">Home</a>&nbsp;|
+      <a href="http://feeds.feedburner.com/buckblog">RSS<span class="rssicon"></span></a>&nbsp;|
+      <a href="/archives.html">Archives</a>&nbsp;|
+      <a href="http://blog.jamisbuck.org" class="wizardlink">Basil&nbsp;&amp;&nbsp;Fabian</a><br />
       {% for category in site.category_dict %}
         {% assign category_label = category | first %}
         <a href="/{{ site.category_dict[category_label].slug }}/">{{ site.category_dict[category_label].proper }}</a>&nbsp;|
       {% endfor %}
-      <a href="/archives.html">Archives</a>&nbsp;|
-      <a href="http://blog.jamisbuck.org" class="wizardlink">Basil&nbsp;&amp;&nbsp;Fabian</a>
+      <a href="https://pragprog.com/book/jbmaze/mazes-for-programmers" class="booklink">Mazes for Programmers!</a>
     </div>
 
     {{ content }}

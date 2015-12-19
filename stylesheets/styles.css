@@ -167,8 +167,18 @@ body > .footer .license {
   color: #070;
 }
 
-a.homelink, a.wizardlink {
+a.homelink, a.wizardlink, a.booklink {
   font-weight: bold;
+}
+
+.rssicon {
+  margin-left: 5px;
+  padding: 0;
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  opacity: 0.5;
+  background-image: url("/images/rss-tiny.png");
 }
 
 .articles {
