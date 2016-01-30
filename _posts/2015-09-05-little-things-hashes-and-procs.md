@@ -2,7 +2,7 @@
 layout: post
 title: "Little Things: Hashes & Procs"
 categories:
-- Essays and Rants
+- essays and rants
 author: Jamis
 comments: true
 summary: >

@@ -2,7 +2,7 @@
 layout: post
 title: "Default Scopes are an Anti-Pattern"
 categories:
-- Essays and Rants
+- essays and rants
 author: Jamis
 comments: true
 summary: >

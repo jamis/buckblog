@@ -2,7 +2,7 @@
 layout: post
 title: Bulk Inserts in ActiveRecord
 categories:
-- Projects
+- projects
 author: Jamis
 comments: true
 summary: >

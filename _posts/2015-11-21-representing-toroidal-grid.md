@@ -2,7 +2,7 @@
 layout: post
 title: Representing a Toroidal Grid
 categories:
-- Essays and Rants
+- essays and rants
 author: Jamis
 comments: true
 summary: |

@@ -2,7 +2,7 @@
 layout: post
 title: Reducing a Number to Its Sign
 categories:
-- Tips & Tricks
+- tips & tricks
 author: Jamis
 comments: true
 summary: >

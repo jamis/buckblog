@@ -2,7 +2,7 @@
 layout: post
 title: A Pretty-Printer for SQL
 categories:
-- Projects
+- projects
 author: Jamis
 comments: true
 summary: >

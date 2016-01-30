@@ -2,7 +2,7 @@
 layout: post
 title: Upsilon Mazes
 categories:
-- Essays and Rants
+- essays and rants
 author: Jamis
 comments: true
 summary: |

@@ -2,7 +2,7 @@
 layout: post
 title: Mazes with Blockwise Geometry
 categories:
-- Essays and Rants
+- essays and rants
 author: Jamis
 comments: true
 summary: >

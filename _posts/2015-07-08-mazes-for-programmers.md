@@ -2,7 +2,7 @@
 layout: post
 title: Mazes for Programmers
 categories:
-- Projects
+- projects
 author: Jamis
 comments: true
 summary: >

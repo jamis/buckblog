@@ -2,7 +2,7 @@
 layout: post
 title: Testing What You Should Have Written
 categories:
-- Essays and Rants
+- essays and rants
 author: Jamis
 comments: true
 summary: >

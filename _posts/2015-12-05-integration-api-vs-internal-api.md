@@ -2,7 +2,7 @@
 layout: post
 title: Integration API vs. Internal API
 categories:
-- Essays and Rants
+- essays and rants
 author: Jamis
 comments: true
 summary: |

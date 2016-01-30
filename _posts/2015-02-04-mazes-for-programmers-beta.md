@@ -2,7 +2,7 @@
 layout: post
 title: "Mazes for Programmers: Beta!"
 categories:
-- Announcements
+- announcements
 author: Jamis
 summary: >
   The author announces the beta availability of his new book,

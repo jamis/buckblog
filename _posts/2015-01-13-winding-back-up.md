@@ -2,7 +2,7 @@
 layout: post
 title: Winding Back Up
 categories:
-- Metablog
+- metablog
 author: Jamis
 summary: >
   In which our hero cautiously tests the waters of the blogosphere once

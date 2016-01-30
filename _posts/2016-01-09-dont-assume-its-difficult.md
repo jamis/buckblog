@@ -2,7 +2,7 @@
 layout: post
 title: "Don't Assume It's Difficult until It Is"
 categories:
-- Essays and Rants
+- essays and rants
 author: Jamis
 comments: true
 summary: |

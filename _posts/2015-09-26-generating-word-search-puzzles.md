@@ -2,7 +2,7 @@
 layout: post
 title: Generating Word Search Puzzles
 categories:
-- Projects
+- projects
 author: Jamis
 comments: true
 summary: |

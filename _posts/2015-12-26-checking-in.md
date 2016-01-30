@@ -2,7 +2,7 @@
 layout: post
 title: Checking In...
 categories:
-- Metablog
+- metablog
 author: Jamis
 summary: |
   The author previews a current project, and apologizes for the lack

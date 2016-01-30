@@ -2,7 +2,7 @@
 layout: post
 title: Writing a Simple Recursive Descent Parser
 categories:
-- Essays and Rants
+- essays and rants
 author: Jamis
 comments: true
 summary: >

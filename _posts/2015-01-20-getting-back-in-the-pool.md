@@ -2,8 +2,8 @@
 layout: post
 title: Getting Back in the Pool
 categories:
-- Announcements
-- Life
+- announcements
+- life
 author: Jamis
 summary: >
   An announcement. Our hero indicates his availability for work, in the hopes

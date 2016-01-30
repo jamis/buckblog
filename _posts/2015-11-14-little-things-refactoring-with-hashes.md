@@ -2,7 +2,7 @@
 layout: post
 title: "Little Things: Refactoring with Hashes"
 categories:
-- Essays and Rants
+- essays and rants
 author: Jamis
 comments: true
 summary: |

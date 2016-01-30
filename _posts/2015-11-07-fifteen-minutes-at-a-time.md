@@ -2,7 +2,7 @@
 layout: post
 title: Fifteen Minutes at a Time
 categories:
-- Essays and Rants
+- essays and rants
 author: Jamis
 comments: true
 summary: |

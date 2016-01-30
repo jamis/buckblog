@@ -2,7 +2,7 @@
 layout: post
 title: Avoiding "Call Super" with Callbacks
 categories:
-- Essays and Rants
+- essays and rants
 author: Jamis
 comments: true
 summary: The author demonstrates the use of ActiveSupport::Callbacks to avoid the Call Super anti-pattern

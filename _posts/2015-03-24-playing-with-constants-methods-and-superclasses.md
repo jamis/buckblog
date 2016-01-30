@@ -2,7 +2,7 @@
 layout: post
 title: Playing with Constants, Methods, and Superclasses
 categories:
-- Tips & Tricks
+- tips & tricks
 author: Jamis
 comments: true
 summary: >

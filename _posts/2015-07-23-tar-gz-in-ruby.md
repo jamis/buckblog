@@ -2,7 +2,7 @@
 layout: post
 title: tar.gz in Ruby
 categories:
-- Tips & Tricks
+- tips & tricks
 author: Jamis
 comments: true
 summary: >

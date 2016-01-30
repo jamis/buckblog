@@ -2,7 +2,7 @@
 layout: post
 title: Task Tracking for Neurochemical Brains
 categories:
-- Tips & Tricks
+- tips & tricks
 author: Jamis
 comments: true
 summary: >

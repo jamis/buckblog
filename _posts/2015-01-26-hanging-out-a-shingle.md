@@ -2,8 +2,8 @@
 layout: post
 title: Hanging Out a Shingle
 categories:
-- Announcements
-- Life
+- announcements
+- life
 author: Jamis
 summary: Our hero's plans change, and his journey takes an unexpected turn.
 ---

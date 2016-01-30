@@ -2,7 +2,7 @@
 layout: post
 title: Experimenting with L-Systems
 categories:
-- Projects
+- projects
 author: Jamis
 comments: true
 summary: >

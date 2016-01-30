@@ -2,7 +2,7 @@
 layout: post
 title: "Game Demonstration: Recover the Widgets"
 categories:
-- Metablog
+- projects
 author: Jamis
 comments: true
 summary: |

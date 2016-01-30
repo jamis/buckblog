@@ -2,7 +2,7 @@
 layout: post
 title: Lessons from the Kitchen
 categories:
-- Essays and Rants
+- essays and rants
 author: Jamis
 summary: >
   A retrospective on a personal journey, wherein the author's experiences

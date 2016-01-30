@@ -2,7 +2,7 @@
 layout: post
 title: A Better Recursive Division Algorithm
 categories:
-- Under the Hood
+- under the hood
 author: Jamis
 summary: >
   A novel variation on a the Recursive Division maze generation algorithm, in

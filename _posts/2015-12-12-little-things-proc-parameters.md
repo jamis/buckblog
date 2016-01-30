@@ -2,7 +2,7 @@
 layout: post
 title: "Little Things: Introspecting Block Parameters"
 categories:
-- Essays and Rants
+- essays and rants
 author: Jamis
 comments: true
 summary: |

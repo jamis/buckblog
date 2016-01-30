@@ -2,7 +2,7 @@
 layout: post
 title: The Dynamic Def
 categories:
-- Tips & Tricks
+- tips & tricks
 author: Jamis
 comments: true
 summary: >
