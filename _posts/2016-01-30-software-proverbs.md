@@ -21,11 +21,11 @@ Let's see how it goes! I'm going through the book in order, so you'll find these
 
 _Caveats: My Korean is about twenty years rusty, so my translations may be iffy. I've been using the [Dong-A "Prime" Dictionary](https://itunes.apple.com/ca/app/prime-english-korean-korean/id321431432) on my iPad, but it only takes me so far. I've had to guess on some vocabulary and grammar forms that I couldn't find in the dictionary. If you find something I've translated wrong, please let me know! I'd love to get these right._
 
-**1. 가까운 길 버리고 먼 길로 간다 -- "Leave the near path and take the distant one."**
+**1. 가까운 길 버리고 먼 길로 간다 -- "Leave the shorter path and take the longer one."**
 
-Literally, the Korean suggests not just _leaving_ the near path, but discarding, forsaking, and actively _throwing away_ the near path. The proverb is used to say that someone has preferred a complicated way of doing something, rather than the most simple and straight-forward way.
+Literally, the Korean suggests not just _leaving_ the shorter path, but discarding, forsaking, and actively _throwing away_ the shorter path. The proverb is used to say that someone has preferred a complicated way of doing something, rather than the most simple and straight-forward way.
 
-And if that doesn't describe the most prevalent curse in software development, I think you'd be hard-pressed to find one that does. Most of us, at one point or another, have been bitten by this. Given the choice between a simple implementation, and a "flexible, robust, future-proof, modular, configurable" implementation, it's surprising how often the former gets "thrown away" in favor of the more complicated, more "distant" path.
+And if that doesn't describe the most prevalent curse in software development, I think you'd be hard-pressed to find one that does. Most of us, at one point or another, have been bitten by this. Given the choice between a simple implementation, and a "flexible, robust, future-proof, modular, configurable" implementation, it's surprising how often the former gets "thrown away" in favor of the more complicated, longer path.
 
 To rephrase as a software proverb, we might say something like "start with the simplest solution, and engineer the heck out of it."
 
