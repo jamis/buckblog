@@ -14,7 +14,7 @@ I've been learning a lot about Apple's Metal framework recently, as I've been wo
 
 Recently, I wanted to implement a _bloom_ or _glow_ effect, like the following image:
 
-<img src="images/20160227-bloom-04.png" width="320" height="320" class="center" />
+<img src="/images/20160227-bloom-04.png" width="320" height="320" class="center" />
 
 The white square is slightly in front of the rainbow square, and has a bloom effect applied to it, making it seem to glow slightly.
 
@@ -137,11 +137,11 @@ The fragment shader then writes the vertex color to the first frame buffer, and 
 
 The result is that our primary image might look like this:
 
-<img src="images/20160227-bloom-01.png" width="320" height="320" class="center" />
+<img src="/images/20160227-bloom-01.png" width="320" height="320" class="center" />
 
 And our mask image contains just the white square in the middle:
 
-<img src="images/20160227-bloom-02.png" width="320" height="320" class="center" />
+<img src="/images/20160227-bloom-02.png" width="320" height="320" class="center" />
 
 Next, let's blur that white square a bit.
 
@@ -164,7 +164,7 @@ kernel.encodeToCommandBuffer(commandBuffer,
 
 The result:
 
-<img src="images/20160227-bloom-03.png" width="320" height="320" class="center" />
+<img src="/images/20160227-bloom-03.png" width="320" height="320" class="center" />
 
 All that's left is to composite that newly-blurred texture onto our primary frame buffer...
 
@@ -246,7 +246,7 @@ commandBuffer.commit()
 
 And that's it! The resulting image has the white square glowing neatly in the middle:
 
-<img src="images/20160227-bloom-04.png" width="320" height="320" class="center" />
+<img src="/images/20160227-bloom-04.png" width="320" height="320" class="center" />
 
 ## Conclusion
 
