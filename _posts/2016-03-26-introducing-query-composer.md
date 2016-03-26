@@ -125,6 +125,10 @@ ON f."patron_id" = a."id"
 
 The composer may be configured to use descriptive aliases instead of brief ones, but in production, your logs will thank you for saving every possible byte. :) (The system this was extracted from was generating queries that were nearly 50KB each--for the SQL alone!)
 
+In addition to the composer, this library provides a class called `Query::Base`, which is a thin wrapper `Arel::SelectManager` and makes it easier to build queries with the composer. The idea is that for particularly complex query logic, you can subclass `Query::Base` and encapsulate that logic there.
+
+There's also a class called `Query::Wrapper` which lets you wrap and extend existing Arel queries (such as you might get from an ActiveRecord scope).
+
 So, [check it out](https://github.com/jamis/query-composer) and let me know what you think. Personally, I was thrilled with how block-parameter introspection simplified the dependency specification. I had also tried some other techniques, where the dependencies were explicitly (and separately) specified, but all were awkward, verbose, and made it difficult to see at a glance how a given component related to the others.
 
 In all, `Query::Composer` has significantly simplified the reporting work I'm doing for my client. I hope it can simplify yours, too!
