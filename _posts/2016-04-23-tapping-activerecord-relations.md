@@ -56,6 +56,6 @@ p updated_ids.uniq
 
 Here, the code collects the ids (`updated_ids`) of all records that are affected by merging one author (`old_id`) into another author (`new_id`). The `#tap` block just yields the relation, appends the ids of all matching records to the array, and then updates all matching records.
 
-(Could this example be written more effeciently? Probably. Feel free to golf it out.)
+*(Warning! This particular implementation has a race condition, and is not particularly efficient. A better way would be to use `UPDATE` with `RETURNING` to fetch the updated ids, thus keeping the operation atomic, and efficient. This was just a novel application of ActiveRecord::Relation with `Object#tap`...)*
 
 I love this about writing software. No matter how familiar you become with the toolbox you've been given, someone always manages to combine those tools in ways you wouldn't have considered.
