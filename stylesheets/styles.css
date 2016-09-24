@@ -240,6 +240,14 @@ a.homelink, a.wizardlink, a.booklink {
   font-style: normal;
 }
 
+.post .body p, .post .body li {
+  line-height: 135%;
+}
+
+.post .body li {
+  margin-bottom: 0.5em;
+}
+
 .post h3 {
   margin: 0;
   padding: 0.25em 0;
