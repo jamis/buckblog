@@ -82,6 +82,4 @@ This challenge will run until Saturday, October 1st, at 12:00pm MDT (18:00 UTC).
 
 * * *
 
-Post a link to your submission in the comments, but please: only link to your solution. Do not post source code in the comments. Comments that post source code directly will be removed. If you have any questions about this challenge, post them in the comments as well and I’ll try to clarify.
-
-If Disqus (the comment system) gives you any grief, please feel free to email your solution to me directly, at jamis@jamisbuck.org.
+The deadline for this challenge has passed, but feel free to try your hand at it anyway! Go ahead and submit a link to your solution in the comments, anytime. If you’re following along, the next week's challenge is "[Network programming](http://weblog.jamisbuck.org/2016/10/1/weekly-programming-challenge-10.html)". See you there!
