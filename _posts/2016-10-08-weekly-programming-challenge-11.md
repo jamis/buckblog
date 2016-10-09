@@ -22,7 +22,8 @@ For the [10th weekly programming challenge](http://weblog.jamisbuck.org/2016/10/
 
 1. **Lasse Ebert** gave it a go in Elixir, and got even got some of hard mode implemented (an HTTP client with GET support). **Two points** to Lasse! Check it out here: [https://github.com/lasseebert/jamis_challenge/tree/master/010_sock](https://github.com/lasseebert/jamis_challenge/tree/master/010_sock).
 2. **Anders Engström**'s Clojure implementation satisfies normal mode, and makes a stab at hard mode in the form of having the normal mode server forward requests (via HTTP POST) to [Phteven.io](http://phteven.io), and return the response to the originating client. **Two points** to Anders! And possibly "surprise me", too...that was unexpected (but inevitable, perhaps?) that your normal mode server would act as an HTTP client! Explore his solution here: [https://github.com/metamorph/weekly-ten](https://github.com/metamorph/weekly-ten).
-3. **Jérôme De Cuyper** implemented normal mode in C#, here: [https://github.com/jdecuyper/jamisbuck-10](https://github.com/jdecuyper/jamisbuck-10). **One point** for Jérôme!
+3. **Marcus Edvinsson** used Haskell for his submission, and implemented normal mode, as well as an HTTP client with GET support. **Two points** for Marcus! Check it out here: [https://github.com/MarEdv/wpc-week10](https://github.com/MarEdv/wpc-week10).
+4. **Jérôme De Cuyper** implemented normal mode in C#, here: [https://github.com/jdecuyper/jamisbuck-10](https://github.com/jdecuyper/jamisbuck-10). **One point** for Jérôme!
 
 My solution this week was in Erlang, and while I had hoped to tackle an HTTP client and/or server, the week was surprisingly busy and I had to be satisfied with simply normal mode. **One point** for me! You can see my Erlang client and server here: [https://github.com/jamis/weekly-challenges/tree/master/010-network-programming](https://github.com/jamis/weekly-challenges/tree/master/010-network-programming)
 
