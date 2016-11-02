@@ -34,21 +34,21 @@ So, L-systems! The basic idea behind L-systems it that you start with some state
 
 Here's an example.
 
-Let's say we start with this statement: "FX".
+Let's say we start with this statement: `FX`.
 
-Let's say, further, that we have two rules: "X" gets replaced with "X+YF+", and "Y" gets replaced with "-FX-Y".
+Let's say, further, that we have two rules: `X` gets replaced with `X+YF+`, and `Y` gets replaced with `-FX-Y`.
 
-So, given "FX", the first time we rewrite, the "X" gets replaced, and we're left with "FX+YF+".
+So, given `FX`, the first time we rewrite, the `X` gets replaced, and we're left with `FX+YF+`.
 
 Easy enough.
 
-The second time, we replace both the X, and the Y, resulting in "FX+YF++-FX-YF+".
+The second time, we replace both the `X`, and the `Y`, resulting in `FX+YF++-FX-YF+`.
 
-The third time, we replace all of the X's and all of the Y's, giving us "FX+YF++-FX-YF++-FX+YF+--FX-YF+".
+The third time, we replace all of the `X`'s and all of the `Y`'s, giving us `FX+YF++-FX-YF++-FX+YF+--FX-YF+`.
 
 And so forth. That's it, really. That's an L-system.
 
-So what's the big deal? Well, it gets interesting when you assign meaning to the different symbols. For instance, suppose we hook this up to some simple turtle graphics system. Let's let "F" mean "move forward 1 unit", let "+" mean "turn right 90 degrees", and let "-" mean "turn left 90 degrees". If we repeat the above substitution 17 times, and then draw the result, we wind up with this:
+So what's the big deal? Well, it gets interesting when you assign meaning to the different symbols. For instance, suppose we hook this up to some simple turtle graphics system. Let's let `F` mean "move forward 1 unit", let `+` mean "turn right 90 degrees", and let `-` mean "turn left 90 degrees". If we repeat the above substitution 17 times, and then draw the result, we wind up with this:
 
 <img src="/images/20161022-dragon.png" width="613" height="511" class="center" />
 
