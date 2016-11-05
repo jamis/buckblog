@@ -69,7 +69,7 @@ Aside from new operations, you can earn additional points by adding any of the f
 
 Feel free to shoot for "surprise me" mode, too! It doesn't have to be any harder than normal mode, but it ought to implement the challenge (either normal mode or hard mode) in some surprising, clever, or otherwise delightful way. See what you can come up with!
 
-This challenge will run until Saturday, November 12th, at 12:00pm MST (18:00 UTC).
+This challenge will run until Saturday, November 12th, at 12:00pm MST (19:00 UTC).
 
 * * *
 
