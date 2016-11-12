@@ -17,7 +17,7 @@ But first, let's review week #15...
 
 ## Week #15 Recap
 
-For the [15th weekly programming challenge](http://weblog.jamisbuck.org/2016/11/05/weekly-programming-challenge-15.html), we implemented a turtle graphics system.
+For the [15th weekly programming challenge](http://weblog.jamisbuck.org/2016/11/5/weekly-programming-challenge-15.html), we implemented a turtle graphics system.
 
 Our participants for week #15 were:
 
