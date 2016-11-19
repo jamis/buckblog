@@ -86,7 +86,4 @@ This challenge will run until Saturday, November 19th, at 12:00pm MST (19:00 UTC
 
 * * *
 
-Post a link to your submission in the comments, but please: only link to your solution. Do not post source code in the comments. Comments that post source code directly will be removed. If you have any questions about this challenge, post them in the comments as well and I’ll try to clarify.
-
-If you'd prefer not to post your solution as a comment, please feel free to email your solution to me directly, at jamis@jamisbuck.org.
-
+The deadline for this challenge has passed, but feel free to try your hand at it anyway! Go ahead and submit a link to your solution in the comments, anytime. For a full list of the last 16 challenges, see the [Weekly Programming Challenges Recap](http://weblog.jamisbuck.org/2016/11/19/weekly-programming-challenge-summary.html).
