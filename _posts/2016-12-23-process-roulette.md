@@ -88,8 +88,8 @@ BOUT FINISHED
 ---+------------+------------+-------
  1 | bob        | bash       |    63
  2 | crazy      | login      |    51
- 1 | juliet     | ruby       |    49
- 1 | grinch     | login      |    13
+ 3 | juliet     | ruby       |    49
+ 4 | grinch     | login      |    13
 
 waiting for bout to begin
 controller>
