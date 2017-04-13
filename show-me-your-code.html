@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Show Me Your Code</title>
+  <meta charset="UTF-8" />
+  <link href='http://fonts.googleapis.com/css?family=Cabin:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <style type="text/css">
+    html, body {
+      margin: 0;
+      font-family: 'Cabin', sans-serif;
+      font-size: 14pt;
+    }
+
+    .container {
+      margin: 0 auto;
+      width: 600px;
+    }
+
+    .footer {
+      font-size: 80%;
+      text-align: center;
+      color: #777;
+      margin-top: 50pt;
+      margin-bottom: 25pt;
+    }
+
+    .footer a {
+      color: 77f;
+      font-size: 90%;
+    }
+
+    .bundle {
+      margin-bottom: 40pt;
+      padding-bottom: 40pt;
+      border-bottom: 2px dashed #ccc;
+    }
+
+    .bundle::after {
+      clear: both;
+    }
+
+    h1 {
+      font-size: 200%;
+      margin: 0;
+      color: #475462;
+    }
+
+    h1.standalone {
+      font-size: 300%;
+      margin: 40pt 0;
+      border-bottom: 2px dashed #ccc;
+      padding-bottom: 40pt;
+      text-align: center;
+    }
+
+    .concern {
+      font-weight: bold;
+      color: #c00;
+    }
+
+    .promise {
+      font-weight: bold;
+      color: #07b;
+    }
+
+    .spaceb-s {
+      margin-bottom: 0.5em;
+    }
+
+    .spaceb-n {
+      margin-bottom: 1em;
+    }
+
+    .banner {
+      text-align: center;
+      border-bottom: 1px solid #999;
+      background: #b9dcff;
+      margin: 0 0 40pt 0;
+      padding-top: 10pt;
+      padding-bottom: 5pt;
+    }
+
+    .banner h1 {
+      color: #475462;
+      font-size: 400%;
+    }
+
+    .banner h2 {
+      text-transform: uppercase;
+      color: #6e8299
+    }
+
+    a {
+      color: #44f;
+      text-decoration: none;
+      border-bottom: 1px dotted #44f;
+    }
+
+    a:hover {
+      color: #00c;
+      border-bottom: 1px solid #00c;
+    }
+
+    h2 {
+      font-size: 150%;
+      margin: 0;
+      color: #475462;
+    }
+
+    h3 {
+      color: #475462;
+    }
+
+    .bundle .text {
+      width: 400px;
+      margin: auto;
+    }
+
+    .bundle .text .leadin {
+      font-style: italic;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+
+    .bundle .text ul {
+      list-style-type: circle;
+    }
+
+    .bundle .text li {
+      margin-bottom: 1em;
+      line-height: 1.4em;
+    }
+
+    ol li {
+      padding-left: 0.5em;
+    }
+
+    .bundle .graphic {
+      width: 200px;
+    }
+
+    img.bordered {
+      border: 2px solid black;
+    }
+
+    h1.callout {
+      text-align: center;
+      padding: 20px 0;
+      font-size: 400%;
+      font-weight: bold;
+      border-top: 4px solid black;
+      border-bottom: 4px solid black;
+      margin: 40pt 0;
+    }
+
+    h2.callout {
+      text-align: center;
+      font-size: 200%;
+      font-weight: bold;
+      margin: 20pt 0;
+    }
+
+    .caveats {
+      font-style: italic;
+    }
+  </style>
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-718320-1', 'jamisbuck.org');
+    ga('send', 'pageview');
+  </script>
+</head>
+<body>
+  <div class="banner">
+    <h1>Show Me Your Code</h1>
+    <h2>one-off code reviews done in realtime</h2>
+  </div>
+
+  <div class="container">
+    <div class="bundle">
+      <div class="text">
+        <h2>Are you:</h2>
+        <ul>
+          <li><strong class="concern">Worried</strong> about the health of your Ruby/Rails project?</li>
+          <li><strong class="concern">Unsure</strong> how to make things better in your code?</li>
+          <li><strong class="concern">Stuck</strong> on something?</li>
+          <li><strong class="concern">Confused</strong> about how to go about adding that next big feature?</li>
+          <li><strong class="concern">Needing</strong> a second opinion?</li>
+          <li><strong class="concern">Wanting</strong> advice?</li>
+        </ul>
+        <h2>My name is <a href="me.html">Jamis Buck</a>, and I can help!</h2>
+      </div>
+    </div>
+
+    <h1 class="standalone">Show me your code.</h1>
+
+    <div class="bundle">
+      <div class="text">
+        <h2>I promise to be:</h2>
+        <ul>
+          <li><strong class="promise">Kind.</strong><br />
+              I won't judge. I won't accuse.
+              I won't laugh. (Unless you laugh first!)</li>
+          <li><strong class="promise">Encouraging.</strong><br />
+              No matter what's wrong,
+              you're doing plenty of things right.
+              Let's celebrate those things!</li>
+          <li><strong class="promise">Efficient.</strong><br />
+              My experience and your familiarity with your
+              code will let us quickly identify problems together.</li>
+          <li><strong class="promise">Discreet.</strong><br />
+              It's your code, and it's your time. Everything
+              is confidential by default.</li>
+          <li><strong class="promise">Professional.</strong><br />
+              I've been writing software for more
+              than two decades, with fifteen years of Ruby and more
+              than ten of Rails. I know how this stuff works.</li>
+        </ul>
+        <p class="spaceb-n">This is an opportunity to learn and improve.<p>
+        <h2>Every mistake is a chance to do better.</h2>
+        <p>Sometimes we all just need
+           a bit of help recognizing the lesson.</p>
+      </div>
+    </div>
+
+    <div class="bundle">
+      <div class="text">
+        <h2>How this usually works:</h2>
+
+        <ol>
+          <li>We shake hands and swap contracts, NDA's, and so forth.</li>
+          <li>You share your screen remotely, using whatever tool you're
+              familiar with. Invite whomever you like to the review.</li>
+          <li>You walk me through your code, and we discuss it in
+              realtime. I'll point out potential issues, and suggest possible
+              methods of improvement.</li>
+          <li>You send payment. PayPal works well, but I'm flexible.
+              We can negotiate other payment methods.</li>
+          <li>At the very end, I send you a summary of what we discussed
+              and what was suggested.</li>
+        </ol>
+
+        <p>If the stars align, it can all be done in a day, but please allow a
+           few days to make room for scheduling.</p>
+      </div>
+    </div>
+
+    <div class="bundle">
+      <div class="text">
+        <h2 class="spaceb-s">I'm reasonably priced.</h2>
+        <p>No need to break the bank!</p>
+        <ul>
+          <li><strong>30 minutes</strong> for <strong>$100 USD</strong>.<br />
+              Plenty of time for a focused review.</li>
+          <li><strong>60 minutes</strong> for <strong>$150 USD</strong>.<br />
+              Good for a more general (but still relatively focused) review.</li>
+        </ul>
+        <h3>Need more than sixty minutes?</h3>
+        <p><a href="mailto:jamis@jamisbuck.org">Let's talk!</a>
+            Maybe what you need is an application-wide
+            review or audit. I'm happy to help with that, too.</p>
+      </div>
+    </div>
+
+    <div class="bundle">
+      <div class="text">
+        <h2 class="space-b">Not quite what you need?</h2>
+
+        <p>I also offer:</p>
+
+        <ul>
+          <li>Hourly consulting services for both Ruby and Ruby on Rails projects.</li>
+          <li>More in-depth application reviews and audits.</li>
+          <li>Training services.</li>
+          <li>Speaking, conferences, seminars.</li>
+        </ul>
+
+        <p>Feel free to <a href="mailto:jamis@jamisbuck.org">ask me</a> if you
+          need something a bit more out
+          of the box. I'm always willing to discuss other opportunities.</p>
+      </div>
+    </div>
+
+    <div class="bundle">
+      <div class="text">
+        <h1 class="spaceb-s">So show me your code!</h1>
+        <h2>I'm <a href="me.html">Jamis Buck</a>.</h2>
+        <ul>
+          <li>Email me at <a href="mailto:jamis@jamisbuck.org">jamis@jamisbuck.org</a>.</li>
+          <li>Call or text me at <a href="tel:1-435-754-5839">1-435-754-5839</a>.<br />
+              (I'm in the <a href="https://www.timeanddate.com/time/zone/usa/salt-lake-city">US Mountain</a> time zone.)</li>
+          <li>I'm <a href="https://twitter.com/jamis">@jamis</a> on Twitter.</li>
+          <li>See my work on <a href="https://github.com/jamis">GitHub</a>.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    &copy;2017 Jamis Buck &lt;<a href="mailto:jamis@jamisbuck.org">jamis@jamisbuck.org</a>&gt;
+  </div>
+</body>
+</html>
