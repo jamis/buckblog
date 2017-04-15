@@ -9,6 +9,8 @@
       margin: 0;
       font-family: 'Cabin', sans-serif;
       font-size: 14pt;
+      /* background from Subtle Patterns - https://www.toptal.com/designers/subtlepatterns */
+      background-image: url('images/show-me-your-code/seigaiha.png');
     }
 
     .container {
@@ -33,6 +35,7 @@
       margin-bottom: 40pt;
       padding-bottom: 40pt;
       border-bottom: 2px dashed #ccc;
+      position: relative;
     }
 
     .bundle::after {
@@ -127,6 +130,10 @@
     }
 
     .bundle .text li {
+      position: relative;
+    }
+
+    .bundle .text li {
       margin-bottom: 1em;
       line-height: 1.4em;
     }
@@ -141,6 +148,40 @@
 
     img.bordered {
       border: 2px solid black;
+    }
+
+    img.jaunt {
+      position: absolute;
+    }
+
+    img.jaunt.left {
+      left: -200pt;
+      transform: rotate(-15deg);
+    }
+
+    img.jaunt2.left {
+      left: -100pt;
+      transform: rotate(5deg);
+    }
+
+    img.jaunt.right {
+      left: 280pt;
+      transform: rotate(15deg);
+    }
+
+    img.self-portrait {
+      float: right;
+      position: relative;
+      top: -50pt;
+      left: -10pt;
+      transform: scaleX(-1);
+    }
+
+    img.self-portrait.large {
+      position: absolute;
+      left: -75pt;
+      top: 10pt;
+      transform: scaleX(1);
     }
 
     h1.callout {
@@ -176,7 +217,7 @@
 </head>
 <body>
   <div class="banner">
-    <h1>Show Me Your Code</h1>
+    <img src="images/show-me-your-code/logo.png" width="615" height="75" alt="Show Me Your Code" />
     <h2>one-off code reviews done in realtime</h2>
   </div>
 
@@ -185,13 +226,20 @@
       <div class="text">
         <h2>Are you:</h2>
         <ul>
-          <li><strong class="concern">Worried</strong> about the health of your Ruby/Rails project?</li>
-          <li><strong class="concern">Unsure</strong> how to make things better in your code?</li>
-          <li><strong class="concern">Stuck</strong> on something?</li>
+          <li>
+            <img src="images/show-me-your-code/puzzled-01.png" width="200" height="150" class="jaunt left" />
+            <strong class="concern">Worried</strong> about the health of your Ruby/Rails project?
+          </li>
+          <li>
+            <img src="images/show-me-your-code/puzzled-02.png" width="200" height="150" class="jaunt right" />
+            <strong class="concern">Unsure</strong> how to make things better in your code?</li>
+          <li>
+            <strong class="concern">Stuck</strong> on something?</li>
           <li><strong class="concern">Confused</strong> about how to go about adding that next big feature?</li>
           <li><strong class="concern">Needing</strong> a second opinion?</li>
           <li><strong class="concern">Wanting</strong> advice?</li>
         </ul>
+        <img src="images/show-me-your-code/self-portrait.png" class="self-portrait" width="100" height="150" />
         <h2>My name is <a href="me.html">Jamis Buck</a>, and I can help!</h2>
       </div>
     </div>
@@ -205,14 +253,18 @@
           <li><strong class="promise">Kind.</strong><br />
               I won't judge. I won't accuse.
               I won't laugh. (Unless you laugh first!)</li>
-          <li><strong class="promise">Encouraging.</strong><br />
+          <li>
+              <img src="images/show-me-your-code/solved-02.png" width="200" height="150" class="jaunt left" />
+              <strong class="promise">Encouraging.</strong><br />
               No matter what's wrong,
               you're doing plenty of things right.
               Let's celebrate those things!</li>
           <li><strong class="promise">Efficient.</strong><br />
               My experience and your familiarity with your
               code will let us quickly identify problems together.</li>
-          <li><strong class="promise">Discreet.</strong><br />
+          <li>
+              <img src="images/show-me-your-code/secret-01.png" width="200" height="150" class="jaunt right" />
+              <strong class="promise">Discreet.</strong><br />
               It's your code, and it's your time. Everything
               is confidential by default.</li>
           <li><strong class="promise">Professional.</strong><br />
@@ -220,6 +272,7 @@
               than two decades, with fifteen years of Ruby and more
               than ten of Rails. I know how this stuff works.</li>
         </ul>
+        <img src="images/show-me-your-code/solved-01.png" width="200" height="150" class="jaunt jaunt2 left" />
         <p class="spaceb-n">This is an opportunity to learn and improve.<p>
         <h2>Every mistake is a chance to do better.</h2>
         <p>Sometimes all we need is
@@ -233,9 +286,13 @@
 
         <ol>
           <li>We shake hands and swap contracts, NDA's, and so forth.</li>
-          <li>You share your screen remotely, using whatever tool you're
+          <li>
+              <img src="images/show-me-your-code/screenshare-02.png" width="200" height="150" class="jaunt left" />
+              You share your screen remotely, using whatever tool you're
               familiar with. Invite whomever you like to the review.</li>
-          <li>You walk me through your code, and we discuss it in
+          <li>
+              <img src="images/show-me-your-code/screenshare-01.png" width="200" height="150" class="jaunt right" />
+              You walk me through your code, and we discuss it in
               realtime. I'll point out potential issues, and suggest possible
               methods of improvement.</li>
           <li>You send payment. PayPal works well, but I'm flexible.
@@ -254,7 +311,9 @@
         <h2 class="spaceb-s">I'm reasonably priced.</h2>
         <p>No need to break the bank!</p>
         <ul>
-          <li><strong>30 minutes</strong> for <strong>$100 USD</strong>.<br />
+          <li>
+              <img src="images/show-me-your-code/bargain.png" width="200" height="150" class="jaunt right" />
+              <strong>30 minutes</strong> for <strong>$100 USD</strong>.<br />
               Plenty of time for a focused review.</li>
           <li><strong>60 minutes</strong> for <strong>$150 USD</strong>.<br />
               Good for a more general (but still relatively focused) review.</li>
@@ -287,6 +346,7 @@
 
     <div class="bundle">
       <div class="text">
+        <img src="images/show-me-your-code/self-portrait.png" width="200" height="300" class="self-portrait large" />
         <h1 class="spaceb-s">So show me your code!</h1>
         <h2>I'm <a href="me.html">Jamis Buck</a>.</h2>
         <ul>
