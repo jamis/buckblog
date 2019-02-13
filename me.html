@@ -29,6 +29,33 @@
       font-size: 90%;
     }
 
+    .covers {
+      margin-top: 2em;
+      margin-bottom: 2em;
+    }
+
+    .covers:after {
+      display: block;
+      content: "";
+      clear: both;
+    }
+
+    .covers a img {
+      border: 1px solid #ccc;
+      width: 35%;
+      box-shadow: 0.35em 0.35em 0.35em rgba(0, 0, 0, 0.5);
+    }
+
+    .covers a:first-child img {
+      float: left;
+      transform: rotate(-5deg);
+    }
+
+    .covers a:last-child img {
+      float: right;
+      transform: rotate(5deg);
+    }
+
     .availability {
       text-align: center;
       margin-bottom: 40pt;
@@ -222,7 +249,22 @@
         <a href="https://github.com/jamis/piece-by-piece">genealogy</a>, and<br />
         <a href="https://github.com/jamis/logic-engine">logic engines</a>.</p>
 
-      <p>I've experimented with grammars, parsers, interpreters, and compilers. I've written and played with ray-tracers and random generators. Syntax highlighters, document readers, logic puzzles, databases, web servers, layout engines&mdash;I've been up to my elbows in all of them.</p>
+      <p>I've experimented with grammars, parsers, interpreters, and compilers.
+        I've written and played with random generators, syntax highlighters,
+        and document readers. From logic puzzles and databases, to web servers
+        and layout engines, I've been up to my elbows in all of them.</p>
+
+      <h2 class="callout">Books, too.</h2>
+
+      <p>I wrote one about<br />
+        <a href="http://www.mazesforprogrammers.com">algorithms for creating random mazes</a>,<br />
+        and another about <br />
+        <a href="http://www.raytracerchallenge.com">writing a 3D renderer from scratch</a>.</p>
+
+      <div class='covers'>
+        <a href="http://www.mazesforprogrammers.com"><img src="images/cover-m4p.jpg" alt="Mazes for Programmers"></a>
+        <a href="http://www.raytracerchallenge.com"><img src="images/cover-rtc.jpg" alt="Mazes for Programmers"></a>
+      </div>
 
       <p>Every side project I've done was because I was curious
         about how something worked.</p>
@@ -255,10 +297,9 @@
         and books about Middle English<br />
         <em>because they sounded interesting</em>.</p>
 
-      <p>I researched and learned how to generate <a href="http://weblog.jamisbuck.org/2011/2/7/maze-generation-algorithm-recap">random mazes</a>, I learned to play the guitar, and I'm on my way to learning the mandolin and ukulele.</p>
-
-      <p>Oh, and I wrote<br />
-        <a href="https://pragprog.com/book/jbmaze/mazes-for-programmers">a book about maze algorithms</a>.</p>
+      <p>I researched and learned how to generate <a href="http://weblog.jamisbuck.org/2011/2/7/maze-generation-algorithm-recap">random mazes</a>,
+        how to play trumpet, guitar, and (a bit of) piano. I've
+        tinkered with Arduino, and 3D printing.</p>
 
       <h2 class="callout">Because<br />I love to learn.</h2>
 
@@ -284,12 +325,11 @@
         and we'll get the ball rolling.
       </p>
 
-      <p class="caveats">Contract-only at the moment.<br />
-        Remote offers only, please.</p>
+      <p class="caveats">Remote offers only, please.</p>
     </div>
 
     <div class="footer">
-      &copy;2015 Jamis Buck &lt;<a href="mailto:jamis@jamisbuck.org">jamis@jamisbuck.org</a>&gt;
+      &copy;2019 Jamis Buck &lt;<a href="mailto:jamis@jamisbuck.org">jamis@jamisbuck.org</a>&gt;
     </div>
   </div>
 </body>
