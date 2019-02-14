@@ -92,14 +92,14 @@ File.open("demo.tar.gz", "wb") do |file|
     Gem::Package::TarWriter.new(gz) do |tar|
       awesome_stuff = "This is awesome!\n"
       tar.add_file_simple("awesome/stuff.txt",
-        0444, awesome_stuff.length
+        0444, awesome_stuff.bytesize
       ) do |io|
         io.write(awesome_stuff)
       end
 
       more_awesome = "This is awesome, too!\n"
       tar.add_file_simple("more/awesome.txt",
-        0444, more_awesome.length
+        0444, more_awesome.bytesize
       ) do |io|
         io.write(more_awesome)
       end
