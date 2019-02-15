@@ -68,11 +68,19 @@
       border-bottom: 1px solid #777;
     }
 
+    .boring {
+      font-size: 80%;
+    }
+
     .single {
       text-align: center;
       width: 400px;
       margin: 0 auto;
       margin-bottom: 40pt;
+    }
+
+    .single.boring {
+      text-align: left;
     }
 
     .bundle::after {
@@ -139,6 +147,11 @@
       margin: 40pt 0;
     }
 
+    h1.callout.boring {
+      font-size: 200%;
+      margin-top: 80pt;
+    }
+
     h2.callout {
       text-align: center;
       font-size: 200%;
@@ -148,6 +161,12 @@
 
     .caveats {
       font-style: italic;
+    }
+
+    .buzz {
+      display: block;
+      margin: 0.25em 1em;
+      opacity: 0.5;
     }
   </style>
   <script>
@@ -202,7 +221,7 @@
         from <a href="https://signalvnoise.com/archives/001058.php">2005</a> (when it was just five people)<br />
         to <a href="https://signalvnoise.com/posts/3754-what-jamis-left-behind-for-us">2014</a> (40+ people!)<br />
         working with and learning from<br />
-        some of the world's best and brightest.
+        some of the world's best and brightest.</p>
       </div>
       <div class="graphic">
         <img src="./images/me-basecamp-small.png" width="200" height="200" />
@@ -223,7 +242,7 @@
     </div>
 
     <div class="single">
-      <h2 class="callout">I've made lots of things.</h2>
+      <h2 class="callout">I've built lots of things.</h2>
 
       <p>I've written and shipped apps for <strong>iOS</strong>,<br />
         as well as (once upon a time)<br />
@@ -326,6 +345,42 @@
       </p>
 
       <p class="caveats">Remote offers only, please.</p>
+    </div>
+
+    <h1 class="callout boring">Still Reading?</h1>
+
+    <div class="single boring">
+      <h2 class="callout">Alright, here's the boring stuff.</h2>
+      <p>
+        I received a BS in Computer Science
+        from <a href="https://www.byu.edu">BYU</a> in 1999.
+        I'd never trade that experience for anything,
+        but I'll be honest:
+        most of what I've actually <em>needed</em> to know for my career, I've
+        figured out on my own.<br />
+        <span class="buzz">buzzwords: compilers, parsers, computer graphics, predicate calculus</span>
+      </p>
+      <p>
+        I helped build the registration and financial aid systems at
+        <a href="https://www.byu.edu">BYU</a> from 1996 to 2005.<br />
+        <span class="buzz">buzzwords: PowerBuilder,
+        C, Java, Oracle</span>
+      </p>
+      <p>
+        At <a href="https://basecamp.com">Basecamp</a> from 2005 to 2014, I wrote the billing system
+        and contributed significantly to all of their products, including Backpack, Highrise,
+        Campfire, and Basecamp itself.<br />
+        <span class="buzz">buzzwords: Ruby, Ruby on Rails, CSS, Javascript,
+        MySQL, S3, Glacier, EC2, Nginx, HAProxy, Redis, Capistrano</span>
+      </p>
+      <p>
+        As a freelance developer since 2015, I've worked in the automotive industry,
+        higher education, and on <a href="https://trylancer.com">Trylancer</a>, a service
+        that brings freelancers and clients together.<br />
+        <span class="buzz">buzzwords: Ruby, Ruby on Rails, PostgreSQL, SCSS,
+          CoffeeScript, Javascript, Heroku, Redis, S3, <a href="https://www.instructure.com">Canvas</a>,
+          jQuery, GraphQL</span>
+      </p>
     </div>
 
     <div class="footer">
